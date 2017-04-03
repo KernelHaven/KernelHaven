@@ -11,6 +11,6 @@ located in separate repositories.
 
 | Plug-in | Type | License |
 |---------|------|---------|
-|[UndertakerExtractor](https://github.com/KernelHaven/UndertakerExtractor)| Code Extractor (*.c, *.h, *.S)| [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) |
 |[KconfigReaderExtractor](https://github.com/KernelHaven/KconfigReaderExtractor)| Kconfig Extractor | [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) |
-
+|[UndertakerExtractor](https://github.com/KernelHaven/UndertakerExtractor)| Code Extractor (*.c, *.h, *.S)| [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) |
+|[KbuildMinerExtractor](https://github.com/KernelHaven/KbuildMinerExtractor)| Kbuild Extractor (Kbuild*, Makefile*)| [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) |
