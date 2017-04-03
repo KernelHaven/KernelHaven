@@ -1,0 +1,2 @@
+dir\file2.c1
+dir\file.c;(CONFIG_A || CONFIG_A_MODULE)

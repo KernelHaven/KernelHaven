@@ -1,0 +1,3 @@
+de.uni_hildesheim.sse.kernel_haven.variability_model.VariabilityVariable;GAMMA;bool;3;path/to/code/code.c>15|path/to/code/code2.c>11
+de.uni_hildesheim.sse.kernel_haven.variability_model.VariabilityVariable;ALPHA;bool;1;path/to/code/code3.c>42
+de.uni_hildesheim.sse.kernel_haven.variability_model.VariabilityVariable;BETA;bool;5;null
