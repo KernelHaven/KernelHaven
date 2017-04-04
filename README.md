@@ -15,3 +15,4 @@ located in separate repositories.
 |[UndertakerExtractor](https://github.com/KernelHaven/UndertakerExtractor)| **Extractor:** Code (*.c, *.h, *.S)| [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) |
 |[KbuildMinerExtractor](https://github.com/KernelHaven/KbuildMinerExtractor)| **Extractor:** Kbuild (Kbuild*, Makefile*)| [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) |
 |[CnfUtils](https://github.com/KernelHaven/CnfUtils)| Utilities for analysis plug-ins| [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) |
+|[UnDeadAnalyzer](https://github.com/KernelHaven/UnDeadAnalyzer)| **Analyzer:** Detection of dead code and unused variables of the variability model | [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) |
