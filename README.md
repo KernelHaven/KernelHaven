@@ -3,6 +3,10 @@ KernelHaven offers a generic infrastructure for performing different analyses on
 product lines. This repository contains the main infrastructure, plug-ins are
 located in separate repositories.
 
+## Download and Installation
+* [KernelHaven infrastructure (without sources)](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/kernelhaven.jar)
+* [KernelHaven infrastructure (sources included)](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/kernelhavenwithsource.jar)
+
 ## Documentation
 * [The user documentation](https://github.com/KernelHaven/UserDocumentation/raw/master/Arbeit.pdf) describes how to use KernelHaven
 * [The developer documentation](https://github.com/KernelHaven/DeveloperDocumentation/raw/master/Arbeit.pdf) describes how to write new plug-ins for the infrastructure
