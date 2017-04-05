@@ -1,9 +1,9 @@
-# KernelHaven
+# KernelHaven ![Build Status of KernelHaven Infrastructure](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_Infrastructure)
 KernelHaven offers a generic infrastructure for performing different analyses on
 product lines. This repository contains the main infrastructure, plug-ins are
 located in separate repositories.
 
-## Download and Installation
+## Download and Installation 
 * [KernelHaven infrastructure (without sources)](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/kernelhaven.jar)
 * [KernelHaven infrastructure (sources included)](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/kernelhavenwithsource.jar)
 
