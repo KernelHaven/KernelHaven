@@ -8,8 +8,8 @@ located in separate repositories.
 * [KernelHaven infrastructure (sources included)](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/kernelhavenwithsource.jar)
 
 ## Documentation
-* [The user documentation](https://github.com/KernelHaven/UserDocumentation/raw/master/Arbeit.pdf) describes how to use KernelHaven
-* [The developer documentation](https://github.com/KernelHaven/DeveloperDocumentation/raw/master/Arbeit.pdf) describes how to write new plug-ins for the infrastructure
+* [The user documentation](https://github.com/KernelHaven/Documentation/raw/master/UserDocumentation/Arbeit.pdf) is the user manual
+* [The developer documentation](https://github.com/KernelHaven/Documentation/raw/master/DeveloperDocumentation/Arbeit.pdf) describes how to write new plug-ins for the infrastructure
 
 ## Plug-ins
 
