@@ -36,8 +36,6 @@ public abstract class Formula implements Serializable {
     
     
     @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
+    public abstract int hashCode();
     
 }
