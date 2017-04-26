@@ -50,7 +50,7 @@ public final class Negation extends Formula {
     
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return formula.hashCode() * 123;
     }
 
 }

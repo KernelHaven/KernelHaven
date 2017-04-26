@@ -26,7 +26,7 @@ public final class True extends Formula {
     
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return 123213;
     }
     
 }

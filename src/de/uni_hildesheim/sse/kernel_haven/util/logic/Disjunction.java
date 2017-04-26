@@ -63,7 +63,7 @@ public final class Disjunction extends Formula {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return (left.hashCode() + right.hashCode()) * 213;
     }
     
 }
