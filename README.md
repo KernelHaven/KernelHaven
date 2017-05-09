@@ -26,4 +26,4 @@ located in separate repositories.
 ## Acknowledgments
 This work is partially supported by the ITEA3 project [REVaMP<sup>2</sup>](https://itea3.org/project/revamp2.html), funded by the BMBF (German Ministry of Research and Education) under grant 01IS16042H.
 
-We would like to thank the following persons, who contributed to the initial version of KernelHaven: [Moritz Flöter](http://www.moritzf.de/), Marvin Forstreuter, Manuel Nedde, Alice Schwarz, and Johannes Ude.
+We would like to thank the following persons, who contributed to the initial version of KernelHaven: [Moritz Flöter](http://www.moritzf.de/), Marvin Forstreuter, Adam Krafczyk, Manuel Nedde, Alice Schwarz, and Johannes Ude.
