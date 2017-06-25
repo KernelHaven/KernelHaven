@@ -195,7 +195,7 @@ public class CodeModelProvider {
                         }
                         
                     } catch (FormatException | IOException e) {
-                        addException(new CodeExtractorException(file, e));
+                        LOGGER.logException("Invalid cache for file " + file.getPath(), e);
                     }
                     
                     if (!success) {
