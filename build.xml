@@ -83,6 +83,8 @@
                 <attribute name="Main-Class" value="${main.class}" />
                 <attribute name="Class-Path" value="" />
             </manifest>
+            <fileset dir = "${classes.dir}" />
+            <fileset dir = "${src.dir}" />
         </jar>
     </target>
 
