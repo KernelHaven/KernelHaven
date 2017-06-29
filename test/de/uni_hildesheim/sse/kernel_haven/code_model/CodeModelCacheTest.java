@@ -68,7 +68,7 @@ public class CodeModelCacheTest {
     /**
      * A block implementation for test cases.
      */
-    private static class PseudoBlock extends Block {
+    public static class PseudoBlock extends Block {
 
         private List<Block> children;
 
