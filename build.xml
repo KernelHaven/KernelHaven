@@ -14,6 +14,7 @@
 	<property name="checkstyle.file" value="${checkstyle.dir}/checkstyle-7.6-all.jar" />
 	<property name="jar.filename" value="kernelhaven.jar" />
 	<property name="jar.filename.withsource" value="kernelhavenwithsource.jar" />
+	<property name="jar.filename.fortesting" value="kernelhavenfortesting.jar" />
 	<property name="classes.dir" value="${build.dir}/classes" />
 	<property name="reports.dir" value="${build.dir}/reports" />
 	<property name="reports.xml.dir" value="${reports.dir}/xml" />
@@ -48,6 +49,7 @@
 		<antcall target="test" />
 		<antcall target="jar" />
 		<antcall target="jarwithsources" />
+		<antcall target="jarfortesting" />
 		<antcall target="check" />
 		<antcall target="jacoco_report" />
 		<antcall target="zip_workspace" />
@@ -65,15 +67,24 @@
 	
 	
 	<target name="jarwithsources">
-	        <jar destfile="${jar.dir}/${jar.filename.withsource}">
-	            <manifest>
-	                <attribute name="Main-Class" value="${main.class}" />
-	                <attribute name="Class-Path" value="" />
-	            </manifest>
-	        	<fileset dir = "${classes.dir}" excludes="**/*Test.class, **/*Tests.class, **/package-info.class" />
-	        	<fileset dir = "${src.dir}" excludes="**/*Test.java, **/*Tests.java, **/package-info.java"/>
-	        </jar>
-	    </target>
+        <jar destfile="${jar.dir}/${jar.filename.withsource}">
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}" />
+                <attribute name="Class-Path" value="" />
+            </manifest>
+            <fileset dir = "${classes.dir}" excludes="**/*Test.class, **/*Tests.class, **/package-info.class" />
+            <fileset dir = "${src.dir}" excludes="**/*Test.java, **/*Tests.java, **/package-info.java"/>
+        </jar>
+    </target>
+    
+    <target name="jarfortesting">
+        <jar destfile="${jar.dir}/${jar.filename.fortesting}">
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}" />
+                <attribute name="Class-Path" value="" />
+            </manifest>
+        </jar>
+    </target>
 
 
 	<target name="init" depends="clean">
