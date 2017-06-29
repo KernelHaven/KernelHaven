@@ -21,7 +21,7 @@
 	<property name="reports.html.dir" value="${reports.dir}/html" />
 	<property name="jacoco.dir" value="${lib.dir}" />
 	<property name="jacoco.file" value="${jacoco.dir}/jacocoant.jar" />
-	<property name="main.class" value="de.uni_hildesheim.sse.kernel_haven.Run" />
+	<property name="main.class" value="net.ssehub.kernel_haven.Run" />
 	<property name="workspace.snapshot.dir" value="${build.dir}/workspacesnapshot/" />
 
 	<!-- Modules that build -->

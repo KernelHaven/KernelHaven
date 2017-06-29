@@ -1,3 +1,3 @@
-de.uni_hildesheim.sse.kernel_haven.variability_model.VariabilityVariable;GAMMAbool;3;null
-de.uni_hildesheim.sse.kernel_haven.variability_model.VariabilityModelCacheTest$TristateVariable;ALPHA;tristate;1;null;2
-de.uni_hildesheim.sse.kernel_haven.variability_model.VariabilityModelCacheTest$TristateVariable;BETA;tristate;5;null;4
+net.ssehub.kernel_haven.variability_model.VariabilityVariable;GAMMAbool;3;null
+net.ssehub.kernel_haven.variability_model.VariabilityModelCacheTest$TristateVariable;ALPHA;tristate;1;null;2
+net.ssehub.kernel_haven.variability_model.VariabilityModelCacheTest$TristateVariable;BETA;tristate;5;null;4
