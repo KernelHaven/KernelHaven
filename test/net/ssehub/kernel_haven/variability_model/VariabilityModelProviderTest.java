@@ -244,4 +244,23 @@ public class VariabilityModelProviderTest {
         Util.deleteFolder(cacheDir);
     }
     
+    /**
+     * Tests whether the extractor implicitly calls start().
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testStartWithoutStart() throws SetUpException {
+        Properties config = new Properties();
+        config.setProperty("source_tree", "source/tree");
+        
+        VariabilityModelProvider provider = new VariabilityModelProvider();
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
+
+        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        assertThat(provider.getResult(), notNullValue());
+        assertThat(provider.getException(), nullValue());
+    }
+    
 }

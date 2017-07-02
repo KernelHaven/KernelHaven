@@ -146,6 +146,11 @@ public class BlockingQueue<T> implements Iterable<T> {
      */
     public void add(T element) {
         synchronized (internalQueue) {
+            
+            if (end) {
+                throw new IllegalStateException("Trying to add new elements while end() has already been called");
+            }
+            
             internalQueue.add(element);
             internalQueue.notify();
         }
@@ -159,6 +164,18 @@ public class BlockingQueue<T> implements Iterable<T> {
         synchronized (internalQueue) {
             end = true;
             internalQueue.notify();
+        }
+    }
+    
+    /**
+     * Returns whether the other thread has signaled that it does not want to send anymore data or not. This does not
+     * mean that there are no items left in the queue, but rather that no new items will be added.
+     * 
+     * @return Whether the other thread signaled the end of this queue.
+     */
+    public boolean isEnd() {
+        synchronized (internalQueue) {
+            return end;
         }
     }
 

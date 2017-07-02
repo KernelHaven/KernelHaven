@@ -165,11 +165,10 @@ public abstract class AbstractExtractor<ResultType, ConfigType> {
                     + provider.getNumberOfThreads() + " threads");
            
             BlockingQueue<File> targetQueue = new BlockingQueue<>();
-            targetQueue.end();
-            
             for (File target : targets) {
                 targetQueue.add(target);
             }
+            targetQueue.end();
             
             List<WorkerThread> threads = new ArrayList<>(provider.getNumberOfThreads());
             

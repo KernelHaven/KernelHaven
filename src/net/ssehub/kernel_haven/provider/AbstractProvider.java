@@ -115,6 +115,8 @@ public abstract class AbstractProvider<ResultType, ConfigType> {
         extractor.init(config);
         
         this.cache = createCache();
+        
+        
     }
     
     /**
@@ -127,7 +129,7 @@ public abstract class AbstractProvider<ResultType, ConfigType> {
     }
     
     /**
-     * Starts the extraction process.
+     * Starts the extraction process. Calling this method clears the internal result and exception queues.
      * 
      * @throws SetUpException If the extractor is already running, the configuration has not been set yet, or creation
      *      of the target list fails.
@@ -140,6 +142,9 @@ public abstract class AbstractProvider<ResultType, ConfigType> {
         if (config == null) {
             throw new SetUpException("Extractor not yet initialized");
         }
+        
+        resultQueue = new BlockingQueue<>();
+        exceptionQueue = new BlockingQueue<>();
 
         extractor.run(getTargets());
     }
@@ -168,6 +173,24 @@ public abstract class AbstractProvider<ResultType, ConfigType> {
     }
     
     /**
+     * Starts the extractor if its not already running and there is no result. This should be called in each get()
+     * method to make sure that we never endlessly wait for a not-started extractor.
+     */
+    private void startExtractorIfNotRunning() {
+        // check if the extractor is currently not running and whether it didn't run in the past
+        // when an extractor has finished in the past, then the result queue is set to end()
+        if (!extractor.isRunning() && !resultQueue.isEnd()) {
+            try {
+                start();
+            } catch (SetUpException e) {
+                // we can't properly handle the SetUpException here, since this extractor is started "implicitly" after
+                // the set up phase
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    
+    /**
      * Returns the current result. This does not advance the internal result queue. If there is no result yet, then this
      * method waits until there is one.
      * 
@@ -175,7 +198,7 @@ public abstract class AbstractProvider<ResultType, ConfigType> {
      *      the timeout for waiting has been reached.
      */
     public ResultType getResult() {
-        // TODO: start if not yet running
+        startExtractorIfNotRunning();
         
         ResultType result = null;
         
@@ -197,7 +220,7 @@ public abstract class AbstractProvider<ResultType, ConfigType> {
      *      the timeout for waiting has been reached.
      */
     public ResultType getNextResult() {
-        // TODO: start if not yet running
+        startExtractorIfNotRunning();
         
         ResultType result = null;
         
@@ -217,7 +240,7 @@ public abstract class AbstractProvider<ResultType, ConfigType> {
      * @return The result queue.
      */
     public BlockingQueue<ResultType> getResultQueue() {
-        // TODO: start if not yet running
+        startExtractorIfNotRunning();
         
         return resultQueue;
     }

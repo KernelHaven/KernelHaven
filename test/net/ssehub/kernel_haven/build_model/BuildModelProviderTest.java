@@ -235,4 +235,23 @@ public class BuildModelProviderTest {
         Util.deleteFolder(cacheDir);
     }
     
+    /**
+     * Tests whether the extractor implicitly calls start().
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testStartWithoutStart() throws SetUpException {
+        BuildModelProvider provider = new BuildModelProvider();
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
+
+        Properties props = new Properties();
+        props.setProperty("source_tree", "source/tree");
+        
+        provider.setConfig(new TestConfiguration(props).getBuildConfiguration());
+        assertThat(provider.getNextResult(), notNullValue());
+        assertThat(provider.getNextException(), nullValue());
+    }
+    
 }

@@ -429,4 +429,23 @@ public class CodeModelProviderTest {
         provider.start();
     }
    
+    /**
+     * Tests whether the extractor implicitly calls start().
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testStartWithoutStart() throws SetUpException {
+        Properties config = new Properties();
+        config.setProperty("code.extractor.files", "test.c");
+        config.setProperty("code.extractor.file_pattern", ".*");
+        config.setProperty("source_tree", SOURCE_TREE.getAbsolutePath());
+        CodeModelProvider provider = new CodeModelProvider();
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
+
+        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        assertThat(provider.getNextResult(), notNullValue());
+    }
+    
 }
