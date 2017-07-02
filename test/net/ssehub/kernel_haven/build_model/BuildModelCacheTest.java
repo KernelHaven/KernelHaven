@@ -80,7 +80,7 @@ public class BuildModelCacheTest {
         cache.write(originalBm);
 
         // read
-        BuildModel readBm = cache.read();
+        BuildModel readBm = cache.read(null);
 
         // check if equal
         assertThat(readBm.getSize(), is(originalBm.getSize()));
@@ -101,7 +101,7 @@ public class BuildModelCacheTest {
     @Test(expected = FormatException.class)
     public void testMalFormCsv() throws FormatException, IOException {
         BuildModelCache cache = new BuildModelCache(new File("testdata/bmCaching/cache1"));
-        cache.read();
+        cache.read(null);
     }
     
     /**
@@ -116,7 +116,7 @@ public class BuildModelCacheTest {
     @Test(expected = FormatException.class)
     public void testMalFormFormula() throws FormatException, IOException {
         BuildModelCache cache = new BuildModelCache(new File("testdata/bmCaching/cache2"));
-        cache.read();
+        cache.read(null);
     }
     
     /**
@@ -130,7 +130,7 @@ public class BuildModelCacheTest {
     @Test()
     public void testEmptyCache() throws FormatException, IOException {
         BuildModelCache cache = new BuildModelCache(new File("testdata/bmCaching/cache3"));
-        BuildModel bm = cache.read();
+        BuildModel bm = cache.read(null);
         
         assertThat(bm, nullValue());
     }

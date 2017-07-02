@@ -11,8 +11,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Stack;
 
+import net.ssehub.kernel_haven.provider.AbstractCache;
 import net.ssehub.kernel_haven.util.FormatException;
-import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.parser.CStyleBooleanGrammar;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
@@ -25,11 +25,9 @@ import net.ssehub.kernel_haven.util.logic.parser.VariableCache;
  * @author Adam
  * @author Alice
  */
-public class CodeModelCache {
+public class CodeModelCache extends AbstractCache<SourceFile> {
     
     public static final String CACHE_DELIMITER = ";";
-    
-    private static final Logger LOGGER = Logger.get();
     
     private File cacheDir;
 
@@ -62,6 +60,7 @@ public class CodeModelCache {
      * @param file The file to write to the cache. Must not be <code>null</code>.
      * @throws IOException If writing the cache file fails.
      */
+    @Override
     public void write(SourceFile file) throws IOException {
         File cacheFile = getCacheFile(file.getPath());
         
@@ -73,7 +72,6 @@ public class CodeModelCache {
                 serializeBlock(block, 0, writer);
             }
             
-            LOGGER.logDebug("Code cache for file " + file.getPath() + " successfully written");
         } finally {
             if (writer != null) {
                 try {
@@ -115,6 +113,7 @@ public class CodeModelCache {
      * @throws FormatException If the cache content is invalid.
      */
     @SuppressWarnings("unchecked")
+    @Override
     public SourceFile read(File path) throws IOException, FormatException {
         File cacheFile = getCacheFile(path);
         
@@ -157,7 +156,6 @@ public class CodeModelCache {
                 nesting.push(created);
                 
             }
-            LOGGER.logDebug("Cache reading of code file " + path + " successful");
 
         } catch (NumberFormatException e) {
             throw new FormatException(e);
@@ -179,10 +177,6 @@ public class CodeModelCache {
             }
         }
         
-        if (result == null) {
-            LOGGER.logDebug("Code cache does not contain " + path);
-        }
-
         return result;
     }
 

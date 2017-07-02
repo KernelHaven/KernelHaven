@@ -2,6 +2,7 @@ package net.ssehub.kernel_haven.variability_model;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
@@ -39,54 +40,35 @@ public class VariabilityModelProviderTest {
     }
 
     /**
-     * Small class that implements {@link IVariabilityModelExtractor} for
+     * Small class that implements {@link AbstractVariabilityModelExtractor} for
      * testing purposes. This waits 1/2 second after start() is called and
      * returns an empty {@link VariabilityModel}.
      */
-    private static class PseudoExtractor implements IVariabilityModelExtractor, Runnable, IVariabilityExtractorFactory {
+    private static class PseudoExtractor extends AbstractVariabilityModelExtractor {
 
-        /** The provider. */
-        private VariabilityModelProvider provider;
-
-        /** The throw exception. */
         private boolean throwException;
         
-        private boolean stopCalled;
-        
-        private PseudoExtractor extractor;
-
         /**
-         * Creates a new PseudoExtractor.
+         * Creates a new pseudo extractor.
          * 
-         * @param provider
-         *            The provider to notify about the result.
-         * @param throwException
-         *            Whether an exception should be returned instead of a
-         *            normal result.
+         * @param throwException Whether to throw an exception or return a normal result.
          */
-        public PseudoExtractor(VariabilityModelProvider provider, boolean throwException) {
-            this.provider = provider;
+        public PseudoExtractor(boolean throwException) {
             this.throwException = throwException;
         }
-
-        @Override
-        public void start() {
-            new Thread(this).start();
-        }
         
         @Override
-        public void stop() {
-            stopCalled = true;
+        protected void init(VariabilityExtractorConfiguration config) throws SetUpException {
         }
 
         @Override
-        public void run() {
+        protected VariabilityModel runOnFile(File target) throws ExtractorException {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
             }
             if (throwException) {
-                provider.setException(new ExtractorException("Test exception"));
+                throw new ExtractorException("Test exception");
             } else {
                 File dimacsFile = new File("testdata/vmCaching/testmodel.dimacs");
                 Set<VariabilityVariable> set = new HashSet<VariabilityVariable>();
@@ -95,20 +77,14 @@ public class VariabilityModelProviderTest {
                 set.add(new VariabilityVariable("GAMMA", "bool", 3));
                 VariabilityModel vm = new VariabilityModel(dimacsFile, set);
                 
-                provider.setResult(vm);
+                
+                return vm;
             }
         }
 
         @Override
-        public void setProvider(VariabilityModelProvider provider) {
-            this.provider = provider;
-        }
-
-        @Override
-        public IVariabilityModelExtractor create(VariabilityExtractorConfiguration config) {
-            PseudoExtractor extractor = new PseudoExtractor(provider, throwException);
-            this.extractor = extractor;
-            return extractor;
+        protected String getName() {
+            return "PseudoVariabilityExtractor";
         }
 
     }
@@ -117,37 +93,44 @@ public class VariabilityModelProviderTest {
      * Tests whether the set() and get() Methods for the result properly wait
      * for each other.
      * 
-     * @throws ExtractorException
-     *             unwanted.
      * @throws SetUpException
      *             unwanted.
      */
     @Test
-    public void testGetSetSynchronization() throws ExtractorException, SetUpException {
+    public void testGetSetSynchronization() throws SetUpException {
+        Properties config = new Properties();
+        config.setProperty("source_tree", "source/tree");
+        
         VariabilityModelProvider provider = new VariabilityModelProvider();
-        PseudoExtractor extractor = new PseudoExtractor(provider, false);
-        provider.setFactory(extractor);
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
 
-        provider.start(new TestConfiguration(new Properties()).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.start();
         assertThat(provider.getResult(), notNullValue());
+        assertThat(provider.getException(), nullValue());
     }
 
     /**
      * Tests whether exceptions are properly passed to get().
      * 
-     * @throws ExtractorException
-     *             wanted.
      * @throws SetUpException
      *             unwanted.
      */
-    @Test(expected = ExtractorException.class)
-    public void testExceptions() throws ExtractorException, SetUpException {
+    @Test
+    public void testExceptions() throws SetUpException {
+        Properties config = new Properties();
+        config.setProperty("source_tree", "source/tree");
+        
         VariabilityModelProvider provider = new VariabilityModelProvider();
-        PseudoExtractor extractor = new PseudoExtractor(provider, true);
-        provider.setFactory(extractor);
+        PseudoExtractor extractor = new PseudoExtractor(true);
+        provider.setExtractor(extractor);
 
-        provider.start(new TestConfiguration(new Properties()).getVariabilityConfiguration());
-        provider.getResult();
+        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.start();
+
+        assertThat(provider.getResult(), nullValue());
+        assertThat(provider.getException(), notNullValue());
     }
 
     /**
@@ -156,78 +139,79 @@ public class VariabilityModelProviderTest {
      * 
      * @throws SetUpException
      *             unwanted
-     * @throws ExtractorException
-     *             wanted
      */
-    @Test(expected = ExtractorException.class)
-    public void testShortTimeout() throws SetUpException, ExtractorException {
+    @Test
+    public void testShortTimeout() throws SetUpException {
         Properties config = new Properties();
+        config.setProperty("source_tree", "source/tree");
         config.setProperty("variability.provider.timeout", "10");
         VariabilityModelProvider provider = new VariabilityModelProvider();
 
-        PseudoExtractor extractor = new PseudoExtractor(provider, false);
-        provider.setFactory(extractor);
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
 
-        provider.start(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.start();
 
-        try {
-            provider.getResult();
-        } finally {
-            assertThat(extractor.extractor.stopCalled, is(true));
-        }
+
+        assertThat(provider.getResult(), nullValue());
+        assertThat(provider.getException(), notNullValue());
     }
 
     /**
      * Tests whether too long timeout is not triggered.
      * 
-     * @throws ExtractorException
-     *             unwanted
      * @throws SetUpException
      *             unwanted
      */
     @Test
-    public void testLongTimeout() throws ExtractorException, SetUpException {
+    public void testLongTimeout() throws SetUpException {
         Properties config = new Properties();
+        config.setProperty("source_tree", "source/tree");
         config.setProperty("variability.provider.timeout", "1500");
         VariabilityModelProvider provider = new VariabilityModelProvider();
-        PseudoExtractor extractor = new PseudoExtractor(provider, false);
-        provider.setFactory(extractor);
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
 
-        provider.start(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.start();
+        
+        
         assertThat(provider.getResult(), notNullValue());
-        assertThat(extractor.extractor.stopCalled, is(false));
+        assertThat(provider.getException(), nullValue());
     }
     
     /**
      * Tests if the variability model is read from the cache.
      * 
-     * @throws ExtractorException unwanted.
      * @throws SetUpException unwanted.
      */
     @Test
-    public void testCacheRead() throws ExtractorException, SetUpException {
+    public void testCacheRead() throws SetUpException {
         Properties config = new Properties();
+        config.setProperty("source_tree", "source/tree");
         config.setProperty("cache_dir", new File("testdata/vmCaching/cache_valid").getAbsolutePath());
         config.setProperty("variability.provider.cache.read", "true");
         VariabilityModelProvider provider = new VariabilityModelProvider();
         // if the provider were to start, then we get an exception and fail;
         // we expect the cache to work so the provider would never start
-        PseudoExtractor extractor = new PseudoExtractor(provider, true);
-        provider.setFactory(extractor);
+        PseudoExtractor extractor = new PseudoExtractor(true);
+        provider.setExtractor(extractor);
 
-        provider.start(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.start();
         assertThat(provider.getResult(), notNullValue());
+        assertThat(provider.getException(), nullValue());
     }
     
     /**
      * Tests if the variability model is read from the cache.
      * 
-     * @throws ExtractorException unwanted.
      * @throws SetUpException unwanted.
      * @throws IOException unwanted.
      */
     @Test
-    public void testCacheWrite() throws ExtractorException, SetUpException, IOException {
+    public void testCacheWrite() throws SetUpException, IOException {
         File cacheDir = new File("testdata/vmCaching/tmp_cache");
         cacheDir.mkdir();
         
@@ -235,14 +219,17 @@ public class VariabilityModelProviderTest {
         assertThat(cacheDir.listFiles().length, is(0));
         
         Properties config = new Properties();
+        config.setProperty("source_tree", "source/tree");
         config.setProperty("cache_dir", cacheDir.getAbsolutePath());
         config.setProperty("variability.provider.cache.write", "true");
         VariabilityModelProvider provider = new VariabilityModelProvider();
-        PseudoExtractor extractor = new PseudoExtractor(provider, false);
-        provider.setFactory(extractor);
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
 
-        provider.start(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.start();
         assertThat(provider.getResult(), notNullValue());
+        assertThat(provider.getException(), nullValue());
         
         // synchronize with the writing, since it runs in parallel to us...
         try {

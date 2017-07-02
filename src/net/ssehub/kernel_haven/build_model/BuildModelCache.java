@@ -8,8 +8,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import net.ssehub.kernel_haven.provider.AbstractCache;
 import net.ssehub.kernel_haven.util.FormatException;
-import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.logic.Conjunction;
 import net.ssehub.kernel_haven.util.logic.Disjunction;
 import net.ssehub.kernel_haven.util.logic.False;
@@ -29,11 +29,9 @@ import net.ssehub.kernel_haven.util.logic.parser.VariableCache;
  * @author Adam
  * @author Kevin
  */
-public class BuildModelCache {
+public class BuildModelCache extends AbstractCache<BuildModel> {
 
     public static final String CACHE_DELIMITER = ";";
-    
-    private static final Logger LOGGER = Logger.get();
     
     private File cacheFile;
 
@@ -57,6 +55,7 @@ public class BuildModelCache {
      *             Signals that an I/O exception has occurred. Possible Reasons:
      *             No ReadWrite Access File Already Exists
      */
+    @Override
     public void write(BuildModel bm) throws IOException {
         BufferedWriter writer = null;
         try {
@@ -67,7 +66,6 @@ public class BuildModelCache {
                 writer.write(bm.getPc(file).toString());
                 writer.write("\n");
             }
-            LOGGER.logInfo("Build model cache successfully written");
         } finally {
             if (writer != null) {
                 try {
@@ -81,14 +79,18 @@ public class BuildModelCache {
     /**
      * Reads the BuildModel from the cache.
      * 
+     * @param target Ignored.
+     * 
      * @return The BuildModel or <code>null</code> if the cache is not present.
+     * 
      * @throws FormatException
      *             if the cache is not valid.
      * @throws IOException
      *             Signals that an I/O exception has occurred. Possible Reasons:
      *             No ReadWrite Access File Already Exists
      */
-    public BuildModel read() throws FormatException, IOException {
+    @Override
+    public BuildModel read(File target) throws FormatException, IOException {
         BufferedReader reader = null;
         BuildModel result = null;
 
@@ -125,7 +127,6 @@ public class BuildModelCache {
                 
 
             }
-            LOGGER.logDebug("Cache reading of BM successful");
 
         } catch (FileNotFoundException e) {
             // ignore, so that null is returned if cache is not present
@@ -140,10 +141,6 @@ public class BuildModelCache {
             }
         }
         
-        if (result == null) {
-            LOGGER.logDebug("BM Cache empty");
-        }
-
         return result;
     }
 

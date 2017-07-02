@@ -18,12 +18,12 @@ import org.junit.Test;
 public class BlockingQueueTest {
     
     /**
-     * Tests the blocking queue.
+     * Tests the blocking queue when communicating between two threads.
      * 
      * @throws InterruptedException unwanted.
      */
     @Test
-    public void testBlockingQueue() throws InterruptedException {
+    public void testSync() throws InterruptedException {
         BlockingQueue<String> queue = new BlockingQueue<>();
         
         Thread t1 = new Thread(() ->  {
@@ -68,6 +68,31 @@ public class BlockingQueueTest {
         
         t1.join();
         t2.join();
+    }
+    
+    /**
+     * Tests the basic queue operations.
+     */
+    @Test
+    public void testBasic() {
+        BlockingQueue<String> queue = new BlockingQueue<>();
+        
+        queue.add("1");
+        assertThat(queue.get(), is("1"));
+        
+        queue.add("2");
+        queue.add("3");
+        queue.add("4");
+        assertThat(queue.get(), is("2"));
+        assertThat(queue.get(), is("3"));
+        assertThat(queue.get(), is("4"));
+        
+        queue.add("5");
+        queue.add("6");
+        assertThat(queue.peek(), is("5"));
+        assertThat(queue.get(), is("5"));
+        assertThat(queue.peek(), is("6"));
+        assertThat(queue.get(), is("6"));
     }
     
     /**

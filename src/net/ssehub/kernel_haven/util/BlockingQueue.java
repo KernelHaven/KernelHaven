@@ -1,5 +1,6 @@
 package net.ssehub.kernel_haven.util;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.TimeoutException;
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeoutException;
  * @author Alice
  *
  */
-public class BlockingQueue<T> {
+public class BlockingQueue<T> implements Iterable<T> {
 
     private Queue<T> internalQueue;
     
@@ -34,7 +35,6 @@ public class BlockingQueue<T> {
      *      signaled that it does not want to insert any more data.
      */
     public T get() {
-        
         T result = null;
         
         try {
@@ -58,7 +58,6 @@ public class BlockingQueue<T> {
      * @throws TimeoutException If the timeout exceeded.
      */
     public T get(long timeout) throws TimeoutException {
-        
         T result = null;
         
         synchronized (internalQueue) {
@@ -74,6 +73,62 @@ public class BlockingQueue<T> {
             }
             
             result = internalQueue.poll();
+            
+            if (result == null && !end) {
+                throw new TimeoutException();
+            }
+            
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Returns, but does not remove, the next element in this queue. If the queue is empty, then this waits until
+     * the other thread inserts data.
+     * 
+     * @return The next element in the queue, or <code>null</code> if the other thread
+     *      signaled that it does not want to insert any more data.
+     */
+    public T peek() {
+        T result = null;
+        
+        try {
+            result = peek(0);
+        } catch (TimeoutException e) {
+            // can't happen
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Returns, but does not remove, the next element in this queue. If the queue is empty, then this waits until
+     * the other thread inserts data.
+     * 
+     * @param timeout The maximum amount of milliseconds to wait until a {@link TimeoutException} is thrown.
+     *      0 here means no timeout.
+     * @return The next element in the queue, or <code>null</code> if the other thread
+     *      signaled that it does not want to insert any more data.
+     *      
+     * @throws TimeoutException If the timeout exceeded.
+     */
+    public T peek(long timeout) throws TimeoutException {
+        T result = null;
+        
+        synchronized (internalQueue) {
+            if (internalQueue.isEmpty() && !end) {
+                boolean waitSuccess = false;
+                while (!waitSuccess) {
+                    try {
+                        internalQueue.wait(timeout);
+                        waitSuccess = true;
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+            
+            result = internalQueue.peek();
             
             if (result == null && !end) {
                 throw new TimeoutException();
@@ -105,6 +160,22 @@ public class BlockingQueue<T> {
             end = true;
             internalQueue.notify();
         }
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+
+            @Override
+            public boolean hasNext() {
+                return peek() != null;
+            }
+
+            @Override
+            public T next() {
+                return get();
+            }
+        };
     }
     
 }

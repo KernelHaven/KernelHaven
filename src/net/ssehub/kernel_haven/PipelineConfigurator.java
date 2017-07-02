@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import net.ssehub.kernel_haven.analysis.IAnalysis;
+import net.ssehub.kernel_haven.build_model.AbstractBuildModelExtractor;
 import net.ssehub.kernel_haven.build_model.BuildModelProvider;
-import net.ssehub.kernel_haven.build_model.IBuildExtractorFactory;
+import net.ssehub.kernel_haven.code_model.AbstractCodeModelExtractor;
 import net.ssehub.kernel_haven.code_model.CodeModelProvider;
-import net.ssehub.kernel_haven.code_model.ICodeExtractorFactory;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Zipper;
-import net.ssehub.kernel_haven.variability_model.IVariabilityExtractorFactory;
+import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelProvider;
 
 /**
@@ -38,15 +38,15 @@ public class PipelineConfigurator {
 
     private Configuration config;
     
-    private IVariabilityExtractorFactory vmExtractorFactory;
+    private AbstractVariabilityModelExtractor vmExtractor;
 
     private VariabilityModelProvider vmProvider;
 
-    private IBuildExtractorFactory bmExtractorFactory;
+    private AbstractBuildModelExtractor bmExtractor;
 
     private BuildModelProvider bmProvider;
 
-    private ICodeExtractorFactory cmExtractorFactory;
+    private AbstractCodeModelExtractor cmExtractor;
 
     private CodeModelProvider cmProvider;
 
@@ -76,10 +76,10 @@ public class PipelineConfigurator {
      * pipeline. May be <code>null</code> if not specified in config. Package
      * visibility for test cases.
      * 
-     * @return The vm extractor factory.
+     * @return The vm extractor.
      */
-    IVariabilityExtractorFactory getVmExtractorFactory() {
-        return vmExtractorFactory;
+    AbstractVariabilityModelExtractor getVmExtractor() {
+        return vmExtractor;
     }
 
     /**
@@ -97,10 +97,10 @@ public class PipelineConfigurator {
      * May be <code>null</code> if not specified in config. Package visibility
      * for test cases.
      * 
-     * @return The bm extractor factory.
+     * @return The bm extractor.
      */
-    IBuildExtractorFactory getBmExtractorFactory() {
-        return bmExtractorFactory;
+    AbstractBuildModelExtractor getBmExtractor() {
+        return bmExtractor;
     }
 
     /**
@@ -118,10 +118,10 @@ public class PipelineConfigurator {
      * May be <code>null</code> if not specified in config. Package visibility
      * for test cases.
      * 
-     * @return The cm extractor factory.
+     * @return The cm extractor.
      */
-    ICodeExtractorFactory getCmExtractorFactory() {
-        return cmExtractorFactory;
+    AbstractCodeModelExtractor getCmExtractor() {
+        return cmExtractor;
     }
 
     /**
@@ -212,21 +212,21 @@ public class PipelineConfigurator {
         String vmExtractorName = config.getVariabilityExtractorClassName();
         if (vmExtractorName != null) {
             if (vmExtractorName.contains(" ")) {
-                LOGGER.logWarning("Variability extractor factory class name contains a space character");
+                LOGGER.logWarning("Variability extractor class name contains a space character");
             }
             try {
-                Class<? extends IVariabilityExtractorFactory> vmExtractorClass =
-                        (Class<? extends IVariabilityExtractorFactory>) Class.forName(vmExtractorName);
-                vmExtractorFactory = vmExtractorClass.getConstructor().newInstance();
+                Class<? extends AbstractVariabilityModelExtractor> vmExtractorClass =
+                        (Class<? extends AbstractVariabilityModelExtractor>) Class.forName(vmExtractorName);
+                vmExtractor = vmExtractorClass.getConstructor().newInstance();
 
-                LOGGER.logInfo("Successfully instantiated variability extractor factory " + vmExtractorName);
+                LOGGER.logInfo("Successfully instantiated variability extractor " + vmExtractorName);
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
                     | SecurityException | IllegalArgumentException | InvocationTargetException | ClassCastException e) {
-                LOGGER.logException("Error while instantiating variability extractor factory", e);
+                LOGGER.logException("Error while instantiating variability extractor", e);
                 throw new SetUpException(e);
             }
         } else {
-            LOGGER.logInfo("No variability extractor factory specified");
+            LOGGER.logInfo("No variability extractor specified");
         }
 
         /*
@@ -235,20 +235,20 @@ public class PipelineConfigurator {
         String bmExtractorName = config.getBuildExtractorClassName();
         if (bmExtractorName != null) {
             if (bmExtractorName.contains(" ")) {
-                LOGGER.logWarning("Build extractor factory class name contains a space character");
+                LOGGER.logWarning("Build extractor class name contains a space character");
             }
             try {
-                Class<? extends IBuildExtractorFactory> bmExtractorClass = (Class<? extends IBuildExtractorFactory>)
-                        Class.forName(bmExtractorName);
-                bmExtractorFactory = bmExtractorClass.getConstructor().newInstance();
-                LOGGER.logInfo("Successfully instantiated build extractor factory " + bmExtractorName);
+                Class<? extends AbstractBuildModelExtractor> bmExtractorClass =
+                        (Class<? extends AbstractBuildModelExtractor>) Class.forName(bmExtractorName);
+                bmExtractor = bmExtractorClass.getConstructor().newInstance();
+                LOGGER.logInfo("Successfully instantiated build extractor " + bmExtractorName);
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
                     | SecurityException | IllegalArgumentException | InvocationTargetException | ClassCastException e) {
-                LOGGER.logException("Error while instantiating build extractor factory", e);
+                LOGGER.logException("Error while instantiating build extractor", e);
                 throw new SetUpException(e);
             }
         } else {
-            LOGGER.logInfo("No build extractor factory specified");
+            LOGGER.logInfo("No build extractor specified");
         }
 
         /*
@@ -257,20 +257,20 @@ public class PipelineConfigurator {
         String cmExtractorName = config.getCodeExtractorClassName();
         if (cmExtractorName != null) {
             if (cmExtractorName.contains(" ")) {
-                LOGGER.logWarning("Code extractor factory class name contains a space character");
+                LOGGER.logWarning("Code extractor class name contains a space character");
             }
             try {
-                Class<? extends ICodeExtractorFactory> cmExtractorClass = (Class<? extends ICodeExtractorFactory>)
-                        Class.forName(cmExtractorName);
-                cmExtractorFactory = cmExtractorClass.getConstructor().newInstance();
-                LOGGER.logInfo("Successfully instantiated code extractor factory " + cmExtractorName);
+                Class<? extends AbstractCodeModelExtractor> cmExtractorClass =
+                        (Class<? extends AbstractCodeModelExtractor>) Class.forName(cmExtractorName);
+                cmExtractor = cmExtractorClass.getConstructor().newInstance();
+                LOGGER.logInfo("Successfully instantiated code extractor " + cmExtractorName);
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
                     | SecurityException | IllegalArgumentException | InvocationTargetException | ClassCastException e) {
-                LOGGER.logException("Error while instantiating code extractor factory", e);
+                LOGGER.logException("Error while instantiating code extractor", e);
                 throw new SetUpException(e);
             }
         } else {
-            LOGGER.logInfo("No code extractor factory specified");
+            LOGGER.logInfo("No code extractor specified");
         }
     }
 
@@ -285,15 +285,18 @@ public class PipelineConfigurator {
         LOGGER.logInfo("Creating providers...");
         
         vmProvider = new VariabilityModelProvider();
-        vmProvider.setFactory(vmExtractorFactory);
+        vmProvider.setExtractor(vmExtractor);
+        vmProvider.setConfig(config.getVariabilityConfiguration());
         LOGGER.logInfo("Created variability provider");
 
         bmProvider = new BuildModelProvider();
-        bmProvider.setFactory(bmExtractorFactory);
+        bmProvider.setExtractor(bmExtractor);
+        bmProvider.setConfig(config.getBuildConfiguration());
         LOGGER.logInfo("Created build provider");
 
         cmProvider = new CodeModelProvider();
-        cmProvider.setFactory(cmExtractorFactory);
+        cmProvider.setExtractor(cmExtractor);
+        cmProvider.setConfig(config.getCodeConfiguration());
         LOGGER.logInfo("Created code provider");
     }
 

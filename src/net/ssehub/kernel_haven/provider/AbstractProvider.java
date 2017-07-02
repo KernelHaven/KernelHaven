@@ -1,0 +1,247 @@
+package net.ssehub.kernel_haven.provider;
+
+import java.io.File;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
+
+import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.util.BlockingQueue;
+import net.ssehub.kernel_haven.util.ExtractorException;
+
+/**
+ * Abstract parent class for all providers. This class handles basic functionality of the providers such as
+ * synchronization and communication with the extractors.
+ * 
+ * @param <ResultType> The type of result that the extractor produces.
+ * @param <ConfigType> The type of configuration the extractor needs.
+ *
+ * @author Adam
+ */
+public abstract class AbstractProvider<ResultType, ConfigType> {
+
+    /**
+     * The configuration for the provider and extractor.
+     */
+    protected ConfigType config;
+    
+    private AbstractExtractor<ResultType, ConfigType> extractor;
+    
+    private BlockingQueue<ResultType> resultQueue;
+    
+    private BlockingQueue<ExtractorException> exceptionQueue;
+    
+    private AbstractCache<ResultType> cache;
+
+    /**
+     * Creates a new provider.
+     */
+    public AbstractProvider() {
+        resultQueue = new BlockingQueue<>();
+        exceptionQueue = new BlockingQueue<>();
+    }
+    
+    /**
+     * Creates a list of targets that the extractor should run on. On single-result providers (such as variability
+     * or build model), this may only contain one item and will probably be ignored by the extractors. For the code
+     * model, however, this will probably list every single source file that needs to be parsed.
+     * 
+     * @return The list of targets to run the extractor on.
+     * 
+     * @throws SetUpException If generating the list of targets fails (e.g. due to configuration problems).
+     */
+    protected abstract List<File> getTargets() throws SetUpException;
+    
+    /**
+     * Specifies the timeout in milliseconds until waiting for the result of the extractor is aborted and an exception
+     * is generated instead.
+     * 
+     * @return The timeout in milliseconds. 0 means no timeout is used.
+     */
+    protected abstract long getTimeout();
+    
+    /**
+     * Creates a cache to use for the extractor.
+     * 
+     * @return The cache to use to store and read results from / to.
+     */
+    protected abstract AbstractCache<ResultType> createCache();
+    
+    /**
+     * Whether to try and read from the cache before running the extractor.
+     * 
+     * @return Whether to try and read from the cache before running the extractor.
+     */
+    public abstract boolean readCache();
+    
+    /**
+     * Whether to write results to the cache or not.
+     * 
+     * @return Whether to write results to the cache or not.
+     */
+    public abstract boolean writeCache();
+    
+    /**
+     * Specifies the number of threads that should execute the extractor in parallel.
+     * 
+     * @return The number of threads to use for the extractor.
+     */
+    public abstract int getNumberOfThreads();
+    
+    /**
+     * Tells this provider which extractor to use.
+     * 
+     * @param extractor The extractor to use.
+     */
+    public void setExtractor(AbstractExtractor<ResultType, ConfigType> extractor) {
+        this.extractor = extractor;
+        this.extractor.setProvider(this);
+    }
+
+    /**
+     * Sets or changes the configuration for the extractor. This may be called multiple times with different
+     * configuration, but never while the extractor is running.
+     * 
+     * @param config The configuration for the extractor.
+     * 
+     * @throws SetUpException If the extractor is currently running or initializing the extractor with this
+     *      configuration failed.
+     */
+    public void setConfig(ConfigType config) throws SetUpException {
+        if (extractor.isRunning()) {
+            throw new SetUpException("Can't change config while extractor is running");
+        }
+        
+        this.config = config;
+        extractor.init(config);
+        
+        this.cache = createCache();
+    }
+    
+    /**
+     * Retrieves the cache to use.
+     * 
+     * @return The cache to use.
+     */
+    public AbstractCache<ResultType> getCache() {
+        return cache;
+    }
+    
+    /**
+     * Starts the extraction process.
+     * 
+     * @throws SetUpException If the extractor is already running, the configuration has not been set yet, or creation
+     *      of the target list fails.
+     */
+    public void start() throws SetUpException {
+        if (extractor.isRunning()) {
+            throw new SetUpException("Extractor already running");
+        }
+        
+        if (config == null) {
+            throw new SetUpException("Extractor not yet initialized");
+        }
+
+        extractor.run(getTargets());
+    }
+    
+    /**
+     * Adds a new result to this provider. Pass <code>null</code> to signal that the extraction process is finished.
+     * 
+     * @param result The result of the extractor to add.
+     */
+    public void addResult(ResultType result) {
+        if (result == null) {
+            resultQueue.end();
+            exceptionQueue.end();
+        } else {
+            resultQueue.add(result);
+        }
+    }
+    
+    /**
+     * Adds a new exception to this provider.
+     * 
+     * @param exception The exception to add.
+     */
+    public void addException(ExtractorException exception) {
+        exceptionQueue.add(exception);
+    }
+    
+    /**
+     * Returns the current result. This does not advance the internal result queue. If there is no result yet, then this
+     * method waits until there is one.
+     * 
+     * @return The result that the extractor created. <code>null</code> if there is no result left in the queue or
+     *      the timeout for waiting has been reached.
+     */
+    public ResultType getResult() {
+        // TODO: start if not yet running
+        
+        ResultType result = null;
+        
+        try {
+            result = resultQueue.peek(getTimeout());
+        } catch (TimeoutException e) {
+            addException(new ExtractorException("Timeout reached: Waited longer than " + getTimeout()
+                    + " ms on extractor result"));
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Returns the current result. This advances the internal result queue (i.e. removes the result from it). If there
+     * is no result yet, then this method waits until there is one.
+     * 
+     * @return The result that the extractor created. <code>null</code> if there is no result left in the queue or
+     *      the timeout for waiting has been reached.
+     */
+    public ResultType getNextResult() {
+        // TODO: start if not yet running
+        
+        ResultType result = null;
+        
+        try {
+            result = resultQueue.get(getTimeout());
+        } catch (TimeoutException e) {
+            addException(new ExtractorException("Timeout reached: Waited longer than " + getTimeout()
+                    + " ms on extractor result"));
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Returns the queue that contains all results created by the extractor.
+     * 
+     * @return The result queue.
+     */
+    public BlockingQueue<ResultType> getResultQueue() {
+        // TODO: start if not yet running
+        
+        return resultQueue;
+    }
+    
+    /**
+     * Returns the current exception. This does not advance the internal exception queue. If there is no exception yet,
+     * then this method waits until there is one.
+     * 
+     * @return The exception that the extractor created. <code>null</code> if there is no exception left in the queue or
+     *      the timeout for waiting has been reached.
+     */
+    public ExtractorException getException() {
+        return exceptionQueue.peek();
+    }
+    
+    /**
+     * Returns the current exception. This advances the internal exception queue (i.e. removes the exception from it).
+     * If there is no exception yet, then this method waits until there is one.
+     * 
+     * @return The exception that the extractor created. <code>null</code> if there is no exception left in the queue or
+     *      the timeout for waiting has been reached.
+     */
+    public ExtractorException getNextException() {
+        return exceptionQueue.get();
+    }
+    
+}

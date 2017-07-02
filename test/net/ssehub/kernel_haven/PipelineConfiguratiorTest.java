@@ -7,6 +7,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,17 +18,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.analysis.AbstractAnalysis;
-import net.ssehub.kernel_haven.build_model.IBuildExtractorFactory;
-import net.ssehub.kernel_haven.build_model.IBuildModelExtractor;
-import net.ssehub.kernel_haven.code_model.ICodeExtractorFactory;
-import net.ssehub.kernel_haven.code_model.ICodeModelExtractor;
+import net.ssehub.kernel_haven.build_model.AbstractBuildModelExtractor;
+import net.ssehub.kernel_haven.build_model.BuildModel;
+import net.ssehub.kernel_haven.code_model.AbstractCodeModelExtractor;
+import net.ssehub.kernel_haven.code_model.SourceFile;
 import net.ssehub.kernel_haven.config.BuildExtractorConfiguration;
 import net.ssehub.kernel_haven.config.CodeExtractorConfiguration;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.VariabilityExtractorConfiguration;
+import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.Logger;
-import net.ssehub.kernel_haven.variability_model.IVariabilityExtractorFactory;
-import net.ssehub.kernel_haven.variability_model.IVariabilityModelExtractor;
+import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
+import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 
 /**
  * Tests the {@link PipelineConfigurator} class.
@@ -58,8 +60,8 @@ public class PipelineConfiguratiorTest {
     public void testVmExtractorWrongClass() throws SetUpException {
         Properties config = new Properties();
         config.setProperty("variability.extractor.class", "thisClassDoesNotExist");
-        config.setProperty("build.extractor.class", DummyBmFactory.class.getName());
-        config.setProperty("code.extractor.class", DummyCmFactory.class.getName());
+        config.setProperty("build.extractor.class", DummyBmExtractor.class.getName());
+        config.setProperty("code.extractor.class", DummyCmExtractor.class.getName());
         PipelineConfigurator configurator = new PipelineConfigurator();
         configurator.init(new TestConfiguration(config));
         configurator.instantiateExtractors();
@@ -74,26 +76,36 @@ public class PipelineConfiguratiorTest {
     @Test
     public void testVmExtractor() throws SetUpException {
         Properties config = new Properties();
-        config.setProperty("variability.extractor.class", DummyVmFactory.class.getName());
-        config.setProperty("build.extractor.class", DummyBmFactory.class.getName());
-        config.setProperty("code.extractor.class", DummyCmFactory.class.getName());
+        config.setProperty("variability.extractor.class", DummyVmExtractor.class.getName());
+        config.setProperty("build.extractor.class", DummyBmExtractor.class.getName());
+        config.setProperty("code.extractor.class", DummyCmExtractor.class.getName());
         PipelineConfigurator configurator = new PipelineConfigurator();
         configurator.init(new TestConfiguration(config));
         configurator.instantiateExtractors();
 
-        assertThat(configurator.getVmExtractorFactory(), instanceOf(DummyVmFactory.class));
+        assertThat(configurator.getVmExtractor(), instanceOf(DummyVmExtractor.class));
         
     }
     
     /**
      * A dummy class for testing purposes.
      */
-    public static class DummyVmFactory implements IVariabilityExtractorFactory {
+    public static class DummyVmExtractor extends AbstractVariabilityModelExtractor {
 
         @Override
-        public IVariabilityModelExtractor create(VariabilityExtractorConfiguration config) {
+        protected void init(VariabilityExtractorConfiguration config) throws SetUpException {
+        }
+
+        @Override
+        protected VariabilityModel runOnFile(File target) throws ExtractorException {
             return null;
         }
+
+        @Override
+        protected String getName() {
+            return null;
+        }
+
 
     }
 
@@ -109,23 +121,25 @@ public class PipelineConfiguratiorTest {
     public void testPluginVmExtractor() throws SetUpException {
         Properties config = new Properties();
         config.setProperty("variability.extractor.class", "net.ssehub.kernel_haven.DummyPluginVmExtractor");
-        config.setProperty("build.extractor.class", DummyBmFactory.class.getName());
+        config.setProperty("build.extractor.class", DummyBmExtractor.class.getName());
         config.setProperty("plugins_dir", "testdata/plugins");
         PipelineConfigurator configurator = new PipelineConfigurator();
         configurator.init(new TestConfiguration(config));
         configurator.loadPlugins();
         configurator.instantiateExtractors();
 
-        assertThat(configurator.getVmExtractorFactory(), notNullValue());
+        assertThat(configurator.getVmExtractor(), notNullValue());
 
-        List<Method> methods = Arrays.asList(configurator.getVmExtractorFactory().getClass().getDeclaredMethods());
+        List<Method> methods = Arrays.asList(configurator.getVmExtractor().getClass().getDeclaredMethods());
 
         List<String> methodNames = new ArrayList<>();
         for (Method method : methods) {
             methodNames.add(method.getName());
         }
 
-        assertThat(methodNames, hasItem(equalTo("create")));
+        assertThat(methodNames, hasItem(equalTo("runOnFile")));
+        assertThat(methodNames, hasItem(equalTo("init")));
+        assertThat(methodNames, hasItem(equalTo("getName")));
     }
 
     /**
@@ -139,13 +153,13 @@ public class PipelineConfiguratiorTest {
     public void testPluginVmExtractorNegative() throws SetUpException {
         Properties config = new Properties();
         config.setProperty("variability.extractor.class", "net.ssehub.kernel_haven.NotExistingExtractor");
-        config.setProperty("build.extractor.class", DummyBmFactory.class.getName());
+        config.setProperty("build.extractor.class", DummyBmExtractor.class.getName());
         config.setProperty("plugins_dir", "testdata/plugins");
         PipelineConfigurator configurator = new PipelineConfigurator();
         configurator.init(new TestConfiguration(config));
         configurator.loadPlugins();
 
-        assertThat(configurator.getVmExtractorFactory(), nullValue());
+        assertThat(configurator.getVmExtractor(), nullValue());
     }
 
     /**
@@ -269,9 +283,9 @@ public class PipelineConfiguratiorTest {
     @Test(expected = SetUpException.class)
     public void testBmExtractorWrongClass() throws SetUpException {
         Properties config = new Properties();
-        config.setProperty("variability.extractor.class", DummyVmFactory.class.getName());
+        config.setProperty("variability.extractor.class", DummyVmExtractor.class.getName());
         config.setProperty("build.extractor.class", "thisClassDoesNotExist");
-        config.setProperty("code.extractor.class", DummyCmFactory.class.getName());
+        config.setProperty("code.extractor.class", DummyCmExtractor.class.getName());
         PipelineConfigurator configurator = new PipelineConfigurator();
         configurator.init(new TestConfiguration(config));
         configurator.instantiateExtractors();
@@ -286,25 +300,35 @@ public class PipelineConfiguratiorTest {
     @Test
     public void testBmExtractor() throws SetUpException {
         Properties config = new Properties();
-        config.setProperty("variability.extractor.class", DummyVmFactory.class.getName());
-        config.setProperty("build.extractor.class", DummyBmFactory.class.getName());
-        config.setProperty("code.extractor.class", DummyCmFactory.class.getName());
+        config.setProperty("variability.extractor.class", DummyVmExtractor.class.getName());
+        config.setProperty("build.extractor.class", DummyBmExtractor.class.getName());
+        config.setProperty("code.extractor.class", DummyCmExtractor.class.getName());
         PipelineConfigurator configurator = new PipelineConfigurator();
         configurator.init(new TestConfiguration(config));
         configurator.instantiateExtractors();
 
-        assertThat(configurator.getBmExtractorFactory(), instanceOf(DummyBmFactory.class));
+        assertThat(configurator.getBmExtractor(), instanceOf(DummyBmExtractor.class));
     }
     
     /**
      * A dummy class for testing purposes.
      */
-    public static class DummyBmFactory implements IBuildExtractorFactory {
+    public static class DummyBmExtractor extends AbstractBuildModelExtractor {
 
         @Override
-        public IBuildModelExtractor create(BuildExtractorConfiguration config) {
+        protected void init(BuildExtractorConfiguration config) throws SetUpException {
+        }
+
+        @Override
+        protected BuildModel runOnFile(File target) throws ExtractorException {
             return null;
         }
+
+        @Override
+        protected String getName() {
+            return null;
+        }
+
 
     }
     
@@ -318,8 +342,8 @@ public class PipelineConfiguratiorTest {
     @Test(expected = SetUpException.class)
     public void testCmExtractorWrongClass() throws SetUpException {
         Properties config = new Properties();
-        config.setProperty("variability.extractor.class", DummyVmFactory.class.getName());
-        config.setProperty("build.extractor.class", DummyBmFactory.class.getName());
+        config.setProperty("variability.extractor.class", DummyVmExtractor.class.getName());
+        config.setProperty("build.extractor.class", DummyBmExtractor.class.getName());
         config.setProperty("code.extractor.class", "thisClassDoesNotExist");
         PipelineConfigurator configurator = new PipelineConfigurator();
         configurator.init(new TestConfiguration(config));
@@ -335,25 +359,35 @@ public class PipelineConfiguratiorTest {
     @Test
     public void testCmExtractor() throws SetUpException {
         Properties config = new Properties();
-        config.setProperty("variability.extractor.class", DummyVmFactory.class.getName());
-        config.setProperty("build.extractor.class", DummyBmFactory.class.getName());
-        config.setProperty("code.extractor.class", DummyCmFactory.class.getName());
+        config.setProperty("variability.extractor.class", DummyVmExtractor.class.getName());
+        config.setProperty("build.extractor.class", DummyBmExtractor.class.getName());
+        config.setProperty("code.extractor.class", DummyCmExtractor.class.getName());
         PipelineConfigurator configurator = new PipelineConfigurator();
         configurator.init(new TestConfiguration(config));
         configurator.instantiateExtractors();
 
-        assertThat(configurator.getCmExtractorFactory(), instanceOf(DummyCmFactory.class));
+        assertThat(configurator.getCmExtractor(), instanceOf(DummyCmExtractor.class));
     }
     
     /**
      * A dummy class for testing purposes.
      */
-    public static class DummyCmFactory implements ICodeExtractorFactory {
+    public static class DummyCmExtractor extends AbstractCodeModelExtractor {
 
         @Override
-        public ICodeModelExtractor create(CodeExtractorConfiguration config) {
+        protected void init(CodeExtractorConfiguration config) throws SetUpException {
+        }
+
+        @Override
+        protected SourceFile runOnFile(File target) throws ExtractorException {
             return null;
         }
+
+        @Override
+        protected String getName() {
+            return "DummyCmExtrator";
+        }
+
 
     }
 

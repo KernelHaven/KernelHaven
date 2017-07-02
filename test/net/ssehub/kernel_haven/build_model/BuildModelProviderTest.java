@@ -2,6 +2,7 @@ package net.ssehub.kernel_haven.build_model;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
@@ -38,73 +39,49 @@ public class BuildModelProviderTest {
     }
 
     /**
-     * Small class that implements {@see IBuildyModelExtractor} for testing
+     * Small class that implements {@see AbstractBuildModelExtractor} for testing
      * purposes. This waits 1/2 second after start() is called and returns an
      * empty {@link BuildModel}.
      */
     
-    private static class PseudoExtractor implements IBuildModelExtractor, Runnable, IBuildExtractorFactory {
-
-        /** The provider. */
-        private BuildModelProvider provider;
+    private static class PseudoExtractor extends AbstractBuildModelExtractor {
 
         /** The throw exception. */
         private boolean throwException;
         
-        private boolean stopCalled;
-        
-        private PseudoExtractor extractor;
-
         /**
-         * Creates a new PseudoExtractor.
+         * Creates a new pseudo extractor.
          * 
-         * @param provider
-         *            The provider to notify about the result.
-         * @param throwException
-         *            Whether an exception should be returned instead of a
-         *            normal result.
+         * @param throwException Whether to throw an exception or return a normal result.
          */
-        public PseudoExtractor(BuildModelProvider provider, boolean throwException) {
-            this.provider = provider;
+        public PseudoExtractor(boolean throwException) {
             this.throwException = throwException;
         }
-
-        @Override
-        public void start() {
-            new Thread(this).start();
-        }
         
         @Override
-        public void stop() {
-            stopCalled = true;
+        protected void init(BuildExtractorConfiguration config) throws SetUpException {
+            
         }
 
         @Override
-        public void run() {
+        protected BuildModel runOnFile(File target) throws ExtractorException {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
             }
+            
             if (throwException) {
-                provider.setException(new ExtractorException("Test exception"));
+                throw new ExtractorException("Test exception");
             } else {
-
-                provider.setResult(new BuildModel());
+                return new BuildModel();
             }
+
         }
 
         @Override
-        public void setProvider(BuildModelProvider provider) {
-            this.provider = provider;
+        protected String getName() {
+            return "PseudoBuildExtractor";
         }
-
-        @Override
-        public IBuildModelExtractor create(BuildExtractorConfiguration config) {
-            PseudoExtractor extractor = new PseudoExtractor(provider, throwException);
-            this.extractor = extractor;
-            return extractor;
-        }
-
 
     }
 
@@ -112,37 +89,44 @@ public class BuildModelProviderTest {
      * Tests whether the set() and get() Methods for the result properly wait
      * for each other.
      * 
-     * @throws ExtractorException
-     *             unwanted.
      * @throws SetUpException
      *             unwanted.
      */
     @Test
-    public void testGetSetSynchronization() throws ExtractorException, SetUpException {
+    public void testGetSetSynchronization() throws SetUpException {
         BuildModelProvider provider = new BuildModelProvider();
-        PseudoExtractor extractor = new PseudoExtractor(provider, false);
-        provider.setFactory(extractor);
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
 
-        provider.start(new TestConfiguration(new Properties()).getBuildConfiguration());
-        assertThat(provider.getResult(), notNullValue());
+        Properties props = new Properties();
+        props.setProperty("source_tree", "source/tree");
+        
+        provider.setConfig(new TestConfiguration(props).getBuildConfiguration());
+        provider.start();
+        assertThat(provider.getNextResult(), notNullValue());
+        assertThat(provider.getNextException(), nullValue());
     }
 
     /**
      * Tests whether exceptions are properly passed to get().
      * 
-     * @throws ExtractorException
-     *             wanted.
      * @throws SetUpException
      *             unwanted.
      */
-    @Test(expected = ExtractorException.class)
-    public void testExceptions() throws ExtractorException, SetUpException {
+    @Test()
+    public void testExceptions() throws SetUpException {
         BuildModelProvider provider = new BuildModelProvider();
-        PseudoExtractor extractor = new PseudoExtractor(provider, true);
-        provider.setFactory(extractor);
+        PseudoExtractor extractor = new PseudoExtractor(true);
+        provider.setExtractor(extractor);
 
-        provider.start(new TestConfiguration(new Properties()).getBuildConfiguration());
-        provider.getResult();
+        Properties props = new Properties();
+        props.setProperty("source_tree", "source/tree");
+
+        provider.setConfig(new TestConfiguration(props).getBuildConfiguration());
+        provider.start();
+
+        assertThat(provider.getNextResult(), nullValue());
+        assertThat(provider.getNextException(), notNullValue());
     }
 
     /**
@@ -151,78 +135,75 @@ public class BuildModelProviderTest {
      * 
      * @throws SetUpException
      *             unwanted
-     * @throws ExtractorException
-     *             wanted
      */
-    @Test(expected = ExtractorException.class)
-    public void testShortTimeout() throws SetUpException, ExtractorException {
+    @Test()
+    public void testShortTimeout() throws SetUpException {
         Properties config = new Properties();
+        config.setProperty("source_tree", "source/tree");
         config.setProperty("build.provider.timeout", "10");
         BuildModelProvider provider = new BuildModelProvider();
 
-        PseudoExtractor extractor = new PseudoExtractor(provider, false);
-        provider.setFactory(extractor);
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
 
-        provider.start(new TestConfiguration(config).getBuildConfiguration());
+        provider.setConfig(new TestConfiguration(config).getBuildConfiguration());
+        provider.start();
 
-        try {
-            provider.getResult();
-        } finally {
-            assertThat(extractor.extractor.stopCalled, is(true));
-        }
+        assertThat(provider.getNextResult(), nullValue());
+        assertThat(provider.getNextException(), notNullValue());
     }
 
     /**
      * Tests whether too long timeout is not triggered.
      * 
-     * @throws ExtractorException
-     *             unwanted
      * @throws SetUpException
      *             unwanted
      */
     @Test
-    public void testLongTimeout() throws ExtractorException, SetUpException {
+    public void testLongTimeout() throws SetUpException {
         Properties config = new Properties();
+        config.setProperty("source_tree", "source/tree");
         config.setProperty("build.provider.timeout", "1500");
         BuildModelProvider provider = new BuildModelProvider();
-        PseudoExtractor extractor = new PseudoExtractor(provider, false);
-        provider.setFactory(extractor);
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
 
-        provider.start(new TestConfiguration(config).getBuildConfiguration());
-        assertThat(provider.getResult(), notNullValue());
-        assertThat(extractor.extractor.stopCalled, is(false));
-    }
-
-    /**
-     * Tests if the build model is read from the cache.
-     * 
-     * @throws ExtractorException unwanted.
-     * @throws SetUpException unwanted.
-     */
-    @Test
-    public void testCacheRead() throws ExtractorException, SetUpException {
-        Properties config = new Properties();
-        config.setProperty("cache_dir", new File("testdata/bmCaching/cache_valid").getAbsolutePath());
-        config.setProperty("build.provider.cache.read", "true");
-        BuildModelProvider provider = new BuildModelProvider();
-        // if the provider were to start, then we get an exception and fail;
-        // we expect the cache to work so the provider would never start
-        PseudoExtractor extractor = new PseudoExtractor(provider, true);
-        provider.setFactory(extractor);
-
-        provider.start(new TestConfiguration(config).getBuildConfiguration());
-        assertThat(provider.getResult(), notNullValue());
+        provider.setConfig(new TestConfiguration(config).getBuildConfiguration());
+        provider.start();
+        assertThat(provider.getNextResult(), notNullValue());
+        assertThat(provider.getNextException(), nullValue());
     }
     
     /**
      * Tests if the build model is read from the cache.
      * 
-     * @throws ExtractorException unwanted.
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testCacheRead() throws SetUpException {
+        Properties config = new Properties();
+        config.setProperty("source_tree", "source/tree");
+        config.setProperty("cache_dir", new File("testdata/bmCaching/cache_valid").getAbsolutePath());
+        config.setProperty("build.provider.cache.read", "true");
+        BuildModelProvider provider = new BuildModelProvider();
+        // if the provider were to start, then we get an exception and fail;
+        // we expect the cache to work so the provider would never start
+        PseudoExtractor extractor = new PseudoExtractor(true);
+        provider.setExtractor(extractor);
+
+        provider.setConfig(new TestConfiguration(config).getBuildConfiguration());
+        provider.start();
+        assertThat(provider.getNextResult(), notNullValue());
+    }
+    
+    /**
+     * Tests if the build model is read from the cache.
+     * 
      * @throws SetUpException unwanted.
      * @throws IOException unwanted.
      */
     @Test
-    public void testCacheWrite() throws ExtractorException, SetUpException, IOException {
+    public void testCacheWrite() throws SetUpException, IOException {
         File cacheDir = new File("testdata/bmCaching/tmp_cache");
         cacheDir.mkdir();
         
@@ -230,14 +211,16 @@ public class BuildModelProviderTest {
         assertThat(cacheDir.listFiles().length, is(0));
         
         Properties config = new Properties();
+        config.setProperty("source_tree", "source/tree");
         config.setProperty("cache_dir", cacheDir.getAbsolutePath());
         config.setProperty("build.provider.cache.write", "true");
         BuildModelProvider provider = new BuildModelProvider();
-        PseudoExtractor extractor = new PseudoExtractor(provider, false);
-        provider.setFactory(extractor);
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
 
-        provider.start(new TestConfiguration(config).getBuildConfiguration());
-        assertThat(provider.getResult(), notNullValue());
+        provider.setConfig(new TestConfiguration(config).getBuildConfiguration());
+        provider.start();
+        assertThat(provider.getNextResult(), notNullValue());
         
         // synchronize with the writing, since it runs in parallel to us...
         try {

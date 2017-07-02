@@ -13,8 +13,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.ssehub.kernel_haven.provider.AbstractCache;
 import net.ssehub.kernel_haven.util.FormatException;
-import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Util;
 
 /**
@@ -24,7 +24,7 @@ import net.ssehub.kernel_haven.util.Util;
  * @author Adam
  * @author Johannes
  */
-public class VariabilityModelCache {
+public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
     
 
     /**
@@ -33,8 +33,6 @@ public class VariabilityModelCache {
      */
     public static final String CACHE_DELIMITER = ";";
 
-    private static final Logger LOGGER = Logger.get();
-    
     /**
      * The path where the CNF File should be stored.
      */
@@ -66,6 +64,7 @@ public class VariabilityModelCache {
      *             Signals that an I/O exception has occurred. Possible Reasons:
      *             No ReadWrite Access File Already Exists
      */
+    @Override
     public void write(VariabilityModel vm) throws IOException {
         // Write ConstraintModel
         Util.copyFile(vm.getConstraintModel(), constraintCache);
@@ -84,7 +83,6 @@ public class VariabilityModelCache {
                 
 
             }
-            LOGGER.logInfo("Varibility model cache successfully written");
         } finally {
             if (writer != null) {
                 try {
@@ -108,7 +106,8 @@ public class VariabilityModelCache {
      *             No ReadWrite Access File Already Exists
      */
     @SuppressWarnings("unchecked")
-    public VariabilityModel read() throws FormatException, IOException {
+    @Override
+    public VariabilityModel read(File target) throws FormatException, IOException {
         VariabilityModel vm = null;
         
         // Generate VariabilityVariables
@@ -140,7 +139,6 @@ public class VariabilityModelCache {
             Util.copyFile(constraintCache, constraintCopy);
             
             vm = new VariabilityModel(constraintCopy, variables);
-            LOGGER.logDebug("Cache reading of variability model successfull");
         } catch (ClassNotFoundException | ClassCastException | NoSuchMethodException | SecurityException
                 | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw new FormatException(e);
@@ -159,10 +157,6 @@ public class VariabilityModelCache {
             }
         }
 
-        if (vm == null) {
-            LOGGER.logDebug("VM vache empty");
-        }
-        
         return vm;
     }
 
