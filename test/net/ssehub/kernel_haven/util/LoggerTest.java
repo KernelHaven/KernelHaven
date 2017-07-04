@@ -9,7 +9,6 @@ import static org.hamcrest.core.StringStartsWith.startsWith;
 import java.io.ByteArrayOutputStream;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -203,23 +202,6 @@ public class LoggerTest {
             int number = Integer.parseInt(lines[i].substring(lines[i].length() - 1));
             Assert.assertThat(lines[i], endsWith("[worker " + number + "] message " + number));
         }
-    }
-/**
- * No real Test. Just Console Output Testing
- */
-    @Ignore
-    @Test
-    public void testLimitOfConsole() {
-        Logger.init();
-
-        String line = "Tausend123 1 \n";
-
-        for (int i = 1; i < 101; i++) {
-            line += "Tausend123" + i + "\n";
-        }
-        Logger.get().logInfo(line);
-
-        assert (true);
     }
 
     /**
