@@ -14,8 +14,7 @@ import net.ssehub.kernel_haven.util.ConfigurationTest;
 import net.ssehub.kernel_haven.util.LoggerTest;
 import net.ssehub.kernel_haven.util.UtilTest;
 import net.ssehub.kernel_haven.util.ZipperTest;
-import net.ssehub.kernel_haven.util.logic.FormulaTest;
-import net.ssehub.kernel_haven.util.logic.ParserTest;
+import net.ssehub.kernel_haven.util.logic.AllLogicTests;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelCacheTest;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelProviderTest;
 
@@ -30,8 +29,9 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModelProviderTest;
     VariabilityModelProviderTest.class,
     ConfigurationTest.class,
     UtilTest.class,
-    FormulaTest.class,
-    ParserTest.class,
+//    FormulaTest.class,
+//    ParserTest.class,
+    AllLogicTests.class,
     VariabilityModelCacheTest.class,
     BuildModelProviderTest.class,
     BuildModelCacheTest.class,
