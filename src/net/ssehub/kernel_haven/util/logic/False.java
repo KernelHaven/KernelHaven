@@ -4,6 +4,7 @@ package net.ssehub.kernel_haven.util.logic;
  * The boolean constant "false".
  * 
  * @author Adam (from KernelMiner project)
+ * @author Sascha El-Sharkawy
  */
 public final class False extends Formula {
 
@@ -29,4 +30,13 @@ public final class False extends Formula {
         return 2343242;
     }
 
+    @Override
+    public int getLiteralSize() {
+        return 0;
+    }
+    
+    @Override
+    public void accept(IFormulaVisitor visitor) {
+        visitor.visitFalse(this);
+    }
 }

@@ -4,6 +4,7 @@ package net.ssehub.kernel_haven.util.logic;
  * A boolean variable.
  * 
  * @author Adam (from KernelMiner project)
+ * @author Sascha El-Sharkawy
  */
 public final class Variable extends Formula {
     
@@ -64,4 +65,13 @@ public final class Variable extends Formula {
         return name.hashCode();
     }
 
+    @Override
+    public int getLiteralSize() {
+        return 1;
+    }
+    
+    @Override
+    public void accept(IFormulaVisitor visitor) {
+        visitor.visitVariable(this);
+    }
 }

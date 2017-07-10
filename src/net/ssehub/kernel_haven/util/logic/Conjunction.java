@@ -5,6 +5,7 @@ package net.ssehub.kernel_haven.util.logic;
  * A boolean conjunction operator (AND).
  * 
  * @author Adam (from KernelMiner project)
+ * @author Sascha El-Sharkawy
  */
 public final class Conjunction extends Formula {
 
@@ -67,4 +68,13 @@ public final class Conjunction extends Formula {
         return (left.hashCode() + right.hashCode()) * 4564;
     }
 
+    @Override
+    public int getLiteralSize() {
+        return left.getLiteralSize() + right.getLiteralSize();
+    }
+    
+    @Override
+    public void accept(IFormulaVisitor visitor) {
+        visitor.visitConjunction(this);
+    }
 }

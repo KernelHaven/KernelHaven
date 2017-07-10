@@ -4,6 +4,7 @@ package net.ssehub.kernel_haven.util.logic;
  * A boolean disjunction operator (OR).
  * 
  * @author Adam (from KernelMiner project)
+ * @author Sascha El-sharkawy
  */
 public final class Disjunction extends Formula {
 
@@ -66,4 +67,13 @@ public final class Disjunction extends Formula {
         return (left.hashCode() + right.hashCode()) * 213;
     }
     
+    @Override
+    public int getLiteralSize() {
+        return left.getLiteralSize() + right.getLiteralSize();
+    }
+    
+    @Override
+    public void accept(IFormulaVisitor visitor) {
+        visitor.visitDisjunction(this);
+    }
 }

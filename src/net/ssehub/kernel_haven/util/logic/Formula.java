@@ -6,6 +6,7 @@ import java.io.Serializable;
  * A boolean formula.
  * 
  * @author Adam (from KernelMiner project)
+ * @author Sascha El-Sharkawy
  */
 public abstract class Formula implements Serializable {
     
@@ -38,4 +39,16 @@ public abstract class Formula implements Serializable {
     @Override
     public abstract int hashCode();
     
+    /**
+     * Returns the number of literals (the number of involved variables).
+     * If a variable is multiple times involved, it will also counted multiple times.
+     * @return The number of used variables (&ge; 0).
+     */
+    public abstract int getLiteralSize();
+    
+    /**
+     * Visiting method for visitors.
+     * @param visitor A visitor, which shall visit <tt>this</tt> formula.
+     */
+    public abstract void accept(IFormulaVisitor visitor);
 }

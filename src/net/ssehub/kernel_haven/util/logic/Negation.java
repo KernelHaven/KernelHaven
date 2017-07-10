@@ -4,6 +4,7 @@ package net.ssehub.kernel_haven.util.logic;
  * The boolean negation operator (NOT).
  * 
  * @author Adam (from KernelMiner project)
+ * @author Sascha El-Sharkawy
  */
 public final class Negation extends Formula {
     
@@ -53,4 +54,13 @@ public final class Negation extends Formula {
         return formula.hashCode() * 123;
     }
 
+    @Override
+    public int getLiteralSize() {
+        return formula.getLiteralSize();
+    }
+    
+    @Override
+    public void accept(IFormulaVisitor visitor) {
+        visitor.visitNegation(this);
+    }
 }

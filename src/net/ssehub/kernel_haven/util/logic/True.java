@@ -4,6 +4,7 @@ package net.ssehub.kernel_haven.util.logic;
  * The boolean constant "true".
  * 
  * @author Adam (from KernelMiner project)
+ * @author Sascha El-Sharkawy
  */
 public final class True extends Formula {
 
@@ -28,5 +29,14 @@ public final class True extends Formula {
     public int hashCode() {
         return 123213;
     }
+
+    @Override
+    public int getLiteralSize() {
+        return 0;
+    }
     
+    @Override
+    public void accept(IFormulaVisitor visitor) {
+        visitor.visitTrue(this);
+    }
 }
