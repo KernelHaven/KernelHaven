@@ -16,6 +16,7 @@ import net.ssehub.kernel_haven.build_model.BuildModelProvider;
 import net.ssehub.kernel_haven.code_model.AbstractCodeModelExtractor;
 import net.ssehub.kernel_haven.code_model.CodeModelProvider;
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.todo.NonBooleanPreperation;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Zipper;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
@@ -357,6 +358,13 @@ public class PipelineConfigurator {
             loadPlugins();
             instantiateExtractors();
             createProviders();
+            
+            // TODO: this is a temporary hack: move this to a better place
+            if (Boolean.parseBoolean(config.getProperty("prepare_non_boolean"))) {
+                NonBooleanPreperation preparation = new NonBooleanPreperation();
+                preparation.run(config.getCodeConfiguration());
+            }
+            
             instantiateAnalysis();
             runAnalysis();
             archive();
