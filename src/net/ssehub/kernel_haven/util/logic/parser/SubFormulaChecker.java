@@ -57,10 +57,10 @@ public class SubFormulaChecker implements IFormulaVisitor {
 
     @Override
     public void visitNegation(Negation formula) {
-        if (!isNested) {
+        if (!isNested()) {
             isNested = formula.equals(nestedFormula);
             
-            if (!isNested) {
+            if (!isNested()) {
                 // Doesn't change the size of the formula, for this reason no additional size check
                 // However, this means that a toplevel negation will also be checked even if it is already to short
                 formula.getFormula().accept(this);
@@ -70,17 +70,17 @@ public class SubFormulaChecker implements IFormulaVisitor {
 
     @Override
     public void visitDisjunction(Disjunction formula) {
-        if (!isNested) {
+        if (!isNested()) {
             isNested = formula.equals(nestedFormula);
             
-            if (!isNested) {
+            if (!isNested()) {
                 Formula leftFormula = formula.getLeft();
                 if (leftFormula.getLiteralSize() >= formulaSize) {
                     leftFormula.accept(this);
                 }
             }
             
-            if (!isNested) {
+            if (!isNested()) {
                 Formula rightFormula = formula.getRight();
                 if (rightFormula.getLiteralSize() >= formulaSize) {
                     rightFormula.accept(this);
@@ -91,17 +91,17 @@ public class SubFormulaChecker implements IFormulaVisitor {
 
     @Override
     public void visitConjunction(Conjunction formula) {
-        if (!isNested) {
+        if (!isNested()) {
             isNested = formula.equals(nestedFormula);
             
-            if (!isNested) {
+            if (!isNested()) {
                 Formula leftFormula = formula.getLeft();
                 if (leftFormula.getLiteralSize() >= formulaSize) {
                     leftFormula.accept(this);
                 }
             }
             
-            if (!isNested) {
+            if (!isNested()) {
                 Formula rightFormula = formula.getRight();
                 if (rightFormula.getLiteralSize() >= formulaSize) {
                     rightFormula.accept(this);
@@ -118,4 +118,21 @@ public class SubFormulaChecker implements IFormulaVisitor {
     public boolean isNested() {
         return isNested;
     }
+    
+    /**
+     * Setter of the result for inheritance.
+     * @param isNested <tt>true</tt> if the sub formula was found.
+     */
+    protected void setNested(boolean isNested) {
+        this.isNested = isNested;
+    }
+
+    /**
+     * Returns the sub formula, which is currently searched.
+     * @return The searched sub formula.
+     */
+    protected Formula getNestedFormula() {
+        return nestedFormula;
+    }
+
 }
