@@ -29,8 +29,6 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModelProviderTest;
     VariabilityModelProviderTest.class,
     ConfigurationTest.class,
     UtilTest.class,
-//    FormulaTest.class,
-//    ParserTest.class,
     AllLogicTests.class,
     VariabilityModelCacheTest.class,
     BuildModelProviderTest.class,

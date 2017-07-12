@@ -13,13 +13,17 @@ import java.time.format.DateTimeFormatter;
 import net.ssehub.kernel_haven.analysis.IAnalysis;
 import net.ssehub.kernel_haven.build_model.AbstractBuildModelExtractor;
 import net.ssehub.kernel_haven.build_model.BuildModelProvider;
+import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
 import net.ssehub.kernel_haven.code_model.AbstractCodeModelExtractor;
 import net.ssehub.kernel_haven.code_model.CodeModelProvider;
+import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.provider.AbstractExtractor;
 import net.ssehub.kernel_haven.todo.NonBooleanPreperation;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Zipper;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
+import net.ssehub.kernel_haven.variability_model.EmptyVariabilityModelExtractor;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelProvider;
 
 /**
@@ -203,76 +207,63 @@ public class PipelineConfigurator {
      * @throws SetUpException
      *             If the setup fails.
      */
-    @SuppressWarnings("unchecked")
     public void instantiateExtractors() throws SetUpException {
         LOGGER.logInfo("Instantiating extractor factories...");
         
-        /*
-         * VM
-         */
-        String vmExtractorName = config.getVariabilityExtractorClassName();
-        if (vmExtractorName != null) {
-            if (vmExtractorName.contains(" ")) {
-                LOGGER.logWarning("Variability extractor class name contains a space character");
+        vmExtractor = instantiateExtractor(config.getVariabilityExtractorClassName(),
+            EmptyVariabilityModelExtractor.class, "variability");
+
+        bmExtractor = instantiateExtractor(config.getBuildExtractorClassName(),
+            EmptyBuildModelExtractor.class, "build");
+        
+        cmExtractor = instantiateExtractor(config.getCodeExtractorClassName(),
+            EmptyCodeModelExtractor.class, "code");
+    }
+
+    /**
+     * Generic method to load/instantiate one extractor.
+     * 
+     * @param extractorClassName The fully qualified name of the class to load, may be <tt>null</tt>.
+     * @param defaultExtractor The extractor to instantiate if the provided class name is <tt>null</tt>.
+     * @param type The type of extractor to load, this is only used in log messages.
+     * @param <E> The type of extractor to load.
+     * 
+     * @return The instantiated extractor, won't be <tt>null</tt>.
+     * 
+     * @throws SetUpException If loading or instantiating the extractor class fails.
+     */
+    @SuppressWarnings("unchecked")
+    private <E extends AbstractExtractor<?, ?>> E instantiateExtractor(String extractorClassName,
+            Class<E> defaultExtractor, String type) throws SetUpException {
+        
+        E extractor;
+        Class<E> extractorClass;
+        
+        if (extractorClassName != null) {
+            if (extractorClassName.contains(" ")) {
+                LOGGER.logWarning("Name of " + type + " extractor contains a space character");
             }
             try {
-                Class<? extends AbstractVariabilityModelExtractor> vmExtractorClass =
-                        (Class<? extends AbstractVariabilityModelExtractor>) Class.forName(vmExtractorName);
-                vmExtractor = vmExtractorClass.getConstructor().newInstance();
+                extractorClass = (Class<E>) Class.forName(extractorClassName);
 
-                LOGGER.logInfo("Successfully instantiated variability extractor " + vmExtractorName);
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
-                    | SecurityException | IllegalArgumentException | InvocationTargetException | ClassCastException e) {
-                LOGGER.logException("Error while instantiating variability extractor", e);
+            } catch (ClassNotFoundException  e) {
+                LOGGER.logException("Error while loading " + type + " extractor class", e);
                 throw new SetUpException(e);
             }
         } else {
-            LOGGER.logInfo("No variability extractor specified");
+            extractorClass = defaultExtractor;
+            LOGGER.logInfo("No " + type + " extractor specified");
         }
-
-        /*
-         * Build model
-         */
-        String bmExtractorName = config.getBuildExtractorClassName();
-        if (bmExtractorName != null) {
-            if (bmExtractorName.contains(" ")) {
-                LOGGER.logWarning("Build extractor class name contains a space character");
-            }
-            try {
-                Class<? extends AbstractBuildModelExtractor> bmExtractorClass =
-                        (Class<? extends AbstractBuildModelExtractor>) Class.forName(bmExtractorName);
-                bmExtractor = bmExtractorClass.getConstructor().newInstance();
-                LOGGER.logInfo("Successfully instantiated build extractor " + bmExtractorName);
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
-                    | SecurityException | IllegalArgumentException | InvocationTargetException | ClassCastException e) {
-                LOGGER.logException("Error while instantiating build extractor", e);
-                throw new SetUpException(e);
-            }
-        } else {
-            LOGGER.logInfo("No build extractor specified");
+        
+        try {
+            extractor = extractorClass.getConstructor().newInstance();
+            
+            LOGGER.logInfo("Successfully instantiated " + type + " extractor " + extractor.getClass().getName());
+        } catch (ReflectiveOperationException | SecurityException | IllegalArgumentException | ClassCastException e) {
+            LOGGER.logException("Error while instantiating " + type + " extractor", e);
+            throw new SetUpException(e);
         }
-
-        /*
-         * Code model
-         */
-        String cmExtractorName = config.getCodeExtractorClassName();
-        if (cmExtractorName != null) {
-            if (cmExtractorName.contains(" ")) {
-                LOGGER.logWarning("Code extractor class name contains a space character");
-            }
-            try {
-                Class<? extends AbstractCodeModelExtractor> cmExtractorClass =
-                        (Class<? extends AbstractCodeModelExtractor>) Class.forName(cmExtractorName);
-                cmExtractor = cmExtractorClass.getConstructor().newInstance();
-                LOGGER.logInfo("Successfully instantiated code extractor " + cmExtractorName);
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
-                    | SecurityException | IllegalArgumentException | InvocationTargetException | ClassCastException e) {
-                LOGGER.logException("Error while instantiating code extractor", e);
-                throw new SetUpException(e);
-            }
-        } else {
-            LOGGER.logInfo("No code extractor specified");
-        }
+        return extractor;
     }
 
     /**
