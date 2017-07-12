@@ -50,7 +50,17 @@ public final class Disjunction extends Formula {
 
     @Override
     public String toString() {
-        return "(" + left.toString() + " || " + right.toString() + ")";
+        String leftStr = left.toString();
+        if (!(left instanceof Disjunction) && left.getPrecedence() <= this.getPrecedence()) {
+            leftStr = '(' + leftStr + ')';
+        }
+        
+        String rightStr = right.toString();
+        if (!(right instanceof Disjunction) && right.getPrecedence() <= this.getPrecedence()) {
+            rightStr = '(' + rightStr + ')';
+        }
+        
+        return leftStr + " || " + rightStr;
     }
     
     @Override
@@ -76,4 +86,10 @@ public final class Disjunction extends Formula {
     public void accept(IFormulaVisitor visitor) {
         visitor.visitDisjunction(this);
     }
+    
+    @Override
+    protected int getPrecedence() {
+        return 1;
+    }
+    
 }

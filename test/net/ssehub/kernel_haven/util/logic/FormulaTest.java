@@ -21,7 +21,7 @@ public class FormulaTest {
         );
         
         
-        Assert.assertEquals("((A || !1) && (!B && 0))", f.toString());
+        Assert.assertEquals("(A || !1) && !B && 0", f.toString());
     }
     
     /**

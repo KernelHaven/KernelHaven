@@ -74,4 +74,10 @@ public final class Variable extends Formula {
     public void accept(IFormulaVisitor visitor) {
         visitor.visitVariable(this);
     }
+    
+    @Override
+    protected int getPrecedence() {
+        return 3;
+    }
+    
 }

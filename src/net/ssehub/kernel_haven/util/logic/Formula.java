@@ -20,6 +20,15 @@ public abstract class Formula implements Serializable {
     public abstract boolean evaluate();
     
     /**
+     * Returns the precedence of this boolean operation. Higher means that this operation is evaluated
+     * before operations with lower precedence. This has no semantic meaning for execution, though, since we
+     * are organized in a tree structure. This is only used for proper parenthesis placement in toString().
+     * 
+     * @return The precedence of this operation.
+     */
+    protected abstract int getPrecedence();
+    
+    /**
      * Converts the formula into a string representation.
      * 
      * @return A string representation of this formula, in a C-style like format.

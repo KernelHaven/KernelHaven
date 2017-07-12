@@ -37,7 +37,12 @@ public final class Negation extends Formula {
 
     @Override
     public String toString() {
-        return "!" + formula;
+        String innerStr = formula.toString();
+        if (!(formula instanceof Negation) && formula.getPrecedence() <= this.getPrecedence()) {
+            innerStr = '(' + innerStr + ')';
+        }
+        
+        return "!" + innerStr;
     }
     
     @Override
@@ -63,4 +68,10 @@ public final class Negation extends Formula {
     public void accept(IFormulaVisitor visitor) {
         visitor.visitNegation(this);
     }
+    
+    @Override
+    protected int getPrecedence() {
+        return 2;
+    }
+    
 }

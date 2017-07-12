@@ -51,7 +51,17 @@ public final class Conjunction extends Formula {
 
     @Override
     public String toString() {
-        return "(" + left.toString() + " && " + right.toString() + ")";
+        String leftStr = left.toString();
+        if (!(left instanceof Conjunction) && left.getPrecedence() <= this.getPrecedence()) {
+            leftStr = '(' + leftStr + ')';
+        }
+        
+        String rightStr = right.toString();
+        if (!(right instanceof Conjunction) && right.getPrecedence() <= this.getPrecedence()) {
+            rightStr = '(' + rightStr + ')';
+        }
+        
+        return leftStr + " && " + rightStr;
     }
     
     @Override
@@ -77,4 +87,10 @@ public final class Conjunction extends Formula {
     public void accept(IFormulaVisitor visitor) {
         visitor.visitConjunction(this);
     }
+    
+    @Override
+    protected int getPrecedence() {
+        return 1;
+    }
+    
 }

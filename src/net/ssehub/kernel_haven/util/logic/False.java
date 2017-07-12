@@ -39,4 +39,10 @@ public final class False extends Formula {
     public void accept(IFormulaVisitor visitor) {
         visitor.visitFalse(this);
     }
+    
+    @Override
+    protected int getPrecedence() {
+        return 3;
+    }
+    
 }
