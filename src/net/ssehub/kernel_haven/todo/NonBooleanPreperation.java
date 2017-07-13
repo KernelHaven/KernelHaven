@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import net.ssehub.kernel_haven.PipelineConfigurator;
 import net.ssehub.kernel_haven.SetUpException;
@@ -42,9 +43,31 @@ public class NonBooleanPreperation {
     
     private Set<String> burntVariables;
     
+    private Pattern variableNamePattern;
+    private Pattern leftSide;
+    private Pattern comparisonLeft;
+    private Pattern comparisonRight;
+    private Pattern leftSideFinder;
+    
+    
     public void run(CodeExtractorConfiguration config) throws SetUpException {
         copiedSourceTree = new File(config.getProperty("prepare_non_boolean.destination"));
         originalSourceTree = config.getSourceTree();
+        
+        String variableRegex = config.getProperty("code.extractor.variable_regex");
+        if (variableRegex == null) {
+            throw new SetUpException("code.extractor.variable_regex not defined");
+        }
+        
+        try {
+            variableNamePattern = Pattern.compile(variableRegex);
+            leftSide = Pattern.compile("^(" + variableRegex + ")\\s*(==|!=|<|>|<=|>=)\\s*(-?[0-9]+).*");
+            comparisonLeft = Pattern.compile("^(" + variableRegex + ")\\s*(==|!=|<|>|<=|>=).*");
+            comparisonRight = Pattern.compile(".*(==|!=|<|>|<=|>=)\\s*(" + variableRegex + ")$");
+            leftSideFinder = Pattern.compile("(" + variableRegex + ")\\s*(==|!=|<|>|<=|>=)\\s*(-?[0-9]+)");
+        } catch (PatternSyntaxException e) {
+            throw new SetUpException(e);
+        }
         
         try {
             prepare();
@@ -234,8 +257,6 @@ public class NonBooleanPreperation {
         }
     }
     
-    private static final Pattern leftSideFinder = Pattern.compile("(VarTypeC_[0-9]+)\\s*(==|!=|<|>|<=|>=)\\s*(-?[0-9]+)");
-    
     private String replaceInLine(String line) {
         
         String result = line;
@@ -309,11 +330,6 @@ public class NonBooleanPreperation {
         return result;
     }
     
-    private static final Pattern leftSide = Pattern.compile("^(VarTypeC_[0-9]+)\\s*(==|!=|<|>|<=|>=)\\s*(-?[0-9]+).*");
-    private static final Pattern comparisonLeft = Pattern.compile("^(VarTypeC_[0-9]+)\\s*(==|!=|<|>|<=|>=).*");
-    private static final Pattern comparisonRight = Pattern.compile(".*(==|!=|<|>|<=|>=)\\s*(VarTypeC_[0-9]+)$");
-    private static final Pattern name = Pattern.compile("^(VarTypeC_[0-9]+)");
-    
     private void printErr(String line, int index) {
         System.err.println(line);
         for (int i = 0; i < index; i++) {
@@ -332,21 +348,13 @@ public class NonBooleanPreperation {
     }
     
     private void collectNonBooleanFromLine(String line) throws IOException {
-        int findStart = 0;
+        Matcher variableNameMatcher = variableNamePattern.matcher(line);
         
-        int index;
-        
-        while ((index = line.indexOf("VarTypeC_", findStart)) != -1) {
-            findStart = index + 1;
+        while (variableNameMatcher.find()) {
+            int index = variableNameMatcher.start();
             String left = line.substring(index);
             
-            Matcher nameMatcher = name.matcher(left);
-            if (!nameMatcher.find()) {
-                printErr(line, index);
-                findStart = index + 1;
-                continue;
-            }
-            String name = nameMatcher.group(1);
+            String name = variableNameMatcher.group();
             
             String right = line.substring(0, index + name.length());
             
