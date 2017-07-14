@@ -28,8 +28,13 @@ import net.ssehub.kernel_haven.util.Util;
 
 /**
  * @author Adam
+ * @author El-Sharkawy
  */
 public class NonBooleanPreperation {
+    
+    private static final String GROUP_NAME_VARIABLE = "variable";
+    private static final String GROUP_NAME_OPERATOR = "operator";
+    private static final String GROUP_NAME_VALUE = "value";
     
     private static final Logger LOGGER = Logger.get();
     
@@ -49,6 +54,16 @@ public class NonBooleanPreperation {
     private Pattern comparisonRight;
     private Pattern leftSideFinder;
     
+    /**
+     * Creates a named capturing group.
+     * @param groupName The name of the captured group.
+     * @param groupContents The sub RegEx of the group without parenthesis.
+     * 
+     * @return A named capturing group, with enclosing parenthesis.
+     */
+    private static String namifyCapturingGroup(String groupName, String groupContents) {
+        return "(?<" + groupName + ">" + groupContents + ")";
+    }
     
     public void run(CodeExtractorConfiguration config) throws SetUpException {
         copiedSourceTree = new File(config.getProperty("prepare_non_boolean.destination"));
@@ -61,10 +76,33 @@ public class NonBooleanPreperation {
         
         try {
             variableNamePattern = Pattern.compile(variableRegex);
-            leftSide = Pattern.compile("^(" + variableRegex + ")\\s*(==|!=|<|>|<=|>=)\\s*(-?[0-9]+).*");
-            comparisonLeft = Pattern.compile("^(" + variableRegex + ")\\s*(==|!=|<|>|<=|>=).*");
-            comparisonRight = Pattern.compile(".*(==|!=|<|>|<=|>=)\\s*(" + variableRegex + ")$");
-            leftSideFinder = Pattern.compile("(" + variableRegex + ")\\s*(==|!=|<|>|<=|>=)\\s*(-?[0-9]+)");
+            
+            leftSide = Pattern.compile("^"
+                + namifyCapturingGroup(GROUP_NAME_VARIABLE, variableRegex)
+                + "\\s*"
+                + namifyCapturingGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + "\\s*"
+                + namifyCapturingGroup(GROUP_NAME_VALUE, "-?[0-9]+")
+                + ".*");
+
+            comparisonLeft = Pattern.compile("^"
+                + namifyCapturingGroup(GROUP_NAME_VARIABLE, variableRegex)
+                + "\\s*"
+                + namifyCapturingGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + ".*");
+            
+            comparisonRight = Pattern.compile(".*"
+                + namifyCapturingGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + "\\s*"
+                + namifyCapturingGroup(GROUP_NAME_VARIABLE, variableRegex)
+                + "$");
+            
+            leftSideFinder = Pattern.compile(
+                namifyCapturingGroup(GROUP_NAME_VARIABLE, variableRegex)
+                + "\\s*"
+                + namifyCapturingGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + "\\s*"
+                + namifyCapturingGroup(GROUP_NAME_VALUE, "-?[0-9]+"));
         } catch (PatternSyntaxException e) {
             throw new SetUpException(e);
         }
@@ -264,9 +302,9 @@ public class NonBooleanPreperation {
         
         while (m.find()) {
             String whole = m.group();
-            String name = m.group(1);
-            String op = m.group(2);
-            int value = Integer.parseInt(m.group(3));
+            String name = m.group(GROUP_NAME_VARIABLE);
+            String op = m.group(GROUP_NAME_OPERATOR);
+            int value = Integer.parseInt(m.group(GROUP_NAME_VALUE));
             
             String replacement = "ERROR_WHILE_REPLACING";
             NonBooleanVariable var = variables.get(name);
@@ -360,7 +398,9 @@ public class NonBooleanPreperation {
             
             Matcher m = leftSide.matcher(left);
             if (m.matches()) {
-                putNonBooleanOperation(m.group(1), m.group(2), Integer.parseInt(m.group(3)));
+                System.out.println(m.group(GROUP_NAME_VARIABLE) + " " + m.group(GROUP_NAME_OPERATOR) + " " + m.group(GROUP_NAME_VALUE) + " ");
+                putNonBooleanOperation(m.group(GROUP_NAME_VARIABLE),  m.group(GROUP_NAME_OPERATOR),
+                    Integer.parseInt( m.group(GROUP_NAME_VALUE)));
             } else {
                 
                 if (comparisonLeft.matcher(left).matches() || comparisonRight.matcher(right).matches()) {
