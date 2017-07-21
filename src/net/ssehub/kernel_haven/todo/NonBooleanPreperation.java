@@ -277,8 +277,11 @@ public class NonBooleanPreperation {
                     
                     if (from.getName().endsWith(".c") || from.getName().endsWith(".h")) {
                         if (line.isEmpty() || line.charAt(0) != '#' || line.startsWith("#if ") || line.startsWith("#elif ")) {
-                            while (line.charAt(line.length() - 1) == '\\') {
-                                line += in.readLine();
+                            
+                            if (line.length() > 0) {
+                                while (line.charAt(line.length() - 1) == '\\') {
+                                    line += in.readLine();
+                                }
                             }
                             
                             line = line.trim();
