@@ -76,6 +76,14 @@ public abstract class AbstractAnalysis implements IAnalysis {
         this.outputDir = outputDir;
     }
     
+    /**
+     * Returns the target destination for analysis results.
+     * @return A directory in which analysis results shall be written to.
+     */
+    protected File getOutputDir() {
+        return outputDir;
+    }
+    
     @Override
     public Set<File> getOutputFiles() {
         return outputFiles;
