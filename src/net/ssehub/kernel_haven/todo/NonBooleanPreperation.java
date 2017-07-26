@@ -61,7 +61,7 @@ public class NonBooleanPreperation {
      * 
      * @return A named capturing group, with enclosing parenthesis.
      */
-    private static String namifyCapturingGroup(String groupName, String groupContents) {
+    private static String createdNamedCaptureGroup(String groupName, String groupContents) {
         return "(?<" + groupName + ">" + groupContents + ")";
     }
     
@@ -78,31 +78,31 @@ public class NonBooleanPreperation {
             variableNamePattern = Pattern.compile(variableRegex);
             
             leftSide = Pattern.compile("^"
-                + namifyCapturingGroup(GROUP_NAME_VARIABLE, variableRegex)
+                + createdNamedCaptureGroup(GROUP_NAME_VARIABLE, variableRegex)
                 + "\\s*"
-                + namifyCapturingGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
                 + "\\s*"
-                + namifyCapturingGroup(GROUP_NAME_VALUE, "-?[0-9]+")
+                + createdNamedCaptureGroup(GROUP_NAME_VALUE, "-?[0-9]+")
                 + ".*");
 
             comparisonLeft = Pattern.compile("^"
-                + namifyCapturingGroup(GROUP_NAME_VARIABLE, variableRegex)
+                + createdNamedCaptureGroup(GROUP_NAME_VARIABLE, variableRegex)
                 + "\\s*"
-                + namifyCapturingGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
                 + ".*");
             
             comparisonRight = Pattern.compile(".*"
-                + namifyCapturingGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
                 + "\\s*"
-                + namifyCapturingGroup(GROUP_NAME_VARIABLE, variableRegex)
+                + createdNamedCaptureGroup(GROUP_NAME_VARIABLE, variableRegex)
                 + "$");
             
             leftSideFinder = Pattern.compile(
-                namifyCapturingGroup(GROUP_NAME_VARIABLE, variableRegex)
+                createdNamedCaptureGroup(GROUP_NAME_VARIABLE, variableRegex)
                 + "\\s*"
-                + namifyCapturingGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
                 + "\\s*"
-                + namifyCapturingGroup(GROUP_NAME_VALUE, "-?[0-9]+"));
+                + createdNamedCaptureGroup(GROUP_NAME_VALUE, "-?[0-9]+"));
         } catch (PatternSyntaxException e) {
             throw new SetUpException(e);
         }
@@ -276,11 +276,17 @@ public class NonBooleanPreperation {
                 while ((line = in.readLine()) != null) {
                     
                     if (from.getName().endsWith(".c") || from.getName().endsWith(".h")) {
-                        if (line.isEmpty() || line.charAt(0) != '#' || line.startsWith("#if ") || line.startsWith("#elif ")) {
+                        
+                        // Replace variable occurrences of #if's and #elif's
+                        if (line.startsWith("#if ") || line.startsWith("#elif ")) {
                             
-                            if (line.length() > 0) {
-                                while (line.charAt(line.length() - 1) == '\\') {
-                                    line += in.readLine();
+                            // Consider continuation
+                            while (line.charAt(line.length() - 1) == '\\') {
+                                String tmp = in.readLine();
+                                if (null != tmp) {
+                                    line += tmp;
+                                } else {
+                                    break;
                                 }
                             }
                             

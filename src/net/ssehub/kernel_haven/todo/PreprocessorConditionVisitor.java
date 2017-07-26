@@ -37,16 +37,19 @@ public abstract class PreprocessorConditionVisitor {
             String line;
             while ((line = in.readLine()) != null) {
                 line = line.trim();
-                if (line.isEmpty() || line.charAt(0) != '#') {
-                    continue;
-                }
                 
                 if (!line.startsWith("#if ") && !line.startsWith("#elif ")) {
                     continue;
                 }
                 
+                // Consider continuation
                 while (line.charAt(line.length() - 1) == '\\') {
-                    line += in.readLine();
+                    String tmp = in.readLine();
+                    if (null != tmp) {
+                        line += tmp;
+                    } else {
+                        break;
+                    }
                 }
                 
                 visit(line);
