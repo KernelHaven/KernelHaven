@@ -1,13 +1,14 @@
 package net.ssehub.kernel_haven.variability_model;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * An Integer-based variability variable with a finite domain.
  * @author El-Sharkawy
  *
  */
-public class FiniteIntegerVariable extends VariabilityVariable {
+public class FiniteIntegerVariable extends VariabilityVariable implements Iterable<Integer> {
 
     private int[] values;
     
@@ -46,5 +47,22 @@ public class FiniteIntegerVariable extends VariabilityVariable {
      */
     public int getValue(int index) {
         return values[index];
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return new Iterator<Integer>() {
+            private int pos = 0;
+
+            @Override
+            public boolean hasNext() {
+                return values.length > pos;
+            }
+
+            @Override
+            public Integer next() {
+                return values[pos++];
+            }
+        };
     }
 }
