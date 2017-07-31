@@ -22,6 +22,9 @@ import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.CodeExtractorConfiguration;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Util;
+import net.ssehub.kernel_haven.variability_model.FiniteIntegerVariable;
+import net.ssehub.kernel_haven.variability_model.VariabilityModel;
+import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
 
 //TODO: tidy up this temporary hack
 //CHECKSTYLE:OFF
@@ -239,6 +242,20 @@ public class NonBooleanPreperation {
                 default:
                     System.err.println("Unkown operator: " + op.operator);
                     break;
+                }
+            }
+            
+            // SE: Integration of non-Boolean VarModel
+            // TODO SE: @ Adam, please check if this integration works with your idea
+            // Should still have a problem if the range is not continuous, i.e., some values in between are not used
+            VariabilityModel varModel = PipelineConfigurator.instance().getVmProvider().getResult();
+            if (null != varModel) {
+                VariabilityVariable var = varModel.getVariableMap().get(entry.getKey());
+                if (null != var && var instanceof FiniteIntegerVariable) {
+                    FiniteIntegerVariable intVar = (FiniteIntegerVariable) var;
+                    for (int i = 0; i < intVar.getSizeOfRange(); i++) {
+                        requiredConstants.add(intVar.getValue(i));
+                    }
                 }
             }
             
