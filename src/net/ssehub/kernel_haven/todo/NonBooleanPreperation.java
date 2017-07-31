@@ -407,8 +407,7 @@ public class NonBooleanPreperation {
             
             Matcher m = leftSide.matcher(left);
             if (m.matches()) {
-                System.out.println(m.group(GROUP_NAME_VARIABLE) + " " + m.group(GROUP_NAME_OPERATOR) + " " + m.group(GROUP_NAME_VALUE) + " ");
-                putNonBooleanOperation(m.group(GROUP_NAME_VARIABLE),  m.group(GROUP_NAME_OPERATOR),
+                putNonBooleanOperation(m.group(GROUP_NAME_VARIABLE), m.group(GROUP_NAME_OPERATOR),
                     Integer.parseInt( m.group(GROUP_NAME_VALUE)));
             } else {
                 
