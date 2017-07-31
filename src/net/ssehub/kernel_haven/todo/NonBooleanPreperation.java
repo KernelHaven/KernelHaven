@@ -218,46 +218,48 @@ public class NonBooleanPreperation {
         
         variables = new HashMap<>();
         
+        VariabilityModel varModel = PipelineConfigurator.instance().getVmProvider().getResult();
         for (Map.Entry<String, Set<NonBooleanOperation>> entry : nonBooleanOperations.entrySet()) {
             Set<Integer> requiredConstants = new HashSet<>();
             
-            
-            for (NonBooleanOperation op : entry.getValue()) {
-                switch (op.operator) {
-                case "==":
-                case "!=":
-                case ">=":
-                case "<=":
-                    requiredConstants.add(op.value);
-                    break;
-                    
-                case ">":
-                    requiredConstants.add(op.value + 1);
-                    break;
-                    
-                case "<":
-                    requiredConstants.add(op.value - 1);
-                    break;
-                    
-                default:
-                    System.err.println("Unkown operator: " + op.operator);
-                    break;
-                }
-            }
-            
+            boolean nonBooleanModelRead = false;
             // SE: Integration of non-Boolean VarModel
-            // TODO SE: @ Adam, please check if this integration works with your idea
-            // Should still have a problem if the range is not continuous, i.e., some values in between are not used
-            VariabilityModel varModel = PipelineConfigurator.instance().getVmProvider().getResult();
             if (null != varModel) {
                 VariabilityVariable var = varModel.getVariableMap().get(entry.getKey());
                 if (null != var && var instanceof FiniteIntegerVariable) {
+                    nonBooleanModelRead = true;
                     FiniteIntegerVariable intVar = (FiniteIntegerVariable) var;
                     for (int i = 0; i < intVar.getSizeOfRange(); i++) {
                         requiredConstants.add(intVar.getValue(i));
                     }
                 }
             }
+            
+            if (!nonBooleanModelRead) {
+                for (NonBooleanOperation op : entry.getValue()) {
+                    switch (op.operator) {
+                    case "==":
+                    case "!=":
+                    case ">=":
+                    case "<=":
+                        requiredConstants.add(op.value);
+                        break;
+                        
+                    case ">":
+                        requiredConstants.add(op.value + 1);
+                        break;
+                        
+                    case "<":
+                        requiredConstants.add(op.value - 1);
+                        break;
+                        
+                    default:
+                        System.err.println("Unkown operator: " + op.operator);
+                        break;
+                    }
+                }
+            }
+            
             
             variables.put(entry.getKey(), new NonBooleanVariable(entry.getKey(), requiredConstants));
         }
