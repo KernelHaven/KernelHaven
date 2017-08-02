@@ -8,7 +8,7 @@ import java.util.regex.PatternSyntaxException;
 
 import net.ssehub.kernel_haven.PipelineConfigurator;
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.config.CodeExtractorConfiguration;
+import net.ssehub.kernel_haven.config.IConfiguration;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.variability_model.FiniteIntegerVariable;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
@@ -36,7 +36,7 @@ public class NonBooleanConditionConverter {
      * @param config The configuration passed to KernelHaven, must not be <tt>null</tt>.
      * @throws SetUpException If configuring fails.
      */
-    public NonBooleanConditionConverter(CodeExtractorConfiguration config) throws SetUpException {
+    public NonBooleanConditionConverter(IConfiguration config) throws SetUpException {
         String variableRegex = config.getProperty(PROPERTY_VARIABLE_PATTERN);
         
         if (null == variableRegex) {
