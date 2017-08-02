@@ -12,7 +12,7 @@ import net.ssehub.kernel_haven.SetUpException;
  * @author Adam
  * @author Alice
  */
-public class CodeExtractorConfiguration {
+public class CodeExtractorConfiguration implements IConfiguration {
 
     private Properties properties;
     

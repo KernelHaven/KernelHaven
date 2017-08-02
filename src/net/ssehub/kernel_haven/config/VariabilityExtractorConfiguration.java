@@ -11,7 +11,7 @@ import net.ssehub.kernel_haven.SetUpException;
  * @author Adam
  * @author Alice
  */
-public class VariabilityExtractorConfiguration {
+public class VariabilityExtractorConfiguration implements IConfiguration {
 
     private Properties properties;
 

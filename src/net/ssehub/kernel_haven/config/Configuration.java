@@ -15,7 +15,7 @@ import net.ssehub.kernel_haven.SetUpException;
  * @author Adam
  * @author Moritz
  */
-public class Configuration {
+public class Configuration implements IConfiguration {
     
     protected Properties properties;
     
