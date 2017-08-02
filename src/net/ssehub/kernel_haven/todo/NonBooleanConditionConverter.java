@@ -9,6 +9,7 @@ import java.util.regex.PatternSyntaxException;
 import net.ssehub.kernel_haven.PipelineConfigurator;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.CodeExtractorConfiguration;
+import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.variability_model.FiniteIntegerVariable;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
@@ -19,17 +20,29 @@ import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
  * @author El-Sharkawy
  */
 public class NonBooleanConditionConverter {
+
+    public static final String PROPERTY_VARIABLE_PATTERN = "code.extractor.variable_regex";
     
     private static final String GROUP_NAME_VARIABLE = "variable";
     private static final String GROUP_NAME_OPERATOR = "operator";
     private static final String GROUP_NAME_VALUE = "value";
     
-    
     private Pattern leftSideFinder;
     private VariabilityModel varModel;
 
+    /**
+     * Created a {@link NonBooleanConditionConverter} based on a configuration.
+     * Requires the {@value #PROPERTY_VARIABLE_PATTERN} to be specified.
+     * @param config The configuration passed to KernelHaven, must not be <tt>null</tt>.
+     * @throws SetUpException If configuring fails.
+     */
     public NonBooleanConditionConverter(CodeExtractorConfiguration config) throws SetUpException {
-        String variableRegex = config.getProperty("code.extractor.variable_regex");
+        String variableRegex = config.getProperty(PROPERTY_VARIABLE_PATTERN);
+        
+        if (null == variableRegex) {
+            throw new SetUpException(PROPERTY_VARIABLE_PATTERN + " was not specified.");
+        }
+        
         try {
             leftSideFinder = Pattern.compile(
                 createdNamedCaptureGroup(GROUP_NAME_VARIABLE, variableRegex)
@@ -59,8 +72,13 @@ public class NonBooleanConditionConverter {
         }
     }
     
-    public String replaceInLine(String line) {
-        
+    /**
+     * Replaces the passed NonBoolean expression into a boolean representation.
+     * @param line An expression which contains comparisons and equality expressions.
+     * @return A Boolean expression.
+     * @throws FormatException If line contains an unsupported operation.
+     */
+    public String replaceInLine(String line) throws FormatException {
         String result = line;
         Matcher m = leftSideFinder.matcher(line);
         
@@ -68,8 +86,13 @@ public class NonBooleanConditionConverter {
             String whole = m.group();
             String name = m.group(GROUP_NAME_VARIABLE);
             String op = m.group(GROUP_NAME_OPERATOR);
-            int value = Integer.parseInt(m.group(GROUP_NAME_VALUE));
-            
+            String strValue = m.group(GROUP_NAME_VALUE);
+            int value;
+            try {
+                value = Integer.parseInt(strValue);
+            } catch (NumberFormatException e) {
+                throw new FormatException("Right-hand side contains not supported value: " + strValue);
+            }
             String replacement = "ERROR_WHILE_REPLACING";
             FiniteIntegerVariable var = (FiniteIntegerVariable) varModel.getVariableMap().get(name);
             
@@ -95,12 +118,7 @@ public class NonBooleanConditionConverter {
                         }
                     }
                     
-                    replacement = "(defined(" + toConstantExpression(var, greaterValuesToAdd.get(0)) + ")";
-                    for (int i = 1; i < greaterValuesToAdd.size(); i++) {
-                        replacement += "|| defined(" + toConstantExpression(var, greaterValuesToAdd.get(i)) + ")";
-                    }
-                    
-                    replacement += ")";
+                    replacement = expandComparison(var, greaterValuesToAdd);
                     break;
                     
                 case "<":
@@ -115,20 +133,44 @@ public class NonBooleanConditionConverter {
                         }
                     }
                     
-                    replacement = "(defined(" + toConstantExpression(var, lesserValuesToAdd.get(0)) + ")";
-                    for (int i = 1; i < lesserValuesToAdd.size(); i++) {
-                        replacement += "|| defined(" + toConstantExpression(var, lesserValuesToAdd.get(i)) + ")";
-                    }
-                    
-                    replacement += ")";
+                    replacement = expandComparison(var, lesserValuesToAdd);
                     break;
+                default:
+                    throw new FormatException("Expression contains unsupported operation: " + op);
                 }
+            } else {
+                throw new FormatException("Left-hand side contains unknown variable: " + name);
             }
             
             result = result.replace(whole, replacement);
         }
+        
+        return result;
+    }
+
+    /**
+     * Creates a disjunction constraints containing comparisons for all values passed to this method.
+     * @param var A variable for which multiple comparisons shall be created for.
+     * @param legalValues The values which shall be added to the comparison.
+     * @return One Boolean disjunction expression.
+     */
+    private String expandComparison(FiniteIntegerVariable var, List<Integer> legalValues) {
+        String replacement;
+        replacement = "(defined(" + toConstantExpression(var, legalValues.get(0)) + ")";
+        for (int i = 1; i < legalValues.size(); i++) {
+            replacement += "|| defined(" + toConstantExpression(var, legalValues.get(i)) + ")";
+        }
+        
+        replacement += ")";
+        return replacement;
     }
     
+    /**
+     * Generates an artificial comparison variable for the given variable and its value. 
+     * @param var The variable for which the comparison shall be created for.
+     * @param value A value of the variable.
+     * @return A comparison variable in the form of <tt>variable_eq_value</tt>.
+     */
     private String toConstantExpression(VariabilityVariable var, int value) {
         return var.getName() + "_eq_" + value;
     }
