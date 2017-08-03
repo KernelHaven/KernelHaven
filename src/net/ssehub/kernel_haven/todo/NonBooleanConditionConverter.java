@@ -29,6 +29,7 @@ public class NonBooleanConditionConverter {
     
     private Pattern leftSideFinder;
     private VariabilityModel varModel;
+    private String booleanFunction;
 
     /**
      * Created a {@link NonBooleanConditionConverter} based on a configuration.
@@ -37,7 +38,24 @@ public class NonBooleanConditionConverter {
      * @throws SetUpException If configuring fails.
      */
     public NonBooleanConditionConverter(IConfiguration config) throws SetUpException {
+        this(config, null);
+    }
+    
+    /**
+     * Created a {@link NonBooleanConditionConverter} based on a configuration.
+     * Requires the {@value #PROPERTY_VARIABLE_PATTERN} to be specified.
+     * @param config The configuration passed to KernelHaven, must not be <tt>null</tt>.
+     * @param booleanFunction Optional a Boolean function/expression in which variables should be wrapped in. Will be
+     * ignored if it is <tt>null</tt> or does not contain a percentage sign (<tt>&#037;</tt>). The generated variables
+     * will be inserted at the first percentage sign (<tt>&#037;</tt>).<br/>
+     * For instance, to create C-preprocessor compatible constraints, this may be: <br/>
+     * <tt>defined(&#037;)</tt>
+     * @throws SetUpException If configuring fails.
+     */
+    public NonBooleanConditionConverter(IConfiguration config, String booleanFunction) throws SetUpException {
         String variableRegex = config.getProperty(PROPERTY_VARIABLE_PATTERN);
+        
+        this.booleanFunction = (null != booleanFunction && booleanFunction.contains("%")) ? booleanFunction : null;
         
         if (null == variableRegex) {
             throw new SetUpException(PROPERTY_VARIABLE_PATTERN + " was not specified.");
@@ -99,11 +117,11 @@ public class NonBooleanConditionConverter {
             if (var != null) {
                 switch (op) {
                 case "==":
-                    replacement = "defined(" + toConstantExpression(var, value) + ")";
+                    replacement = toConstantExpression(var, value);
                     break;
                     
                 case "!=":
-                    replacement = "!defined(" + toConstantExpression(var, value) + ")";
+                    replacement = "!" + toConstantExpression(var, value);
                     break;
                     
                 case ">":
@@ -147,7 +165,7 @@ public class NonBooleanConditionConverter {
         
         return result;
     }
-
+    
     /**
      * Creates a disjunction constraints containing comparisons for all values passed to this method.
      * @param var A variable for which multiple comparisons shall be created for.
@@ -156,9 +174,9 @@ public class NonBooleanConditionConverter {
      */
     private String expandComparison(FiniteIntegerVariable var, List<Integer> legalValues) {
         String replacement;
-        replacement = "(defined(" + toConstantExpression(var, legalValues.get(0)) + ")";
+        replacement = "(" + toConstantExpression(var, legalValues.get(0));
         for (int i = 1; i < legalValues.size(); i++) {
-            replacement += "|| defined(" + toConstantExpression(var, legalValues.get(i)) + ")";
+            replacement += " || " + toConstantExpression(var, legalValues.get(i));
         }
         
         replacement += ")";
@@ -172,7 +190,14 @@ public class NonBooleanConditionConverter {
      * @return A comparison variable in the form of <tt>variable_eq_value</tt>.
      */
     private String toConstantExpression(VariabilityVariable var, int value) {
-        return var.getName() + "_eq_" + value;
+        String expression = var.getName() + "_eq_" + value;
+        
+        // wrap expression in Boolean function if one is defined.
+        if (null != booleanFunction) {
+            expression = String.format(booleanFunction, expression);
+        }
+        
+        return expression;
     }
     
     /**
