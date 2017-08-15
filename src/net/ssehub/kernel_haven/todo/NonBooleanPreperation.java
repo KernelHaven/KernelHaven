@@ -33,6 +33,7 @@ import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
  * @author Adam
  * @author El-Sharkawy
  */
+// TODO SE: @Adam please check whether and how NonBooleanConditionConverter can be used/integrated
 public class NonBooleanPreperation {
     
     private static final String GROUP_NAME_VARIABLE = "variable";
@@ -359,12 +360,8 @@ public class NonBooleanPreperation {
                         }
                     }
                     
-                    replacement = "(defined(" + var.getConstantName(greaterValuesToAdd.get(0)) + ")";
-                    for (int i = 1; i < greaterValuesToAdd.size(); i++) {
-                        replacement += "|| defined(" + var.getConstantName(greaterValuesToAdd.get(i)) + ")";
-                    }
+                    replacement = expandComparison(var, greaterValuesToAdd);
                     
-                    replacement += ")";
                     break;
                     
                 case "<":
@@ -379,12 +376,8 @@ public class NonBooleanPreperation {
                         }
                     }
                     
-                    replacement = "(defined(" + var.getConstantName(lesserValuesToAdd.get(0)) + ")";
-                    for (int i = 1; i < lesserValuesToAdd.size(); i++) {
-                        replacement += "|| defined(" + var.getConstantName(lesserValuesToAdd.get(i)) + ")";
-                    }
+                    replacement = expandComparison(var, lesserValuesToAdd);
                     
-                    replacement += ")";
                     break;
                 }
             }
@@ -394,6 +387,28 @@ public class NonBooleanPreperation {
         
         
         return result;
+    }
+
+    /**
+     * Creates a disjunction constraints containing comparisons for all values passed to this method.
+     * @param var A variable for which multiple comparisons shall be created for.
+     * @param legalValues The values which shall be added to the comparison.
+     * @return One Boolean disjunction expression.
+     */
+    private String expandComparison(NonBooleanVariable var, List<Integer> legalValues) {
+        String replacement;
+        if (!legalValues.isEmpty()) {
+            replacement = "(defined(" + var.getConstantName(legalValues.get(0)) + ")";
+            for (int i = 1; i < legalValues.size(); i++) {
+                replacement += "|| defined(" + var.getConstantName(legalValues.get(i)) + ")";
+            }
+            replacement += ")";
+        } else {
+            replacement = "false";
+            // I think an exception would be more appropriate
+            Logger.get().logWarning("Could not replace values for variable: " + var.name);
+        }
+        return replacement;
     }
     
     private void printErr(String line, int index) {

@@ -10,6 +10,7 @@ import net.ssehub.kernel_haven.PipelineConfigurator;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.IConfiguration;
 import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.variability_model.FiniteIntegerVariable;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
@@ -174,12 +175,17 @@ public class NonBooleanConditionConverter {
      */
     private String expandComparison(FiniteIntegerVariable var, List<Integer> legalValues) {
         String replacement;
-        replacement = "(" + toConstantExpression(var, legalValues.get(0));
-        for (int i = 1; i < legalValues.size(); i++) {
-            replacement += " || " + toConstantExpression(var, legalValues.get(i));
+        if (!legalValues.isEmpty()) {
+            replacement = "(" + toConstantExpression(var, legalValues.get(0));
+            for (int i = 1; i < legalValues.size(); i++) {
+                replacement += " || " + toConstantExpression(var, legalValues.get(i));
+            }
+            replacement += ")";
+        } else {
+            replacement = "false";
+            // I think an exception would be more appropriate
+            Logger.get().logWarning("Could not replace values for variable: " + var.getName());
         }
-        
-        replacement += ")";
         return replacement;
     }
     
