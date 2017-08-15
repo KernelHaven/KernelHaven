@@ -182,7 +182,7 @@ public class NonBooleanConditionConverter {
             }
             replacement += ")";
         } else {
-            replacement = "false";
+            replacement = "0";
             // I think an exception would be more appropriate
             Logger.get().logWarning("Could not replace values for variable: " + var.getName());
         }
