@@ -333,7 +333,7 @@ public class NonBooleanPreperation {
             String whole = m.group();
             String name = m.group(GROUP_NAME_VARIABLE);
             String op = m.group(GROUP_NAME_OPERATOR);
-            int value = Integer.parseInt(m.group(GROUP_NAME_VALUE));
+            long value = Long.parseLong(m.group(GROUP_NAME_VALUE));
             
             String replacement = "ERROR_WHILE_REPLACING";
             NonBooleanVariable var = variables.get(name);

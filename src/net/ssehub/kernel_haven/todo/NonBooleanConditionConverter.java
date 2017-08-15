@@ -106,9 +106,9 @@ public class NonBooleanConditionConverter {
             String name = m.group(GROUP_NAME_VARIABLE);
             String op = m.group(GROUP_NAME_OPERATOR);
             String strValue = m.group(GROUP_NAME_VALUE);
-            int value;
+            long value;
             try {
-                value = Integer.parseInt(strValue);
+                value = Long.parseLong(strValue);
             } catch (NumberFormatException e) {
                 throw new FormatException("Right-hand side contains not supported value: " + strValue);
             }
@@ -129,9 +129,9 @@ public class NonBooleanConditionConverter {
                     value++;
                     // fall through
                 case ">=":
-                    List<Integer> greaterValuesToAdd = new ArrayList<>(var.getSizeOfRange());
+                    List<Long> greaterValuesToAdd = new ArrayList<>(var.getSizeOfRange());
                     
-                    for (int c : var) {
+                    for (long c : var) {
                         if (c >= value) {
                             greaterValuesToAdd.add(c);
                         }
@@ -144,9 +144,9 @@ public class NonBooleanConditionConverter {
                     value--;
                     // fall through
                 case "<=":
-                    List<Integer> lesserValuesToAdd = new ArrayList<>(var.getSizeOfRange());
+                    List<Long> lesserValuesToAdd = new ArrayList<>(var.getSizeOfRange());
                     
-                    for (int c : var) {
+                    for (long c : var) {
                         if (c <= value) {
                             lesserValuesToAdd.add(c);
                         }
@@ -173,7 +173,7 @@ public class NonBooleanConditionConverter {
      * @param legalValues The values which shall be added to the comparison.
      * @return One Boolean disjunction expression.
      */
-    private String expandComparison(FiniteIntegerVariable var, List<Integer> legalValues) {
+    private String expandComparison(FiniteIntegerVariable var, List<Long> legalValues) {
         String replacement;
         if (!legalValues.isEmpty()) {
             replacement = "(" + toConstantExpression(var, legalValues.get(0));
@@ -195,7 +195,7 @@ public class NonBooleanConditionConverter {
      * @param value A value of the variable.
      * @return A comparison variable in the form of <tt>variable_eq_value</tt>.
      */
-    private String toConstantExpression(VariabilityVariable var, int value) {
+    private String toConstantExpression(VariabilityVariable var, long value) {
         String expression = var.getName() + "_eq_" + value;
         
         // wrap expression in Boolean function if one is defined.
