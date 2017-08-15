@@ -125,22 +125,22 @@ public class NonBooleanPreperation {
         
         private String name;
         
-        private int[] constants;
+        private long[] constants;
         
-        public NonBooleanVariable(String name, Set<Integer> constants) {
+        public NonBooleanVariable(String name, Set<Long> constants) {
             this.name = name;
-            this.constants = new int[constants.size()];
+            this.constants = new long[constants.size()];
             int i = 0;
-            for (Integer c : constants) {
+            for (Long c : constants) {
                 this.constants[i++] = c;
             }
         }
         
-        public int[] getConstants() {
+        public long[] getConstants() {
             return constants;
         }
         
-        public String getConstantName(int constant) {
+        public String getConstantName(long constant) {
             return name + "_eq_" + constant;
         }
         
@@ -159,21 +159,21 @@ public class NonBooleanPreperation {
         
         private String operator;
         
-        private int value;
+        private long value;
 
         /**
          * .
          * @param operator .
          * @param value .
          */
-        public NonBooleanOperation(String operator, int value) {
+        public NonBooleanOperation(String operator, long value) {
             this.operator = operator;
             this.value = value;
         }
         
         @Override
         public int hashCode() {
-            return operator.hashCode() + Integer.hashCode(value);
+            return operator.hashCode() + Long.hashCode(value);
         }
         
         @Override
@@ -221,7 +221,7 @@ public class NonBooleanPreperation {
         
         VariabilityModel varModel = PipelineConfigurator.instance().getVmProvider().getResult();
         for (Map.Entry<String, Set<NonBooleanOperation>> entry : nonBooleanOperations.entrySet()) {
-            Set<Integer> requiredConstants = new HashSet<>();
+            Set<Long> requiredConstants = new HashSet<>();
             
             boolean nonBooleanModelRead = false;
             // SE: Integration of non-Boolean VarModel
@@ -231,7 +231,7 @@ public class NonBooleanPreperation {
                     nonBooleanModelRead = true;
                     FiniteIntegerVariable intVar = (FiniteIntegerVariable) var;
                     for (int i = 0; i < intVar.getSizeOfRange(); i++) {
-                        requiredConstants.add(intVar.getValue(i));
+                        requiredConstants.add((long) intVar.getValue(i));
                     }
                 }
             }
@@ -352,9 +352,9 @@ public class NonBooleanPreperation {
                     value++;
                     // fall through
                 case ">=":
-                    List<Integer> greaterValuesToAdd = new ArrayList<>(var.getConstants().length);
+                    List<Long> greaterValuesToAdd = new ArrayList<>(var.getConstants().length);
                     
-                    for (int c : var.getConstants()) {
+                    for (long c : var.getConstants()) {
                         if (c >= value) {
                             greaterValuesToAdd.add(c);
                         }
@@ -368,9 +368,9 @@ public class NonBooleanPreperation {
                     value--;
                     // fall through
                 case "<=":
-                    List<Integer> lesserValuesToAdd = new ArrayList<>(var.getConstants().length);
+                    List<Long> lesserValuesToAdd = new ArrayList<>(var.getConstants().length);
                     
-                    for (int c : var.getConstants()) {
+                    for (long c : var.getConstants()) {
                         if (c <= value) {
                             lesserValuesToAdd.add(c);
                         }
@@ -395,7 +395,7 @@ public class NonBooleanPreperation {
      * @param legalValues The values which shall be added to the comparison.
      * @return One Boolean disjunction expression.
      */
-    private String expandComparison(NonBooleanVariable var, List<Integer> legalValues) {
+    private String expandComparison(NonBooleanVariable var, List<Long> legalValues) {
         String replacement;
         if (!legalValues.isEmpty()) {
             replacement = "(defined(" + var.getConstantName(legalValues.get(0)) + ")";
@@ -419,7 +419,7 @@ public class NonBooleanPreperation {
         System.err.println('^');
     }
     
-    private void putNonBooleanOperation(String variable, String operator, int value) {
+    private void putNonBooleanOperation(String variable, String operator, long value) {
         Set<NonBooleanOperation> l = nonBooleanOperations.get(variable);
         if (l == null) {
             l = new HashSet<>();
@@ -442,7 +442,7 @@ public class NonBooleanPreperation {
             Matcher m = leftSide.matcher(left);
             if (m.matches()) {
                 putNonBooleanOperation(m.group(GROUP_NAME_VARIABLE), m.group(GROUP_NAME_OPERATOR),
-                    Integer.parseInt( m.group(GROUP_NAME_VALUE)));
+                    Long.parseLong(m.group(GROUP_NAME_VALUE)));
             } else {
                 
                 if (comparisonLeft.matcher(left).matches() || comparisonRight.matcher(right).matches()) {
