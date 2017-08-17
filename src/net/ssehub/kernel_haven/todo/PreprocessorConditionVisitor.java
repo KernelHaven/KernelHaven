@@ -38,7 +38,7 @@ public abstract class PreprocessorConditionVisitor {
             while ((line = in.readLine()) != null) {
                 line = line.trim();
                 
-                if (!line.startsWith("#if ") && !line.startsWith("#elif ")) {
+                if (!CPPUtils.isIfOrElifStatement(line)) {
                     continue;
                 }
                 

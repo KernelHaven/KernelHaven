@@ -298,7 +298,7 @@ public class NonBooleanPreperation {
                     if (from.getName().endsWith(".c") || from.getName().endsWith(".h")) {
                         
                         // Replace variable occurrences of #if's and #elif's
-                        if (line.startsWith("#if ") || line.startsWith("#elif ")) {
+                        if (CPPUtils.isIfOrElifStatement(line)) {
                             
                             // Consider continuation
                             while (line.charAt(line.length() - 1) == '\\') {
