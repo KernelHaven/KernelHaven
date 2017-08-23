@@ -328,6 +328,28 @@ public class Configuration implements IConfiguration {
     public String getProperty(String key, String defaultValue) {
         return properties.getProperty(key, defaultValue);
     }
+    
+    /**
+     * Reads a property from the user configuration file and returns a boolean value.
+     * Will return:
+     * <ol>
+     *   <li>The <tt>defaultValue</tt> if the property was not defined</li>
+     *   <li><tt>true</tt> if specified value was <tt>"true"</tt> (ignoring case)</li>
+     *   <li><tt>false</tt> else</li>
+     * </ol>
+     * @param key The key of the property.
+     * @param defaultValue The default value to return if not specified in file.
+     * @return The value set by the user, or the default value.
+     */
+    public boolean getBooleanProperty(String key, boolean defaultValue) {
+        boolean result = defaultValue;
+        String value = properties.getProperty(key);
+        if (null != value) {
+            result = Boolean.valueOf(value);
+        }
+        
+        return result;
+    }
 
     /**
      * Returns the output directory where analyzes can place their output. We have write access here.
