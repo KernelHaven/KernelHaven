@@ -71,7 +71,7 @@ public class NonBooleanPreperation {
     private Pattern leftSideFinder;
     private Pattern twoVariablesExpression;
     
-    private boolean nonBooleanModelRead;
+    private boolean nonBooleanModelRead = false;
     
     /**
      * Creates a named capturing group.
@@ -245,7 +245,7 @@ public class NonBooleanPreperation {
         for (Map.Entry<String, Set<NonBooleanOperation>> entry : nonBooleanOperations.entrySet()) {
             Set<Long> requiredConstants = new HashSet<>();
             
-            boolean nonBooleanModelRead = false;
+            nonBooleanModelRead = false;
             // SE: Integration of non-Boolean VarModel
             if (null != varModel) {
                 VariabilityVariable var = varModel.getVariableMap().get(entry.getKey());
