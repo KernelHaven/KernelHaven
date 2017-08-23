@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.LongStream;
 
 import net.ssehub.kernel_haven.PipelineConfigurator;
 import net.ssehub.kernel_haven.SetUpException;
@@ -39,6 +40,7 @@ public class NonBooleanPreperation {
     private static final String GROUP_NAME_VARIABLE = "variable";
     private static final String GROUP_NAME_OPERATOR = "operator";
     private static final String GROUP_NAME_VALUE = "value";
+    private static final String SUPPORTED_OPERATORS_REGEX = "==|!=|<|>|<=|>=";
     
     private static final Logger LOGGER = Logger.get();
     
@@ -54,9 +56,22 @@ public class NonBooleanPreperation {
     
     private Pattern variableNamePattern;
     private Pattern leftSide;
+    
+    /**
+     * Checks that a variable stands on the <b>left</b> side of an expression.<br/>
+     * <tt> &lt;variable&gt; &lt;operator&gt; * </tt>
+     */
     private Pattern comparisonLeft;
+    
+    /**
+     * Checks that a variable stands on the <b>right</b> side of an expression.<br/>
+     * <tt> * &lt;operator&gt; &lt;variable&gt; </tt>
+     */
     private Pattern comparisonRight;
     private Pattern leftSideFinder;
+    private Pattern twoVariablesExpression;
+    
+    private boolean nonBooleanModelRead;
     
     /**
      * Creates a named capturing group.
@@ -84,7 +99,7 @@ public class NonBooleanPreperation {
             leftSide = Pattern.compile("^"
                 + createdNamedCaptureGroup(GROUP_NAME_VARIABLE, variableRegex)
                 + "\\s*"
-                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, SUPPORTED_OPERATORS_REGEX)
                 + "\\s*"
                 + createdNamedCaptureGroup(GROUP_NAME_VALUE, "-?[0-9]+")
                 + ".*");
@@ -92,11 +107,11 @@ public class NonBooleanPreperation {
             comparisonLeft = Pattern.compile("^"
                 + createdNamedCaptureGroup(GROUP_NAME_VARIABLE, variableRegex)
                 + "\\s*"
-                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, SUPPORTED_OPERATORS_REGEX)
                 + ".*");
             
             comparisonRight = Pattern.compile(".*"
-                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, SUPPORTED_OPERATORS_REGEX)
                 + "\\s*"
                 + createdNamedCaptureGroup(GROUP_NAME_VARIABLE, variableRegex)
                 + "$");
@@ -104,9 +119,16 @@ public class NonBooleanPreperation {
             leftSideFinder = Pattern.compile(
                 createdNamedCaptureGroup(GROUP_NAME_VARIABLE, variableRegex)
                 + "\\s*"
-                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, "==|!=|<|>|<=|>=")
+                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, SUPPORTED_OPERATORS_REGEX)
                 + "\\s*"
                 + createdNamedCaptureGroup(GROUP_NAME_VALUE, "-?[0-9]+"));
+            
+            twoVariablesExpression = Pattern.compile(
+                createdNamedCaptureGroup(GROUP_NAME_VARIABLE, variableRegex)
+                + "\\s*"
+                + createdNamedCaptureGroup(GROUP_NAME_OPERATOR, SUPPORTED_OPERATORS_REGEX)
+                + "\\s*"
+                + createdNamedCaptureGroup(GROUP_NAME_VALUE, variableRegex));
         } catch (PatternSyntaxException e) {
             throw new SetUpException(e);
         }
@@ -265,12 +287,22 @@ public class NonBooleanPreperation {
             variables.put(entry.getKey(), new NonBooleanVariable(entry.getKey(), requiredConstants));
         }
         
-        System.out.println("Burnt variables: " + burntVariables);
-        System.out.println("Variables: " + variables);
+        LOGGER.logInfo("Burnt variables: " + burntVariables);
+        LOGGER.logInfo("Variables: " + variables);
         
         
         LOGGER.logDebug("Copying from " + originalSourceTree.getAbsolutePath() + " to " + copiedSourceTree.getAbsolutePath());
         copy(originalSourceTree, copiedSourceTree);
+    }
+    
+    private NonBooleanVariable getVariableForced(String name) {
+        NonBooleanVariable variable = variables.get(name);
+        if (null == variable) {
+            variable = new NonBooleanVariable(name, new HashSet<Long>());
+            variables.put(name, variable);
+        }
+        
+        return variable;
     }
     
     private void copy(File from, File to) throws IOException {
@@ -325,10 +357,8 @@ public class NonBooleanPreperation {
     }
     
     private String replaceInLine(String line) {
-        
         String result = line;
         Matcher m = leftSideFinder.matcher(line);
-        
         while (m.find()) {
             String whole = m.group();
             String name = m.group(GROUP_NAME_VARIABLE);
@@ -386,6 +416,37 @@ public class NonBooleanPreperation {
         }
         
         
+        // Check if it is a comparison between two variables and try it again
+        m = twoVariablesExpression.matcher(line);
+        while (m.find()) {
+            String whole = m.group();
+            String firstVar = m.group(GROUP_NAME_VARIABLE);
+            String op = m.group(GROUP_NAME_OPERATOR);
+            String secondVar = m.group(GROUP_NAME_VALUE);
+            
+            NonBooleanVariable var1 = getVariableForced(firstVar);
+            NonBooleanVariable var2 = getVariableForced(secondVar);
+            String replacement = whole;
+            
+            if (var1.constants.length > 0 || var2.constants.length > 0) {
+                switch (op) {
+                case "==":
+                    String expaned = expandComparison(var1, var2);
+                    if (null != expaned) {
+                        replacement = expaned;
+                    }
+                    
+                    LOGGER.logDebug("Exchanged", whole, "to", replacement);
+                    break;
+                    
+                default :
+                    LOGGER.logWarning("Could not prepare non boolean expression because of unsuppoted type: " + whole);
+                    break;
+                }
+            }
+            result = result.replace(whole, replacement);
+        }
+        
         return result;
     }
 
@@ -406,9 +467,105 @@ public class NonBooleanPreperation {
         } else {
             replacement = "0";
             // I think an exception would be more appropriate
-            Logger.get().logWarning("Could not replace values for variable: " + var.name);
+            LOGGER.logWarning("Could not replace values for variable: " + var.name);
         }
         return replacement;
+    }
+    
+    private String expandComparison(NonBooleanVariable var1, NonBooleanVariable var2) {
+        StringBuffer replacement = null;
+        List<Long> sameConstants = new ArrayList<>();
+        List<Long> constantsOfVar1 = new ArrayList<>();
+        List<Long> constantsOfVar2 = new ArrayList<>();
+        
+        for (int i = 0; i < var1.constants.length; i++) {
+            long c = var1.constants[i];
+            boolean contains = LongStream.of(var2.constants).anyMatch(x -> x == c);
+            if (contains) {
+                sameConstants.add(c);
+            } else {
+                constantsOfVar1.add(c);
+            }
+        }
+        for (int i = 0; i < var2.constants.length; i++) {
+            long c = var2.constants[i];
+            if (!sameConstants.contains(c)) {
+                constantsOfVar2.add(c);
+                
+            }
+        }
+        
+        if (nonBooleanModelRead) {
+            /*
+             * We can expect that our list is complete, if the variability model was imported
+             * Prohibit illegal values
+             */
+            if (!sameConstants.isEmpty()) {
+                // There exist an overlapping
+                
+                replacement = new StringBuffer("((");
+                appendTwoEqualValues(replacement, var1, var2, sameConstants.get(0));
+                // Add supported equalities
+                for (int i = 1; i < sameConstants.size(); i++) {
+                    replacement.append(" || ");
+                    appendTwoEqualValues(replacement, var1, var2, sameConstants.get(i));
+                }
+                
+                replacement.append(")"); // First bracket
+                // Disallow elements which are not part of the intersection
+                for (int i = 0; i < constantsOfVar1.size(); i++) {
+                    replacement.append(" && !defined(");
+                    replacement.append(var1.getConstantName(constantsOfVar1.get(i)));
+                    replacement.append(")");
+                }
+                for (int i = 0; i < constantsOfVar2.size(); i++) {
+                    replacement.append(" && !defined(");
+                    replacement.append(var2.getConstantName(constantsOfVar2.get(i)));
+                    replacement.append(")");
+                }
+                
+                replacement.append(")"); // Second bracket
+            } else {
+                // There exist no overlapping
+                replacement = new StringBuffer(" 0 ");
+                LOGGER.logWarning(var1.name + " == " + var2.name + " could not be replaced, since the ranges do not"
+                    + " overlap!");
+            }
+            
+        } else {
+            /*
+             * Heuristic was used to gather constants, maybe we don't know all constants.
+             * Create union of all constants and allow all combinations
+             * TODO: This algorithm is ultra ugly
+             */
+            Set<Long> tmpUnion = new HashSet<>(sameConstants);
+            tmpUnion.addAll(constantsOfVar1);
+            tmpUnion.addAll(constantsOfVar2);
+            sameConstants.clear();
+            sameConstants.addAll(tmpUnion);
+            
+            replacement = new StringBuffer("(");
+            appendTwoEqualValues(replacement, var1, var2, sameConstants.get(0));
+            // Add supported equalities
+            for (int i = 1; i < sameConstants.size(); i++) {
+                replacement.append(" || ");
+                appendTwoEqualValues(replacement, var1, var2, sameConstants.get(i));
+            }
+            replacement.append(")");
+        }
+        
+        return null != replacement ? replacement.toString() : null;
+    }
+    
+    private void appendTwoEqualValues(StringBuffer replacement, NonBooleanVariable var1, NonBooleanVariable var2,
+        long constant) {
+        
+        replacement.append("(defined(");
+        replacement.append(var1.getConstantName(constant));
+        replacement.append(") && defined(");
+        replacement.append(var2.getConstantName(constant));
+        replacement.append("))");
+        
     }
     
     private void printErr(String line, int index) {
@@ -428,6 +585,11 @@ public class NonBooleanPreperation {
         l.add(new NonBooleanOperation(operator, value));
     }
     
+    /**
+     * Preparation phase: Collects variables and required constants.
+     * @param line A CPP expression (e.g. if expression).
+     * @throws IOException
+     */
     private void collectNonBooleanFromLine(String line) throws IOException {
         Matcher variableNameMatcher = variableNamePattern.matcher(line);
         
@@ -441,11 +603,13 @@ public class NonBooleanPreperation {
             
             Matcher m = leftSide.matcher(left);
             if (m.matches()) {
+                // Expression is in form of: <variable> <operator> <constant>
                 putNonBooleanOperation(m.group(GROUP_NAME_VARIABLE), m.group(GROUP_NAME_OPERATOR),
                     Long.parseLong(m.group(GROUP_NAME_VALUE)));
             } else {
-                
-                if (comparisonLeft.matcher(left).matches() || comparisonRight.matcher(right).matches()) {
+                boolean leftMatch = comparisonLeft.matcher(left).matches();
+                boolean rightMatch = comparisonRight.matcher(right).matches();
+                if (leftMatch || rightMatch) {
                     burntVariables.add(name);
                     printErr(line, index);
                 }
