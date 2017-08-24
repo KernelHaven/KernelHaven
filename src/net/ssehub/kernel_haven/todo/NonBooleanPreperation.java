@@ -244,51 +244,7 @@ public class NonBooleanPreperation {
         
         variables = new HashMap<>();
         
-        VariabilityModel varModel = PipelineConfigurator.instance().getVmProvider().getResult();
-        for (Map.Entry<String, Set<NonBooleanOperation>> entry : nonBooleanOperations.entrySet()) {
-            Set<Long> requiredConstants = new HashSet<>();
-            
-            nonBooleanModelRead = false;
-            // SE: Integration of non-Boolean VarModel
-            if (null != varModel) {
-                VariabilityVariable var = varModel.getVariableMap().get(entry.getKey());
-                if (null != var && var instanceof FiniteIntegerVariable) {
-                    nonBooleanModelRead = true;
-                    FiniteIntegerVariable intVar = (FiniteIntegerVariable) var;
-                    for (int i = 0; i < intVar.getSizeOfRange(); i++) {
-                        requiredConstants.add((long) intVar.getValue(i));
-                    }
-                }
-            }
-            
-            if (!nonBooleanModelRead) {
-                for (NonBooleanOperation op : entry.getValue()) {
-                    switch (op.operator) {
-                    case "==":
-                    case "!=":
-                    case ">=":
-                    case "<=":
-                        requiredConstants.add(op.value);
-                        break;
-                        
-                    case ">":
-                        requiredConstants.add(op.value + 1);
-                        break;
-                        
-                    case "<":
-                        requiredConstants.add(op.value - 1);
-                        break;
-                        
-                    default:
-                        System.err.println("Unkown operator: " + op.operator);
-                        break;
-                    }
-                }
-            }
-            
-            
-            variables.put(entry.getKey(), new NonBooleanVariable(entry.getKey(), requiredConstants));
-        }
+        gatherConstantValues();
         
         LOGGER.logInfo("Burnt variables: " + burntVariables);
         LOGGER.logInfo("Variables: " + variables);
@@ -296,6 +252,72 @@ public class NonBooleanPreperation {
         
         LOGGER.logDebug("Copying from " + originalSourceTree.getAbsolutePath() + " to " + copiedSourceTree.getAbsolutePath());
         copy(originalSourceTree, copiedSourceTree);
+    }
+
+    private void gatherConstantValues() {
+        VariabilityModel varModel = PipelineConfigurator.instance().getVmProvider().getResult();
+        nonBooleanModelRead = false;
+        
+        // Try to use information of variability model -> exact approach
+        if (null != varModel) {
+            for (VariabilityVariable variable : varModel.getVariables()) {
+                Set<Long> requiredConstants = new HashSet<>();
+                if (null != variable && variable instanceof FiniteIntegerVariable) {
+                    nonBooleanModelRead = true;
+                    FiniteIntegerVariable intVar = (FiniteIntegerVariable) variable;
+                    for (int i = 0; i < intVar.getSizeOfRange(); i++) {
+                        requiredConstants.add((long) intVar.getValue(i));
+                    }
+                    variables.put(variable.getName(), new NonBooleanVariable(variable.getName(), requiredConstants));
+                }
+            }
+        }
+        
+        if (!nonBooleanModelRead) {
+            // No variability model available -> use heuristic (use gathered values from code)
+            for (Map.Entry<String, Set<NonBooleanOperation>> entry : nonBooleanOperations.entrySet()) {
+                Set<Long> requiredConstants = new HashSet<>();
+                
+                // SE: Integration of non-Boolean VarModel
+                if (null != varModel) {
+                    VariabilityVariable var = varModel.getVariableMap().get(entry.getKey());
+                    if (null != var && var instanceof FiniteIntegerVariable) {
+                        nonBooleanModelRead = true;
+                        FiniteIntegerVariable intVar = (FiniteIntegerVariable) var;
+                        for (int i = 0; i < intVar.getSizeOfRange(); i++) {
+                            requiredConstants.add((long) intVar.getValue(i));
+                        }
+                    }
+                }
+                
+                if (!nonBooleanModelRead) {
+                    for (NonBooleanOperation op : entry.getValue()) {
+                        switch (op.operator) {
+                        case "==":
+                        case "!=":
+                        case ">=":
+                        case "<=":
+                            requiredConstants.add(op.value);
+                            break;
+                            
+                        case ">":
+                            requiredConstants.add(op.value + 1);
+                            break;
+                            
+                        case "<":
+                            requiredConstants.add(op.value - 1);
+                            break;
+                            
+                        default:
+                            System.err.println("Unkown operator: " + op.operator);
+                            break;
+                        }
+                    }
+                }
+                
+                variables.put(entry.getKey(), new NonBooleanVariable(entry.getKey(), requiredConstants));
+            }
+        }
     }
     
     private NonBooleanVariable getVariableForced(String name) {

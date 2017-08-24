@@ -72,16 +72,58 @@ public class NonBooleanPreperationTest {
     
     /**
      * Tests the replacement of a comparison, with a variability model.
+     * Both variables have the same range.
      * @throws SetUpException If setup fails, should not happen.
      */
     @Test
     public void testGreaterExpressionWithVarModel() throws SetUpException {
         NonBooleanPreperation preparator = new NonBooleanPreperation();
-        CodeExtractorConfiguration cconfig = createConfig(new FiniteIntegerVariable("a", "bool", new int[] {1, 2, 3}));
+        CodeExtractorConfiguration cconfig = createConfig(new FiniteIntegerVariable("a", "tristate",
+            new int[] {1, 2, 3}));
         preparator.run(cconfig);
         
         FileContentsAssertion.assertContents(new File(OUT_FOLDER, "comparison.c"), 
-                "#if ((defined(a_eq_2) || defined(a_eq_3))) {\n"
+            "#if ((defined(a_eq_2) || defined(a_eq_3))) {\n"
+            + "    // Do something\n"
+            + "#endif");
+    }
+    
+    /**
+     * Tests the replacement of a comparison, with a variability model.
+     * Both variables have the same range.
+     * @throws SetUpException If setup fails, should not happen.
+     */
+    @Test
+    public void testEqualityOnVarsWithVarModelSameRanges() throws SetUpException {
+        NonBooleanPreperation preparator = new NonBooleanPreperation();
+        CodeExtractorConfiguration cconfig = createConfig(
+            new FiniteIntegerVariable("a", "tristate", new int[] {1, 2, 3}),
+            new FiniteIntegerVariable("b", "tristate", new int[] {1, 2, 3}));
+        preparator.run(cconfig);
+        
+        FileContentsAssertion.assertContents(new File(OUT_FOLDER, "equalityOnVars1.c"), 
+            "#if ((((defined(a_eq_1) && defined(b_eq_1)) || (defined(a_eq_2) && defined(b_eq_2)) "
+            + "|| (defined(a_eq_3) && defined(b_eq_3))))) {\n"
+            + "    // Do something\n"
+            + "#endif");
+    }
+    
+    /**
+     * Tests the replacement of a comparison, with a variability model.
+     * The ranges of the variables differ.
+     * @throws SetUpException If setup fails, should not happen.
+     */
+    @Test
+    public void testEqualityOnVarsWithVarModelDifferentRanges() throws SetUpException {
+        NonBooleanPreperation preparator = new NonBooleanPreperation();
+        CodeExtractorConfiguration cconfig = createConfig(
+                new FiniteIntegerVariable("a", "tristate", new int[] {0, 1, 2}),
+                new FiniteIntegerVariable("b", "tristate", new int[] {1, 2, 3}));
+        preparator.run(cconfig);
+        
+        FileContentsAssertion.assertContents(new File(OUT_FOLDER, "equalityOnVars1.c"), 
+                "#if ((((defined(a_eq_1) && defined(b_eq_1)) || (defined(a_eq_2) && defined(b_eq_2))) "
+                        + "&& !defined(a_eq_0) && !defined(b_eq_3))) {\n"
                         + "    // Do something\n"
                         + "#endif");
     }
