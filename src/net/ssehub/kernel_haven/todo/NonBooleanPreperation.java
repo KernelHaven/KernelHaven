@@ -37,6 +37,9 @@ import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
 // TODO SE: @Adam please check whether and how NonBooleanConditionConverter can be used/integrated
 public class NonBooleanPreperation {
     
+    static final String DESTINATION_CONFIG = "prepare_non_boolean.destination";
+    static final String VAR_IDENTIFICATION_REGEX_CONFIG = "code.extractor.variable_regex";
+    
     private static final String GROUP_NAME_VARIABLE = "variable";
     private static final String GROUP_NAME_OPERATOR = "operator";
     private static final String GROUP_NAME_VALUE = "value";
@@ -85,12 +88,12 @@ public class NonBooleanPreperation {
     }
     
     public void run(CodeExtractorConfiguration config) throws SetUpException {
-        copiedSourceTree = new File(config.getProperty("prepare_non_boolean.destination"));
+        copiedSourceTree = new File(config.getProperty(DESTINATION_CONFIG));
         originalSourceTree = config.getSourceTree();
         
-        String variableRegex = config.getProperty("code.extractor.variable_regex");
+        String variableRegex = config.getProperty(VAR_IDENTIFICATION_REGEX_CONFIG);
         if (variableRegex == null) {
-            throw new SetUpException("code.extractor.variable_regex not defined");
+            throw new SetUpException(VAR_IDENTIFICATION_REGEX_CONFIG + " not defined");
         }
         
         try {
@@ -461,7 +464,7 @@ public class NonBooleanPreperation {
         if (!legalValues.isEmpty()) {
             replacement = "(defined(" + var.getConstantName(legalValues.get(0)) + ")";
             for (int i = 1; i < legalValues.size(); i++) {
-                replacement += "|| defined(" + var.getConstantName(legalValues.get(i)) + ")";
+                replacement += " || defined(" + var.getConstantName(legalValues.get(i)) + ")";
             }
             replacement += ")";
         } else {

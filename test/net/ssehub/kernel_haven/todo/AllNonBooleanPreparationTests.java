@@ -10,7 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({CPPUtilsTest.class})
+@SuiteClasses({CPPUtilsTest.class, NonBooleanPreperation.class})
 public class AllNonBooleanPreparationTests {
 
 }

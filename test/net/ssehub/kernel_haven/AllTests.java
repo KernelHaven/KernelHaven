@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven;
 
+import java.io.File;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -42,5 +44,8 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModelProviderTest;
     BlockingQueueTest.class,
     })
 public class AllTests {
+    
+    public static final File TESTDATA = new File("testdata");
+    
     // runs tests defined in SuiteClasses
 }

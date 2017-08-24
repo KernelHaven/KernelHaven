@@ -44,7 +44,7 @@ public class CodeExtractorConfiguration implements IConfiguration {
     }
     
     /**
-     * The internal property object to refer to for extractor specifc settings.
+     * The internal property object to refer to for extractor specific settings.
      * 
      * @param properties The properties, never <code>null</code>.
      */
