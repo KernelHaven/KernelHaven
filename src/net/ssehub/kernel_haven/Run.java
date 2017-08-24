@@ -1,6 +1,9 @@
 package net.ssehub.kernel_haven;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.Logger;
@@ -22,6 +25,63 @@ public class Run {
         Logger.init();
         LOGGER = Logger.get();
     }
+    
+    /**
+     * Formats the given amount of bytes correctly as KiB, MiB GiB or TiB.
+     * 
+     * @param amount The amount of bytes.
+     * 
+     * @return A string representing the amount of bytes.
+     */
+    private static String formatBytes(long amount) {
+        
+        int i = 0;
+        String[] suffix = {"B", "KiB", "MiB", "GiB", "TiB"};
+        amount *= 100; // this way we get two digits of precision after the comma
+        
+        while (i < suffix.length && amount > 102400) {
+            i++;
+            amount /= 1024;
+        }
+        
+        return (amount / 100.0) + " " + suffix[i];
+    }
+    
+    /**
+     * Prints some information about the system to the log.
+     */
+    private static void printSystemInfo() {
+        Properties properties = System.getProperties();
+        
+        List<String> lines = new LinkedList<>();
+        lines.add("System Info:");
+        
+        String[][] relevantKeys = {
+            // key, visible name
+            {"os.name", "OS Name"},
+            {"os.version", "OS Version"},
+            {"os.arch", "OS Arch"},
+            {"java.home", "Java Home"},
+            {"java.vendor", "Java Vendor"},
+            {"java.version", "Java Version"},
+            {"user.dir", "Working Directory"},
+            {"java.io.tmpdir", "Temporary Directory"},
+            {"file.encoding", "File Encoding"},
+            {"java.class.path", "Java Class Path"},
+        };
+        
+        for (String[] key : relevantKeys) {
+            if (properties.containsKey(key[0])) {
+                lines.add("\t" + key[1] + " = " + properties.get(key[0]));
+            }
+        }
+        
+        Runtime runtime = Runtime.getRuntime();
+        lines.add("\tMaximum Memory: " + formatBytes(runtime.maxMemory()));
+        lines.add("\tAvailable Processors: " + runtime.availableProcessors());
+        
+        LOGGER.logInfo(lines.toArray(new String[] {}));
+    }
 
     /**
      * Main method to execute the Pipeline defined in the the properties file.
@@ -36,7 +96,6 @@ public class Run {
 
         LOGGER.logInfo("Starting up...");
         LOGGER.logDebug("Please stand by. We are saddling the unicorn.");
-        LOGGER.logDebug("Logger initialized. Now logging every level to console only.");
         File propertiesFile = null;
 
         boolean archiveParam = false;
@@ -87,6 +146,8 @@ public class Run {
             LOGGER.logException(
                     "Was not able to setup the Logger as defined in the properties. Logging now to Console only", exc);
         }
+        
+        printSystemInfo();
 
         PipelineConfigurator.instance().execute();
     }
