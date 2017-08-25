@@ -226,7 +226,10 @@ public class Logger {
      */
     private void log(String level, String... lines) {
         String header = constructHeader(level);
-        String indent = header.replaceAll(".", " ");
+        String indent = "";
+        if (lines.length > 1) {
+            indent = header.replaceAll(".", " ");
+        }
 
         StringBuffer str = new StringBuffer(header);
 
