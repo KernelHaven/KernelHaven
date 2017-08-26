@@ -150,6 +150,10 @@ public class Run {
                     "Was not able to setup the Logger as defined in the properties. Logging now to Console only", exc);
         }
         
+        Thread.setDefaultUncaughtExceptionHandler((Thread thread, Throwable exc) -> {
+            LOGGER.logException("Unhandled exception in thread " + thread.getName(), exc);
+        });
+        
         printSystemInfo();
 
         PipelineConfigurator.instance().execute();
