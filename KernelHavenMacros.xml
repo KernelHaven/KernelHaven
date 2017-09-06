@@ -15,6 +15,7 @@
 	<property name="jenkins.location" value="http://jenkins.sse.uni-hildesheim.de/job" />
 	<property name="infrastructure.location" value="${jenkins.location}/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven_fortesting.jar" />
 	<property name="CnfUtils.location" value="${jenkins.location}/KernelHaven_CnfUtils/lastStableBuild/artifact/build/jar/CnfUtils.jar" />
+	<property name="TypeChef.location" value="${jenkins.location}/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor.jar" />
 
 
 	<!-- Modules that build -->
