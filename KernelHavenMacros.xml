@@ -16,6 +16,7 @@
 	<property name="infrastructure.location" value="${jenkins.location}/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven_fortesting.jar" />
 	<property name="CnfUtils.location" value="${jenkins.location}/KernelHaven_CnfUtils/lastStableBuild/artifact/build/jar/CnfUtils.jar" />
 	<property name="TypeChef.location" value="${jenkins.location}/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor.jar" />
+	<property name="Undertaker.location" value="${jenkins.location}/KernelHaven_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor.jar" />
 
 
 	<!-- Modules that build -->
