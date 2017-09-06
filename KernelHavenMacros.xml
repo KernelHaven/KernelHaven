@@ -47,13 +47,19 @@
 
 
   <target name="jar">
-    <jar destfile="${jar.dir}/${jar.filename}" basedir="${classes.dir}" excludes="**/package-info.class" />
+    <jar destfile="${jar.dir}/${jar.filename}" basedir="${classes.dir}" excludes="**/package-info.class">
+  	  <!-- Automatically inclued all libraries from lib/include folder -->
+  	  <zipgroupfileset dir="${lib.dir}/include" includes="*.jar"/>
+  	</jar>
   </target>
 
   <target name="jarwithsources">
     <jar destfile="${jar.dir}/${jar.filename.withsource}">
       <fileset dir="${classes.dir}" excludes="**/package-info.class" />
       <fileset dir="${src.dir}" excludes="**/package-info.java" />
+    	
+    	<!-- Automatically inclued all libraries from lib/include folder -->
+    	<zipgroupfileset dir="${lib.dir}/include" includes="*.jar"/>
     </jar>
   </target>
 
