@@ -49,7 +49,7 @@
   <target name="jar">
     <jar destfile="${jar.dir}/${jar.filename}" basedir="${classes.dir}" excludes="**/package-info.class">
   	  <!-- Automatically inclued all libraries from lib/include folder -->
-  	  <zipgroupfileset dir="${lib.dir}/include" includes="*.jar"/>
+  	  <zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false"/>
   	</jar>
   </target>
 
