@@ -59,7 +59,7 @@
       <fileset dir="${src.dir}" excludes="**/package-info.java" />
     	
     	<!-- Automatically inclued all libraries from lib/include folder -->
-    	<zipgroupfileset dir="${lib.dir}/include" includes="*.jar"/>
+    	<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false"/>
     </jar>
   </target>
 
