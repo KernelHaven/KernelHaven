@@ -318,8 +318,7 @@ public class PipelineConfigurator {
             analysis.setOutputDir(config.getOutputDir());
             LOGGER.logInfo("Successfully instantiated analysis " + analysisName);
 
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
-                | SecurityException | IllegalArgumentException | InvocationTargetException | ClassCastException e) {
+        } catch (ReflectiveOperationException | SecurityException | IllegalArgumentException | ClassCastException e) {
             LOGGER.logException("Error while instantiating analysis " + analysisName, e);
             throw new SetUpException(e);
         }

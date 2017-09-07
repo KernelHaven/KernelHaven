@@ -96,6 +96,10 @@ public class Run {
      */
     public static void main(String[] args) {
         Thread.currentThread().setName("Setup");
+        
+        Thread.setDefaultUncaughtExceptionHandler((Thread thread, Throwable exc) -> {
+            LOGGER.logException("Unhandled exception in thread " + thread.getName(), exc);
+        });
 
         LOGGER.logInfo("Starting up...");
         LOGGER.logDebug("Please stand by. We are saddling the unicorn.");
@@ -149,10 +153,6 @@ public class Run {
             LOGGER.logException(
                     "Was not able to setup the Logger as defined in the properties. Logging now to Console only", exc);
         }
-        
-        Thread.setDefaultUncaughtExceptionHandler((Thread thread, Throwable exc) -> {
-            LOGGER.logException("Unhandled exception in thread " + thread.getName(), exc);
-        });
         
         printSystemInfo();
 
