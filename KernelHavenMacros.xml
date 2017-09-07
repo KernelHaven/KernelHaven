@@ -43,8 +43,12 @@
 			<include name="junit*.jar" />
 			<include name="hamcrest*.jar" />
 		</fileset>
-		<fileset dir="${dependencies.dir}" />
+		<!--
+		  Classes of plug-in should be loaded before the infrastructure.
+		  This is done as a plug-in may uses the same qualified name for the test suite.
+		-->
 		<pathelement location="${test.classes.dir}" />
+		<fileset dir="${dependencies.dir}" />
 	</path>
 
 	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" />
