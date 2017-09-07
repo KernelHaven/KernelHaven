@@ -17,7 +17,8 @@
 	<property name="CnfUtils.location" value="${jenkins.location}/KernelHaven_CnfUtils/lastStableBuild/artifact/build/jar/CnfUtils.jar" />
 	<property name="TypeChef.location" value="${jenkins.location}/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor.jar" />
 	<property name="Undertaker.location" value="${jenkins.location}/KernelHaven_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor.jar" />
-
+	<property name="featureEffectAnalysis.location" value="${jenkins.location}/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis.jar" />
+	<property name="IOUtils.location" value="${jenkins.location}/KernelHaven_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils.jar" />
 
 	<!-- Modules that build -->
 	<property name="src.dir" value="${basedir}/src" />
