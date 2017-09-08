@@ -71,7 +71,7 @@ public class BuildModelCacheTest {
         BuildModel originalBm = new BuildModel();
         originalBm.add(new File("dir/file.c"), new Disjunction(new Variable("CONFIG_A"),
                 new Variable("CONFIG_A_MODULE")));
-        originalBm.add(new File("dir/file2.c"), new True());
+        originalBm.add(new File("dir/file2.c"), True.INSTANCE);
         
 
         BuildModelCache cache = new BuildModelCache(cacheDir);
