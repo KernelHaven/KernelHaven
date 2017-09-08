@@ -8,7 +8,19 @@ package net.ssehub.kernel_haven.util.logic;
  */
 public final class True extends Formula {
 
+    /**
+     * Shared instance for this class.
+     * Currently not a pure singleton to avoid refactoring of complete architecture.
+     */
+    public static final True INSTANCE = new True();
+
     private static final long serialVersionUID = 2252789480365343658L;
+    
+    /**
+     * Should not longer used outside of this class, use {@link #INSTANCE} instead.
+     */
+    @Deprecated
+    public True() {}
 
     @Override
     public boolean evaluate() {

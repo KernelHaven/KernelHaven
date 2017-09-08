@@ -8,8 +8,20 @@ package net.ssehub.kernel_haven.util.logic;
  */
 public final class False extends Formula {
 
+    /**
+     * Shared instance for this class.
+     * Currently not a pure singleton to avoid refactoring of complete architecture.
+     */
+    public static final False INSTANCE = new False();
+    
     private static final long serialVersionUID = 6422261057525028423L;
 
+    /**
+     * Should not longer used outside of this class, use {@link #INSTANCE} instead.
+     */
+    @Deprecated
+    public False() {}
+    
     @Override
     public boolean evaluate() {
         return false;
