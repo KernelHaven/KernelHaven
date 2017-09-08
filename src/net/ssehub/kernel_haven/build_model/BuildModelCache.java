@@ -157,9 +157,9 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
         if (formula instanceof Variable) {
             Variable var = (Variable) formula;
             if (var.getName().equals("1")) {
-                result = new True();
+                result = True.INSTANCE;
             } else if (var.getName().equals("0")) {
-                result = new False();
+                result = False.INSTANCE;
             } else {
                 result = var;
             }
