@@ -1,11 +1,15 @@
 package net.ssehub.kernel_haven.util;
 
+import static org.hamcrest.CoreMatchers.either;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -109,6 +113,33 @@ public class UtilTest {
     }
     
     /**
+     * Tests whether waitForProcess with a timeout waits for the process if the timeout is greater than process
+     * executiontime.
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testWaitForProcessWithTimeout() throws IOException {
+        ProcessBuilder builder = setUpTestProcess("sleep", 0);
+        
+        Process process = builder.start();
+        assertThat(Util.waitForProcess(process, 2000), is(0));
+        assertThat(process.isAlive(), is(false));
+    }
+    
+    /**
+     * Tests whether waitForProcess with a timeout kills the process.
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testWaitForProcessWithTimeoutKill() throws IOException {
+        ProcessBuilder builder = setUpTestProcess("sleep", 0);
+        
+        Process process = builder.start();
+        assertThat(Util.waitForProcess(process, 1), not(is(0)));
+        assertThat(process.isAlive(), is(false));
+    }
+    
+    /**
      * Tests whether waitForProcess returns the correct exit code.
      * @throws IOException unwanted.
      */
@@ -130,7 +161,7 @@ public class UtilTest {
      */
     @Test
     public void testExecuteProcess() throws IOException {
-        ProcessBuilder builder = setUpTestProcess("none", 0);
+        ProcessBuilder builder = setUpTestProcess("print", 0);
         
         boolean success = Util.executeProcess(builder, "testprocess");
         assertThat(success, is(true));
@@ -147,6 +178,30 @@ public class UtilTest {
         
         boolean success = Util.executeProcess(builder, "testprocess");
         assertThat(success, is(false));
+    }
+    
+    /**
+     * Tests whether the input and output streams correctly hand us the process output.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testExecuteProcessStreams() throws IOException {
+        ProcessBuilder builder = setUpTestProcess("print", 0);
+        
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+        
+        boolean success = Util.executeProcess(builder, "testprocess", stdout, stderr, 0);
+        assertThat(success, is(true));
+        
+        String out = stdout.toString();
+        assertThat(out, startsWith("This is the standard output stream"));
+        assertThat(out.length(), either(is(35)).or(is(36))); // 34 chars + (1 for \n, 2 for \r\n)
+        
+        String err = stderr.toString();
+        assertThat(err, startsWith("This is the standard error stream"));
+        assertThat(err.length(), either(is(34)).or(is(35))); // 33 chars + (1 for \n, 2 for \r\n)
     }
     
     /**
@@ -179,6 +234,9 @@ public class UtilTest {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
             }
+        } else if (args[0].equals("print")) {
+            System.out.println("This is the standard output stream");
+            System.err.println("This is the standard error stream");
         }
         
         System.exit(Integer.parseInt(args[1]));

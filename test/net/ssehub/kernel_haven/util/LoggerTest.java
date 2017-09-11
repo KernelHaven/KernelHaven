@@ -1,15 +1,25 @@
 package net.ssehub.kernel_haven.util;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.hamcrest.core.StringStartsWith.startsWith;
+import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.TestConfiguration;
 
 /**
  * The Class LoggerTest.
@@ -203,7 +213,129 @@ public class LoggerTest {
             Assert.assertThat(lines[i], endsWith("[worker " + number + "] message " + number));
         }
     }
+    
+    /**
+     * Tests whether the logger is correctly created from the configuration.
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testConfigurationInitOnlyConsole() throws SetUpException {
+        Properties props = new Properties();
+        TestConfiguration config = new TestConfiguration(props);
+        
+        Logger.init();
+        Logger logger = Logger.get();
+        logger.setup(config);
+        
+        List<Logger.Target> targets = logger.getTargets();
+        assertThat(targets.size(), is(1));
+        
+        Logger.Target target = targets.get(0);
+        
+        assertThat(target.getOut(), is(System.out));
+        assertThat(target.getMaxLogLines(), is(0));
+        
+        // clean up
+        Logger.init();
+    }
+    
+    /**
+     * Tests whether the logger is correctly created from the configuration.
+     * @throws SetUpException unwanted.
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testConfigurationInitOnlyFile() throws SetUpException, IOException {
+        Properties props = new Properties();
+        props.setProperty("log.console", "false");
+        props.setProperty("log.file", "true");
+        TestConfiguration config = new TestConfiguration(props);
+        
+        Logger.init();
+        Logger logger = Logger.get();
+        logger.setup(config);
+        
+        List<Logger.Target> targets = logger.getTargets();
+        assertThat(targets.size(), is(1));
+        
+        Logger.Target target = targets.get(0);
+        
+        assertThat(target.getOut(), instanceOf(FileOutputStream.class));
+        assertThat(target.getMaxLogLines(), is(0));
+        
+        
+        // clean up
+        target.getOut().close();
+        logger.getLogFile().delete();
+        Logger.init();
+    }
+    
+    /**
+     * Tests whether the logger is correctly created from the configuration.
+     * @throws SetUpException unwanted.
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testConfigurationInitBothConsoleAndFile() throws SetUpException, IOException {
+        Properties props = new Properties();
+        props.setProperty("log.file", "true");
+        TestConfiguration config = new TestConfiguration(props);
+        
+        Logger.init();
+        Logger logger = Logger.get();
+        logger.setup(config);
+        
+        List<Logger.Target> targets = logger.getTargets();
+        assertThat(targets.size(), is(2));
+        
+        Logger.Target target = targets.get(0);
+        
+        assertThat(target.getOut(), is(System.out));
+        assertThat(target.getMaxLogLines(), is(10));
+        
+        target = targets.get(1);
+        
+        assertThat(target.getOut(), instanceOf(FileOutputStream.class));
+        assertThat(target.getMaxLogLines(), is(0));
+        
+        // clean up
+        target.getOut().close();
+        logger.getLogFile().delete();
+        Logger.init();
+    }
 
+    /**
+     * Tests whether the logger correctly cuts of long messages.
+     * @throws IOException unwanted.
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testMaxLines() throws IOException, SetUpException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Logger.init(out);
+        Logger l = Logger.get(); // just a shortcut
+        
+        Properties props = new Properties();
+        props.setProperty("log.file", "true");
+        TestConfiguration config = new TestConfiguration(props);
+        l.setup(config);
+        
+        l.logInfo("This", "is", "a", "log", "message", "with", "a", "lot", "of", "lines", "in", "it"); // 12 lines
+        
+        String result = out.toString();
+        String[] lines = result.split("\n");
+        
+        // we expect 12 lines: 10 (maxLogLines) + 1 (the log shortened message)
+        //                      + 1 (a previous message about file logging)
+        assertThat(lines.length, is(l.getTargets().get(0).getMaxLogLines() + 2));
+        assertThat(lines[lines.length - 1].trim(), is("... (log shortened, see log file for full output)"));
+        
+        // clean up
+        l.getTargets().get(1).getOut().close();
+        l.getLogFile().delete();
+        Logger.init();
+    }
+    
     /**
      * The Class Worker. Helper Class for tests.
      */

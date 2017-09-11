@@ -61,7 +61,7 @@ public class Logger {
     /**
      * A single target of the logger.
      */
-    private static class Target {
+    static final class Target {
         
         private OutputStream out;
         
@@ -76,6 +76,24 @@ public class Logger {
             this.out = out;
         }
         
+        /**
+         * The output stream for this target.
+         * 
+         * @return The output stream, never null.
+         */
+        public OutputStream getOut() {
+            return out;
+        }
+        
+        /**
+         * How many lines a single log entry may contain.
+         * 
+         * @return The maximum number of lines for a single log entry. 0 means no limit.
+         */
+        public int getMaxLogLines() {
+            return maxLogLines;
+        }
+        
     }
 
     /**
@@ -85,7 +103,7 @@ public class Logger {
      *            Charset to use for logging. Must not be null.
      */
     private Logger(Charset charset) {
-        this.targets = new ArrayList<>(5);
+        this.targets = new ArrayList<>(2);
         this.charset = charset;
     }
 
@@ -129,6 +147,16 @@ public class Logger {
             }
         }
         
+    }
+    
+    /**
+     * Returns the list of targets for this logger.
+     * Package visibility for test cases.
+     * 
+     * @return The targets of this logger.
+     */
+    List<Target> getTargets() {
+        return targets;
     }
 
     /**
