@@ -26,6 +26,12 @@ public class Util {
     private static final Logger LOGGER = Logger.get();
 
     /**
+     * Don't allow any instances of this class.
+     */
+    private Util() {
+    }
+
+    /**
      * Extracts a resource from this jar (this ClassLoader, to be precise) to a
      * temporary file.
      * 
