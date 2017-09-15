@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.Logger;
+import net.ssehub.kernel_haven.util.Util;
 
 /**
  * 
@@ -24,27 +25,6 @@ public class Run {
     static {
         Logger.init();
         LOGGER = Logger.get();
-    }
-    
-    /**
-     * Formats the given amount of bytes correctly as KiB, MiB GiB or TiB.
-     * 
-     * @param amount The amount of bytes.
-     * 
-     * @return A string representing the amount of bytes.
-     */
-    private static String formatBytes(long amount) {
-        
-        int i = 0;
-        String[] suffix = {"B", "KiB", "MiB", "GiB", "TiB"};
-        amount *= 100; // this way we get two digits of precision after the comma
-        
-        while (i < suffix.length && amount > 102400) {
-            i++;
-            amount /= 1024;
-        }
-        
-        return (amount / 100.0) + " " + suffix[i];
     }
     
     /**
@@ -80,7 +60,7 @@ public class Run {
         }
         
         Runtime runtime = Runtime.getRuntime();
-        lines.add("\tMaximum Memory: " + formatBytes(runtime.maxMemory()));
+        lines.add("\tMaximum Memory: " + Util.formatBytes(runtime.maxMemory()));
         lines.add("\tAvailable Processors: " + runtime.availableProcessors());
         
         LOGGER.logInfo(lines.toArray(new String[] {}));

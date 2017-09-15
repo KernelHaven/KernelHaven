@@ -307,4 +307,19 @@ public class UtilTest {
         assertThat(dst.exists(), is(false));
     }
     
+    /**
+     * Tests the formatBytes() method.
+     */
+    @Test
+    public void testFormatBytes() {
+        assertThat(Util.formatBytes(1), is("1 B"));
+        assertThat(Util.formatBytes(132), is("132 B"));
+        assertThat(Util.formatBytes(1023), is("1023 B"));
+        assertThat(Util.formatBytes(1024), is("1 KiB"));
+        assertThat(Util.formatBytes(34234), is("33.43 KiB"));
+        assertThat(Util.formatBytes(32134341), is("30.64 MiB"));
+        assertThat(Util.formatBytes(3213434341L), is("2.99 GiB"));
+        assertThat(Util.formatBytes(32134343345341L), is("29.22 TiB"));
+    }
+    
 }

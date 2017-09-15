@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Utility functionality for the KconfigMiner.
+ * Utility functions.
  * 
  * @author Adam
  * @author Manu
@@ -375,6 +375,37 @@ public class Util {
         while ((read = in.read(buffer)) != -1) {
             out.write(buffer, 0, read);
         }
+    }
+    
+    /**
+     * Formats the given amount of bytes correctly as B, KiB, MiB GiB or TiB.
+     * This uses 2 as the base, e.g. 1024 B = 1 KiB.
+     * The result is given with two digits precision, always rounded down.
+     * 
+     * @param amount The amount of bytes.
+     * 
+     * @return A string representing the amount of bytes.
+     */
+    public static String formatBytes(long amount) {
+        
+        int i = 0;
+        String[] suffix = {"B", "KiB", "MiB", "GiB", "TiB"};
+        amount *= 100; // this way we get two digits of precision after the comma
+        
+        while (i < suffix.length && amount >= 102400) {
+            i++;
+            amount /= 1024;
+        }
+        
+        String result;
+        if (amount - ((amount / 100) * 100) == 0) {
+            // if the last two digits are 0, then we don't need floating point precision here
+            result = (amount / 100) + " " + suffix[i];
+        } else {
+            result = (amount / 100.0) + " " + suffix[i];
+        }
+        
+        return result;
     }
 
 }
