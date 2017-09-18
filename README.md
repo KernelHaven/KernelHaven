@@ -91,8 +91,8 @@ also can have their own configuration options.
 
 ## Further Documentation
 
-* [The user documentation](https://github.com/KernelHaven/Documentation/raw/master/UserDocumentation/Arbeit.pdf) is the user manual
-* [The developer documentation](https://github.com/KernelHaven/Documentation/raw/master/DeveloperDocumentation/Arbeit.pdf) describes how to write new plug-ins for the infrastructure
+* [The user documentation](https://github.com/KernelHaven/Documentation/raw/master/UserDocumentation/KernelHaven%20User%20Documentation.pdf), for users who want to run analyzes with the infrastructure.
+* [The developer documentation](https://github.com/KernelHaven/Documentation/raw/master/DeveloperDocumentation/Arbeit.pdf), for developers who want to write new extractors and analyzes.
 
 ## Acknowledgments
 
