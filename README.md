@@ -2,15 +2,10 @@
 
 KernelHaven offers a generic infrastructure for performing different analyses on product lines. This repository contains the main infrastructure, plug-ins are located in separate repositories.
 
-## Download and Installation
+## Download
 
 * [KernelHaven infrastructure (without sources)](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven.jar)
 * [KernelHaven infrastructure (sources included)](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven_withsource.jar)
-
-## Documentation
-
-* [The user documentation](https://github.com/KernelHaven/Documentation/raw/master/UserDocumentation/Arbeit.pdf) is the user manual
-* [The developer documentation](https://github.com/KernelHaven/Documentation/raw/master/DeveloperDocumentation/Arbeit.pdf) describes how to write new plug-ins for the infrastructure
 
 ## Plug-ins
 
@@ -25,6 +20,75 @@ KernelHaven offers a generic infrastructure for performing different analyses on
 |[UnDeadAnalyzer](https://github.com/KernelHaven/UnDeadAnalyzer)| **Analysis:** Detection of dead code and unused variables of the variability model | [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/defaultanalyses.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/defaultanalyses_withsource.jar) | ![Build Status of UnDeadAnalyzer](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_UnDeadAnalyzer) |
 |[FeatureEffectAnalyzer](https://github.com/KernelHaven/FeatureEffectAnalysis)| **Analysis:** Detection of presence conditions and feature effects | [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis_withsource.jar) | ![Build Status of FeatureEffectAnalyzer](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_FeatureEffectAnalysis) |
 |[MetricHaven](https://github.com/KernelHaven/MetricHaven)| **Analysis:** Metric Infrastructure for SPL-Metrics | [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven_withsource.jar) | ![Build Status of MetricHaven](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_MetricHaven) |
+
+## Setup
+
+Although KernelHaven can be configured to use different paths, the usual setup looks like this:
+```
+kernel_haven/
+├── cache/
+│   └── ...
+├── log/
+│   └── ...
+├── output/
+│   └── ...
+├── plugins/
+│   ├── cnfutils.jar
+│   ├── kbuildminerextractor.jar
+│   ├── kconfigreaderextractor.jar
+│   ├── undeadanalyzer.jar
+│   └── undertakerextractor.jar
+├── res/
+│   └── ...
+├── kernel_haven.jar
+└── dead_code.properties
+```
+
+A configuration to execute a dead code analysis on Linux with this setup looks like this:
+```Properties
+# Linux Source Tree
+source_tree = /path/to/linux-4.4
+arch = x86
+
+# Analysis
+analysis.class = net.ssehub.kernel_haven.default_analyses.DeadCodeAnalysis
+
+# Code Extractor
+code.provider.cache.read = true
+code.provider.cache.write = true
+code.extractor.class = net.ssehub.kernel_haven.undertaker.UndertakerExtractor
+code.extractor.threads = 4
+
+# Build Extractor
+build.provider.cache.read = true
+build.provider.cache.write = true
+build.extractor.class = net.ssehub.kernel_haven.kbuildminer.KbuildMinerExtractor
+
+# Variability Extractor
+variability.provider.cache.read = true
+variability.provider.cache.write = true
+variability.extractor.class = net.ssehub.kernel_haven.kconfigreader.KconfigReaderExtractor
+
+# Logging
+log.console = true
+log.file = true
+
+# Directories
+archive.dir = .
+cache_dir = cache/
+log.dir = log/
+output_dir = output/
+plugins_dir = plugins/
+resource_dir = res/
+```
+
+See config_template.properties for a full list of configuration options for the infrastructure. Note that plugins
+also can have their own configuration options. 
+
+## Further Documentation
+
+* [The user documentation](https://github.com/KernelHaven/Documentation/raw/master/UserDocumentation/Arbeit.pdf) is the user manual
+* [The developer documentation](https://github.com/KernelHaven/Documentation/raw/master/DeveloperDocumentation/Arbeit.pdf) describes how to write new plug-ins for the infrastructure
 
 ## Acknowledgments
 
