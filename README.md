@@ -9,6 +9,8 @@ KernelHaven offers a generic infrastructure for performing different analyses on
 
 ## Plug-ins
 
+The following table lists commonly used plug-ins for KernelHaven. They mostly focus on analysing the Linux Kernel.
+
 | Plug-in | Type | License | Download | Status |
 |---------|------|---------|----------|--------|
 |[KconfigReaderExtractor](https://github.com/KernelHaven/KconfigReaderExtractor)| **VariabilityModel-Extractor:** Kconfig | [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_KconfigReaderExtractor/lastSuccessfulBuild/artifact/build/jar/KconfigReaderExtractor.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_KconfigReaderExtractor/lastSuccessfulBuild/artifact/build/jar/KconfigReaderExtractor_withsource.jar) | ![Build Status of KconfigReaderExtractor](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_KconfigReaderExtractor) |
@@ -24,6 +26,7 @@ KernelHaven offers a generic infrastructure for performing different analyses on
 ## Setup
 
 Although KernelHaven can be configured to use different paths, the usual setup looks like this:
+
 ```
 kernel_haven/
 ├── cache/
@@ -45,6 +48,7 @@ kernel_haven/
 ```
 
 A configuration to execute a dead code analysis on Linux with this setup looks like this:
+
 ```Properties
 # Linux Source Tree
 source_tree = /path/to/linux-4.4
@@ -82,7 +86,7 @@ plugins_dir = plugins/
 resource_dir = res/
 ```
 
-See config_template.properties for a full list of configuration options for the infrastructure. Note that plugins
+See `config_template.properties` for a full list of configuration options for the infrastructure. Note that plugins
 also can have their own configuration options. 
 
 ## Further Documentation
