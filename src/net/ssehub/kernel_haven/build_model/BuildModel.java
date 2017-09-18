@@ -78,5 +78,11 @@ public class BuildModel implements Iterable<File> {
     public Iterator<File> iterator() {
         return fileFormulaMapping.keySet().iterator();
     }
+    
+    @Override
+    public String toString() {
+        // For debugging purpose only
+        return fileFormulaMapping.toString();
+    }
 
 }
