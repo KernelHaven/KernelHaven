@@ -17,8 +17,8 @@ public class CPPUtilsTest {
     @Test
     public void testIsIfOrElifStatement() {
         String[] validIfs = {"#if (Var > Something)", "#if(Var > Something)", "#elif (Var > Something)",
-            "#elif(Var > Something)"};
-        String[] inValidIfs = {"#ifdef Var", "#ifndef Var", "#ifdef(Var)", "#ifndef(Var)"};
+            "#elif(Var > Something)", "#if (Var > Something) \\"};
+        String[] inValidIfs = {"#ifdef Var", "#ifndef Var", "#ifdef(Var)", "#ifndef(Var)", ""};
         
         // Check desired statements
         for (String validIf : validIfs) {

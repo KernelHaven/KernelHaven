@@ -65,7 +65,7 @@ public class NonBooleanPreperationTest {
         preparator.run(cconfig);
         
         FileContentsAssertion.assertContents(new File(OUT_FOLDER, "comparison.c"), 
-            "#if ((defined(a_eq_2))) {\n"
+            "#if ((defined(a_eq_2))) \n"
             + "    // Do something\n"
             + "#endif");
     }
@@ -83,7 +83,7 @@ public class NonBooleanPreperationTest {
         preparator.run(cconfig);
         
         FileContentsAssertion.assertContents(new File(OUT_FOLDER, "comparison.c"), 
-            "#if ((defined(a_eq_2) || defined(a_eq_3))) {\n"
+            "#if ((defined(a_eq_2) || defined(a_eq_3))) \n"
             + "    // Do something\n"
             + "#endif");
     }
