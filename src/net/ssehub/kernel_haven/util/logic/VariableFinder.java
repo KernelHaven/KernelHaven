@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Collects all used variablers from the Formula.
+ * Collects all used variables from the Formula.
  * @author El-Sharkawy
  *
  */
@@ -64,6 +64,13 @@ public class VariableFinder implements IFormulaVisitor {
             names.add(variable.getName());
         }
         return names;
+    }
+    
+    /**
+     * Facilitate reuse of this instance as it clears all collected elements.
+     */
+    public void clear() {
+        variables.clear();
     }
 
 }
