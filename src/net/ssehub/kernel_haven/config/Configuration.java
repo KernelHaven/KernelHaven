@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.util.Logger;
 
 /**
  * The global configuration. This class holds the complete user configuration that defines the pipeline.
@@ -330,7 +331,7 @@ public class Configuration implements IConfiguration {
     }
     
     /**
-     * Reads a property from the user configuration file and returns a boolean value.
+     * Reads a property from the user configuration file and returns a boolean value.<br/>
      * Will return:
      * <ol>
      *   <li>The <tt>defaultValue</tt> if the property was not defined</li>
@@ -346,6 +347,38 @@ public class Configuration implements IConfiguration {
         String value = properties.getProperty(key);
         if (null != value) {
             result = Boolean.valueOf(value);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Reads a property from the user configuration and returns an enum value.<br/>
+     * Will return:
+     * <ol>
+     *   <li>The <tt>defaultValue</tt> if the property was not defined</li>
+     *   <li>The specified enum value if the specified value is a valid literal (case insensitive).</li>
+     *   <li>An {@link SetUpException} if the specified value does not exist.</li>
+     * </ol>
+     * @param key The key of the property.
+     * @param defaultValue The default value to return if not specified in file.
+     * @param <E> The enum type for which an literal shall be returned.
+     * @return The specified value or the default value.
+     * @throws SetUpException If a value was specified, which does not exist for the defined enumeration.
+     */
+    public <E extends Enum<E>> E getEnumProperty(String key, E defaultValue) throws SetUpException {
+        String tmp = getProperty(key);
+        
+        E result;
+        if (null == tmp) {
+            Logger.get().logInfo("\"" + key + "\" not defined, will use \"" + defaultValue.name() + "\".");
+            result = defaultValue;
+        } else {
+            try {
+                result = Enum.valueOf(defaultValue.getDeclaringClass(), tmp.toUpperCase());
+            } catch (IllegalArgumentException exc) {
+                throw new SetUpException("\"" + key + "=" + tmp + "\" is an invalid option.");
+            }
         }
         
         return result;
