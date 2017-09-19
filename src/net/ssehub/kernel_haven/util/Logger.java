@@ -377,6 +377,24 @@ public class Logger {
             exceptionToString(cause, lines);
         }
     }
+    
+    /**
+     * Creates a log entry from the given comment and exception.
+     * 
+     * @param level The log level to log at.
+     * @param comment 
+     *            A comment that is displayed above the exception. A ":" is
+     *            appended to it by this method. Must not be null.
+     * @param exc
+     *            The exception to log. A stack trace will be logged. Must not
+     *            be null.
+     */
+    private void logException(String level, String comment, Throwable exc) {
+        List<String> lines = new ArrayList<>(exc.getStackTrace().length + 2);
+        lines.add(comment + ":");
+        exceptionToString(exc, lines);
+        log(level, lines.toArray(new String[0]));
+    }
 
     /**
      * Creates a log entry from the given comment and exception. The log level
@@ -390,10 +408,52 @@ public class Logger {
      *            be null.
      */
     public void logException(String comment, Throwable exc) {
-        List<String> lines = new ArrayList<>(exc.getStackTrace().length + 2);
-        lines.add(comment + ":");
-        exceptionToString(exc, lines);
-        log("error", lines.toArray(new String[0]));
+        logException("error", comment, exc);
+    }
+    
+    /**
+     * Creates a log entry from the given comment and exception. The log level
+     * is "debug".
+     * 
+     * @param comment
+     *            A comment that is displayed above the exception. A ":" is
+     *            appended to it by this method. Must not be null.
+     * @param exc
+     *            The exception to log. A stack trace will be logged. Must not
+     *            be null.
+     */
+    public void logExceptionDebug(String comment, Throwable exc) {
+        logException("debug", comment, exc);
+    }
+    
+    /**
+     * Creates a log entry from the given comment and exception. The log level
+     * is "warning".
+     * 
+     * @param comment
+     *            A comment that is displayed above the exception. A ":" is
+     *            appended to it by this method. Must not be null.
+     * @param exc
+     *            The exception to log. A stack trace will be logged. Must not
+     *            be null.
+     */
+    public void logExceptionWarning(String comment, Throwable exc) {
+        logException("warning", comment, exc);
+    }
+    
+    /**
+     * Creates a log entry from the given comment and exception. The log level
+     * is "info".
+     * 
+     * @param comment
+     *            A comment that is displayed above the exception. A ":" is
+     *            appended to it by this method. Must not be null.
+     * @param exc
+     *            The exception to log. A stack trace will be logged. Must not
+     *            be null.
+     */
+    public void logExceptionInfo(String comment, Throwable exc) {
+        logException("info", comment, exc);
     }
     
     /**

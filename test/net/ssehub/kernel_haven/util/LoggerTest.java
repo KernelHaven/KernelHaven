@@ -154,6 +154,33 @@ public class LoggerTest {
             Assert.assertThat(lines[i].trim(), startsWith("at "));
         }
     }
+    
+    /**
+     * Test exception levels.
+     */
+    @Test
+    public void testExceptionLevels() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Logger.init(out);
+        Logger l = Logger.get(); // just a shortcut
+
+        l.logException("one", new Exception());
+        l.logExceptionWarning("two", new Exception());
+        l.logExceptionInfo("two", new Exception());
+        l.logExceptionDebug("two", new Exception());
+
+        String[] lines = out.toString().split("\n");
+        
+        int i = 0;
+        String[] expectedPrefixes = {"[error]", "[warning]", "[info]", "[debug]" };
+
+        for (String line : lines) {
+            if (!line.startsWith(" ")) {
+                assertThat(line, startsWith(expectedPrefixes[i]));
+                i++;
+            }
+        }
+    }
 
     /**
      * Test if thread names are represented correctly in the log.
