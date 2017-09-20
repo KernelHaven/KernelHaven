@@ -66,7 +66,7 @@
 	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" />
 
 	<tstamp>
-		<format property="TODAY_KH" pattern="yyyy-MM-dd HH:mm:ss" locale="en,US" />
+		<format property="TS_FOR_VERSION_FILE" pattern="HH:mm:ss dd.MM.yyyy" locale="en,US" />
 	</tstamp>
 
 	<!-- Target to create folder structure for releases, requires argument: base.kh.folder -->
@@ -79,7 +79,7 @@
 		<mkdir dir="${base.kh.folder}/log" />
 		<mkdir dir="${base.kh.folder}/cache" />
 
-		<echo file="${base.kh.folder}/version.txt" append="false">Release of ${TODAY_KH}</echo>
+		<echo file="${base.kh.folder}/version.txt" append="false">Release of ${TS_FOR_VERSION_FILE}</echo>
 	</target>
 
 	<target name="jar">
