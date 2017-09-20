@@ -65,6 +65,22 @@
 
 	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" />
 
+	<tstamp>
+		<format property="TODAY_KH" pattern="yyyy-MM-dd HH:mm:ss" locale="en,US" />
+	</tstamp>
+
+	<!-- Target to create folder structure for releases, requires argument: base.kh.folder -->
+	<target name="kh.folder.structure">
+		<delete dir="${base.kh.folder}" />
+		<mkdir dir="${base.kh.folder}" />
+		<mkdir dir="${base.kh.folder}/plugins" />
+		<mkdir dir="${base.kh.folder}/output" />
+		<mkdir dir="${base.kh.folder}/res" />
+		<mkdir dir="${base.kh.folder}/log" />
+		<mkdir dir="${base.kh.folder}/cache" />
+
+		<echo file="${base.kh.folder}/version.txt" append="false">Release of ${TODAY_KH}</echo>
+	</target>
 
 	<target name="jar">
 		<jar destfile="${jar.dir}/${jar.filename}" basedir="${classes.dir}" excludes="**/package-info.class">
