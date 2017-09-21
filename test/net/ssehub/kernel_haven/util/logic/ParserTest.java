@@ -1,6 +1,8 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Assert;
@@ -288,6 +290,24 @@ public class ParserTest {
             Assert.fail("Expected exception");
         } catch (ExpressionFormatException e) {
         }
+    }
+    
+    /**
+     * Tests whether true and false (1 and 0) are parsed correctly.
+     * 
+     * @throws ExpressionFormatException unwanted.
+     */
+    @Test
+    public void testConstants() throws ExpressionFormatException {
+        VariableCache cache = new VariableCache();
+        Parser<Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache));
+        
+
+        Formula f = parser.parse("1 && 0");
+        
+        Formula[] a = assertConjunction(f);
+        assertThat(a[0], is(True.INSTANCE));
+        assertThat(a[1], is(False.INSTANCE));
     }
     
     /**

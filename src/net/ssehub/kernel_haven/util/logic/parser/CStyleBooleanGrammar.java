@@ -2,12 +2,16 @@ package net.ssehub.kernel_haven.util.logic.parser;
 
 import net.ssehub.kernel_haven.util.logic.Conjunction;
 import net.ssehub.kernel_haven.util.logic.Disjunction;
+import net.ssehub.kernel_haven.util.logic.False;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.Negation;
+import net.ssehub.kernel_haven.util.logic.True;
 import net.ssehub.kernel_haven.util.logic.Variable;
 
 /**
  * A {@link Grammar} for C-style boolean expressions.
+ * The identifiers 1 and 0 are interpreted as True and False, respectively.
+ * This grammar is compatible with the output of Formual.toString().
  * 
  * <p>
  * Examples:
@@ -115,11 +119,17 @@ public class CStyleBooleanGrammar extends Grammar<Formula> {
     @Override
     public Formula makeIdentifierFormula(String identifier) throws ExpressionFormatException {
         Formula result = null;
-
-        if (this.cache != null) {
-            result = this.cache.getVariable(identifier);
+        
+        if (identifier.equals("1")) {
+            result = True.INSTANCE;
+        } else if (identifier.equals("0")) {
+            result = False.INSTANCE;
         } else {
-            result = new Variable(identifier);
+            if (this.cache != null) {
+                result = this.cache.getVariable(identifier);
+            } else {
+                result = new Variable(identifier);
+            }
         }
 
         return result;
