@@ -152,7 +152,7 @@ public class BlockingQueue<T> implements Iterable<T> {
             }
             
             internalQueue.add(element);
-            internalQueue.notify();
+            internalQueue.notifyAll();
         }
     }
     
@@ -163,7 +163,7 @@ public class BlockingQueue<T> implements Iterable<T> {
     public void end() {
         synchronized (internalQueue) {
             end = true;
-            internalQueue.notify();
+            internalQueue.notifyAll();
         }
     }
     
