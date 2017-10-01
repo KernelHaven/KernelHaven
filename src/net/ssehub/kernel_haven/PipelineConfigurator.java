@@ -7,8 +7,6 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import net.ssehub.kernel_haven.analysis.IAnalysis;
 import net.ssehub.kernel_haven.build_model.AbstractBuildModelExtractor;
@@ -21,7 +19,7 @@ import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.provider.AbstractExtractor;
 import net.ssehub.kernel_haven.todo.NonBooleanPreperation;
 import net.ssehub.kernel_haven.util.Logger;
-import net.ssehub.kernel_haven.util.Zipper;
+import net.ssehub.kernel_haven.util.PipelineArchiver;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
 import net.ssehub.kernel_haven.variability_model.EmptyVariabilityModelExtractor;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelProvider;
@@ -372,57 +370,15 @@ public class PipelineConfigurator {
     private void archive() {
         // this setting is overriden by the command line option in Run.main()
         if (config.isArchive()) {
-            LOGGER.logInfo("Archiving the pipeline...");
+            PipelineArchiver archiver = new PipelineArchiver();
+            archiver.setConfig(config);
+            archiver.setAnalysisOutputFiles(analysis.getOutputFiles());
             
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-            LocalDateTime now = LocalDateTime.now();
-            Zipper zipper = null;
-            File archiveTargetDir = config.getArchiveDir();
-
             try {
-                zipper = new Zipper(new File(archiveTargetDir, "archived_execution_" + dtf.format(now)));
+                archiver.archive();
             } catch (IOException exc) {
                 LOGGER.logException("Could not create file for archiving the execution artifacts ", exc);
-                return;
             }
-            try {
-                // this is set in Run.main()
-                zipper.copyFileToZip(config.getPropertyFile(), "/" + config.getPropertyFile().getName());
-            } catch (IOException e) {
-                LOGGER.logWarning("Could not archive configuration: " + e.getMessage());
-            }
-            
-            try {
-                zipper.copyFileToZip(config.getPluginsDir(), "/plugins");
-            } catch (IOException e) {
-                LOGGER.logWarning("Could not archive plugin jars: " + e.getMessage());
-            }
-            
-            try {
-                for (File outputFile : analysis.getOutputFiles()) {
-                    zipper.copyFileToZip(outputFile, "/output");
-                }
-            } catch (IOException e) {
-                LOGGER.logWarning("Could not archive output: " + e.getMessage());
-            }
-
-            try {
-                File kernelHavenJar = new File(PipelineConfigurator.class.getProtectionDomain()
-                        .getCodeSource().getLocation().getFile());
-                zipper.copyFileToZip(kernelHavenJar, "/KernelHaven.jar");
-            } catch (IOException e) {
-                LOGGER.logError("Could not Archive KernelHaven.jar: " + e.getMessage());
-            }
-
-            if (LOGGER.getLogFile() != null) {
-                try {
-                    zipper.copyFileToZip(LOGGER.getLogFile(), "/log/log.txt");
-                } catch (IOException e) {
-                    LOGGER.logWarning("Could not archive log output: " + e.getMessage());
-                }
-            }
-            
-            LOGGER.logInfo("Archiving finished");
         } else {
             LOGGER.logInfo("Not archiving pipeline (not enabled by user)");
         }

@@ -1,5 +1,6 @@
 package net.ssehub.kernel_haven;
 
+import java.io.File;
 import java.util.Properties;
 
 import net.ssehub.kernel_haven.config.Configuration;
@@ -74,6 +75,11 @@ public class TestConfiguration extends Configuration {
 //        this.variabilityCacheWrite = Boolean.parseBoolean(getProperty("variability.provider.cache.write", "false"));
 //        this.variabilityCacheRead = Boolean.parseBoolean(getProperty("variability.provider.cache.read", "false"));
         this.variabilityExtractorClassName = getProperty("variability.extractor.class");
+    }
+    
+    @Override
+    public void setPropertyFile(File propertyFile) {
+        super.setPropertyFile(propertyFile);
     }
     
 }

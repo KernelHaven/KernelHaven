@@ -130,7 +130,7 @@ public class ZipperTest {
      * @throws ZipException
      *             thrown if not a zip archive.
      */
-    private static Collection<String> getZipEntriesForFile(File file) throws IOException, ZipException {
+    public static Collection<String> getZipEntriesForFile(File file) throws IOException, ZipException {
         ZipFile zipFile = new ZipFile(file);
         @SuppressWarnings("unchecked")
         Enumeration<ZipEntry> zipEntries = (Enumeration<ZipEntry>) zipFile.entries();

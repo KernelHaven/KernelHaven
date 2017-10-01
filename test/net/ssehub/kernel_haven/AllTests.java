@@ -15,6 +15,7 @@ import net.ssehub.kernel_haven.todo.AllNonBooleanPreparationTests;
 import net.ssehub.kernel_haven.util.BlockingQueueTest;
 import net.ssehub.kernel_haven.util.ConfigurationTest;
 import net.ssehub.kernel_haven.util.LoggerTest;
+import net.ssehub.kernel_haven.util.PipelineArchiverTest;
 import net.ssehub.kernel_haven.util.UtilTest;
 import net.ssehub.kernel_haven.util.ZipperTest;
 import net.ssehub.kernel_haven.util.logic.AllLogicTests;
@@ -42,6 +43,7 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModelProviderTest;
     ZipperTest.class,
     CodeModelCacheTest.class,
     BlockingQueueTest.class,
+    PipelineArchiverTest.class,
     })
 public class AllTests {
     

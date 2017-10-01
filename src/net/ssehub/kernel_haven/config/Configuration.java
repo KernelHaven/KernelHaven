@@ -48,6 +48,8 @@ public class Configuration implements IConfiguration {
     
     protected File archiveDir;
     
+    protected boolean archiveSourceTree;
+    
     // analysis
     
     protected String analysisClassName;
@@ -128,6 +130,7 @@ public class Configuration implements IConfiguration {
             archiveDirProps = archiveDirProps.require();
         }
         this.archiveDir = readFileProperty("archive.dir", archiveDirProps);
+        this.archiveSourceTree = Boolean.parseBoolean(getProperty("archive.source_tree", "false"));
         
         // analysis
         this.analysisClassName = readStringRequiredProperty("analysis.class");
@@ -484,6 +487,15 @@ public class Configuration implements IConfiguration {
     public File getArchiveDir() {
         return archiveDir;
     }
+    
+    /**
+     * Whether the source tree should be added to the archive, too.
+     * 
+     * @return Whether the source tree should be archived, too.
+     */
+    public boolean isArchiveSourceTree() {
+        return archiveSourceTree;
+    }
 
     /**
      * Returns the fully qualified class name of the analysis class.
@@ -537,6 +549,24 @@ public class Configuration implements IConfiguration {
      */
     public File getPropertyFile() {
         return propertyFile;
+    }
+    
+    /**
+     * Sets the property file. Used in test cases.
+     * 
+     * @param propertyFile The property file.
+     */
+    protected void setPropertyFile(File propertyFile) {
+        this.propertyFile = propertyFile;
+    }
+    
+    /**
+     * Returns the directory that contains the product line to analyze.
+     * 
+     * @return The source tree directory.
+     */
+    public File getSourceTree() {
+        return sourceTree;
     }
     
     /**
