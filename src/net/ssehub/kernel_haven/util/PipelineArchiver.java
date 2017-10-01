@@ -23,6 +23,8 @@ public class PipelineArchiver {
     
     private File kernelHavenJarOverride;
     
+    private File relativeBase;
+    
     /**
      * Creates a new PipelineArchiver for the given pipeline.
      */
@@ -61,7 +63,7 @@ public class PipelineArchiver {
      * 
      * @return The created archive file.
      * 
-     * @throws IOException If writing the archive fails.
+     * @throws IOException If creating the archive fails.
      */
     public File archive() throws IOException {
         LOGGER.logInfo("Archiving the pipeline...");
@@ -72,91 +74,63 @@ public class PipelineArchiver {
         File archiveTargetFile = new File(archiveTargetDir, "archived_execution_" + dtf.format(now) + ".zip");
         Zipper zipper = new Zipper(archiveTargetFile);
         
-        File relative = new File(config.getPropertyFile().getCanonicalPath()).getParentFile();
+        relativeBase = new File(config.getPropertyFile().getCanonicalPath()).getParentFile();
         
-        // archive configuration file
-        try {
-            addFileToZipper(zipper, config.getPropertyFile(), relative, "");
-        } catch (IOException e) {
-            LOGGER.logWarning("Could not archive configuration: " + e.getMessage());
-        }
-        
-        // archive plugins
-        try {
-            addFileToZipper(zipper, config.getPluginsDir(), relative, "");
-        } catch (IOException e) {
-            LOGGER.logWarning("Could not archive plugin jars: " + e.getMessage());
-        }
-        
-        // archive analysis output files
-        try {
-            if (outputFiles != null) {
-                for (File outputFile : outputFiles) {
-                    addFileToZipper(zipper, outputFile, relative, "/output");
-                }
+        addFileToZipper(zipper, config.getPropertyFile(), "", "Could not archive configuration");
+        addFileToZipper(zipper, config.getPluginsDir(), "", "Could not archive plugin jars");
+        if (outputFiles != null) {
+            for (File outputFile : outputFiles) {
+                addFileToZipper(zipper, outputFile, "/output", "Could not archive output file");
             }
-        } catch (IOException e) {
-            LOGGER.logWarning("Could not archive output: " + e.getMessage());
         }
-
-        // archive our jar
-        try {
-            File kernelHavenJar = kernelHavenJarOverride;
-            if (kernelHavenJar == null) {
-                kernelHavenJar = new File(getClass().getProtectionDomain()
-                        .getCodeSource().getLocation().getFile());
-            }
-            addFileToZipper(zipper, kernelHavenJar, relative, "");
-        } catch (IOException e) {
-            LOGGER.logError("Could not Archive KernelHaven.jar: " + e.getMessage());
-        }
-
-        // archive log file
         if (LOGGER.getLogFile() != null) {
-            try {
-                addFileToZipper(zipper, LOGGER.getLogFile(), relative, "/log");
-            } catch (IOException e) {
-                LOGGER.logWarning("Could not archive log output: " + e.getMessage());
-            }
+            addFileToZipper(zipper, LOGGER.getLogFile(), "/log", "Could not archive log file");
         }
-        
-        // archive source tree
         if (config.isArchiveSourceTree()) {
-            try {
-                addFileToZipper(zipper, config.getSourceTree(), relative, "");
-            } catch (IOException e) {
-                LOGGER.logWarning("Could not archive source tree: " + e.getMessage());
-            }
+            addFileToZipper(zipper, config.getSourceTree(), "", "Could not archive source tree");
         }
+        if (config.isArchiveResDir()) {
+            addFileToZipper(zipper, config.getResourceDir(), "", "Could not archive resource directory");
+        }
+        if (config.isArchiveCacheDir()) {
+            addFileToZipper(zipper, config.getCacheDir(), "", "Could not archive cache directory");
+        }
+        File kernelHavenJar = kernelHavenJarOverride;
+        if (kernelHavenJar == null) {
+            kernelHavenJar = new File(getClass().getProtectionDomain()
+                    .getCodeSource().getLocation().getFile());
+        }
+        addFileToZipper(zipper, kernelHavenJar, "", "Could not archive main jar file");
         
         LOGGER.logInfo("Archiving finished");
-        
         return archiveTargetFile;
     }
     
     /**
-     * Adds a file to the given zipper.
+     * Adds a file to the given zipper. The location inside the filename is based on the relative location to 
+     * relativeBase.
      * 
      * @param zipper The zipper to add to.
      * @param toAdd The file to add.
-     * @param relativePath A directory to generate the relative path name inside the zip. If toAdd is inside this,
-     *      then its location inside the zip is the relative path to this.
      * @param fallback The fallback location in the zip if toAdd is not inside of relativePath. The filename of toAdd
      *      will be appended to this.
-     * 
-     * @throws IOException If writing to the zipper fails. 
+     * @param message A warning message to be displayed if archiving this file failed.
      */
-    private void addFileToZipper(Zipper zipper, File toAdd, File relativePath, String fallback) throws IOException {
-        String fullToAdd = toAdd.getCanonicalPath();
-        String fullRelative = relativePath.getCanonicalPath() + File.separatorChar;
+    private void addFileToZipper(Zipper zipper, File toAdd, String fallback, String message) {
+        try {
+            String fullToAdd = toAdd.getCanonicalPath();
+            String fullRelative = relativeBase.getCanonicalPath() + File.separatorChar;
+            
+            String nameInZip = fallback + File.separatorChar + toAdd.getName();
+            
+            if (fullToAdd.startsWith(fullRelative)) {
+                nameInZip = File.separatorChar + fullToAdd.substring(fullRelative.length());
+            }
         
-        String nameInZip = fallback + File.separatorChar + toAdd.getName();
-        
-        if (fullToAdd.startsWith(fullRelative)) {
-            nameInZip = File.separatorChar + fullToAdd.substring(fullRelative.length());
+            zipper.copyFileToZip(toAdd, nameInZip);
+        } catch (IOException e) {
+            LOGGER.logExceptionWarning(message, e);
         }
-        
-        zipper.copyFileToZip(toAdd, nameInZip);
     }
     
 }

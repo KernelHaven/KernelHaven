@@ -133,7 +133,6 @@ public class PipelineArchiverTest {
         assertThat(result.isFile(), is(true));
         
         Collection<String> filenames = ZipperTest.getZipEntriesForFile(result);
-        System.out.println(filenames);
         
         assertThat(filenames.size(), is(4));
         assertThat(filenames, hasItem("fallback.properties"));

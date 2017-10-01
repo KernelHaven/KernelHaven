@@ -50,6 +50,10 @@ public class Configuration implements IConfiguration {
     
     protected boolean archiveSourceTree;
     
+    protected boolean archiveResDir;
+    
+    protected boolean archiveCacheDir;
+    
     // analysis
     
     protected String analysisClassName;
@@ -131,6 +135,8 @@ public class Configuration implements IConfiguration {
         }
         this.archiveDir = readFileProperty("archive.dir", archiveDirProps);
         this.archiveSourceTree = Boolean.parseBoolean(getProperty("archive.source_tree", "false"));
+        this.archiveCacheDir = Boolean.parseBoolean(getProperty("archive.cache_dir", "false"));
+        this.archiveResDir = Boolean.parseBoolean(getProperty("archive.res_dir", "false"));
         
         // analysis
         this.analysisClassName = readStringRequiredProperty("analysis.class");
@@ -496,6 +502,24 @@ public class Configuration implements IConfiguration {
     public boolean isArchiveSourceTree() {
         return archiveSourceTree;
     }
+    
+    /**
+     * Whether the cache directory should be added to the archive, too.
+     * 
+     * @return Whether the cache directory should be archived, too.
+     */
+    public boolean isArchiveCacheDir() {
+        return archiveCacheDir;
+    }
+    
+    /**
+     * Whether the resource directory should be added to the archive, too.
+     * 
+     * @return Whether the resource directory should be archived, too.
+     */
+    public boolean isArchiveResDir() {
+        return archiveResDir;
+    }
 
     /**
      * Returns the fully qualified class name of the analysis class.
@@ -567,6 +591,24 @@ public class Configuration implements IConfiguration {
      */
     public File getSourceTree() {
         return sourceTree;
+    }
+    
+    /**
+     * Returns the resource directory where extractors place their resources.
+     * 
+     * @return The resource directory.
+     */
+    public File getResourceDir() {
+        return resourceDir;
+    }
+    
+    /**
+     * Returns the cache directory for extractor data. This may or may not actually exist.
+     * 
+     * @return The cache directory.
+     */
+    public File getCacheDir() {
+        return new File(getProperty("cache_dir"));
     }
     
     /**
