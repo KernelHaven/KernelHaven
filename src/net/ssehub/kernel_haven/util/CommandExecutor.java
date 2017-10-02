@@ -74,7 +74,7 @@ public class CommandExecutor {
      *          If an I/O error occurs
      */
     public CommandExecutor(File folder, String... commands) throws IOException {
-        Logger.get().logDebug(folder.getAbsolutePath() + File.pathSeparatorChar + Arrays.toString(commands));
+        Logger.get().logDebug("Executing in folder " + folder.getAbsolutePath() + ": ", Arrays.toString(commands));
         
         ProcessBuilder builder = new ProcessBuilder(commands);
         builder.directory(folder);   
