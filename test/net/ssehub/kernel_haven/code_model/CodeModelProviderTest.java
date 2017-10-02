@@ -226,7 +226,7 @@ public class CodeModelProviderTest {
         CodeModelProvider provider = new CodeModelProvider();
         // if the provider were to start, then we get an exception and fail;
         // we expect the cache to work so the provider would never start
-        PseudoExtractor extractor = new PseudoExtractor(true);
+        PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
         provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
