@@ -68,8 +68,8 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
         try {
             writer = new BufferedWriter(new FileWriter(cacheFile));
 
-            for (Block block : file) {
-                serializeBlock(block, 0, writer);
+            for (CodeElement element : file) {
+                serializeElement(element, 0, writer);
             }
             
         } finally {
@@ -83,23 +83,23 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
     }
     
     /**
-     * Serializes a single block to the given writer. Recursively serialize the childreen
+     * Serializes a single element to the given writer. Recursively serialize the childreen
      * 
-     * @param block The block to serialize.
+     * @param element The element to serialize.
      * @param level The nesting depth.
      * @param writer The writer to write to.
      * @throws IOException If writing fails.
      */
-    private void serializeBlock(Block block, int level, BufferedWriter writer) throws IOException {
-        writer.write(block.getClass().getName() + CACHE_DELIMITER + level);
+    private void serializeElement(CodeElement element, int level, BufferedWriter writer) throws IOException {
+        writer.write(element.getClass().getName() + CACHE_DELIMITER + level);
         
-        for (String part : block.serializeCsv()) {
+        for (String part : element.serializeCsv()) {
             writer.write(CACHE_DELIMITER + part);
         }
         writer.write("\n");
         
-        for (Block child : block) {
-            serializeBlock(child, level + 1, writer);
+        for (CodeElement child : element.iterateNestedElements()) {
+            serializeElement(child, level + 1, writer);
         }
     }
     
@@ -128,7 +128,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
             VariableCache cache = new VariableCache();
             Parser<Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache));
 
-            Stack<Block> nesting = new Stack<>();
+            Stack<CodeElement> nesting = new Stack<>();
             
             String line;
             while ((line = reader.readLine()) != null) {
@@ -137,20 +137,20 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
                 String className = csvParts[0];
                 int level = Integer.parseInt(csvParts[1]);
                 
-                Class<? extends Block> clazz = (Class<? extends Block>) Class.forName(className);
+                Class<? extends CodeElement> clazz = (Class<? extends CodeElement>) Class.forName(className);
                 Method m = clazz.getMethod("createFromCsv", String[].class, Parser.class);
                 String[] smallCsv = new String[csvParts.length - 2];
                 System.arraycopy(csvParts, 2, smallCsv, 0, smallCsv.length);
-                Block created = (Block) m.invoke(null, (Object) smallCsv, parser);
+                CodeElement created = (CodeElement) m.invoke(null, (Object) smallCsv, parser);
                 
                 while (level < nesting.size()) {
                     nesting.pop();
                 }
                 
                 if (level == 0) {
-                    result.addBlock(created);
+                    result.addElement(created);
                 } else {
-                    nesting.peek().addChild(created);
+                    nesting.peek().addNestedElement(created);
                 }
                 
                 nesting.push(created);

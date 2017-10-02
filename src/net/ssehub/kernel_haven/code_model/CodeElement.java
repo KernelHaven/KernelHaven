@@ -1,0 +1,116 @@
+package net.ssehub.kernel_haven.code_model;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+
+import net.ssehub.kernel_haven.util.logic.Formula;
+
+/**
+ * Represents a code element inside a {@link SourceFile}.
+ * 
+ * @author Johannes
+ * @author Adam
+ */
+public interface CodeElement {
+
+    /**
+     * Iterates over the elements nested inside this element. Not recursively.
+     * 
+     * @return An iterable over the nested elements.
+     */
+    public default Iterable<CodeElement> iterateNestedElements() {
+        return new Iterable<CodeElement>() {
+            
+            @Override
+            public Iterator<CodeElement> iterator() {
+                return new Iterator<CodeElement>() {
+
+                    private int index = 0;
+                    
+                    @Override
+                    public boolean hasNext() {
+                        return index < getNestedElementCount();
+                    }
+
+                    @Override
+                    public CodeElement next() {
+                        return getNestedElement(index++);
+                    }
+                };
+            }
+        };
+    }
+
+    /**
+     * Returns the number of nested elements (not recursively).
+     * 
+     * @return the number of elements.
+     */
+    public abstract int getNestedElementCount();
+    
+    /**
+     * Returns a single nested element inside this element.
+     * 
+     * @param index The index of the element to return.
+     * 
+     * @return The element at the position index.
+     * 
+     * @throws IndexOutOfBoundsException If index >= getNestedElementCount().
+     */
+    public abstract CodeElement getNestedElement(int index) throws IndexOutOfBoundsException;
+
+    /**
+     * Adds a nested element to the end of the list.
+     * 
+     * @param element The element to add.
+     */
+    public abstract void addNestedElement(CodeElement element);
+    
+    /**
+     * Returns the line where this element starts in the source file.
+     * 
+     * @return the start line number.
+     */
+    public abstract int getLineStart();
+
+    /**
+     * Returns the line where this element ends in the source file.
+     * 
+     * @return the end line number.
+     */
+    public abstract int getLineEnd();
+    
+    /**
+     * Returns the source file that this element originates from.
+     * 
+     * @return The source file location relative to the source tree.
+     */
+    public abstract File getSourceFile();
+
+    /**
+     * Returns the immediate condition of this element. This condition is not
+     * considering the parent of this element, etc.
+     * 
+     * @return the condition. May be <code>null</code> if this concept dosen't
+     *         apply for the concrete subclass.
+     */
+    public abstract Formula getCondition();
+
+    /**
+     * Returns the presence condition of this element.
+     * 
+     * @return the presence condition. Must not be <code>null</code>.
+     */
+    public abstract Formula getPresenceCondition();
+    
+    /**
+     * Serializes this element as a CSV line. This does not consider nested elements.
+     * Extending classes also need a createFromCsv(String[], Parser<Formula>) method that deserializes
+     * this output.
+     * 
+     * @return The CSV parts representing this element.
+     */
+    public abstract List<String> serializeCsv();
+    
+}

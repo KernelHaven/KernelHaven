@@ -11,7 +11,7 @@ import java.util.List;
  * @author Johannes
  * @author Adam
  */
-public class SourceFile implements Iterable<Block> {
+public class SourceFile implements Iterable<CodeElement> {
 
     /**
      * This path is relative to the source tree.
@@ -19,9 +19,9 @@ public class SourceFile implements Iterable<Block> {
     private File path;
 
     /**
-     * This are the toplevel blocks which are not nested in other blocks.
+     * This are the toplevel elements which are not nested in other elements.
      */
-    private List<Block> blocks;
+    private List<CodeElement> elements;
 
     /**
      * Constructs a Sourcefile.
@@ -32,7 +32,7 @@ public class SourceFile implements Iterable<Block> {
      */
     public SourceFile(File path) {
         this.path = path;
-        blocks = new LinkedList<>();
+        elements = new LinkedList<>();
     }
 
     /**
@@ -45,31 +45,31 @@ public class SourceFile implements Iterable<Block> {
     }
 
     /**
-     * Adds a block to the end of the list.
+     * Adds a element to the end of the list.
      * 
-     * @param block
-     *            The block to add. Must not be <code>null</code>.
+     * @param element
+     *            The element to add. Must not be <code>null</code>.
      */
-    public void addBlock(Block block) {
-        this.blocks.add(block);
+    public void addElement(CodeElement element) {
+        this.elements.add(element);
     }
 
     /**
-     * Iterates over the top blocks not nested in other blocks.
-     * @return an iterator over top blocks.
+     * Iterates over the top elements not nested in other elements.
+     * @return an iterator over top elements.
      */
     @Override
-    public Iterator<Block> iterator() {
-        return blocks.iterator();
+    public Iterator<CodeElement> iterator() {
+        return elements.iterator();
     }
     
     /**
-     * Returns the number of top blocks (not nested in other blocks).
+     * Returns the number of top elements (not nested in other elements).
      *  
      * @return the number of blocks.
      */
-    public int getTopBlockCount() {
-        return blocks.size();
+    public int getTopElementCount() {
+        return elements.size();
     }
 
 }
