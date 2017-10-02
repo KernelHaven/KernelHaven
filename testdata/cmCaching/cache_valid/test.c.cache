@@ -1,3 +1,3 @@
-net.ssehub.kernel_haven.code_model.CodeModelCacheTest$PseudoBlock;0;1;2;A;A
-net.ssehub.kernel_haven.code_model.CodeModelCacheTest$PseudoBlock;0;3;15;!A;!A
-net.ssehub.kernel_haven.code_model.CodeModelCacheTest$PseudoBlock;1;4;5;B;(B && !A)
+net.ssehub.kernel_haven.code_model.CodeBlock;0;1;2;file;A;A
+net.ssehub.kernel_haven.code_model.CodeBlock;0;3;15;file;!A;!A
+net.ssehub.kernel_haven.code_model.CodeBlock;1;4;5;file;B;(B && !A)
