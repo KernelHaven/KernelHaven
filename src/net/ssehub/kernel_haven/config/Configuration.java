@@ -678,6 +678,7 @@ public class Configuration implements IConfiguration {
         config.setProviderTimeout(readLong("code.provider.timeout", 0));
         config.setCacheWrite(Boolean.parseBoolean(getProperty("code.provider.cache.write", "false")));
         config.setCacheRead(Boolean.parseBoolean(getProperty("code.provider.cache.read", "false")));
+        config.setCompressCache(Boolean.parseBoolean(getProperty("code.provider.cache.compress", "false")));
         
         String fileListSetting = getProperty("code.extractor.files", "");
         String[] fileListSettingParts = fileListSetting.split(",");

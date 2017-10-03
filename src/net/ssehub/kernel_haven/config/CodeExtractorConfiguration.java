@@ -36,6 +36,8 @@ public class CodeExtractorConfiguration implements IConfiguration {
     
     private File resourceDir;
     
+    private boolean compressCache;
+    
     /**
      * Creates an empty configuration for the code model. Note that this configuration is not
      * valid and the setters have to be called first.
@@ -166,6 +168,15 @@ public class CodeExtractorConfiguration implements IConfiguration {
     public File getCacheDir() {
         return cacheDir;
     }
+    
+    /**
+     * Returns whether the cache should be compressed or not.
+     * 
+     * @return Whether to compress the cache files.
+     */
+    public boolean isCompressCache() {
+        return compressCache;
+    }
 
     /**
      * The timeout that the provider waits until the extractor is stopped.
@@ -247,6 +258,15 @@ public class CodeExtractorConfiguration implements IConfiguration {
      */
     public void setCacheDir(File cacheDir) {
         this.cacheDir = cacheDir;
+    }
+    
+    /**
+     * Sets whether the cache should be compressed.
+     * 
+     * @param compressCache Whether the cache files should be compressed or not.
+     */
+    public void setCompressCache(boolean compressCache) {
+        this.compressCache = compressCache;
     }
     
     /**

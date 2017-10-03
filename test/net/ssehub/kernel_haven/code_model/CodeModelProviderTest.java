@@ -1,5 +1,6 @@
 package net.ssehub.kernel_haven.code_model;
 
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -235,7 +236,7 @@ public class CodeModelProviderTest {
     }
     
     /**
-     * Tests if the code model is read from the cache.
+     * Tests if the code model is written to the cache.
      * 
      * @throws SetUpException unwanted.
      * @throws IOException unwanted.
@@ -270,6 +271,50 @@ public class CodeModelProviderTest {
         
         // test if cache is now not empty
         assertThat(cacheDir.listFiles().length, is(1));
+        
+        // cleanup
+        Util.deleteFolder(cacheDir);
+    }
+    
+    /**
+     * Tests if the code model is written compressed to the cache.
+     * 
+     * @throws SetUpException unwanted.
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testCacheWriteCompressed() throws SetUpException, IOException {
+        File cacheDir = new File("testdata/cmCaching/tmp_cache");
+        cacheDir.mkdir();
+        
+        // precondition: cache directory is empty
+        assertThat(cacheDir.listFiles().length, is(0));
+        
+        Properties config = new Properties();
+        config.setProperty("code.extractor.files", "test.c");
+        config.setProperty("code.extractor.file_pattern", ".*");
+        config.setProperty("source_tree", SOURCE_TREE.getAbsolutePath());
+        config.setProperty("cache_dir", cacheDir.getAbsolutePath());
+        config.setProperty("code.provider.cache.write", "true");
+        config.setProperty("code.provider.cache.compress", "true");
+        CodeModelProvider provider = new CodeModelProvider();
+        PseudoExtractor extractor = new PseudoExtractor(false);
+        provider.setExtractor(extractor);
+
+        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.start();
+        assertThat(provider.getNextResult(), notNullValue());
+        
+        // synchronize with the writing, since it runs in parallel to us...
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+        }
+        
+        // test if cache is now not empty
+        File[] cacheFiles = cacheDir.listFiles();
+        assertThat(cacheFiles.length, is(1));
+        assertThat(cacheFiles[0].getName(), endsWith(".zip"));
         
         // cleanup
         Util.deleteFolder(cacheDir);

@@ -75,7 +75,7 @@ public class CodeModelProvider extends AbstractProvider<SourceFile, CodeExtracto
 
     @Override
     protected AbstractCache<SourceFile> createCache() {
-        return new CodeModelCache(config.getCacheDir());
+        return new CodeModelCache(config.getCacheDir(), config.isCompressCache());
     }
 
     @Override
