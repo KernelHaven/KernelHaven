@@ -370,8 +370,7 @@ public class PipelineConfigurator {
     private void archive() {
         // this setting is overriden by the command line option in Run.main()
         if (config.isArchive()) {
-            PipelineArchiver archiver = new PipelineArchiver();
-            archiver.setConfig(config);
+            PipelineArchiver archiver = new PipelineArchiver(config);
             archiver.setAnalysisOutputFiles(analysis.getOutputFiles());
             
             try {

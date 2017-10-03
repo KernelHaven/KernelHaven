@@ -1,6 +1,5 @@
 package net.ssehub.kernel_haven.util;
 
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
@@ -8,9 +7,10 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Properties;
+import java.util.Set;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -92,8 +92,7 @@ public class PipelineArchiverTest {
         File testDir = getTestDirectory("basic");
         Configuration config = prepareConfig(testDir, "basic.properties");
         
-        PipelineArchiver archiver = new PipelineArchiver();
-        archiver.setConfig(config);
+        PipelineArchiver archiver = new PipelineArchiver(config);
         archiver.setKernelHavenJarOverride(new File(testDir, "kernel_haven.jar"));
         
         result = archiver.archive();
@@ -101,13 +100,16 @@ public class PipelineArchiverTest {
         
         assertThat(result.isFile(), is(true));
         
-        Collection<String> filenames = ZipperTest.getZipEntriesForFile(result);
+        ZipArchive archive = new ZipArchive(result);
         
-        assertThat(filenames.size(), is(4));
-        assertThat(filenames, hasItem("basic.properties"));
-        assertThat(filenames, hasItem("plugins/"));
-        assertThat(filenames, hasItem("plugins/test.jar"));
-        assertThat(filenames, hasItem("kernel_haven.jar"));
+        Set<File> files = archive.listFiles();
+        assertThat(files.size(), is(3));
+        assertThat(files, CoreMatchers.hasItems(
+                new File("basic.properties"),
+                new File("plugins/test.jar"),
+                new File("kernel_haven.jar")));
+        
+        archive.close();
         
         result.delete();
     }
@@ -123,8 +125,7 @@ public class PipelineArchiverTest {
         File testDir = getTestDirectory("fallback");
         Configuration config = prepareConfig(testDir, "fallback.properties");
         
-        PipelineArchiver archiver = new PipelineArchiver();
-        archiver.setConfig(config);
+        PipelineArchiver archiver = new PipelineArchiver(config);
         archiver.setKernelHavenJarOverride(new File(testDir, "../fallback_kernel_haven.jar"));
         
         result = archiver.archive();
@@ -132,13 +133,16 @@ public class PipelineArchiverTest {
         
         assertThat(result.isFile(), is(true));
         
-        Collection<String> filenames = ZipperTest.getZipEntriesForFile(result);
+        ZipArchive archive = new ZipArchive(result);
+
+        Set<File> files = archive.listFiles();
+        assertThat(files.size(), is(3));
+        assertThat(files, CoreMatchers.hasItems(
+                new File("fallback.properties"),
+                new File("plugins/test.jar"),
+                new File("fallback_kernel_haven.jar")));
         
-        assertThat(filenames.size(), is(4));
-        assertThat(filenames, hasItem("fallback.properties"));
-        assertThat(filenames, hasItem("fallback_plugins/"));
-        assertThat(filenames, hasItem("fallback_plugins/test.jar"));
-        assertThat(filenames, hasItem("fallback_kernel_haven.jar"));
+        archive.close();
         
         result.delete();
     }
@@ -154,8 +158,7 @@ public class PipelineArchiverTest {
         File testDir = getTestDirectory("different_names");
         Configuration config = prepareConfig(testDir, "different_names.properties");
         
-        PipelineArchiver archiver = new PipelineArchiver();
-        archiver.setConfig(config);
+        PipelineArchiver archiver = new PipelineArchiver(config);
         archiver.setKernelHavenJarOverride(new File(testDir, "main.jar"));
         
         result = archiver.archive();
@@ -163,14 +166,54 @@ public class PipelineArchiverTest {
         
         assertThat(result.isFile(), is(true));
         
-        Collection<String> filenames = ZipperTest.getZipEntriesForFile(result);
+        ZipArchive archive = new ZipArchive(result);
+
+        Set<File> files = archive.listFiles();
+        assertThat(files.size(), is(3));
+        assertThat(files, CoreMatchers.hasItems(
+                new File("different_names.properties"),
+                new File("addons/a_plugin.jar"),
+                new File("main.jar")));
         
-        assertThat(filenames.size(), is(4));
-        assertThat(filenames, hasItem("different_names.properties"));
-        assertThat(filenames, hasItem("addons/"));
-        assertThat(filenames, hasItem("addons/a_plugin.jar"));
-        assertThat(filenames, hasItem("main.jar"));
+        archive.close();
         
+        result.delete();
+    }
+    
+    /**
+     * Tests whether the additional dirs (like cache and res) are added correctly.
+     * 
+     * @throws SetUpException unwanted.
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testAdditonalDirs() throws SetUpException, IOException {
+        File testDir = getTestDirectory("additonal_dirs");
+        Configuration config = prepareConfig(testDir, "config.properties");
+        
+        PipelineArchiver archiver = new PipelineArchiver(config);
+        archiver.setKernelHavenJarOverride(new File(testDir, "kernel_haven.jar"));
+        
+        result = archiver.archive();
+        assertThat(result.getAbsolutePath(), startsWith(new File("testdata/archiver").getAbsolutePath()));
+        
+        assertThat(result.isFile(), is(true));
+        
+        try (ZipArchive archive = new ZipArchive(result)) {
+            Set<File> files = archive.listFiles();
+            
+            System.out.println(files); // TODO
+            
+            assertThat(files.size(), is(6));
+            assertThat(files, CoreMatchers.hasItems(
+                    new File("config.properties"),
+                    new File("plugins/test.jar"),
+                    new File("cache/some_cache.txt"),
+                    new File("my_resource_dir/some_res.txt"),
+                    new File("source_tree/test.source_file"),
+                    new File("kernel_haven.jar")));
+        
+        }
         result.delete();
     }
 

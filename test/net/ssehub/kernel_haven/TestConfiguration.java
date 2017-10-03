@@ -40,12 +40,15 @@ public class TestConfiguration extends Configuration {
         
         this.archive = Boolean.parseBoolean(getProperty("archive", "false"));
         this.archiveDir = readFileProperty("archive.dir", new FileProps());
+        this.archiveCacheDir = Boolean.parseBoolean(getProperty("archive.cache_dir", "false"));
+        this.archiveResDir = Boolean.parseBoolean(getProperty("archive.res_dir", "false"));
+        this.archiveSourceTree = Boolean.parseBoolean(getProperty("archive.source_tree", "false"));
         
         // analysis
         this.analysisClassName = getProperty("analysis.class");
         
         // common extractor stuff
-        this.sourceTree =  readFileProperty("source_tree", new FileProps());
+        this.sourceTree = readFileProperty("source_tree", new FileProps());
         this.arch = getProperty("arch");
         
         // code

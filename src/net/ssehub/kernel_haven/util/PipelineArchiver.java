@@ -2,6 +2,8 @@ package net.ssehub.kernel_haven.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
@@ -27,16 +29,10 @@ public class PipelineArchiver {
     
     /**
      * Creates a new PipelineArchiver for the given pipeline.
-     */
-    public PipelineArchiver() {
-    }
-    
-    /**
-     * Sets the configuration of the pipeline.
      * 
      * @param config The configuration of the pipeline.
      */
-    public void setConfig(Configuration config) {
+    public PipelineArchiver(Configuration config) {
         this.config = config;
     }
     
@@ -72,63 +68,108 @@ public class PipelineArchiver {
         LocalDateTime now = LocalDateTime.now();
         File archiveTargetDir = config.getArchiveDir();
         File archiveTargetFile = new File(archiveTargetDir, "archived_execution_" + dtf.format(now) + ".zip");
-        Zipper zipper = new Zipper(archiveTargetFile);
+        ZipArchive archive = new ZipArchive(archiveTargetFile);
         
         relativeBase = new File(config.getPropertyFile().getCanonicalPath()).getParentFile();
         
-        addFileToZipper(zipper, config.getPropertyFile(), "", "Could not archive configuration");
-        addFileToZipper(zipper, config.getPluginsDir(), "", "Could not archive plugin jars");
+        addFileToArchive(archive, config.getPropertyFile(), new File(""), "Could not archive configuration");
+        for (File plugin : config.getPluginsDir().listFiles()) {
+            addFileToArchive(archive, plugin, new File("plugins"), "Could not archive plugin " + plugin.getName());
+        }
         if (outputFiles != null) {
             for (File outputFile : outputFiles) {
-                addFileToZipper(zipper, outputFile, "/output", "Could not archive output file");
+                addFileToArchive(archive, outputFile, new File("output"), "Could not archive output file");
             }
         }
         if (LOGGER.getLogFile() != null) {
-            addFileToZipper(zipper, LOGGER.getLogFile(), "/log", "Could not archive log file");
+            addFileToArchive(archive, LOGGER.getLogFile(), new File("log"), "Could not archive log file");
         }
         if (config.isArchiveSourceTree()) {
-            addFileToZipper(zipper, config.getSourceTree(), "", "Could not archive source tree");
+            addDirToArchive(archive, config.getSourceTree(), new File("source_tree"),
+                    "Could not archive source tree correclty");
         }
         if (config.isArchiveResDir()) {
-            addFileToZipper(zipper, config.getResourceDir(), "", "Could not archive resource directory");
+            addDirToArchive(archive, config.getResourceDir(), new File("res"),
+                    "Could not archive resource directory correctly");
         }
         if (config.isArchiveCacheDir()) {
-            addFileToZipper(zipper, config.getCacheDir(), "", "Could not archive cache directory");
+            addDirToArchive(archive, config.getCacheDir(), new File("cache"),
+                    "Could not archive cache directory correctly");
         }
         File kernelHavenJar = kernelHavenJarOverride;
         if (kernelHavenJar == null) {
             kernelHavenJar = new File(getClass().getProtectionDomain()
                     .getCodeSource().getLocation().getFile());
         }
-        addFileToZipper(zipper, kernelHavenJar, "", "Could not archive main jar file");
+        addFileToArchive(archive, kernelHavenJar, new File(""), "Could not archive main jar file");
+        
+        archive.close();
         
         LOGGER.logInfo("Archiving finished");
         return archiveTargetFile;
     }
     
     /**
-     * Adds a file to the given zipper. The location inside the filename is based on the relative location to 
+     * Adds a file to the given archive. The location inside the filename is based on the relative location to 
      * relativeBase.
      * 
-     * @param zipper The zipper to add to.
+     * @param archive The archive to add to.
      * @param toAdd The file to add.
-     * @param fallback The fallback location in the zip if toAdd is not inside of relativePath. The filename of toAdd
+     * @param fallbackDir The fallback location in the zip if toAdd is not inside of relativePath. The filename of toAdd
      *      will be appended to this.
      * @param message A warning message to be displayed if archiving this file failed.
      */
-    private void addFileToZipper(Zipper zipper, File toAdd, String fallback, String message) {
+    private void addFileToArchive(ZipArchive archive, File toAdd, File fallbackDir, String message) {
         try {
+            File inZipLocation = new File(fallbackDir, toAdd.getName());
+            
             String fullToAdd = toAdd.getCanonicalPath();
             String fullRelative = relativeBase.getCanonicalPath() + File.separatorChar;
-            
-            String nameInZip = fallback + File.separatorChar + toAdd.getName();
-            
             if (fullToAdd.startsWith(fullRelative)) {
-                nameInZip = File.separatorChar + fullToAdd.substring(fullRelative.length());
+                inZipLocation = new File(fullToAdd.substring(fullRelative.length()));
             }
-        
-            zipper.copyFileToZip(toAdd, nameInZip);
+            
+            archive.copyFileToArchive(inZipLocation, toAdd);
         } catch (IOException e) {
+            LOGGER.logExceptionWarning(message, e);
+        }
+    }
+    
+    /**
+     * Adds all files from a given directory to the archive, recursively. The location inside the filename is based on
+     * the relative location to relativeBase.
+     * 
+     * @param archive The archive to add to.
+     * @param dirToAdd The directory to add.
+     * @param fallbackDir The path inside the archive to use instead, if toAdd is not relative to relativeBase.
+     * @param message The message to be displayed if archiving this file failed.
+     */
+    private void addDirToArchive(ZipArchive archive, File dirToAdd, File fallbackDir, String message) {
+        try {
+            File inZipLocationMutable = fallbackDir;
+            String fullToAdd = dirToAdd.getCanonicalPath();
+            String fullRelative = relativeBase.getCanonicalPath() + File.separatorChar;
+            if (fullToAdd.startsWith(fullRelative)) {
+                inZipLocationMutable = new File(fullToAdd.substring(fullRelative.length()));
+            }
+            File inZipLocation = inZipLocationMutable;
+            
+            Files.walk(dirToAdd.toPath())
+                .forEach((path) -> {
+                    if (Files.isRegularFile(path)) {
+                        // path contains the file path in the actual file system
+                        // create inZip, which contains the path that the file should have in the archive
+                        //   this is based on the inZipLocation
+                        File inZip = new File(inZipLocation, dirToAdd.toPath().relativize(path).toString());
+                        try {
+                            archive.copyFileToArchive(inZip, path.toFile());
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    }
+                });
+            
+        } catch (IOException | UncheckedIOException e) {
             LOGGER.logExceptionWarning(message, e);
         }
     }
