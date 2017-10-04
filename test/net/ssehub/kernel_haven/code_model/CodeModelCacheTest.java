@@ -98,20 +98,20 @@ public class CodeModelCacheTest {
         Iterator<CodeElement> originalIt = originalSourceFile.iterator();
         Iterator<CodeElement> readIt = readSourceFile.iterator();
 
-        assertBlockEqual(readIt.next(), originalIt.next());
-        assertBlockEqual(readIt.next(), originalIt.next());
+        assertElementEqual(readIt.next(), originalIt.next());
+        assertElementEqual(readIt.next(), originalIt.next());
         assertThat(readIt.hasNext(), is(false));
     }
 
     /**
-     * Asserts that both blocks are equal. Recursively checks child blocks, too.
+     * Asserts that both elements are equal. Recursively checks child elements, too.
      * 
      * @param actual
      *            The actual value.
      * @param expected
      *            The expected value.
      */
-    private void assertBlockEqual(CodeElement actual, CodeElement expected) {
+    private void assertElementEqual(CodeElement actual, CodeElement expected) {
         assertThat(actual.getClass(), is((Object) expected.getClass()));
         assertThat(actual.getLineStart(), is(expected.getLineStart()));
         assertThat(actual.getLineEnd(), is(expected.getLineEnd()));
@@ -127,7 +127,7 @@ public class CodeModelCacheTest {
 
             CodeElement actualChild = actualIt.next();
             CodeElement expectedChild = expectedIt.next();
-            assertBlockEqual(actualChild, expectedChild);
+            assertElementEqual(actualChild, expectedChild);
         }
         assertThat(actualIt.hasNext(), is(false));
     }
@@ -320,8 +320,8 @@ public class CodeModelCacheTest {
         Iterator<CodeElement> originalIt = originalSourceFile.iterator();
         Iterator<CodeElement> readIt = readSourceFile.iterator();
 
-        assertBlockEqual(readIt.next(), originalIt.next());
-        assertBlockEqual(readIt.next(), originalIt.next());
+        assertElementEqual(readIt.next(), originalIt.next());
+        assertElementEqual(readIt.next(), originalIt.next());
         assertThat(readIt.hasNext(), is(false));
     }
     
@@ -361,8 +361,8 @@ public class CodeModelCacheTest {
         Iterator<CodeElement> originalIt = originalSourceFile.iterator();
         Iterator<CodeElement> readIt = readSourceFile.iterator();
 
-        assertBlockEqual(readIt.next(), originalIt.next());
-        assertBlockEqual(readIt.next(), originalIt.next());
+        assertElementEqual(readIt.next(), originalIt.next());
+        assertElementEqual(readIt.next(), originalIt.next());
         assertThat(readIt.hasNext(), is(false));
     }
 

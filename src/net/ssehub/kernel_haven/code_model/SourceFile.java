@@ -66,7 +66,7 @@ public class SourceFile implements Iterable<CodeElement> {
     /**
      * Returns the number of top elements (not nested in other elements).
      *  
-     * @return the number of blocks.
+     * @return the number of elements.
      */
     public int getTopElementCount() {
         return elements.size();

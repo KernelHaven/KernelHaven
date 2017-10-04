@@ -113,7 +113,7 @@ public class SyntaxElement implements CodeElement {
         }
         nested.add((SyntaxElement) element);     
         
-        // if relations.size() >= nested.size(), then we already had a pre-defined relation for this block
+        // if relations.size() >= nested.size(), then we already had a pre-defined relation for this lement
         // (e.g. from CSV deserializtaion).
         if (relations.size() < nested.size()) {
             relations.add("");
@@ -180,7 +180,7 @@ public class SyntaxElement implements CodeElement {
      * cache calls addNestedElement() a bunch of times. Package visibility; should only be used by
      * {@link SyntaxElementCsvUtil}.
      * 
-     * @param relation The relations of the children blocks.
+     * @param relation The relations of the children elements.
      */
     void setDeserializedRelations(List<String> relation) {
         this.relations = relation;
@@ -205,9 +205,9 @@ public class SyntaxElement implements CodeElement {
     }
 
     /**
-     * Iterates over the blocks nested inside this blocks. Not recursively.
+     * Iterates over the elements nested inside this element. Not recursively.
      * 
-     * @return An iterable over the nested blocks.
+     * @return An iterable over the nested elements
      */
     public Iterable<SyntaxElement> iterateNestedSyntaxElements() {
         return new Iterable<SyntaxElement>() {
@@ -244,7 +244,7 @@ public class SyntaxElement implements CodeElement {
      * @param relation The relation of this node to its parent.
      * @param indentation The indentation. Contains only tabs. Never null.
      * 
-     * @return This block as a string. Never null.
+     * @return This element as a string. Never null.
      */
     private String toString(String relation, String indentation) {
         StringBuilder result = new StringBuilder();
