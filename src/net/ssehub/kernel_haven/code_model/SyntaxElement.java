@@ -250,7 +250,7 @@ public class SyntaxElement implements CodeElement {
         StringBuilder result = new StringBuilder();
         
         String conditionStr = condition.toString();
-        if (conditionStr.length() > 16) {
+        if (conditionStr.length() > 64) {
             conditionStr = "...";
         }
         
