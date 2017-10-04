@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,7 +123,8 @@ public class Logger {
         this.infoLogging = config.isLogInfo();
 
         if (fileLogging) {
-            logFile = new File(config.getLogDir(), "KernelHaven_" + getTimestampForFile() + ".log");
+            logFile = new File(config.getLogDir(), 
+                    Timestamp.INSTANCE.getFilename("KernelHaven", "log"));
         }
 
         if (!consoleLogging) {
@@ -157,29 +156,6 @@ public class Logger {
      */
     List<Target> getTargets() {
         return targets;
-    }
-
-    /**
-     * Gets the time stamp for the current time and date.
-     *
-     * @return the time stamp
-     */
-    private static String getTimestamp() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
-    }
-
-    /**
-     * Gets the time stamp for the current time and date repleacing : by - for
-     * filenames.
-     *
-     * @return the time stamp
-     */
-    private static String getTimestampForFile() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
     }
 
     /**
@@ -233,7 +209,7 @@ public class Logger {
      */
     private String constructHeader(String level) {
         StringBuffer hdr = new StringBuffer();
-        String timestamp = Logger.getTimestamp();
+        String timestamp = new Timestamp().getTimestamp();
 
         hdr.append('[').append(level).append("] [").append(timestamp).append("] [")
                 .append(Thread.currentThread().getName()).append("] ");

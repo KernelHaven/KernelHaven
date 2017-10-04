@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 import net.ssehub.kernel_haven.config.Configuration;
@@ -64,10 +62,9 @@ public class PipelineArchiver {
     public File archive() throws IOException {
         LOGGER.logInfo("Archiving the pipeline...");
         
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-        LocalDateTime now = LocalDateTime.now();
         File archiveTargetDir = config.getArchiveDir();
-        File archiveTargetFile = new File(archiveTargetDir, "archived_execution_" + dtf.format(now) + ".zip");
+        File archiveTargetFile = new File(archiveTargetDir,
+                Timestamp.INSTANCE.getFilename("archived_execution", "zip"));
         ZipArchive archive = new ZipArchive(archiveTargetFile);
         
         relativeBase = new File(config.getPropertyFile().getCanonicalPath()).getParentFile();
