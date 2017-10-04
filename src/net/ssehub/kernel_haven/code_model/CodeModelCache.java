@@ -94,6 +94,8 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
     public void write(SourceFile file) throws IOException {
         File cacheFile;
         if (compress) {
+            // delete the uncompressed version, since this method is supposed to overwrite any previous cache
+            getCacheFile(file.getPath()).delete();
             cacheFile = getCompressedCacheFile(file.getPath());
         } else {
             cacheFile = getCacheFile(file.getPath());
