@@ -202,8 +202,6 @@ public class PipelineArchiverTest {
         try (ZipArchive archive = new ZipArchive(result)) {
             Set<File> files = archive.listFiles();
             
-            System.out.println(files); // TODO
-            
             assertThat(files.size(), is(6));
             assertThat(files, CoreMatchers.hasItems(
                     new File("config.properties"),
