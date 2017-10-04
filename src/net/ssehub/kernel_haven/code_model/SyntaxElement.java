@@ -44,7 +44,7 @@ public class SyntaxElement implements CodeElement {
         this.relations = new LinkedList<>();
         this.lineStart = -1;
         this.lineEnd = -1;
-        this.sourceFile = new File("<unkown>");
+        this.sourceFile = new File("<unknown>");
         this.condition = condition;
         this.presenceCondition = presencCondition;
         this.type = type;

@@ -309,7 +309,7 @@ public class NonBooleanPreperation {
                             break;
                             
                         default:
-                            System.err.println("Unkown operator: " + op.operator);
+                            System.err.println("Unknown operator: " + op.operator);
                             break;
                         }
                     }

@@ -97,7 +97,7 @@ public class CStyleBooleanGrammar extends Grammar<Formula> {
         if (operator.equals(NOT)) {
             return new Negation(child);
         } else {
-            throw new ExpressionFormatException("Unkown operator: " + operator);
+            throw new ExpressionFormatException("Unknown operator: " + operator);
         }
     }
 
@@ -110,7 +110,7 @@ public class CStyleBooleanGrammar extends Grammar<Formula> {
         } else if (operator.equals(OR)) {
             result = new Disjunction(left, right);
         } else {
-            throw new ExpressionFormatException("Unkown operator: " + operator);
+            throw new ExpressionFormatException("Unknown operator: " + operator);
         }
 
         return result;

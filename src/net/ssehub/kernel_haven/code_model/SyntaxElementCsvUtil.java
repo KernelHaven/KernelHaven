@@ -91,7 +91,7 @@ public class SyntaxElementCsvUtil {
         } else {
             type = SyntaxElementTypes.getByName(typeText);
             if (type == null) {
-                throw new FormatException("Unkown SyntaxElement type: " + typeText);
+                throw new FormatException("Unknown SyntaxElement type: " + typeText);
             }
         }
         
@@ -134,7 +134,7 @@ public class SyntaxElementCsvUtil {
             typeText = type.toString();
         } else {
             // TODO: error handling
-            typeText = "Error: Unkown type found in AST";
+            typeText = "Error: Unknown type found in AST";
         }
         
         result.add(element.getLineStart() + "");

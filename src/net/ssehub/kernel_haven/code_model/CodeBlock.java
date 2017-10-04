@@ -39,7 +39,7 @@ public class CodeBlock implements CodeElement {
         this.nested = new LinkedList<>();
         this.lineStart = -1;
         this.lineEnd = -1;
-        this.sourceFile = new File("<unkown>");
+        this.sourceFile = new File("<unknown>");
         this.presenceCondition = presenceCondition;
     }
     
