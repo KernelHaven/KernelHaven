@@ -1,8 +1,13 @@
 package net.ssehub.kernel_haven.analysis;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.Logger;
+import net.ssehub.kernel_haven.util.Timestamp;
 
 /**
  * A component of an analysis. Multiple of these can be combined together, to form an analysis pipeline.
@@ -22,6 +27,8 @@ public abstract class AnalysisComponent<O> {
     
     private boolean logResults;
     
+    private PrintStream out;
+    
     /**
      * Creates a new analysis component.
      * 
@@ -31,6 +38,15 @@ public abstract class AnalysisComponent<O> {
         results = new BlockingQueue<>();
         
         logResults = config.getLoggingAnalyissComponents().contains(getClass().getSimpleName());
+        if (logResults) {
+            // TODO properly create this
+            try {
+                out = new PrintStream(new File(config.getOutputDir(),
+                        Timestamp.INSTANCE.getFilename(getClass().getSimpleName() + "_intermediate_result", "txt")));
+            } catch (FileNotFoundException e) {
+                LOGGER.logExceptionWarning("Can't create intermediate output file", e);
+            }
+        }
         
         Thread th = new Thread(() -> {
             try {
@@ -62,9 +78,13 @@ public abstract class AnalysisComponent<O> {
         results.add(result);
         
         if (logResults) {
-            // TODO: log result to file
-            Logger.get().logInfo("Analysis component " + getClass().getSimpleName()
+            LOGGER.logInfo("Analysis component " + getClass().getSimpleName()
                     + " intermediate result: " + result);
+            // TODO: log result to file
+            if (out != null) {
+                out.println(result.toString());
+                out.flush();
+            }
         }
     }
     
@@ -73,6 +93,9 @@ public abstract class AnalysisComponent<O> {
      */
     private void done() {
         results.end();
+        if (out != null) {
+            out.close();
+        }
     }
     
     /**

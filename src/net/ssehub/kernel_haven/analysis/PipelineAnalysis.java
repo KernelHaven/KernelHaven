@@ -1,5 +1,6 @@
 package net.ssehub.kernel_haven.analysis;
 
+import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import net.ssehub.kernel_haven.code_model.SourceFile;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.provider.AbstractProvider;
 import net.ssehub.kernel_haven.util.ExtractorException;
+import net.ssehub.kernel_haven.util.Timestamp;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 
 /**
@@ -86,11 +88,18 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             this.bmStarter.start();
             this.cmStarter.start();
             
+            PrintStream out = createResultStream(
+                    Timestamp.INSTANCE.getFilename(mainComponent.getClass().getSimpleName() + "_result", "txt"));
+            
             Object result;
             while ((result = mainComponent.getNextResult()) != null) {
-                // TODO: log result to file
                 LOGGER.logInfo("Got analysis result: " + result.toString());
+                // TODO: log result to file
+                out.println(result.toString());
+                out.flush();
             }
+            
+            out.close();
             
         } catch (SetUpException e) {
             LOGGER.logException("Exception while setting up", e);
