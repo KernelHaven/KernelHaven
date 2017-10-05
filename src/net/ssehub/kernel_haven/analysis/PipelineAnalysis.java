@@ -74,19 +74,19 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
     @Override
     public void run() {
         try {
+            vmStarter = new ExtractorDataDuplicator<>(vmProvider, false);
+            bmStarter = new ExtractorDataDuplicator<>(bmProvider, false);
+            cmStarter = new ExtractorDataDuplicator<>(cmProvider, true);
+        
+            AnalysisComponent<?> mainComponent = createPipeline();
+            
             vmProvider.start();
             bmProvider.start();
             cmProvider.start();
             
-            this.vmStarter = new ExtractorDataDuplicator<>(vmProvider, false);
-            this.bmStarter = new ExtractorDataDuplicator<>(bmProvider, false);
-            this.cmStarter = new ExtractorDataDuplicator<>(cmProvider, true);
-        
-            AnalysisComponent<?> mainComponent = createPipeline();
-            
-            this.vmStarter.start();
-            this.bmStarter.start();
-            this.cmStarter.start();
+            vmStarter.start();
+            bmStarter.start();
+            cmStarter.start();
             
             PrintStream out = createResultStream(
                     Timestamp.INSTANCE.getFilename(mainComponent.getClass().getSimpleName() + "_result", "txt"));
