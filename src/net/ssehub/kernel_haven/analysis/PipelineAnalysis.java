@@ -73,6 +73,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
 
     @Override
     public void run() {
+        Thread.currentThread().setName("AnalysisPipelineController");
         try {
             vmStarter = new ExtractorDataDuplicator<>(vmProvider, false);
             bmStarter = new ExtractorDataDuplicator<>(bmProvider, false);

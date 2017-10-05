@@ -54,7 +54,7 @@ public abstract class AnalysisComponent<O> {
             } finally {
                 done();
             }
-        }, "AnalysisComponent " + getClass().getSimpleName());
+        }, getClass().getSimpleName());
         th.setDaemon(true); //don't cause a deadlock with accidentally created AnalysisComponents that will never finish
         th.start();
     }
