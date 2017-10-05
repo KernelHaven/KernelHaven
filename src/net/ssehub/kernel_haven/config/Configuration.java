@@ -396,6 +396,37 @@ public class Configuration implements IConfiguration {
     }
     
     /**
+     * Reads a property from the user configuration file and returns an File object.<br/>
+     * Will return:
+     * <ol>
+     *   <li>The read value treated as absolute position</li>
+     *   <li>The read value treated as position relative to {@link #getSourceTree()}</li>
+     * </ol>
+     * @param key The key of the property to read.
+     * @return The value as file object.
+     * @throws SetUpException If the property was not specified or the file does not exist.
+     */
+    public File getFileProperty(String key) throws SetUpException {
+        String strFile = getProperty(key);
+        if (null == strFile) {
+            throw new SetUpException(key + " property was not specified.");
+        }
+        
+        // First try to load this file as absolute position
+        File file = new File(strFile);
+        if (!file.exists()) {
+            // Fallback: Try to load the parameter as relative path
+            file = new File(getSourceTree(), strFile);
+            
+            if (!file.exists()) {
+                throw new SetUpException(key + " = " + strFile + " points to an invalid location.");
+            }
+        }
+        
+        return file;
+    }
+    
+    /**
      * Reads a property from the user configuration and returns an enum value.<br/>
      * Will return:
      * <ol>
