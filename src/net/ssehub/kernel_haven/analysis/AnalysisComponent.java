@@ -13,6 +13,11 @@ import net.ssehub.kernel_haven.util.Logger;
  */
 public abstract class AnalysisComponent<O> {
     
+    /**
+     * Shorthand for the global singleton logger.
+     */
+    protected static final Logger LOGGER = Logger.get();
+    
     private BlockingQueue<O> results;
     
     private boolean logResults;
