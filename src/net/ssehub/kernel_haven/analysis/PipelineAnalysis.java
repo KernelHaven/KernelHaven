@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.analysis;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.build_model.BuildModel;
 import net.ssehub.kernel_haven.code_model.SourceFile;
@@ -15,11 +18,11 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModel;
  */
 public abstract class PipelineAnalysis extends AbstractAnalysis {
 
-    private StartingComponent<VariabilityModel> vmStarter;
+    private ExtractorDataDuplicator<VariabilityModel> vmStarter;
     
-    private StartingComponent<BuildModel> bmStarter;
+    private ExtractorDataDuplicator<BuildModel> bmStarter;
     
-    private StartingComponent<SourceFile> cmStarter;
+    private ExtractorDataDuplicator<SourceFile> cmStarter;
     
     /**
      * Creates a new {@link PipelineAnalysis}.
@@ -36,7 +39,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * @return The {@link AnalysisComponent} that provides the variability model.
      */
     protected AnalysisComponent<VariabilityModel> getVmComponent() {
-        return vmStarter;
+        return vmStarter.createNewStartingComponent(config);
     }
     
     /**
@@ -45,7 +48,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * @return The {@link AnalysisComponent} that provides the build model.
      */
     protected AnalysisComponent<BuildModel> getBmComponent() {
-        return bmStarter;
+        return bmStarter.createNewStartingComponent(config);
     }
     
     /**
@@ -54,7 +57,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * @return The {@link AnalysisComponent} that provides the code model.
      */
     protected AnalysisComponent<SourceFile> getCmComponent() {
-        return cmStarter;
+        return cmStarter.createNewStartingComponent(config);
     }
     
     /**
@@ -73,11 +76,15 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             bmProvider.start();
             cmProvider.start();
             
-            this.vmStarter = new StartingComponent<>(config, vmProvider, false);
-            this.bmStarter = new StartingComponent<>(config, bmProvider, false);
-            this.cmStarter = new StartingComponent<>(config, cmProvider, true);
+            this.vmStarter = new ExtractorDataDuplicator<>(vmProvider, false);
+            this.bmStarter = new ExtractorDataDuplicator<>(bmProvider, false);
+            this.cmStarter = new ExtractorDataDuplicator<>(cmProvider, true);
         
             AnalysisComponent<?> mainComponent = createPipeline();
+            
+            this.vmStarter.start();
+            this.bmStarter.start();
+            this.cmStarter.start();
             
             Object result;
             while ((result = mainComponent.getNextResult()) != null) {
@@ -91,37 +98,68 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
     }
     
     /**
-     * A starting component for the analysis pipeline. These get their data from the extractors.
-     *  
-     * @param <T> The type of result data that this produces.
+     * A class for duplicating the extractor data. This way, multiple analysis components can have the same models
+     * as their input data.
      * 
-     * @author Adam
+     * @param <T> The type of model to duplicate.
      */
-    private static class StartingComponent<T> extends AnalysisComponent<T> {
-
+    private static class ExtractorDataDuplicator<T> implements Runnable {
+        
         private AbstractProvider<T, ?> provider;
         
         private boolean multiple;
         
+        private List<StartingComponent<T>> startingComponents;
+        
         /**
-         * Creates a new starting component.
+         * Creates a new ExtractorDataDuplicator.
          * 
-         * @param config The global configuration.
          * @param provider The provider to get the data from.
          * @param multiple Whether the provider should be polled multiple times or just onece.
          */
-        public StartingComponent(Configuration config, AbstractProvider<T, ?> provider, boolean multiple) {
-            super(config);
+        public ExtractorDataDuplicator(AbstractProvider<T, ?> provider, boolean multiple) {
             this.provider = provider;
             this.multiple = multiple;
+            startingComponents = new LinkedList<>();
+        }
+        
+        /**
+         * Creates a new starting component that will get its own copy of the data from us.
+         * 
+         * @param config The configuration to create the component with.
+         * 
+         * @return The starting component that can be used as input data for other analysis components.
+         */
+        public StartingComponent<T> createNewStartingComponent(Configuration config) {
+            StartingComponent<T> component = new StartingComponent<>(config);
+            startingComponents.add(component);
+            return component;
+        }
+        
+        /**
+         * Adds the given data element to all starting components.
+         * 
+         * @param data The data to add.
+         */
+        private void addToAllComponents(T data) {
+            for (StartingComponent<T> component : startingComponents) {
+                component.addResult(data);
+            }
+        }
+        
+        /**
+         * Starts a new thread that copies the extractor data to all stating components created up until now.
+         */
+        public void start() {
+            new Thread(this, "ExtractorDataDuplicator").start();
         }
 
         @Override
-        protected void execute() {
+        public void run() {
             if (multiple) {
                 T data;
                 while ((data = provider.getNextResult()) != null) {
-                    addResult(data);
+                    addToAllComponents(data);
                 }
                 
                 ExtractorException exc;
@@ -131,7 +169,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             } else {
                 T data = provider.getResult();
                 if (data != null) {
-                    addResult(data);
+                    addToAllComponents(data);
                 }
                 
                 ExtractorException exc = provider.getException();
@@ -140,6 +178,46 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
                 }
             }
             
+            for (StartingComponent<T> component : startingComponents) {
+                synchronized (component) {
+                    component.done = true;
+                    component.notifyAll();
+                }
+            }
+        }
+        
+    }
+    
+    /**
+     * A starting component for the analysis pipeline. This is used to pass the extractor data to the analysis
+     * components. This class does nothing; it is only used by {@link ExtractorDataDuplicator}.
+     *  
+     * @param <T> The type of result data that this produces.
+     */
+    private static class StartingComponent<T> extends AnalysisComponent<T> {
+
+        private boolean done = false;
+        
+        /**
+         * Creates a new starting component.
+         * 
+         * @param config The global configuration.
+         */
+        public StartingComponent(Configuration config) {
+            super(config);
+        }
+
+        @Override
+        protected void execute() {
+            // wait until the duplicator tells us that we are done
+            synchronized (this) {
+                while (!done) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
         }
         
     }
