@@ -3,7 +3,11 @@ package net.ssehub.kernel_haven.config;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -57,6 +61,8 @@ public class Configuration implements IConfiguration {
     // analysis
     
     protected String analysisClassName;
+    
+    protected Set<String> loggingAnalyissComponents;
     
     // common extractor
     
@@ -140,6 +146,12 @@ public class Configuration implements IConfiguration {
         
         // analysis
         this.analysisClassName = readStringRequiredProperty("analysis.class");
+        List<String> loggingComponents = readList("analysis.components.log");
+        if (loggingComponents != null) {
+            this.loggingAnalyissComponents = new HashSet<>(loggingComponents);
+        } else {
+            this.loggingAnalyissComponents = new HashSet<>();
+        }
         
         // common extractor stuff
         this.sourceTree =  readFileProperty("source_tree", new FileProps().existing().dir().readable());
@@ -315,6 +327,28 @@ public class Configuration implements IConfiguration {
             }
         }
         
+        return result;
+    }
+    
+    /**
+     * Reads a setting which has a comma separated list as the value.
+     * 
+     * @param key The property to read.
+     * @return The list of comma separated values, or <code>null</code> if the key is not present.
+     */
+    protected List<String> readList(String key) {
+        String value = getProperty(key);
+        
+        List<String> result = null;
+        
+        if (value != null) {
+            String[] parts = value.split(",");
+            result = new ArrayList<>(parts.length);
+            for (String part : parts) {
+                result.add(part.trim());
+            }
+        }
+
         return result;
     }
     
@@ -528,6 +562,16 @@ public class Configuration implements IConfiguration {
      */
     public String getAnalysisClassName() {
         return analysisClassName;
+    }
+    
+    /**
+     * Returns a set of simple class names. Analyses components with these class name should log their intermediate
+     * results.
+     * 
+     * @return A set of simple class names. Never <code>null</code>.
+     */
+    public Set<String> getLoggingAnalyissComponents() {
+        return loggingAnalyissComponents;
     }
 
     /**
