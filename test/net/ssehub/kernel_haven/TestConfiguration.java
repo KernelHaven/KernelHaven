@@ -1,6 +1,7 @@
 package net.ssehub.kernel_haven;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Properties;
 
 import net.ssehub.kernel_haven.config.Configuration;
@@ -46,6 +47,7 @@ public class TestConfiguration extends Configuration {
         
         // analysis
         this.analysisClassName = getProperty("analysis.class");
+        this.loggingAnalyissComponents = new HashSet<>();
         
         // common extractor stuff
         this.sourceTree = readFileProperty("source_tree", new FileProps());
