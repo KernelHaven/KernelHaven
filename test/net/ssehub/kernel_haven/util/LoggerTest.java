@@ -19,7 +19,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.TestConfiguration;
+import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 
 /**
  * The Class LoggerTest.

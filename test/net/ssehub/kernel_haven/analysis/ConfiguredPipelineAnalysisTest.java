@@ -9,10 +9,10 @@ import java.util.Properties;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.TestConfiguration;
 import net.ssehub.kernel_haven.build_model.BuildModel;
 import net.ssehub.kernel_haven.code_model.SourceFile;
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 
 /**

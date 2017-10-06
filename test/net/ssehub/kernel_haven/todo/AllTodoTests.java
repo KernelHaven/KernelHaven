@@ -5,12 +5,13 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * Test suite for this package.
- * @author El-Sharkawy
- *
+ * Tests for todo package.
  */
 @RunWith(Suite.class)
-@SuiteClasses({CPPUtilsTest.class, NonBooleanPreperationTest.class})
-public class AllNonBooleanPreparationTests {
+@SuiteClasses({
+    CPPUtilsTest.class,
+    NonBooleanPreperationTest.class,
+})
+public class AllTodoTests {
 
 }

@@ -16,8 +16,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.TestConfiguration;
 import net.ssehub.kernel_haven.config.CodeExtractorConfiguration;
+import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.util.CodeExtractorException;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.Logger;

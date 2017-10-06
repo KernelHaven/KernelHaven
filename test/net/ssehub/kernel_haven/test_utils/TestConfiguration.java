@@ -1,9 +1,10 @@
-package net.ssehub.kernel_haven;
+package net.ssehub.kernel_haven.test_utils;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Properties;
 
+import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 
 /**

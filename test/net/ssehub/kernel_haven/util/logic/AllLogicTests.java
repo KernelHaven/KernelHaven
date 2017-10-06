@@ -5,12 +5,14 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * The Suite for the logic package.
+ * Tests for util.logic package.
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    FormulaTest.class, ParserTest.class, SubFormulaCheckerTest.class
-    })
+    FormulaTest.class,
+    ParserTest.class,
+    SubFormulaCheckerTest.class,
+})
 public class AllLogicTests {
 
 }

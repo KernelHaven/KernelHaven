@@ -3,7 +3,6 @@ package net.ssehub.kernel_haven.test_utils;
 import java.util.Properties;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.TestConfiguration;
 import net.ssehub.kernel_haven.analysis.AnalysisComponent;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 
