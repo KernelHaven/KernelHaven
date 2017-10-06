@@ -16,7 +16,24 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
 
 /**
+ * <p>
  * Converts a given non Boolean expression into a Boolean expression.
+ * </p>
+ * <p>
+ * Non Boolean expressions are integer comparisons (==, !=, <=, >=, <, >). This conversion only supports integer
+ * comparisons with a variable on the left and an integer constant on the right.
+ * </p>
+ * <p>
+ * This conversion requires all variables that are compared to integers to be present as {@link FiniteIntegerVariable}s
+ * in the variability model. This is used to convert <=, >=, <, > into several == comparisons, based on the values
+ * specified in the {@link FiniteIntegerVariable}.
+ * </p>
+ * <p>
+ * In the result, all non Boolean integer comparisons will be replaced with formulas using variables in the following
+ * format: <code>&lt;variable&gt;_eq_&lt;value&gt;</code>. The formulas are equal to the original operator that was
+ * replaced.
+ * </p>
+ * 
  * @author Adam
  * @author El-Sharkawy
  */
@@ -33,17 +50,31 @@ public class NonBooleanConditionConverter {
     private String booleanFunction;
 
     /**
-     * Created a {@link NonBooleanConditionConverter} based on a configuration.
+     * Creates a {@link NonBooleanConditionConverter} based on a configuration.
      * Requires the {@value #PROPERTY_VARIABLE_PATTERN} to be specified.
      * @param config The configuration passed to KernelHaven, must not be <tt>null</tt>.
      * @throws SetUpException If configuring fails.
      */
     public NonBooleanConditionConverter(IConfiguration config) throws SetUpException {
-        this(config, null);
+        this(config, null, null);
     }
     
     /**
-     * Created a {@link NonBooleanConditionConverter} based on a configuration.
+     * Creates a {@link NonBooleanConditionConverter} based on a configuration.
+     * Requires the {@value #PROPERTY_VARIABLE_PATTERN} to be specified.
+     * @param config The configuration passed to KernelHaven, must not be <tt>null</tt>.
+     * @param varModel The variability model that contains the {@link FiniteIntegerVariable}s.
+     *      May be <code>null</code>; in this case, PipelineConfigurator.instance().getVmProvider().getResult() is
+     *      used instead.
+     *      
+     * @throws SetUpException If configuring fails.
+     */
+    public NonBooleanConditionConverter(IConfiguration config, VariabilityModel varModel) throws SetUpException {
+        this(config, varModel, null);
+    }
+    
+    /**
+     * Creates a {@link NonBooleanConditionConverter} based on a configuration.
      * Requires the {@value #PROPERTY_VARIABLE_PATTERN} to be specified.
      * @param config The configuration passed to KernelHaven, must not be <tt>null</tt>.
      * @param booleanFunction Optional a Boolean function/expression in which variables should be wrapped in. Will be
@@ -53,7 +84,28 @@ public class NonBooleanConditionConverter {
      * <tt>defined(&#037;)</tt>
      * @throws SetUpException If configuring fails.
      */
-    public NonBooleanConditionConverter(IConfiguration config, String booleanFunction) throws SetUpException {
+    public NonBooleanConditionConverter(IConfiguration config, String booleanFunction)
+            throws SetUpException {
+        this(config, null, booleanFunction);
+    }
+    
+    /**
+     * Creates a {@link NonBooleanConditionConverter} based on a configuration.
+     * Requires the {@value #PROPERTY_VARIABLE_PATTERN} to be specified.
+     * @param config The configuration passed to KernelHaven, must not be <tt>null</tt>.
+     * @param varModel The variability model that contains the {@link FiniteIntegerVariable}s.
+     *      May be <code>null</code>; in this case, PipelineConfigurator.instance().getVmProvider().getResult() is
+     *      used instead.
+     * @param booleanFunction Optional a Boolean function/expression in which variables should be wrapped in. Will be
+     * ignored if it is <tt>null</tt> or does not contain a percentage sign (<tt>&#037;</tt>). The generated variables
+     * will be inserted at the first percentage sign (<tt>&#037;</tt>).<br/>
+     * For instance, to create C-preprocessor compatible constraints, this may be: <br/>
+     * <tt>defined(&#037;)</tt>
+     * @throws SetUpException If configuring fails.
+     */
+    public NonBooleanConditionConverter(IConfiguration config, VariabilityModel varModel, String booleanFunction)
+            throws SetUpException {
+        
         String variableRegex = config.getProperty(PROPERTY_VARIABLE_PATTERN);
         
         this.booleanFunction = (null != booleanFunction && booleanFunction.contains("%")) ? booleanFunction : null;
@@ -73,13 +125,17 @@ public class NonBooleanConditionConverter {
             throw new SetUpException(e);
         }
         
-        varModel = PipelineConfigurator.instance().getVmProvider().getResult();
         if (null == varModel) {
-            throw new SetUpException("No Variability Model Provider specified.");
+            this.varModel = PipelineConfigurator.instance().getVmProvider().getResult();
+            if (null == this.varModel) {
+                throw new SetUpException("No Variability Model Provider specified.");
+            }
+        } else {
+            this.varModel = varModel;
         }
         
         boolean usedFiniteIntegers = false;
-        for (VariabilityVariable var : varModel.getVariables()) {
+        for (VariabilityVariable var : this.varModel.getVariables()) {
             if (var instanceof FiniteIntegerVariable) {
                 usedFiniteIntegers = true;
                 break;
