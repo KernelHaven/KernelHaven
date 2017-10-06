@@ -18,7 +18,9 @@ import net.ssehub.kernel_haven.util.FormatException;
  * <p>
  * If some data types require additional data (e.g. compound types), then the
  * extractor can create a new type that inherits from this class. The analysis
- * can then cast this generic class into the specific sub-type, if needed.
+ * can then cast this generic class into the specific sub-type, if needed. Any sub-type
+ * also has to override {@link #serializeCsv()} and have a static {@link #createFromCsv(String[])}
+ * method for serialization.
  * </p>
  * <p>
  * If this variable is linked to a specific DIMACS representation, then the

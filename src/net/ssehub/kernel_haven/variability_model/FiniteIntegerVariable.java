@@ -2,6 +2,9 @@ package net.ssehub.kernel_haven.variability_model;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
+
+import net.ssehub.kernel_haven.util.FormatException;
 
 /**
  * An Integer-based variability variable with a finite domain.
@@ -65,4 +68,46 @@ public class FiniteIntegerVariable extends VariabilityVariable implements Iterab
             }
         };
     }
+    
+    @Override
+    public List<String> serializeCsv() {
+        List<String> result = super.serializeCsv();
+        
+        result.add(values.length + "");
+        for (int value :  values) {
+            result.add(value + "");
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Creates a {@link VariabilityVariable} from the given CSV.
+     * 
+     * @param csvParts
+     *            The CSV that is converted into a {@link VariabilityVariable}.
+     * @return The {@link VariabilityVariable} created by the CSV.
+     * 
+     * @throws FormatException
+     *             If the CSV cannot be read into a variable.
+     */
+    public static VariabilityVariable createFromCsv(String[] csvParts) throws FormatException {
+        VariabilityVariable variable = VariabilityVariable.createFromCsv(csvParts);
+        try {
+            int size = Integer.parseInt(csvParts[4]);
+            int[] values = new int[size];
+            
+            for (int i = 0; i < size; i++) {
+                values[i] = Integer.parseInt(csvParts[i + 5]);
+            }
+            
+            FiniteIntegerVariable result = new FiniteIntegerVariable(variable.getName(), variable.getType(), values);
+            
+            return result;
+        
+        } catch (NumberFormatException e) {
+            throw new FormatException(e);
+        }
+    }
+    
 }
