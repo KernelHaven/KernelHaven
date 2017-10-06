@@ -10,7 +10,6 @@ import net.ssehub.kernel_haven.PipelineConfigurator;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.IConfiguration;
 import net.ssehub.kernel_haven.util.FormatException;
-import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.variability_model.FiniteIntegerVariable;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
@@ -225,11 +224,14 @@ public class NonBooleanConditionConverter {
     
     /**
      * Creates a disjunction constraints containing comparisons for all values passed to this method.
+     * 
      * @param var A variable for which multiple comparisons shall be created for.
      * @param legalValues The values which shall be added to the comparison.
      * @return One Boolean disjunction expression.
+     * 
+     * @throws FormatException If legalValues is empty.
      */
-    private String expandComparison(FiniteIntegerVariable var, List<Long> legalValues) {
+    private String expandComparison(FiniteIntegerVariable var, List<Long> legalValues) throws FormatException {
         String replacement;
         if (!legalValues.isEmpty()) {
             replacement = "(" + toConstantExpression(var, legalValues.get(0));
@@ -239,8 +241,11 @@ public class NonBooleanConditionConverter {
             replacement += ")";
         } else {
             replacement = "0";
-            // I think an exception would be more appropriate
-            Logger.get().logWarning("Could not replace values for variable: " + var.getName());
+            // TODO: We need to differentiate here:
+            // * if we read the variability model, then this means that we have a comparison here that is always false:
+            //   E.g.: A variable with possible values {0, 1, 2}, and we have the condition variable>3
+            // * if we used the heuristic to create the variability model, then this means that the heuristic was
+            //   faulty, since it should have found this constant earlier.
         }
         return replacement;
     }
