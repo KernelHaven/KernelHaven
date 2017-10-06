@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
@@ -139,8 +138,7 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             Util.copyFile(constraintCache, constraintCopy);
             
             vm = new VariabilityModel(constraintCopy, variables);
-        } catch (ClassNotFoundException | ClassCastException | NoSuchMethodException | SecurityException
-                | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (ReflectiveOperationException | ClassCastException | IllegalArgumentException e) {
             throw new FormatException(e);
             
         } catch (FileNotFoundException e) {

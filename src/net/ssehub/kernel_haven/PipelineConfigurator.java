@@ -2,7 +2,6 @@ package net.ssehub.kernel_haven;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -169,8 +168,7 @@ public class PipelineConfigurator {
             LOGGER.logDebug("Successfully added jar to classpath: " + jarFile.getName());
             status = true;
             
-        } catch (NoSuchMethodException | SecurityException | MalformedURLException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException exc) {
+        } catch (ReflectiveOperationException | MalformedURLException | IllegalArgumentException exc) {
             LOGGER.logException("Could not add jar to classpath: " + jarFile.getName(), exc);
             
             status = false;
@@ -257,7 +255,7 @@ public class PipelineConfigurator {
             extractor = extractorClass.getConstructor().newInstance();
             
             LOGGER.logInfo("Successfully instantiated " + type + " extractor " + extractor.getClass().getName());
-        } catch (ReflectiveOperationException | SecurityException | IllegalArgumentException | ClassCastException e) {
+        } catch (ReflectiveOperationException | IllegalArgumentException | ClassCastException e) {
             LOGGER.logException("Error while instantiating " + type + " extractor", e);
             throw new SetUpException(e);
         }
@@ -316,7 +314,7 @@ public class PipelineConfigurator {
             analysis.setOutputDir(config.getOutputDir());
             LOGGER.logInfo("Successfully instantiated analysis " + analysisName);
 
-        } catch (ReflectiveOperationException | SecurityException | IllegalArgumentException | ClassCastException e) {
+        } catch (ReflectiveOperationException | IllegalArgumentException | ClassCastException e) {
             LOGGER.logException("Error while instantiating analysis " + analysisName, e);
             throw new SetUpException(e);
         }

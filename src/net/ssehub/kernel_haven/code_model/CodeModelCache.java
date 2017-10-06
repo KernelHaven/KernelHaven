@@ -246,12 +246,17 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
         String className = csvParts[0];
         int level = Integer.parseInt(csvParts[1]);
         
-        @SuppressWarnings("unchecked")
-        Class<? extends CodeElement> clazz = (Class<? extends CodeElement>) Class.forName(className);
-        Method m = clazz.getMethod("createFromCsv", String[].class, Parser.class);
-        String[] smallCsv = new String[csvParts.length - 2];
-        System.arraycopy(csvParts, 2, smallCsv, 0, smallCsv.length);
-        CodeElement created = (CodeElement) m.invoke(null, (Object) smallCsv, parser);
+        CodeElement created;
+        try {
+            @SuppressWarnings("unchecked")
+            Class<? extends CodeElement> clazz = (Class<? extends CodeElement>) Class.forName(className);
+            Method m = clazz.getMethod("createFromCsv", String[].class, Parser.class);
+            String[] smallCsv = new String[csvParts.length - 2];
+            System.arraycopy(csvParts, 2, smallCsv, 0, smallCsv.length);
+            created = (CodeElement) m.invoke(null, (Object) smallCsv, parser);
+        } catch (IllegalArgumentException | ClassCastException e) {
+            throw new ReflectiveOperationException(e);
+        }
         
         while (level < nesting.size()) {
             nesting.pop();

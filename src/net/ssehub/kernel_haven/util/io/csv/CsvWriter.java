@@ -152,7 +152,7 @@ public class CsvWriter implements ITableWriter {
                 values[index++] = field.get(row).toString();
             }
             
-        } catch (ReflectiveOperationException e) {
+        } catch (ReflectiveOperationException | IllegalArgumentException e) {
             // shouldn't happen
             throw new IOException("Can't access field value", e);
         }

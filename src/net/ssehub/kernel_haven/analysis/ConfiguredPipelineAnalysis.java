@@ -97,7 +97,7 @@ public class ConfiguredPipelineAnalysis extends PipelineAnalysis {
                 
                 result = componentClass.getConstructor(parameterTypes).newInstance(parameterValues);
                 
-            } catch (ReflectiveOperationException e) {
+            } catch (ReflectiveOperationException | ClassCastException | IllegalArgumentException e) {
                 throw new SetUpException(e);
             }
         }
