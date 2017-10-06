@@ -1,5 +1,6 @@
 package net.ssehub.kernel_haven.analysis;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,7 @@ import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.provider.AbstractProvider;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.Timestamp;
+import net.ssehub.kernel_haven.util.io.csv.CsvWriter;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 
 /**
@@ -90,17 +92,26 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             cmStarter.start();
             
             PrintStream out = createResultStream(
-                    Timestamp.INSTANCE.getFilename(mainComponent.getClass().getSimpleName() + "_result", "txt"));
+                    Timestamp.INSTANCE.getFilename(mainComponent.getClass().getSimpleName() + "_result", "csv"));
+            
+            CsvWriter writer = new CsvWriter(out);
             
             Object result;
             while ((result = mainComponent.getNextResult()) != null) {
                 LOGGER.logInfo("Got analysis result: " + result.toString());
                 // TODO: log result to file
-                out.println(result.toString());
-                out.flush();
+                try {
+                    writer.writeRow(result);
+                } catch (IOException | IllegalArgumentException e) {
+                    LOGGER.logException("Exception while writing to output file", e);
+                }
             }
             
-            out.close();
+            try {
+                writer.close();
+            } catch (IOException e) {
+                LOGGER.logException("Exception while closing output file writer", e);
+            }
             
         } catch (SetUpException e) {
             LOGGER.logException("Exception while setting up", e);

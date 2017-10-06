@@ -19,6 +19,7 @@ import net.ssehub.kernel_haven.util.LoggerTest;
 import net.ssehub.kernel_haven.util.PipelineArchiverTest;
 import net.ssehub.kernel_haven.util.UtilTest;
 import net.ssehub.kernel_haven.util.ZipArchiveTest;
+import net.ssehub.kernel_haven.util.io.csv.CsvWriterTest;
 import net.ssehub.kernel_haven.util.logic.AllLogicTests;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelCacheTest;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelProviderTest;
@@ -46,6 +47,7 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModelProviderTest;
     BlockingQueueTest.class,
     PipelineArchiverTest.class,
     ConfiguredPipelineAnalysisTest.class,
+    CsvWriterTest.class,
     })
 public class AllTests {
     

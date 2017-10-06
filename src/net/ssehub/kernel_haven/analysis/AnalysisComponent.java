@@ -1,13 +1,15 @@
 package net.ssehub.kernel_haven.analysis;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Timestamp;
+import net.ssehub.kernel_haven.util.io.ITableWriter;
+import net.ssehub.kernel_haven.util.io.csv.CsvWriter;
 
 /**
  * A component of an analysis. Multiple of these can be combined together, to form an analysis pipeline.
@@ -27,7 +29,7 @@ public abstract class AnalysisComponent<O> {
     
     private boolean logResults;
     
-    private PrintStream out;
+    private ITableWriter out;
     
     /**
      * Creates a new analysis component.
@@ -41,9 +43,11 @@ public abstract class AnalysisComponent<O> {
         if (logResults) {
             // TODO properly create this
             try {
-                out = new PrintStream(new File(config.getOutputDir(),
-                        Timestamp.INSTANCE.getFilename(getClass().getSimpleName() + "_intermediate_result", "txt")));
-            } catch (FileNotFoundException e) {
+                PrintStream out = new PrintStream(new File(config.getOutputDir(),
+                        Timestamp.INSTANCE.getFilename(getClass().getSimpleName() + "_intermediate_result", "csv")));
+                this.out = new CsvWriter(out);
+                
+            } catch (IOException e) {
                 LOGGER.logExceptionWarning("Can't create intermediate output file", e);
             }
         }
@@ -80,10 +84,12 @@ public abstract class AnalysisComponent<O> {
         if (logResults) {
             LOGGER.logInfo("Analysis component " + getClass().getSimpleName()
                     + " intermediate result: " + result);
-            // TODO: log result to file
             if (out != null) {
-                out.println(result.toString());
-                out.flush();
+                try {
+                    out.writeRow(result);
+                } catch (IOException | IllegalArgumentException e) {
+                    LOGGER.logException("Exception while writing to output file", e);
+                }
             }
         }
     }
@@ -94,7 +100,11 @@ public abstract class AnalysisComponent<O> {
     private void done() {
         results.end();
         if (out != null) {
-            out.close();
+            try {
+                out.close();
+            } catch (IOException e) {
+                LOGGER.logException("Exception while closing output file", e);
+            }
         }
     }
     
