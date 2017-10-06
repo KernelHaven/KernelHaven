@@ -6,7 +6,35 @@ import java.util.Queue;
 import java.util.concurrent.TimeoutException;
 
 /**
- * A blocking queue that can send data from one thread to another.
+ * A blocking queue that can send data from one thread to another. Even if this queue is empty, another thread may
+ * add further elements in future as long this list dosn't return <tt>null</tt>. <br/>
+ * <h2>Usage</h2>
+ * <b>Reading:</b>
+ * <pre>
+ * {@code
+ * Element elem;
+ * while ((elem = queue.get()) != null) {
+ *     ...
+ * }}</pre>
+ * <b>Writing:</b>
+ * <pre>
+ * {@code
+ * BlockingQueue<T> queue = new BlockingQueue<>();
+ * queue.add(...);
+ * ...
+ * queue.end();}</pre>
+ * <b>Adding further elements</b> after {@link #end()} was called is not possible. In this case the queue must
+ * be copied:
+ * <pre>
+ * {@code
+ * BlockingQueue<T> newQueue = new BlockingQueue<>();
+ * T elem;
+ * while ((elem = oldQueue.get()) != null) {
+ *     newQueue.add(elem);
+ * }
+ * newQueue.add(new_element);
+ * ...
+ * newQueue.end();}</pre>
  * 
  * @param <T> The type of data that is send between the threads.
  * 
