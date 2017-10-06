@@ -6,10 +6,16 @@ import java.util.Queue;
 import java.util.concurrent.TimeoutException;
 
 /**
- * A blocking queue that can send data from one thread to another. Even if this queue is empty, another thread may
- * add further elements in future as long this list dosn't return <tt>null</tt>. <br/>
+ * A blocking queue that can send data from one thread to another. One thread can push data into the queue, that will
+ * be read from the other thread. If the queue is currently empty, the reading thread will wait until there is data
+ * available. The writing thread has to signal that is done (via {@link #end()}), in which case all subsequent read
+ * accesses will return <code>null</code> (once the backed up data is depleted). For this reason, the writing thread
+ * must never write null into the queue.
+ * <br/>
  * <h2>Usage</h2>
  * <b>Reading:</b>
+ * This class is {@link Iterable}, so for-each loops can be used to read all data (until the writing thread said, that
+ * it is done). Alternatively, the queue can be read until it returns <code>null</code>, e.g. like so:
  * <pre>
  * {@code
  * Element elem;
@@ -17,14 +23,17 @@ import java.util.concurrent.TimeoutException;
  *     ...
  * }}</pre>
  * <b>Writing:</b>
+ * Push data in the queue via the {@link #add(Object)} method. Signal the end, by calling {@link #end()}. If
+ * {@link #end()} is not called, then the other thread doesn't know when to stop waiting for data, and thus a deadlock
+ * can appear.
  * <pre>
  * {@code
  * BlockingQueue<T> queue = new BlockingQueue<>();
  * queue.add(...);
  * ...
  * queue.end();}</pre>
- * <b>Adding further elements</b> after {@link #end()} was called is not possible. In this case the queue must
- * be copied:
+ * <b>Adding further elements</b> after {@link #end()} was called is not possible. If "extending" an existing, ended
+ * queue is necessary, create a new one and copy the data over:
  * <pre>
  * {@code
  * BlockingQueue<T> newQueue = new BlockingQueue<>();
@@ -171,6 +180,8 @@ public class BlockingQueue<T> implements Iterable<T> {
      * Adds the specified element to the end of the queue.
      * 
      * @param element The element to add to the queue.
+     * 
+     * @throws IllegalStateException If {@link #end()} has already been called.
      */
     public void add(T element) {
         synchronized (internalQueue) {
