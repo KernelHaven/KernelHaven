@@ -23,5 +23,16 @@ public interface ITableWriter extends Closeable {
      *      writer.
      */
     public void writeRow(Object row) throws IOException, IllegalArgumentException;
+    
+    /**
+     * Writes a single row of data. The given fields are written directly. This method should not be mixed with the
+     * {@link #writeRow(Object)} method, since the other method creates an internal state for the structure of
+     * data to extract from the objects.
+     * 
+     * @param fields The field values to write. Not null. May be empty.
+     * 
+     * @throws IOException If writing to the file fails.
+     */
+    public void writeRow(String... fields) throws IOException;
 
 }

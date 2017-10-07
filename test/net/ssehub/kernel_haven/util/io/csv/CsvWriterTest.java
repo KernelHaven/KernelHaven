@@ -88,5 +88,26 @@ public class CsvWriterTest {
         
         assertThat(out.toString(), is("Integer;String\n1;\"on;e\"\n2;\"tw\no\"\n3;\"th;re\"\"e\"\n"));
     }
+    
+    /**
+     * Tests the field based {@link CsvWriter#writeRow(String...)} method.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testFieldBasedWriting() throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        
+        try (CsvWriter writer = new CsvWriter(out)) {
+            writer.writeRow("one", "two", "three");
+            writer.writeRow("1", "2");
+            writer.writeRow("empty");
+            writer.writeRow();
+            writer.writeRow("1;2");
+            
+        }
+        
+        assertThat(out.toString(), is("one;two;three\n1;2\nempty\n\n\"1;2\"\n"));
+    }
 
 }

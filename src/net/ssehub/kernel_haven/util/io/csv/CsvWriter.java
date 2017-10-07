@@ -93,8 +93,10 @@ public class CsvWriter implements ITableWriter {
         for (String field : fields) {
             line.append(escape(field)).append(separator);
         }
-        // remove trailing separator
-        line.delete(line.length() - 1, line.length());
+        if (line.length() > 0) {
+            // remove trailing separator
+            line.delete(line.length() - 1, line.length());
+        }
         line.append('\n');
         
         out.write(line.toString().getBytes(Charset.forName("UTF-8")));
@@ -125,6 +127,12 @@ public class CsvWriter implements ITableWriter {
         } else {
             writeLine(row.toString());
         }
+    }
+    
+    @Override
+    public void writeRow(String... fields) throws IOException {
+        initialized = true;
+        writeLine(fields);
     }
 
 }
