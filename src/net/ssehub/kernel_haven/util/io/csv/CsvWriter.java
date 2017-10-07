@@ -50,16 +50,23 @@ public class CsvWriter implements ITableWriter {
     }
     
     /**
-     * Escapes the given field content. Adds " around, the while field, if the separator or newline char is used inside
-     * of it. In this case, also escapes any " characters with an additional ".
+     * Escapes the given field content. Adds " around, the while field, if a char that needs to be escaped is used
+     * inside of it. In this case, also escapes any " characters with an additional ".
+     * <br />
+     * Chars that need to be escaped are:
+     * <ul>
+     *      <li>\n</li>
+     *      <li>"</li>
+     *      <li>separator</li>
+     * </ul>
      * 
      * @param field The field value to escape.
-     * @return The espaced field value.
+     * @return The escaped field value.
      */
     private String escape(String field) {
         boolean mustBeEscaped = false;
         for (char c : field.toCharArray()) {
-            if (c == separator || c == '\n') {
+            if (c == separator || c == '\n'  || c == '"') {
                 mustBeEscaped = true;
                 break;
             }

@@ -80,13 +80,13 @@ public class CsvWriterTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         try (CsvWriter writer = new CsvWriter(out)) {
-            writer.writeRow(new TableRowMetadataTest.Simple(1, "on;e"));
-            writer.writeRow(new TableRowMetadataTest.Simple(2, "tw\no"));
-            writer.writeRow(new TableRowMetadataTest.Simple(3, "th;re\"e"));
-            
+            writer.writeRow("1", "on;e");
+            writer.writeRow("2", "tw\no");
+            writer.writeRow("3", "th;re\"e");
+            writer.writeRow("4", "fo\"ur");
         }
         
-        assertThat(out.toString(), is("Integer;String\n1;\"on;e\"\n2;\"tw\no\"\n3;\"th;re\"\"e\"\n"));
+        assertThat(out.toString(), is("1;\"on;e\"\n2;\"tw\no\"\n3;\"th;re\"\"e\"\n4;\"fo\"\"ur\"\n"));
     }
     
     /**
@@ -108,6 +108,23 @@ public class CsvWriterTest {
         }
         
         assertThat(out.toString(), is("one;two;three\n1;2\nempty\n\n\"1;2\"\n"));
+    }
+    
+    /**
+     * Tests whether a different separator char is correctly used.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testDifferentSeparator() throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        
+        try (CsvWriter writer = new CsvWriter(out, ',')) {
+            writer.writeRow("a", "b", "c");
+            writer.writeRow("d", "e", "f");
+        }
+        
+        assertThat(out.toString(), is("a,b,c\nd,e,f\n"));
     }
 
 }
