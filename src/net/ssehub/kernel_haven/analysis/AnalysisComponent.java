@@ -31,6 +31,8 @@ public abstract class AnalysisComponent<O> {
     
     private ITableWriter out;
     
+    private boolean started;
+    
     /**
      * Creates a new analysis component.
      * 
@@ -51,7 +53,12 @@ public abstract class AnalysisComponent<O> {
                 LOGGER.logExceptionWarning("Can't create intermediate output file", e);
             }
         }
-        
+    }
+    
+    /**
+     * Starts a new thread that executes this analysis component.
+     */
+    private synchronized void start() {
         Thread th = new Thread(() -> {
             try {
                 execute();
@@ -61,6 +68,8 @@ public abstract class AnalysisComponent<O> {
         }, getClass().getSimpleName());
         th.setDaemon(true); //don't cause a deadlock with accidentally created AnalysisComponents that will never finish
         th.start();
+        
+        started = true;
     }
     
     /**
@@ -70,6 +79,11 @@ public abstract class AnalysisComponent<O> {
      * @return The next result. <code>null</code> if this analysis is done and does not produce any results anymore.
      */
     public O getNextResult() {
+        synchronized (this) {
+            if (!started) {
+                start();
+            }
+        }
         return results.get();
     }
     
