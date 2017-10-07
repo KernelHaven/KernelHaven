@@ -8,8 +8,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import net.ssehub.kernel_haven.util.io.TableElement;
-import net.ssehub.kernel_haven.util.io.TableRow;
+import net.ssehub.kernel_haven.util.io.TableRowMetadataTest;
 
 /**
  * Tests the {@link CsvWriter}.
@@ -18,58 +17,6 @@ import net.ssehub.kernel_haven.util.io.TableRow;
  */
 public class CsvWriterTest {
 
-    /**
-     * A simple structure to be written. 
-     */
-    @TableRow
-    private static class Simple {
-        
-        @TableElement(name = "Integer", index = 0)
-        private int integer;
-        
-        @TableElement(name = "String", index = 1)
-        private String str;
-     
-        /**
-         * Creates an instance.
-         * 
-         * @param integer The integer value.
-         * @param str The string value.
-         */
-        public Simple(int integer, String str) {
-            this.integer = integer;
-            this.str = str;
-        }
-        
-    }
-    
-    /**
-     * A simple structure to be written, without annotations. 
-     */
-    private static class NoAnnotations {
-        
-        private char character;
-        
-        private String str;
-        
-        /**
-         * Creates an instance.
-         * 
-         * @param character The character value.
-         * @param str The string value.
-         */
-        public NoAnnotations(char character, String str) {
-            this.character = character;
-            this.str = str;
-        }
-        
-        @Override
-        public String toString() {
-            return character + " " + str;
-        }
-        
-    }
-    
     /**
      * Tests whether a simple structure with annotations can be written.
      * 
@@ -80,9 +27,9 @@ public class CsvWriterTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         try (CsvWriter writer = new CsvWriter(out)) {
-            writer.writeRow(new Simple(1, "one"));
-            writer.writeRow(new Simple(2, "two"));
-            writer.writeRow(new Simple(3, "three"));
+            writer.writeRow(new TableRowMetadataTest.Simple(1, "one"));
+            writer.writeRow(new TableRowMetadataTest.Simple(2, "two"));
+            writer.writeRow(new TableRowMetadataTest.Simple(3, "three"));
             
         }
         
@@ -99,8 +46,8 @@ public class CsvWriterTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         try (CsvWriter writer = new CsvWriter(out)) {
-            writer.writeRow(new Simple(1, "one"));
-            writer.writeRow(new NoAnnotations('b', "three"));
+            writer.writeRow(new TableRowMetadataTest.Simple(1, "one"));
+            writer.writeRow(new TableRowMetadataTest.NoAnnotations('b', "three"));
         }
     }
     
@@ -114,9 +61,9 @@ public class CsvWriterTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         try (CsvWriter writer = new CsvWriter(out)) {
-            writer.writeRow(new NoAnnotations('a', "one"));
-            writer.writeRow(new NoAnnotations('b', "two"));
-            writer.writeRow(new NoAnnotations('c', "three"));
+            writer.writeRow(new TableRowMetadataTest.NoAnnotations('a', "one"));
+            writer.writeRow(new TableRowMetadataTest.NoAnnotations('b', "two"));
+            writer.writeRow(new TableRowMetadataTest.NoAnnotations('c', "three"));
             
         }
         
@@ -133,9 +80,9 @@ public class CsvWriterTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         try (CsvWriter writer = new CsvWriter(out)) {
-            writer.writeRow(new Simple(1, "on;e"));
-            writer.writeRow(new Simple(2, "tw\no"));
-            writer.writeRow(new Simple(3, "th;re\"e"));
+            writer.writeRow(new TableRowMetadataTest.Simple(1, "on;e"));
+            writer.writeRow(new TableRowMetadataTest.Simple(2, "tw\no"));
+            writer.writeRow(new TableRowMetadataTest.Simple(3, "th;re\"e"));
             
         }
         

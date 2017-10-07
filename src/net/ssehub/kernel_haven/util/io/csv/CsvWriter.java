@@ -2,14 +2,10 @@ package net.ssehub.kernel_haven.util.io.csv;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.nio.charset.Charset;
-import java.util.Map;
-import java.util.TreeMap;
 
 import net.ssehub.kernel_haven.util.io.ITableWriter;
-import net.ssehub.kernel_haven.util.io.TableElement;
-import net.ssehub.kernel_haven.util.io.TableRow;
+import net.ssehub.kernel_haven.util.io.TableRowMetadata;
 
 /**
  * A writer for writing tables as CSV files.
@@ -24,10 +20,10 @@ public class CsvWriter implements ITableWriter {
     
     private char separator;
     
-    private Class<?> rowClass;
+    private TableRowMetadata metadata;
     
-    private Field[] fields;
-
+    private boolean initialized;
+    
     /**
      * Creates a {@link CsvWriter} for the given output stream. Uses the {@link #DEFAULT_SEPARATOR}.
      * 
@@ -104,80 +100,27 @@ public class CsvWriter implements ITableWriter {
         out.write(line.toString().getBytes(Charset.forName("UTF-8")));
     }
     
-    /**
-     * Writes the header line, based on the annotations found in the given instance of a row. This also creates the
-     * {@link #fields} array.
-     * 
-     * @param row The row to find the header names in.
-     * 
-     * @throws IOException If writing the line fails.
-     */
-    private void writeHeader(Object row) throws IOException {
-        Map<Integer, Field> fields = new TreeMap<>();
-        
-        Class<?> clazz = row.getClass();
-        for (Field field : clazz.getDeclaredFields()) {
-            TableElement annotation = field.getAnnotation(TableElement.class);
-            if (annotation != null) {
-                field.setAccessible(true);
-                fields.put(annotation.index(), field);
-            }
-        }
-
-        this.fields = new Field[fields.size()];
-        String[] headers = new String[fields.size()];
-        int index = 0;
-        for (Map.Entry<Integer, Field> entry : fields.entrySet()) {
-            // we silently ignore if index != entry.getKey(); the order is correct, anways 
-            this.fields[index] = entry.getValue();
-            headers[index] = entry.getValue().getAnnotation(TableElement.class).name();
-            index++;
-        }
-        writeLine(headers);
-    }
-    
-    /**
-     * Writes a single row, based on the annotations found in the object.
-     * 
-     * @param row The row to write.
-     * 
-     * @throws IOException If writing the row fails.
-     */
-    private void writeAnnotatedRow(Object row) throws IOException {
-        String[] values = new String[fields.length];
-        
-        try {
-            int index = 0;
-            for (Field field : fields) {
-                values[index++] = field.get(row).toString();
-            }
-            
-        } catch (ReflectiveOperationException | IllegalArgumentException e) {
-            // shouldn't happen
-            throw new IOException("Can't access field value", e);
-        }
-        
-        writeLine(values);
-    }
-
     @Override
     public void writeRow(Object row) throws IOException {
-        Class<?> rowClass = row.getClass();
-        if (this.rowClass == null) {
-            this.rowClass = rowClass;
-        }
-        
-        if (this.rowClass != rowClass) {
-            throw new IllegalArgumentException("Different types of row passed to writeRow(): "
-                    + this.rowClass.getName() + " and " + rowClass.getName());
-        }
-        
-        TableRow annotation = rowClass.getAnnotation(TableRow.class);
-        if (annotation != null) {
-            if (fields == null) {
-                writeHeader(row);
+        if (!initialized) {
+            initialized = true;
+            if (TableRowMetadata.isTableRow(row.getClass())) {
+                metadata = new TableRowMetadata(row.getClass());
+                writeLine(metadata.getHeaders());
             }
-            writeAnnotatedRow(row);
+        }
+        
+        if (metadata != null) {
+            if (!metadata.isSameClass(row)) {
+                throw new IllegalArgumentException("Incompatible type of row passed to writeRow(): "
+                        + row.getClass().getName());
+            }
+            
+            try {
+                writeLine(metadata.getContent(row));
+            } catch (ReflectiveOperationException e) {
+                throw new IOException("Can't read field values", e);
+            }
             
         } else {
             writeLine(row.toString());

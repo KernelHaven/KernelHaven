@@ -12,6 +12,8 @@ import net.ssehub.kernel_haven.util.io.csv.AllCsvTests;
 @RunWith(Suite.class)
 @SuiteClasses({
     AllCsvTests.class,
+    
+    TableRowMetadataTest.class,
 })
 public class AllIoTests {
 
