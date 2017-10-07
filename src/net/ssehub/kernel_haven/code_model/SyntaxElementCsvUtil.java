@@ -82,11 +82,9 @@ public class SyntaxElementCsvUtil {
         String typeText = csv[5];
         if (typeText.startsWith("Literal: ")) {
             typeText = typeText.substring("Literal: ".length());
-            typeText = unescape(typeText);
             type = new LiteralSyntaxElement(typeText);
         } else if (typeText.startsWith("Error: ")) {
             typeText = typeText.substring("Error: ".length());
-            typeText = unescape(typeText);
             type = new ErrorSyntaxElement(typeText);
         } else {
             type = SyntaxElementTypes.getByName(typeText);
@@ -127,9 +125,9 @@ public class SyntaxElementCsvUtil {
         String typeText;
         ISyntaxElementType type = element.getType();
         if (type instanceof LiteralSyntaxElement) {
-            typeText = "Literal: " + escape(((LiteralSyntaxElement) type).getContent());
+            typeText = "Literal: " + ((LiteralSyntaxElement) type).getContent();
         } else if (type instanceof ErrorSyntaxElement) {
-            typeText = "Error: " + escape(((ErrorSyntaxElement) type).getMessage());
+            typeText = "Error: " + ((ErrorSyntaxElement) type).getMessage();
         } else if (type instanceof SyntaxElementTypes) {
             typeText = type.toString();
         } else {
@@ -146,7 +144,7 @@ public class SyntaxElementCsvUtil {
         
         result.add(element.getNestedElementCount() + "");
         for (int i = 0; i < element.getNestedElementCount(); i++) {
-            result.add(escape(element.getRelation(i)));
+            result.add(element.getRelation(i));
         }
         
         return result;
@@ -180,28 +178,6 @@ public class SyntaxElementCsvUtil {
             }
         }
         return f;
-    }
-    
-    /**
-     * Escapes all ';' with '\,' and all '\' with '\\' so the string doesn't break CSV.
-     *  
-     * @param text The text to escape.
-     * @return The escaped text.
-     */
-    private static String escape(String text) {
-        // TODO: remove escaping once the cache properly handles it
-        return text.replace("\\", "\\\\").replace(";", "\\,");
-    }
-    
-    /**
-     * Un-escapes all '\,' back to ';' and all '\\' back to '\'. Equivalent to escape(String).
-     *  
-     * @param text The text to un-escape.
-     * @return The un-escaped text.
-     */
-    private static String unescape(String text) {
-        // TODO: remove escaping once the cache properly handles it
-        return text.replaceAll("[^\\\\]\\\\,", ";").replace("\\\\", "\\");
     }
     
 }

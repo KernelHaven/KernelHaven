@@ -1,22 +1,21 @@
 package net.ssehub.kernel_haven.code_model;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Stack;
 
 import net.ssehub.kernel_haven.provider.AbstractCache;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.ZipArchive;
+import net.ssehub.kernel_haven.util.io.csv.CsvReader;
+import net.ssehub.kernel_haven.util.io.csv.CsvWriter;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.parser.CStyleBooleanGrammar;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
@@ -30,8 +29,6 @@ import net.ssehub.kernel_haven.util.logic.parser.VariableCache;
  * @author Alice
  */
 public class CodeModelCache extends AbstractCache<SourceFile> {
-    
-    public static final String CACHE_DELIMITER = ";";
     
     private File cacheDir;
     
@@ -101,17 +98,17 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
             cacheFile = getCacheFile(file.getPath());
         }
         
-        BufferedWriter writer = null;
+        CsvWriter writer = null;
         ZipArchive archive = null;
         try {
-            Writer fileWriter;
+            OutputStream fileStream;
             if (compress) {
                 archive = new ZipArchive(cacheFile);
-                fileWriter = new OutputStreamWriter(archive.getOutputStream(new File("cache")));
+                fileStream = archive.getOutputStream(new File("cache"));
             } else {
-                fileWriter = new FileWriter(cacheFile);
+                fileStream = new FileOutputStream(cacheFile);
             }
-            writer = new BufferedWriter(fileWriter);
+            writer = new CsvWriter(fileStream);
 
             for (CodeElement element : file) {
                 serializeElement(element, 0, writer);
@@ -141,13 +138,18 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * @param writer The writer to write to.
      * @throws IOException If writing fails.
      */
-    private void serializeElement(CodeElement element, int level, BufferedWriter writer) throws IOException {
-        writer.write(element.getClass().getName() + CACHE_DELIMITER + level);
+    private void serializeElement(CodeElement element, int level, CsvWriter writer) throws IOException {
+        List<String> serialized = element.serializeCsv();
         
-        for (String part : element.serializeCsv()) {
-            writer.write(CACHE_DELIMITER + part);
+        String[] csvParts = new String[serialized.size() + 2];
+        csvParts[0] = element.getClass().getName();
+        csvParts[1] = level + "";
+        int i = 2;
+        for (String part : serialized) {
+            csvParts[i++] = part;
         }
-        writer.write("\n");
+        
+        writer.writeRow(csvParts);
         
         for (CodeElement child : element.iterateNestedElements()) {
             serializeElement(child, level + 1, writer);
@@ -173,19 +175,19 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
             compressed = true;
         }
         
-        BufferedReader reader = null;
+        CsvReader reader = null;
         ZipArchive archive = null;
         SourceFile result = null;
 
         try {
-            Reader fileReader;
+            InputStream fileIn;
             if (compressed) {
                 archive = new ZipArchive(cacheFile);
-                fileReader = new InputStreamReader(archive.getInputStream(new File("cache")));
+                fileIn = archive.getInputStream(new File("cache"));
             } else {
-                fileReader = new FileReader(cacheFile);
+                fileIn = new FileInputStream(cacheFile);
             }
-            reader = new BufferedReader(fileReader);
+            reader = new CsvReader(fileIn);
 
             result = new SourceFile(path);
 
@@ -194,9 +196,9 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
 
             Stack<CodeElement> nesting = new Stack<>();
             
-            String line;
-            while ((line = reader.readLine()) != null) {
-                readLine(line, nesting, result, parser);
+            String[] csvParts;
+            while ((csvParts = reader.readNextRow()) != null) {
+                readLine(csvParts, nesting, result, parser);
                 
             }
 
@@ -232,16 +234,15 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
     /**
      * Reads a single line from the cache.
      * 
-     * @param line The line to read.
+     * @param csvParts The read csv parts.
      * @param nesting The nesting of elements.
      * @param result The result source file.
      * @param parser The parser to parse formulas with.
      * 
      * @throws ReflectiveOperationException If invoking the createFromCsv method fails on the fully qualified classname.
      */
-    private void readLine(String line, Stack<CodeElement> nesting, SourceFile result, Parser<Formula> parser)
+    private void readLine(String[] csvParts, Stack<CodeElement> nesting, SourceFile result, Parser<Formula> parser)
             throws ReflectiveOperationException {
-        String[] csvParts = line.split(CACHE_DELIMITER);
 
         String className = csvParts[0];
         int level = Integer.parseInt(csvParts[1]);

@@ -1,11 +1,9 @@
 package net.ssehub.kernel_haven.variability_model;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -15,6 +13,8 @@ import java.util.Set;
 import net.ssehub.kernel_haven.provider.AbstractCache;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Util;
+import net.ssehub.kernel_haven.util.io.csv.CsvReader;
+import net.ssehub.kernel_haven.util.io.csv.CsvWriter;
 
 /**
  * A cache for permanently saving (and reading) a variability model to a (from
@@ -25,13 +25,6 @@ import net.ssehub.kernel_haven.util.Util;
  */
 public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
     
-
-    /**
-     * This is the delimiter used in the cashed VM Files for the
-     * VariabilityVariables.
-     */
-    public static final String CACHE_DELIMITER = ";";
-
     /**
      * The path where the CNF File should be stored.
      */
@@ -69,28 +62,21 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
         Util.copyFile(vm.getConstraintModel(), constraintCache);
         
         // Write Set
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(variablesCacheFile));
+        try (CsvWriter writer = new CsvWriter(new FileOutputStream(variablesCacheFile))) {
             for (VariabilityVariable vv : vm.getVariables()) {
-                writer.write(vv.getClass().getName());
-                List<String> csvParts = vv.serializeCsv();
-                for (String csvPart : csvParts) {
-                    writer.write(CACHE_DELIMITER + csvPart);
-                }
-                writer.write("\n");
                 
-
-            }
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
+                List<String> serialized = vv.serializeCsv();
+                
+                String[] csvParts = new String[serialized.size() + 1];
+                csvParts[0] = vv.getClass().getName();
+                int i = 1;
+                for (String part : serialized) {
+                    csvParts[i++] = part;
                 }
+                writer.writeRow(csvParts);
+
             }
         }
-
     }
 
     /**
@@ -110,7 +96,7 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
         VariabilityModel vm = null;
         
         // Generate VariabilityVariables
-        BufferedReader reader = null;
+        CsvReader reader = null;
 
         try {
             if (!constraintCache.isFile()) {
@@ -120,10 +106,9 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             
             Set<VariabilityVariable> variables = new HashSet<>();
 
-            reader = new BufferedReader(new FileReader(variablesCacheFile));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] csv = line.split(CACHE_DELIMITER);
+            reader = new CsvReader(new FileInputStream(variablesCacheFile));
+            String[] csv;
+            while ((csv = reader.readNextRow()) != null) {
                 String className = csv[0];
                 Class<? extends VariabilityVariable> clazz = (Class<? extends VariabilityVariable>) Class
                         .forName(className);

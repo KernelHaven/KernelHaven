@@ -1,15 +1,15 @@
 package net.ssehub.kernel_haven.build_model;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import net.ssehub.kernel_haven.provider.AbstractCache;
 import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.csv.CsvReader;
+import net.ssehub.kernel_haven.util.io.csv.CsvWriter;
 import net.ssehub.kernel_haven.util.logic.Conjunction;
 import net.ssehub.kernel_haven.util.logic.Disjunction;
 import net.ssehub.kernel_haven.util.logic.False;
@@ -31,8 +31,6 @@ import net.ssehub.kernel_haven.util.logic.parser.VariableCache;
  */
 public class BuildModelCache extends AbstractCache<BuildModel> {
 
-    public static final String CACHE_DELIMITER = ";";
-    
     private File cacheFile;
 
     /**
@@ -57,21 +55,9 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
      */
     @Override
     public void write(BuildModel bm) throws IOException {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(cacheFile));
-
+        try (CsvWriter writer = new CsvWriter(new FileOutputStream(cacheFile))) {
             for (File file : bm) {
-                writer.write(file.getPath() + CACHE_DELIMITER);
-                writer.write(bm.getPc(file).toString());
-                writer.write("\n");
-            }
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                }
+                writer.writeRow(file.getPath(), bm.getPc(file).toString());
             }
         }
     }
@@ -91,21 +77,19 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
      */
     @Override
     public BuildModel read(File target) throws FormatException, IOException {
-        BufferedReader reader = null;
+        CsvReader reader = null;
         BuildModel result = null;
 
         try {
-            reader = new BufferedReader(new FileReader(cacheFile));
+            reader = new CsvReader(new FileInputStream(cacheFile));
 
             result = new BuildModel();
 
             VariableCache cache = new VariableCache();
             Parser<Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache));
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] csvParts = line.split(CACHE_DELIMITER);
-
+            String[] csvParts;
+            while ((csvParts = reader.readNextRow()) != null) {
                 if (csvParts.length != 2) {
                     throw new FormatException("Invalid CSV");
                 }
@@ -124,8 +108,6 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
 
                 pc = convertConstants(pc);
                 result.add(file, pc);
-                
-
             }
 
         } catch (FileNotFoundException e) {
