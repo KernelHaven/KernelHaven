@@ -120,11 +120,11 @@ public class CsvWriterTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         try (CsvWriter writer = new CsvWriter(out, ',')) {
-            writer.writeRow("a", "b", "c");
+            writer.writeRow("a", "b;c", "c");
             writer.writeRow("d", "e", "f");
         }
         
-        assertThat(out.toString(), is("a,b,c\nd,e,f\n"));
+        assertThat(out.toString(), is("a,b;c,c\nd,e,f\n"));
     }
 
 }
