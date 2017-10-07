@@ -16,7 +16,6 @@ import net.ssehub.kernel_haven.code_model.CodeModelProvider;
 import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.provider.AbstractExtractor;
-import net.ssehub.kernel_haven.todo.NonBooleanPreperation;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.PipelineArchiver;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
@@ -287,6 +286,28 @@ public class PipelineConfigurator {
         cmProvider.setConfig(config.getCodeConfiguration());
         LOGGER.logInfo("Created code provider");
     }
+    
+    /**
+     * Instantiates and executes the configured preparation class.
+     * 
+     * @throws SetUpException If instantiating or executing the preparation class fails.
+     */
+    private void runPreparation() throws SetUpException {
+        // TODO: this is a temporary hack: implement this in a more sane way.
+        if (Boolean.parseBoolean(config.getProperty("prepare_non_boolean"))) {
+            try {
+                @SuppressWarnings("unchecked")
+                Class<? extends IPreparation> prepartionClass = (Class<? extends IPreparation>)
+                        Class.forName("net.ssehub.kernel_haven.non_boolean.NonBooleanPreperation");
+                
+                IPreparation preparation = prepartionClass.newInstance();
+                preparation.run(config);
+            
+            } catch (ReflectiveOperationException | ClassCastException e) {
+                throw new SetUpException(e);
+            }
+        }
+    }
 
     /**
      * Instantiates the providers that the pipeline-configurator should use.
@@ -344,13 +365,7 @@ public class PipelineConfigurator {
             loadPlugins();
             instantiateExtractors();
             createProviders();
-            
-            // TODO: this is a temporary hack: move this to a better place
-            if (Boolean.parseBoolean(config.getProperty("prepare_non_boolean"))) {
-                NonBooleanPreperation preparation = new NonBooleanPreperation();
-                preparation.run(config.getCodeConfiguration());
-            }
-            
+            runPreparation();
             instantiateAnalysis();
             runAnalysis();
             archive();

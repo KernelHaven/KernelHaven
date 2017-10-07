@@ -10,7 +10,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import net.ssehub.kernel_haven.analysis.AllAnalysisTests;
 import net.ssehub.kernel_haven.build_model.AllBuildModelTests;
 import net.ssehub.kernel_haven.code_model.AllCodeModelTests;
-import net.ssehub.kernel_haven.todo.AllTodoTests;
 import net.ssehub.kernel_haven.util.AllUtilTests;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.variability_model.AllVariabilityModelTests;
@@ -23,7 +22,6 @@ import net.ssehub.kernel_haven.variability_model.AllVariabilityModelTests;
     AllAnalysisTests.class,
     AllBuildModelTests.class,
     AllCodeModelTests.class,
-    AllTodoTests.class,
     AllUtilTests.class,
     AllVariabilityModelTests.class,
     
