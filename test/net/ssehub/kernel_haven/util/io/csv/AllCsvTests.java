@@ -9,6 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+    CsvFileCollectionTest.class,
     CsvReaderTest.class,
     CsvWriterTest.class,
 })
