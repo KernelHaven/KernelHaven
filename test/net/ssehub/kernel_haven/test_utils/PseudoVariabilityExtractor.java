@@ -18,9 +18,8 @@ import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
  */
 public class PseudoVariabilityExtractor extends AbstractVariabilityModelExtractor {
 
-    private static File dimacsFile;
-    private static Set<VariabilityVariable> vars;
-    
+    private static VariabilityModel model;
+
     /**
      * Must be called before the Pipeline is instantiated.
      * @param dimacsFile A file containing a representation of the constraints of the
@@ -28,11 +27,11 @@ public class PseudoVariabilityExtractor extends AbstractVariabilityModelExtracto
      * @param variables The variables, which are needed for the test.
      */
     public static void configure(File dimacsFile, VariabilityVariable... variables) {
-        PseudoVariabilityExtractor.dimacsFile = dimacsFile;
-        vars = new HashSet<VariabilityVariable>();
+        Set<VariabilityVariable> vars = new HashSet<VariabilityVariable>();
         for (VariabilityVariable var : variables) {
             vars.add(var);
         }
+        model = new VariabilityModel(dimacsFile, vars);
     }
     
     @Override
@@ -45,9 +44,7 @@ public class PseudoVariabilityExtractor extends AbstractVariabilityModelExtracto
             Thread.sleep(500);
         } catch (InterruptedException e) {
         }
-        VariabilityModel vm = new VariabilityModel(dimacsFile, vars);
-        
-        return vm;
+        return model;
     }
 
     @Override

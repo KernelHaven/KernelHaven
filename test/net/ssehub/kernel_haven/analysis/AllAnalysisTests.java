@@ -11,6 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     AnalysisTest.class,
     ConfiguredPipelineAnalysisTest.class,
+    PipelineAnalysis.class,
 })
 public class AllAnalysisTests {
 

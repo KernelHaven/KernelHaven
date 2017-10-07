@@ -2,6 +2,8 @@ package net.ssehub.kernel_haven.test_utils;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import net.ssehub.kernel_haven.SetUpException;
@@ -48,7 +50,8 @@ public class TestConfiguration extends Configuration {
         
         // analysis
         this.analysisClassName = getProperty("analysis.class");
-        this.loggingAnalyissComponents = new HashSet<>();
+        List<String> list = readList("analysis.components.log");
+        this.loggingAnalyissComponents = new HashSet<>(list == null ? new LinkedList<>() : list);
         
         // common extractor stuff
         this.sourceTree = readFileProperty("source_tree", new FileProps());
