@@ -1,6 +1,6 @@
 package net.ssehub.kernel_haven.util.io;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -13,7 +13,7 @@ public class TableRowMetadata {
     
     private Class<?> rowClass;
     
-    private Field[] fields;
+    private Method[] fields;
     
     private String[] headers;
     
@@ -31,23 +31,22 @@ public class TableRowMetadata {
         
         this.rowClass = tableRowClass;
         
-        Map<Integer, Field> fields = new TreeMap<>();
-        for (Field field : rowClass.getDeclaredFields()) {
-            TableElement annotation = field.getAnnotation(TableElement.class);
+        Map<Integer, Method> methods = new TreeMap<>();
+        for (Method method: rowClass.getMethods()) {
+            TableElement annotation = method.getAnnotation(TableElement.class);
             if (annotation != null) {
-                field.setAccessible(true);
-                fields.put(annotation.index(), field);
+                methods.put(annotation.index(), method);
             }
         }
 
-        this.fields = new Field[fields.size()];
-        this.headers = new String[fields.size()];
+        fields = new Method[methods.size()];
+        headers = new String[methods.size()];
         int index = 0;
-        for (Map.Entry<Integer, Field> entry : fields.entrySet()) {
+        for (Map.Entry<Integer, Method> entry : methods.entrySet()) {
             // we silently ignore if index != entry.getKey(); the order is correct, because of the TreeMap; we don't
             //  care about "holes" in the ordering
-            this.fields[index] = entry.getValue();
-            this.headers[index] = entry.getValue().getAnnotation(TableElement.class).name();
+            fields[index] = entry.getValue();
+            headers[index] = entry.getValue().getAnnotation(TableElement.class).name();
             index++;
         }
     }
@@ -75,8 +74,13 @@ public class TableRowMetadata {
         
         try {
             int index = 0;
-            for (Field field : fields) {
-                values[index++] = field.get(instance).toString();
+            for (Method field : fields) {
+                Object result = field.invoke(instance);
+                if (result != null) {
+                    values[index++] = result.toString();
+                } else {
+                    values[index++] = "";
+                }
             }
             
         } catch (IllegalArgumentException e) {

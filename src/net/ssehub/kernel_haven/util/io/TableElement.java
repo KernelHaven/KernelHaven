@@ -1,19 +1,21 @@
 package net.ssehub.kernel_haven.util.io;
 
-import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Marks an attribute inside a class marked via the {@link TableRow} as a single column element. The
- * {@link #toString()} method of this attribute will be used to fill the field in the table.
+ * Marks an (getter of an) attribute inside a class marked via the {@link TableRow} as a single column element. The
+ * {@link #toString()} method of the return value will be used to fill the field in the table. The marked getter must
+ * return a value that a {@link #toString()} can be called on, and must not have any parameters. If it returns null,
+ * then an empty string ("") is inserted into the table at that position.
  *
  * @author Adam
  */
 @Retention(RUNTIME)
-@Target(FIELD)
+@Target(METHOD)
 public @interface TableElement {
     
     /**
@@ -29,6 +31,6 @@ public @interface TableElement {
      * 
      * @return The name of this field, to be used in the table header.
      */
-    String name();
+    String name() default "";
 
 }

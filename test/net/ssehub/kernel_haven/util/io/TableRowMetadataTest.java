@@ -18,10 +18,8 @@ public class TableRowMetadataTest {
     @TableRow
     public static class Simple {
         
-        @TableElement(name = "Integer", index = 0)
         private int integer;
         
-        @TableElement(name = "String", index = 1)
         private String str;
      
         /**
@@ -33,6 +31,25 @@ public class TableRowMetadataTest {
         public Simple(int integer, String str) {
             this.integer = integer;
             this.str = str;
+        }
+        
+        /**
+         * The integer value.
+         * @return Integer value.
+         */
+        @TableElement(name = "Integer", index = 0)
+        public int getInteger() {
+            return integer;
+        }
+        
+        /**
+         * The string value.
+         * 
+         * @return The String value.
+         */
+        @TableElement(name = "String", index = 1)
+        public String getStr() {
+            return str;
         }
         
     }
