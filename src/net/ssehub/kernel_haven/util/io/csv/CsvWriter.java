@@ -4,25 +4,20 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-import net.ssehub.kernel_haven.util.io.ITableWriter;
-import net.ssehub.kernel_haven.util.io.TableRowMetadata;
+import net.ssehub.kernel_haven.util.io.AbstractTableWriter;
 
 /**
  * A writer for writing tables as CSV files.
  *
  * @author Adam
  */
-public class CsvWriter implements ITableWriter {
+public class CsvWriter extends AbstractTableWriter {
     
     public static final char DEFAULT_SEPARATOR = ';';
 
     private OutputStream out;
     
     private char separator;
-    
-    private TableRowMetadata metadata;
-    
-    private boolean initialized;
     
     /**
      * Creates a {@link CsvWriter} for the given output stream. Uses the {@link #DEFAULT_SEPARATOR}.
@@ -110,35 +105,7 @@ public class CsvWriter implements ITableWriter {
     }
     
     @Override
-    public void writeRow(Object row) throws IOException {
-        if (!initialized) {
-            initialized = true;
-            if (TableRowMetadata.isTableRow(row.getClass())) {
-                metadata = new TableRowMetadata(row.getClass());
-                writeLine(metadata.getHeaders());
-            }
-        }
-        
-        if (metadata != null) {
-            if (!metadata.isSameClass(row)) {
-                throw new IllegalArgumentException("Incompatible type of row passed to writeRow(): "
-                        + row.getClass().getName());
-            }
-            
-            try {
-                writeLine(metadata.getContent(row));
-            } catch (ReflectiveOperationException e) {
-                throw new IOException("Can't read field values", e);
-            }
-            
-        } else {
-            writeLine(row.toString());
-        }
-    }
-    
-    @Override
     public void writeRow(String... fields) throws IOException {
-        initialized = true;
         writeLine(fields);
     }
 
