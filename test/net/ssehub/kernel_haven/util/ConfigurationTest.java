@@ -6,14 +6,17 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.config.BuildExtractorConfiguration;
-import net.ssehub.kernel_haven.config.CodeExtractorConfiguration;
+import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
+import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
 import net.ssehub.kernel_haven.config.Configuration;
-import net.ssehub.kernel_haven.config.VariabilityExtractorConfiguration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
+import net.ssehub.kernel_haven.variability_model.EmptyVariabilityModelExtractor;
 
 /**
  * Tests the Configuration class.
@@ -34,16 +37,20 @@ public class ConfigurationTest {
     public void testMinimalConfiguration() throws SetUpException {
 
         File propfile = new File("testdata/configs/minimal.properties");
-
-        Configuration config = new Configuration(propfile);
         File somefolder = new File("testdata/configs/somefolder/");
 
-        assertThat(config.getAnalysisClassName(), equalTo("some.package.ClassName"));
-        assertThat(config.getOutputDir(), equalTo(somefolder));
-        assertThat(config.getPluginsDir(), equalTo(somefolder));
+        Configuration config = new Configuration(propfile);
+        DefaultSettings.registerAllSettings(config);
+        
+
+        assertThat(config.getValue(DefaultSettings.ANALYSIS_CLASS), equalTo("some.package.ClassName"));
+        assertThat(config.getValue(DefaultSettings.OUTPUT_DIR), equalTo(somefolder));
+        assertThat(config.getValue(DefaultSettings.PLUGINS_DIR), equalTo(somefolder));
+        assertThat(config.getValue(DefaultSettings.CACHE_DIR), equalTo(somefolder));
+        assertThat(config.getValue(DefaultSettings.SOURCE_TREE), equalTo(somefolder));
         assertThat(config.getPropertyFile(), equalTo(propfile));
         
-        assertThat(config.getVariabilityConfiguration().getExtractorResourceDir(getClass()),
+        assertThat(Util.getExtractorResourceDir(config, getClass()),
                 equalTo(new File(somefolder, getClass().getName())));
     }
 
@@ -57,46 +64,42 @@ public class ConfigurationTest {
     public void testDefaultValues() throws SetUpException {
 
         Configuration config = new Configuration(new File("testdata/configs/minimal.properties"));
+        DefaultSettings.registerAllSettings(config);
 
-        assertThat(config.getArchiveDir(), nullValue());
-        assertThat(config.getBuildExtractorClassName(), nullValue());
-        assertThat(config.getCodeExtractorClassName(), nullValue());
-        assertThat(config.getLogDir(), nullValue());
-        assertThat(config.getVariabilityExtractorClassName(), nullValue());
-        assertThat(config.isArchive(), is(false));
-        assertThat(config.isLogConsole(), is(true));
-        assertThat(config.isLogDebug(), is(false));
-        assertThat(config.isLogError(), is(true));
-        assertThat(config.isLogFile(), is(false));
-        assertThat(config.isLogInfo(), is(true));
-        assertThat(config.isLogWarning(), is(true));
+        assertThat(config.getValue(DefaultSettings.ARCHIVE_DIR), is(new File(".")));
+        assertThat(config.getValue(DefaultSettings.BUILD_EXTRACTOR_CLASS),
+                is(EmptyBuildModelExtractor.class.getName()));
+        assertThat(config.getValue(DefaultSettings.CODE_EXTRACTOR_CLASS),
+                is(EmptyCodeModelExtractor.class.getName()));
+        assertThat(config.getValue(DefaultSettings.VARIABILITY_EXTRACTOR_CLASS),
+                is(EmptyVariabilityModelExtractor.class.getName()));
+        assertThat(config.getValue(DefaultSettings.LOG_DIR), is(new File(".")));
+        assertThat(config.getValue(DefaultSettings.ARCHIVE), is(false));
+        assertThat(config.getValue(DefaultSettings.LOG_CONSOLE), is(true));
+        assertThat(config.getValue(DefaultSettings.LOG_DEBUG), is(false));
+        assertThat(config.getValue(DefaultSettings.LOG_ERROR), is(true));
+        assertThat(config.getValue(DefaultSettings.LOG_FILE), is(false));
+        assertThat(config.getValue(DefaultSettings.LOG_INFO), is(true));
+        assertThat(config.getValue(DefaultSettings.LOG_WARNING), is(true));
 
-        BuildExtractorConfiguration bConfig = config.getBuildConfiguration();
-        assertThat(bConfig.getProviderTimeout(), is(0L));
-        assertThat(bConfig.isCacheRead(), is(false));
-        assertThat(bConfig.isCacheWrite(), is(false));
-        assertThat(bConfig.getArch(), nullValue());
-        assertThat(bConfig.getSourceTree(), nullValue());
-        assertThat(bConfig.getCacheDir(), nullValue());
-
-        VariabilityExtractorConfiguration vConfig = config.getVariabilityConfiguration();
-        assertThat(vConfig.getProviderTimeout(), is(0L));
-        assertThat(vConfig.isCacheWrite(), is(false));
-        assertThat(vConfig.isCacheRead(), is(false));
-        assertThat(vConfig.getArch(), nullValue());
-        assertThat(vConfig.getSourceTree(), nullValue());
-        assertThat(vConfig.getCacheDir(), nullValue());
+        assertThat(config.getValue(DefaultSettings.ARCH), nullValue());
         
-        CodeExtractorConfiguration cConfig = config.getCodeConfiguration();
-        assertThat(cConfig.getProviderTimeout(), is(0L));
-        assertThat(cConfig.isCacheWrite(), is(false));
-        assertThat(cConfig.isCacheRead(), is(false));
-        assertThat(cConfig.getFiles(), equalTo(new File[] {new File("") }));
-        assertThat(cConfig.getFilenamePattern().pattern(), equalTo(".*\\.c"));
-        assertThat(cConfig.getThreads(), is(1));
-        assertThat(cConfig.getArch(), nullValue());
-        assertThat(cConfig.getSourceTree(), nullValue());
-        assertThat(cConfig.getCacheDir(), nullValue());
+        assertThat(config.getValue(DefaultSettings.BUILD_PROVIDER_TIMEOUT), is(0));
+        assertThat(config.getValue(DefaultSettings.BUILD_PROVIDER_CACHE_READ), is(false));
+        assertThat(config.getValue(DefaultSettings.BUILD_PROVIDER_CACHE_WRITE), is(false));
+
+        assertThat(config.getValue(DefaultSettings.VARIABILITY_PROVIDER_TIMEOUT), is(0));
+        assertThat(config.getValue(DefaultSettings.VARIABILITY_PROVIDER_CACHE_READ), is(false));
+        assertThat(config.getValue(DefaultSettings.VARIABILITY_PROVIDER_CACHE_WRITE), is(false));
+        
+        assertThat(config.getValue(DefaultSettings.CODE_PROVIDER_TIMEOUT), is(0));
+        assertThat(config.getValue(DefaultSettings.CODE_PROVIDER_CACHE_READ), is(false));
+        assertThat(config.getValue(DefaultSettings.CODE_PROVIDER_CACHE_WRITE), is(false));
+        List<String> files = new LinkedList<>();
+        files.add("");
+        assertThat(config.getValue(DefaultSettings.CODE_EXTRACTOR_FILES), is(files));
+        assertThat(config.getValue(DefaultSettings.CODE_EXTRACTOR_FILE_REGEX).pattern(), equalTo(".*\\.c"));
+        assertThat(config.getValue(DefaultSettings.CODE_EXTRACTOR_THREADS), is(1));
     }
 
     /**
@@ -110,50 +113,43 @@ public class ConfigurationTest {
     public void testMaxConfig() throws SetUpException {
         File somefolder = new File("testdata/configs/somefolder/");
         Configuration config = new Configuration(new File("testdata/configs/gigantic.properties"));
+        DefaultSettings.registerAllSettings(config);
 
-        assertThat(config.getArchiveDir(), equalTo(somefolder));
-        assertThat(config.getBuildExtractorClassName(), equalTo("some.package.ClassName"));
-        assertThat(config.getCodeExtractorClassName(), equalTo("some.package.ClassName"));
-        assertThat(config.getLogDir(), equalTo(somefolder));
-        assertThat(config.getVariabilityExtractorClassName(), equalTo("some.package.ClassName"));
-        assertThat(config.isArchive(), is(true));
-        assertThat(config.isLogConsole(), is(false));
-        assertThat(config.isLogDebug(), is(true));
-        assertThat(config.isLogError(), is(false));
-        assertThat(config.isLogFile(), is(true));
-        assertThat(config.isLogInfo(), is(false));
-        assertThat(config.isLogWarning(), is(false));
-        
-        BuildExtractorConfiguration bConfig = config.getBuildConfiguration();
-        assertThat(bConfig.getProviderTimeout(), is(42L));
-        assertThat(bConfig.isCacheRead(), is(true));
-        assertThat(bConfig.isCacheWrite(), is(true));
-        assertThat(bConfig.getArch(), equalTo("x86"));
-        assertThat(bConfig.getSourceTree(), equalTo(somefolder));
-        assertThat(bConfig.getCacheDir(), equalTo(somefolder));
+        assertThat(config.getValue(DefaultSettings.ARCHIVE_DIR), equalTo(somefolder));
+        assertThat(config.getValue(DefaultSettings.BUILD_EXTRACTOR_CLASS), equalTo("some.package.ClassName"));
+        assertThat(config.getValue(DefaultSettings.CODE_EXTRACTOR_CLASS), equalTo("some.package.ClassName"));
+        assertThat(config.getValue(DefaultSettings.VARIABILITY_EXTRACTOR_CLASS), equalTo("some.package.ClassName"));
+        assertThat(config.getValue(DefaultSettings.LOG_DIR), equalTo(somefolder));
+        assertThat(config.getValue(DefaultSettings.ARCHIVE), is(true));
+        assertThat(config.getValue(DefaultSettings.LOG_CONSOLE), is(false));
+        assertThat(config.getValue(DefaultSettings.LOG_DEBUG), is(true));
+        assertThat(config.getValue(DefaultSettings.LOG_ERROR), is(false));
+        assertThat(config.getValue(DefaultSettings.LOG_FILE), is(true));
+        assertThat(config.getValue(DefaultSettings.LOG_INFO), is(false));
+        assertThat(config.getValue(DefaultSettings.LOG_WARNING), is(false));
 
-        VariabilityExtractorConfiguration vConfig = config.getVariabilityConfiguration();
-        assertThat(vConfig.getProviderTimeout(), is(42L));
-        assertThat(vConfig.isCacheWrite(), is(true));
-        assertThat(vConfig.isCacheRead(), is(true));
-        assertThat(vConfig.getArch(), equalTo("x86"));
-        assertThat(vConfig.getSourceTree(), equalTo(somefolder));
-        assertThat(vConfig.getCacheDir(), equalTo(somefolder));
+        assertThat(config.getValue(DefaultSettings.SOURCE_TREE), equalTo(somefolder));
+        assertThat(config.getValue(DefaultSettings.CACHE_DIR), equalTo(somefolder));
+        assertThat(config.getValue(DefaultSettings.ARCH), is("x86"));
         
-        CodeExtractorConfiguration cConfig = config.getCodeConfiguration();
-        assertThat(cConfig.getProviderTimeout(), is(42L));
-        assertThat(cConfig.isCacheWrite(), is(true));
-        assertThat(cConfig.isCacheRead(), is(true));
-        assertThat(cConfig.getFiles(), equalTo(new File[] {
-            new File("file1.c"),
-            new File("dir/file2.c"),
-            new File("dir/subdir/")
-        }));
-        assertThat(cConfig.getFilenamePattern().pattern(), equalTo(".*\\.(h|c|S)"));
-        assertThat(cConfig.getThreads(), is(42));
-        assertThat(cConfig.getArch(), equalTo("x86"));
-        assertThat(cConfig.getSourceTree(), equalTo(somefolder));
-        assertThat(cConfig.getCacheDir(), equalTo(somefolder));
+        assertThat(config.getValue(DefaultSettings.BUILD_PROVIDER_TIMEOUT), is(42));
+        assertThat(config.getValue(DefaultSettings.BUILD_PROVIDER_CACHE_READ), is(true));
+        assertThat(config.getValue(DefaultSettings.BUILD_PROVIDER_CACHE_WRITE), is(true));
+
+        assertThat(config.getValue(DefaultSettings.VARIABILITY_PROVIDER_TIMEOUT), is(42));
+        assertThat(config.getValue(DefaultSettings.VARIABILITY_PROVIDER_CACHE_READ), is(true));
+        assertThat(config.getValue(DefaultSettings.VARIABILITY_PROVIDER_CACHE_WRITE), is(true));
+        
+        assertThat(config.getValue(DefaultSettings.CODE_PROVIDER_TIMEOUT), is(42));
+        assertThat(config.getValue(DefaultSettings.CODE_PROVIDER_CACHE_READ), is(true));
+        assertThat(config.getValue(DefaultSettings.CODE_PROVIDER_CACHE_WRITE), is(true));
+        List<String> files = new LinkedList<>();
+        files.add("file1.c");
+        files.add("dir/file2.c");
+        files.add("dir/subdir/");
+        assertThat(config.getValue(DefaultSettings.CODE_EXTRACTOR_FILES), is(files));
+        assertThat(config.getValue(DefaultSettings.CODE_EXTRACTOR_FILE_REGEX).pattern(), equalTo(".*\\.(h|c|S)"));
+        assertThat(config.getValue(DefaultSettings.CODE_EXTRACTOR_THREADS), is(42));
     }
 
     /**
@@ -167,8 +163,8 @@ public class ConfigurationTest {
 
         File invalidLog = new File("testdata/configs/invalid_log.properties");
         assertThat(invalidLog.exists(), is(true));
-        new Configuration(invalidLog);
-
+        Configuration config = new Configuration(invalidLog);
+        DefaultSettings.registerAllSettings(config);
     }
 
     /**
@@ -181,8 +177,8 @@ public class ConfigurationTest {
     public void testInvalidArchiveSettings() throws SetUpException {
         File invalidArchive = new File("testdata/configs/invalid_archive.properties");
         assertThat(invalidArchive.exists(), is(true));
-        new Configuration(invalidArchive);
-
+        Configuration config = new Configuration(invalidArchive);
+        DefaultSettings.registerAllSettings(config);
     }
 
     /**
@@ -194,7 +190,6 @@ public class ConfigurationTest {
     @Test(expected = SetUpException.class)
     public void testNotExistingPropertyFile() throws SetUpException {
         new Configuration(new File("testdata/configs/not_existing.properties"));
-
     }
     
 
@@ -207,8 +202,8 @@ public class ConfigurationTest {
      */
     @Test(expected = SetUpException.class)
     public void testInvalidNumberPropertyFile() throws SetUpException {
-        new Configuration(new File("testdata/configs/invalid_number.properties")).getBuildConfiguration();
-
+        Configuration config = new Configuration(new File("testdata/configs/invalid_number.properties"));
+        DefaultSettings.registerAllSettings(config);
     }
     
     /**
@@ -219,7 +214,8 @@ public class ConfigurationTest {
      */
     @Test(expected = SetUpException.class)
     public void testInvalidRegexPropertyFile() throws SetUpException {
-        new Configuration(new File("testdata/configs/invalid_regex.properties")).getCodeConfiguration();
+        Configuration config = new Configuration(new File("testdata/configs/invalid_regex.properties"));
+        DefaultSettings.registerAllSettings(config);
     }
     
     /**
@@ -233,8 +229,8 @@ public class ConfigurationTest {
     public void testInvalidDirPropertyFile() throws SetUpException {
         File props = new File("testdata/configs/invaliddir.properties");
         assertThat(props.isFile(), is(true));
-        new Configuration(props);
-
+        Configuration config = new Configuration(props);
+        DefaultSettings.registerAllSettings(config);
     }
     
     /**
@@ -246,12 +242,8 @@ public class ConfigurationTest {
      */
     @Test(expected = SetUpException.class)
     public void testNotExistingDirPropertyFile() throws SetUpException {
-        new Configuration(new File("testdata/configs/notexistingdir.properties"));
-
+        Configuration config = new Configuration(new File("testdata/configs/notexistingdir.properties"));
+        DefaultSettings.registerAllSettings(config);
     }
     
-    
-    
-    
-
 }

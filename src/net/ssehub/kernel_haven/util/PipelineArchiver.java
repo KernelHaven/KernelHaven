@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.util.Set;
 
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
 
 /**
  * A class for archiving an execution of KernelHaven.
@@ -62,7 +63,7 @@ public class PipelineArchiver {
     public File archive() throws IOException {
         LOGGER.logInfo("Archiving the pipeline...");
         
-        File archiveTargetDir = config.getArchiveDir();
+        File archiveTargetDir = config.getValue(DefaultSettings.ARCHIVE_DIR);
         File archiveTargetFile = new File(archiveTargetDir,
                 Timestamp.INSTANCE.getFilename("archived_execution", "zip"));
         ZipArchive archive = new ZipArchive(archiveTargetFile);
@@ -70,7 +71,7 @@ public class PipelineArchiver {
         relativeBase = new File(config.getPropertyFile().getCanonicalPath()).getParentFile();
         
         addFileToArchive(archive, config.getPropertyFile(), new File(""), "Could not archive configuration");
-        for (File plugin : config.getPluginsDir().listFiles()) {
+        for (File plugin : config.getValue(DefaultSettings.PLUGINS_DIR).listFiles()) {
             addFileToArchive(archive, plugin, new File("plugins"), "Could not archive plugin " + plugin.getName());
         }
         if (outputFiles != null) {
@@ -81,16 +82,16 @@ public class PipelineArchiver {
         if (LOGGER.getLogFile() != null) {
             addFileToArchive(archive, LOGGER.getLogFile(), new File("log"), "Could not archive log file");
         }
-        if (config.isArchiveSourceTree()) {
-            addDirToArchive(archive, config.getSourceTree(), new File("source_tree"),
+        if (config.getValue(DefaultSettings.ARCHIVE_SOURCE_TREE)) {
+            addDirToArchive(archive, config.getValue(DefaultSettings.SOURCE_TREE), new File("source_tree"),
                     "Could not archive source tree correclty");
         }
-        if (config.isArchiveResDir()) {
-            addDirToArchive(archive, config.getResourceDir(), new File("res"),
+        if (config.getValue(DefaultSettings.ARCHIVE_RES_DIR)) {
+            addDirToArchive(archive, config.getValue(DefaultSettings.RESOURCE_DIR), new File("res"),
                     "Could not archive resource directory correctly");
         }
-        if (config.isArchiveCacheDir()) {
-            addDirToArchive(archive, config.getCacheDir(), new File("cache"),
+        if (config.getValue(DefaultSettings.ARCHIVE_CACHE_DIR)) {
+            addDirToArchive(archive, config.getValue(DefaultSettings.CACHE_DIR), new File("cache"),
                     "Could not archive cache directory correctly");
         }
         File kernelHavenJar = kernelHavenJarOverride;

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Util;
 
@@ -114,9 +115,10 @@ public class Run {
         try {
             LOGGER.logInfo("Loading properties from " + propertiesFile.getAbsolutePath());
             config = new Configuration(propertiesFile);
+            DefaultSettings.registerAllSettings(config);
 
             if (archiveParam) {
-                config.setArchive(true);
+                config.setValue(DefaultSettings.ARCHIVE, true);
             }
 
             PipelineConfigurator.instance().init(config);

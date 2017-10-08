@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.ExtractorException;
 
@@ -13,18 +14,17 @@ import net.ssehub.kernel_haven.util.ExtractorException;
  * synchronization and communication with the extractors.
  * 
  * @param <ResultType> The type of result that the extractor produces.
- * @param <ConfigType> The type of configuration the extractor needs.
  *
  * @author Adam
  */
-public abstract class AbstractProvider<ResultType, ConfigType> {
+public abstract class AbstractProvider<ResultType> {
 
     /**
      * The configuration for the provider and extractor.
      */
-    protected ConfigType config;
+    protected Configuration config;
     
-    private AbstractExtractor<ResultType, ConfigType> extractor;
+    private AbstractExtractor<ResultType> extractor;
     
     private BlockingQueue<ResultType> resultQueue;
     
@@ -92,7 +92,7 @@ public abstract class AbstractProvider<ResultType, ConfigType> {
      * 
      * @param extractor The extractor to use.
      */
-    public void setExtractor(AbstractExtractor<ResultType, ConfigType> extractor) {
+    public void setExtractor(AbstractExtractor<ResultType> extractor) {
         this.extractor = extractor;
         this.extractor.setProvider(this);
     }
@@ -106,7 +106,7 @@ public abstract class AbstractProvider<ResultType, ConfigType> {
      * @throws SetUpException If the extractor is currently running or initializing the extractor with this
      *      configuration failed.
      */
-    public void setConfig(ConfigType config) throws SetUpException {
+    public void setConfig(Configuration config) throws SetUpException {
         if (extractor.isRunning()) {
             throw new SetUpException("Can't change config while extractor is running");
         }

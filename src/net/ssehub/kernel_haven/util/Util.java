@@ -16,6 +16,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
+
 /**
  * Utility functions.
  * 
@@ -34,6 +38,30 @@ public class Util {
     private Util() {
     }
 
+    /**
+     * Returns the directory where the given extractor can store or read its resources from.
+     * Extractors have their own directories named the same as their fully qualified class names
+     * in a global resource directory specified in the config.
+     * 
+     * If the directory for the specified extractor is not yet created, then this methods creates it.
+     * 
+     * @param config The configuration to read the {@link DefaultSettings#RESOURCE_DIR} setting from.
+     * @param extractor The extractor that wants to store or read data.
+     * @return The directory where the specified extractor can put and read its resources. Never null.
+     * 
+     * @throws SetUpException If creating the resource directory failed for some reason.
+     */
+    public static File getExtractorResourceDir(Configuration config, Class<?> extractor) throws SetUpException {
+        File extractorResDir = new File(config.getValue(DefaultSettings.RESOURCE_DIR), extractor.getName());
+        extractorResDir.mkdir();
+        
+        if (!extractorResDir.isDirectory() || !extractorResDir.canWrite()) {
+            throw new SetUpException("Couldn't create resource dir for extractor " + extractor.getName());
+        }
+        
+        return extractorResDir;
+    }
+    
     /**
      * Extracts a resource from this jar (this ClassLoader, to be precise) to a temporary file.
      * 

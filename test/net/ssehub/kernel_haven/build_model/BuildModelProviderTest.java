@@ -13,7 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.config.BuildExtractorConfiguration;
+import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.Logger;
@@ -59,7 +59,7 @@ public class BuildModelProviderTest {
         }
         
         @Override
-        protected void init(BuildExtractorConfiguration config) throws SetUpException {
+        protected void init(Configuration config) throws SetUpException {
             
         }
 
@@ -101,7 +101,7 @@ public class BuildModelProviderTest {
         Properties props = new Properties();
         props.setProperty("source_tree", "source/tree");
         
-        provider.setConfig(new TestConfiguration(props).getBuildConfiguration());
+        provider.setConfig(new TestConfiguration(props));
         provider.start();
         assertThat(provider.getNextResult(), notNullValue());
         assertThat(provider.getNextException(), nullValue());
@@ -122,7 +122,7 @@ public class BuildModelProviderTest {
         Properties props = new Properties();
         props.setProperty("source_tree", "source/tree");
 
-        provider.setConfig(new TestConfiguration(props).getBuildConfiguration());
+        provider.setConfig(new TestConfiguration(props));
         provider.start();
 
         assertThat(provider.getNextResult(), nullValue());
@@ -146,7 +146,7 @@ public class BuildModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getBuildConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
 
         assertThat(provider.getNextResult(), nullValue());
@@ -168,7 +168,7 @@ public class BuildModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getBuildConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         assertThat(provider.getNextResult(), notNullValue());
         assertThat(provider.getNextException(), nullValue());
@@ -191,7 +191,7 @@ public class BuildModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(true);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getBuildConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         assertThat(provider.getNextResult(), notNullValue());
     }
@@ -218,7 +218,7 @@ public class BuildModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getBuildConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         assertThat(provider.getNextResult(), notNullValue());
         
@@ -249,7 +249,7 @@ public class BuildModelProviderTest {
         Properties props = new Properties();
         props.setProperty("source_tree", "source/tree");
         
-        provider.setConfig(new TestConfiguration(props).getBuildConfiguration());
+        provider.setConfig(new TestConfiguration(props));
         assertThat(provider.getNextResult(), notNullValue());
         assertThat(provider.getNextException(), nullValue());
     }

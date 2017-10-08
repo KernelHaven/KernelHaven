@@ -3,7 +3,7 @@ package net.ssehub.kernel_haven.code_model;
 import java.io.File;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.config.CodeExtractorConfiguration;
+import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.ExtractorException;
 
 /**
@@ -14,7 +14,7 @@ import net.ssehub.kernel_haven.util.ExtractorException;
 public class EmptyCodeModelExtractor extends AbstractCodeModelExtractor {
 
     @Override
-    protected void init(CodeExtractorConfiguration config) throws SetUpException {
+    protected void init(Configuration config) throws SetUpException {
     }
 
     @Override

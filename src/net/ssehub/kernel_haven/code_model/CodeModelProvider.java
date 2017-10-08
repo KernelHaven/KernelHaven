@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.config.CodeExtractorConfiguration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.provider.AbstractCache;
 import net.ssehub.kernel_haven.provider.AbstractProvider;
 
@@ -17,21 +17,22 @@ import net.ssehub.kernel_haven.provider.AbstractProvider;
  *
  * @author Adam
  */
-public class CodeModelProvider extends AbstractProvider<SourceFile, CodeExtractorConfiguration> {
+public class CodeModelProvider extends AbstractProvider<SourceFile> {
 
     @Override
     protected long getTimeout() {
-        return config.getProviderTimeout();
+        return config.getValue(DefaultSettings.CODE_PROVIDER_TIMEOUT);
     }
     
     @Override
     protected List<File> getTargets() throws SetUpException {
         List<File> result = new LinkedList<>();
         
-        Pattern pattern = config.getFilenamePattern();
+        Pattern pattern = config.getValue(DefaultSettings.CODE_EXTRACTOR_FILE_REGEX);
 
-        for (File relativeFile : config.getFiles()) {
-            File absoluteFile = new File(config.getSourceTree(), relativeFile.getPath());
+        for (String relativeStr : config.getValue(DefaultSettings.CODE_EXTRACTOR_FILES)) {
+            File relativeFile = new File(relativeStr);
+            File absoluteFile = new File(config.getValue(DefaultSettings.SOURCE_TREE), relativeFile.getPath());
 
             if (absoluteFile.isFile()) {
                 result.add(relativeFile);
@@ -65,7 +66,8 @@ public class CodeModelProvider extends AbstractProvider<SourceFile, CodeExtracto
                 Matcher m = pattern.matcher(file.getName());
 
                 if (m.matches()) {
-                    result.add(config.getSourceTree().toPath().relativize(file.toPath()).toFile());
+                    result.add(config.getValue(DefaultSettings.SOURCE_TREE).toPath()
+                            .relativize(file.toPath()).toFile());
                 }
 
             }
@@ -75,22 +77,23 @@ public class CodeModelProvider extends AbstractProvider<SourceFile, CodeExtracto
 
     @Override
     protected AbstractCache<SourceFile> createCache() {
-        return new CodeModelCache(config.getCacheDir(), config.isCompressCache());
+        return new CodeModelCache(config.getValue(DefaultSettings.CACHE_DIR),
+                config.getValue(DefaultSettings.CODE_PROVIDER_CACHE_COMPRESS));
     }
 
     @Override
     public boolean readCache() {
-        return config.isCacheRead();
+        return config.getValue(DefaultSettings.CODE_PROVIDER_CACHE_READ);
     }
 
     @Override
     public boolean writeCache() {
-        return config.isCacheWrite();
+        return config.getValue(DefaultSettings.CODE_PROVIDER_CACHE_WRITE);
     }
 
     @Override
     public int getNumberOfThreads() {
-        return config.getThreads();
+        return config.getValue(DefaultSettings.CODE_EXTRACTOR_THREADS);
     }
 
 }

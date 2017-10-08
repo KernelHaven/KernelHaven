@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.config.VariabilityExtractorConfiguration;
+import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
@@ -35,7 +35,7 @@ public class PseudoVariabilityExtractor extends AbstractVariabilityModelExtracto
     }
     
     @Override
-    protected void init(VariabilityExtractorConfiguration config) throws SetUpException {
+    protected void init(Configuration config) throws SetUpException {
     }
 
     @Override

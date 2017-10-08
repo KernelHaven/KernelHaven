@@ -1,6 +1,5 @@
 package net.ssehub.kernel_haven.build_model;
 
-import net.ssehub.kernel_haven.config.BuildExtractorConfiguration;
 import net.ssehub.kernel_haven.provider.AbstractExtractor;
 
 /**
@@ -8,6 +7,6 @@ import net.ssehub.kernel_haven.provider.AbstractExtractor;
  * 
  * @author Adam
  */
-public abstract class AbstractBuildModelExtractor extends AbstractExtractor<BuildModel, BuildExtractorConfiguration> {
+public abstract class AbstractBuildModelExtractor extends AbstractExtractor<BuildModel> {
 
 }

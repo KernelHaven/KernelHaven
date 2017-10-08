@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.config.CodeExtractorConfiguration;
+import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.util.CodeExtractorException;
 import net.ssehub.kernel_haven.util.ExtractorException;
@@ -62,7 +62,7 @@ public class CodeModelProviderTest {
         }
         
         @Override
-        protected void init(CodeExtractorConfiguration config) throws SetUpException {
+        protected void init(Configuration config) throws SetUpException {
         }
 
         @Override
@@ -104,7 +104,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         assertThat(provider.getNextResult(), notNullValue());
     }
@@ -125,7 +125,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(true);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         
         assertThat(provider.getNextResult(), nullValue());
@@ -155,7 +155,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
 
         assertThat(provider.getNextResult(), nullValue());
@@ -179,7 +179,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         assertThat(provider.getNextResult(), notNullValue());
         assertThat(provider.getNextException(), nullValue());
@@ -200,7 +200,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
 
         assertThat(provider.getNextResult(), notNullValue());
@@ -230,7 +230,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(true);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         assertThat(provider.getNextResult(), notNullValue());
     }
@@ -259,7 +259,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         assertThat(provider.getNextResult(), notNullValue());
         
@@ -301,7 +301,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         assertThat(provider.getNextResult(), notNullValue());
         
@@ -337,7 +337,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         CodeModelProvider provider = new CodeModelProvider();
         provider.setExtractor(extractor);
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
 
         // read until the provider is empty
@@ -371,7 +371,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         CodeModelProvider provider = new CodeModelProvider();
         provider.setExtractor(extractor);
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         
         // read until the provider is empty
@@ -404,7 +404,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         CodeModelProvider provider = new CodeModelProvider();
         provider.setExtractor(extractor);
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         
         // read until the provider is empty
@@ -439,7 +439,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         CodeModelProvider provider = new CodeModelProvider();
         provider.setExtractor(extractor);
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         
         // read until the provider is empty
@@ -470,7 +470,7 @@ public class CodeModelProviderTest {
         
         CodeModelProvider provider = new CodeModelProvider();
         provider.setExtractor(new PseudoExtractor(false));
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
     }
    
@@ -489,7 +489,7 @@ public class CodeModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getCodeConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         assertThat(provider.getNextResult(), notNullValue());
     }
     

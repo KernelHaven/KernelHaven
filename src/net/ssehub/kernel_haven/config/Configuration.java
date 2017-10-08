@@ -3,15 +3,16 @@ package net.ssehub.kernel_haven.config;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.config.Setting.Type;
 import net.ssehub.kernel_haven.util.Logger;
 
 /**
@@ -20,72 +21,46 @@ import net.ssehub.kernel_haven.util.Logger;
  * @author Adam
  * @author Moritz
  */
-public class Configuration implements IConfiguration {
+public class Configuration {
     
-    protected Properties properties;
+    private Properties properties;
     
-    protected File propertyFile;
+    private File propertyFile;
     
-    // General
+    private Map<String, Object> values;
     
-    protected File resourceDir;
+    private Map<String, Setting<?>> settings;
     
-    protected File outputDir;
-
-    protected File pluginsDir;
-    
-    protected File logDir;
-
-    protected boolean logConsole;
-    
-    protected boolean logFile;
-    
-    protected boolean logError;
-    
-    protected boolean logWarning;
-    
-    protected boolean logInfo;
-
-    protected boolean logDebug;
-    
-    protected boolean archive;
-    
-    protected File archiveDir;
-    
-    protected boolean archiveSourceTree;
-    
-    protected boolean archiveResDir;
-    
-    protected boolean archiveCacheDir;
-    
-    // analysis
-    
-    protected String analysisClassName;
-    
-    protected Set<String> loggingAnalyissComponents;
-    
-    // common extractor
-    
-    protected File sourceTree;
-    
-    protected String arch;
-    
-    // code
-    
-    protected String codeExtractorClassName;
-    
-    // build
-    
-    protected String buildExtractorClassName;
-    
-    // variability model
-    
-    protected String variabilityExtractorClassName;
+    private boolean doChecks;
     
     /**
-     * Creates an empty configuration; useful for unit tests.
+     * Creates a configuration from the given properties.
+     * 
+     * @param propreties The properties. Must not be <code>null</code>.
+     * 
+     * @throws SetUpException If some properties are invalid.
      */
-    protected Configuration() {
+    public Configuration(Properties propreties) throws SetUpException {
+        this.properties = propreties;
+        this.values = new HashMap<>();
+        this.settings = new HashMap<>();
+        this.doChecks = true;
+    }
+    
+    /**
+     * Creates a configuration from the given properties. Additionally, allows to disable all checks on setting
+     * constraints. Should only be used by test cases.
+     * 
+     * @param propreties The properties. Must not be <code>null</code>.
+     * @param doChecks Whether to check constraints for setting values or not.
+     * 
+     * @throws SetUpException If some properties are invalid.
+     */
+    protected Configuration(Properties propreties, boolean doChecks) throws SetUpException {
+        this.properties = propreties;
+        this.values = new HashMap<>();
+        this.settings = new HashMap<>();
+        this.doChecks = doChecks;
     }
     
     /**
@@ -96,7 +71,10 @@ public class Configuration implements IConfiguration {
      * @throws SetUpException If some properties are invalid or the file cannot be read.
      */
     public Configuration(File propertyFile) throws SetUpException {
-        properties = new Properties();
+        this.properties = new Properties();
+        this.values = new HashMap<>();
+        this.settings = new HashMap<>();
+        this.doChecks = true;
         this.propertyFile = propertyFile;
         
         try {
@@ -104,252 +82,204 @@ public class Configuration implements IConfiguration {
         } catch (IOException e) {
             throw new SetUpException(e);
         }
-        
-        init();
     }
     
     /**
-     * Initializes the attributes from the properties.
+     * Registers the given setting and reads, stores and checks the value for it. After this, the value for the
+     * setting may be retrieved via {@link #getValue(Setting)}.
      * 
-     * @throws SetUpException If some properties are invalid.
+     * @param setting The setting to register. Must not be <code>null</code>.
+     * 
+     * @throws SetUpException If the constraints for a setting are not satisfied, or a different setting with a same
+     *      key was already registered.
      */
-    private void init() throws SetUpException {
-        // general
-        this.resourceDir = readFileProperty("resource_dir",
-                new FileProps().require().existing().dir().readable().writeable());
-        this.outputDir = readFileProperty("output_dir",
-                new FileProps().require().existing().dir().writeable());
-        this.pluginsDir = readFileProperty("plugins_dir",
-                new FileProps().require().existing().dir().readable());
-        
-        this.logConsole = Boolean.parseBoolean(getProperty("log.console", "true"));
-        this.logFile = Boolean.parseBoolean(getProperty("log.file", "false"));
-        this.logError = Boolean.parseBoolean(getProperty("log.error", "true"));
-        this.logWarning = Boolean.parseBoolean(getProperty("log.warning", "true"));
-        this.logInfo = Boolean.parseBoolean(getProperty("log.info", "true"));
-        this.logDebug = Boolean.parseBoolean(getProperty("log.debug", "false"));
-        FileProps logDirProps = new FileProps().existing().dir().writeable();
-        if (this.logFile) {
-            logDirProps = logDirProps.require();
+    public void registerSetting(Setting<?> setting) throws SetUpException {
+        String key = setting.getKey();
+        if (settings.containsKey(key)) {
+            if (settings.get(key) != setting) {
+                throw new SetUpException("Setting with key " + key + " already registered");
+            } else {
+                return;
+            }
         }
-        this.logDir = readFileProperty("log.dir", logDirProps);
+        settings.put(key, setting);
         
-        this.archive = Boolean.parseBoolean(getProperty("archive", "false"));
-        FileProps archiveDirProps = new FileProps().existing().dir().writeable();
-        if (this.archive) {
-            archiveDirProps = archiveDirProps.require();
-        }
-        this.archiveDir = readFileProperty("archive.dir", archiveDirProps);
-        this.archiveSourceTree = Boolean.parseBoolean(getProperty("archive.source_tree", "false"));
-        this.archiveCacheDir = Boolean.parseBoolean(getProperty("archive.cache_dir", "false"));
-        this.archiveResDir = Boolean.parseBoolean(getProperty("archive.res_dir", "false"));
-        
-        // analysis
-        this.analysisClassName = readStringRequiredProperty("analysis.class");
-        List<String> loggingComponents = readList("analysis.components.log");
-        if (loggingComponents != null) {
-            this.loggingAnalyissComponents = new HashSet<>(loggingComponents);
+        Object value;
+        if (setting.getType() == Type.SETTING_LIST) {
+            value = readSettingList(setting);
+        } else if (setting.getType() == Type.ENUM) {
+            value = readEnumSetting(setting);
         } else {
-            this.loggingAnalyissComponents = new HashSet<>();
+            value = readValue(setting);
         }
-        
-        // common extractor stuff
-        this.sourceTree =  readFileProperty("source_tree", new FileProps().existing().dir().readable());
-        this.arch = getProperty("arch");
-        
-        // code
-        this.codeExtractorClassName = getProperty("code.extractor.class");
-        
-        // build
-        this.buildExtractorClassName = getProperty("build.extractor.class");
-        
-        // variabiltiy
-        this.variabilityExtractorClassName = getProperty("variability.extractor.class");
-        
+        values.put(key, value);
     }
     
     /**
-     * Properties that should be checked for files.
+     * Retrieves the value that was stored for the given setting.
+     * 
+     * @param <T> The type of value that the setting represents.
+     * 
+     * @param setting The setting to retrieve the value for. Must not be <code>null</code>.
+     * @return The value for the setting. If the setting is not mandatory, then this may be <code>null</code>.
+     * 
+     * @throws IllegalArgumentException If the setting has not been registered before this call.
      */
-    protected static class FileProps {
-        
-        private boolean required;
-        
-        private boolean existing;
-        
-        private boolean file;
-        
-        private boolean dir;
-        
-        private boolean readable;
-        
-        private boolean writeable;
-
-        /**
-         * Creates an empty file props.
-         */
-        public FileProps() {
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(Setting<T> setting) throws IllegalArgumentException {
+        if (!values.containsKey(setting.getKey())) {
+            throw new IllegalArgumentException("Can't access setting that is not yet registered");
         }
-        
-        /**
-         * Sets the file to be required.
-         * @return this.
-         */
-        public FileProps require() {
-            required = true;
-            return this;
-        }
-        
-        /**
-         * Sets the file to be existing.
-         * @return this.
-         */
-        public FileProps existing() {
-            existing = true;
-            return this;
-        }
-        
-//        /**
-//         * Sets the file to be a file.
-//         * @return this.
-//         */
-//        public FileProps file() {
-//            file = true;
-//            return this;
-//        }
-        
-        /**
-         * Sets the file to be a directory.
-         * @return this.
-         */
-        public FileProps dir() {
-            dir = true;
-            return this;
-        }
-        
-        /**
-         * Sets the file to be a readable.
-         * @return this.
-         */
-        public FileProps readable() {
-            readable = true;
-            return this;
-        }
-        
-        /**
-         * Sets the file to be a writeable.
-         * @return this.
-         */
-        public FileProps writeable() {
-            writeable = true;
-            return this;
-        }
-        
+        return (T) values.get(setting.getKey());
     }
     
     /**
-     * Reads the given property name into a file.
+     * Changes the value of a given setting. The constraints of the setting are <b>not</b> checked.
      * 
-     * @param name The property name.
-     * @param requiredProps The properties that should be checked on the file.
-     * @return The file, or <code>null</code> if not specified and not required.
+     * @param <T> The type of value that this setting represents.
      * 
-     * @throws SetUpException If any of the properties of the file are not satisfied.
+     * @param setting The setting to change the value for.
+     * @param value The new value for the setting.
+     * 
+     * @throws IllegalArgumentException If the setting has not been registered before this call.
      */
-    protected File readFileProperty(String name, FileProps requiredProps) throws SetUpException {
-        File result = null;
+    public <T> void setValue(Setting<T> setting, T value) throws IllegalArgumentException {
+        if (!values.containsKey(setting.getKey())) {
+            throw new IllegalArgumentException("Can't set setting that is not yet registered");
+        }
+        values.put(setting.getKey(), value);
+    }
+    
+    /**
+     * Reads a value from the properties, based on the key, type and value of the given setting.
+     * 
+     * @param setting The setting to read the value for.
+     * @return The value for the given setting.
+     * 
+     * @throws SetUpException If any constraints of the setting are violated.
+     */
+    private Object readValue(Setting<?> setting) throws SetUpException {
+        Object result;
+        String key = setting.getKey();
+        String value = properties.getProperty(key, setting.getDefaultValue());
+        if (value == null) {
+            if (setting.isMandatory() && doChecks) {
+                throw new SetUpException("No value for mandatory setting " + key);
+            }
+            result = null;
+        } else {
+            switch (setting.getType()) {
+            case STRING:
+                result = value;
+                break;
+            case INTEGER:
+                try {
+                    result = Integer.parseInt(value);
+                } catch (NumberFormatException e) {
+                    throw new SetUpException("Invalid value for integer setting " + key, e);
+                }
+                break;
+            case DIRECTORY: {
+                File f = new File(value);
+                if (!f.isDirectory() && doChecks) {
+                    throw new SetUpException("Value for setting " + key + " is not an existing directory"); 
+                }
+                result = f;
+                break;
+            }
+            case FILE: {
+                File f = new File(value);
+                if (!f.isFile() && doChecks) {
+                    throw new SetUpException("Value for setting " + key + " is not an existing file"); 
+                }
+                result = f;
+                break;
+            }
+            case PATH:
+                result = new File(value);
+                break;
+            case BOOLEAN:
+                result = Boolean.parseBoolean(value);
+                break;
+            case REGEX:
+                try {
+                    result = Pattern.compile(value);
+                } catch (PatternSyntaxException e) {
+                    throw new SetUpException("Invalid regular expression for setting " + key, e);
+                }
+                break;
+            case STRING_LIST: {
+                List<String> list = new LinkedList<String>();
+                for (String v : value.split(",")) {
+                    list.add(v.trim());
+                }
+                result = list;
+                break;
+            }
+            default:
+                throw new SetUpException("Unknown setting type " + setting.getType() + " for setting " + key);
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Reads a setting that has the type {@link Setting.Type#SETTING_LIST}.
+     * 
+     * @param setting The setting to read.
+     * @return The read list.
+     */
+    private List<String> readSettingList(Setting<?> setting) {
+        List<String> result = new LinkedList<>();
+        int index = 0;
+        String baseKey = setting.getKey();
         
-        String setting = properties.getProperty(name);
-        if (setting != null) {
-            
-            result = new File(setting);
-            if (requiredProps.existing && !result.exists()) {
-                throw new SetUpException("File \"" + setting + "\" does not exist");
-            }
-            
-            // check the following only if the file exists...
-            
-            if (result.exists() && requiredProps.file && !result.isFile()) {
-                throw new SetUpException("File \"" + setting + "\" is not an existing file");
-            }
-            
-            if (result.exists() && requiredProps.dir && !result.isDirectory()) {
-                throw new SetUpException("File \"" + setting + "\" is not an existing directory");
-            }
-            
-            if (result.exists() && requiredProps.readable && !result.canRead()) {
-                throw new SetUpException("File \"" + setting + "\" is not readable");
-            }
-            
-            if (result.exists() && requiredProps.writeable && !result.canWrite()) {
-                throw new SetUpException("File \"" + setting + "\" is not writeable");
-            }
-            
-        } else if (requiredProps.required) {
-            throw new SetUpException("Setting " + name + " missing, but required");
+        String value;
+        while ((value = properties.getProperty(baseKey + "." + index)) != null) {
+            result.add(value);
+            index++;
         }
         
         return result;
     }
     
     /**
-     * Reads a required string property.
+     * Reads a setting that has the type {@link Setting.Type#ENUM}.
      * 
-     * @param key The property to read.
-     * @return The value of the property.
-     * @throws SetUpException If the property is not defined.
-     */
-    protected String readStringRequiredProperty(String key) throws SetUpException {
-        String result = getProperty(key);
-        if (result == null) {
-            throw new SetUpException("Setting " + key + " required but not defined");
-        }
-        return result;
-    }
-    
-    /**
-     * Reads a long property.
+     * @param setting The setting to read.
+     * @return The read enum value.
      * 
-     * @param key The property to read.
-     * @param defaultValue The value to return if the setting is not defined.
-     * @return The value of the property as a long, or the default value.
-     * @throws SetUpException If the property is not a valid long.
+     * @throws SetUpException If reading the enum value fails.
      */
-    protected long readLong(String key, long defaultValue) throws SetUpException {
-        long result = defaultValue;
-        String value = getProperty(key);
+    private Object readEnumSetting(Setting<?> setting) throws SetUpException {
+        String key = setting.getKey();
         
-        if (value != null) {
+        if (!(setting instanceof EnumSetting)) {
+            throw new SetUpException("Setting with key " + key
+                    + " has tybe ENUM but is not an instance of EnumSetting");
+        }
+        
+        EnumSetting<?> enumSetting = (EnumSetting<?>) setting;
+        
+        String value = properties.getProperty(key, setting.getDefaultValue());
+        
+        Object result;
+        
+        if (value == null) {
+            if (setting.isMandatory() && doChecks) {
+                throw new SetUpException("No value for mandatory setting " + key);
+            }
+            result = null;
+        } else {
             try {
-                result = Long.parseLong(value);
-            } catch (NumberFormatException e) {
-                throw new SetUpException("Setting " + key + " is not a valid number");
+                result = Enum.valueOf(enumSetting.getEnumClass(), value.toUpperCase());
+            } catch (IllegalArgumentException exc) {
+                throw new SetUpException("Invalid enum value for setting with key " + key + ": " + value);
             }
         }
         
         return result;
-    }
-    
-    /**
-     * Reads a setting which has a comma separated list as the value.
-     * 
-     * @param key The property to read.
-     * @return The list of comma separated values, or <code>null</code> if the key is not present.
-     */
-    protected List<String> readList(String key) {
-        String value = getProperty(key);
         
-        List<String> result = null;
-        
-        if (value != null) {
-            String[] parts = value.split(",");
-            result = new ArrayList<>(parts.length);
-            for (String part : parts) {
-                result.add(part.trim());
-            }
-        }
-
-        return result;
     }
     
     /**
@@ -358,6 +288,7 @@ public class Configuration implements IConfiguration {
      * @param key The key of the property.
      * @return The value set for the key, or <code>null</code> if not specified.
      */
+    @Deprecated
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
@@ -369,6 +300,7 @@ public class Configuration implements IConfiguration {
      * @param defaultValue The default value to return if not specified in file.
      * @return The value set by the user, or the default value.
      */
+    @Deprecated
     public String getProperty(String key, String defaultValue) {
         return properties.getProperty(key, defaultValue);
     }
@@ -385,6 +317,7 @@ public class Configuration implements IConfiguration {
      * @param defaultValue The default value to return if not specified in file.
      * @return The value set by the user, or the default value.
      */
+    @Deprecated
     public boolean getBooleanProperty(String key, boolean defaultValue) {
         boolean result = defaultValue;
         String value = properties.getProperty(key);
@@ -400,12 +333,13 @@ public class Configuration implements IConfiguration {
      * Will return:
      * <ol>
      *   <li>The read value treated as absolute position</li>
-     *   <li>The read value treated as position relative to {@link #getSourceTree()}</li>
+     *   <li>The read value treated as position relative to the source tree</li>
      * </ol>
      * @param key The key of the property to read.
      * @return The value as file object.
      * @throws SetUpException If the property was not specified or the file does not exist.
      */
+    @Deprecated
     public File getFileProperty(String key) throws SetUpException {
         String strFile = getProperty(key);
         if (null == strFile) {
@@ -416,7 +350,7 @@ public class Configuration implements IConfiguration {
         File file = new File(strFile);
         if (!file.exists()) {
             // Fallback: Try to load the parameter as relative path
-            file = new File(getSourceTree(), strFile);
+            file = new File(getValue(DefaultSettings.SOURCE_TREE), strFile);
             
             if (!file.exists()) {
                 throw new SetUpException(key + " = " + strFile + " points to an invalid location.");
@@ -440,6 +374,7 @@ public class Configuration implements IConfiguration {
      * @return The specified value or the default value.
      * @throws SetUpException If a value was specified, which does not exist for the defined enumeration.
      */
+    @Deprecated
     public <E extends Enum<E>> E getEnumProperty(String key, E defaultValue) throws SetUpException {
         String tmp = getProperty(key);
         
@@ -459,189 +394,6 @@ public class Configuration implements IConfiguration {
     }
 
     /**
-     * Returns the output directory where analyzes can place their output. We have write access here.
-     * 
-     * @return The output directory, never <code>null</code>.
-     */
-    public File getOutputDir() {
-        return outputDir;
-    }
-
-    /**
-     * Returns the directory where to read the plugin jars from. We have read access here.
-     * 
-     * @return The plugin directory, never <code>null</code>.
-     */
-    public File getPluginsDir() {
-        return pluginsDir;
-    }
-
-    /**
-     * The directory where log files will be placed. If present, then we have write access here.
-     * This is present, if logFile is true.
-     * 
-     * @return The directory for log files; may be <code>null</code>.
-     */
-    public File getLogDir() {
-        return logDir;
-    }
-
-    /**
-     * Whether to log to console or not.
-     * 
-     * @return Whether to log to console or not.
-     */
-    public boolean isLogConsole() {
-        return logConsole;
-    }
-
-    /**
-     * Whether to log to a log file or not. If this is <code>true</code>, then the logDir exists.
-     * 
-     * @return Whether to log to console or not.
-     */
-    public boolean isLogFile() {
-        return logFile;
-    }
-
-    /**
-     * Whether to log log messages with error level.
-     * 
-     * @return Whether to log error messages.
-     */
-    public boolean isLogError() {
-        return logError;
-    }
-
-    /**
-     * Whether to log log messages with warning level.
-     * 
-     * @return Whether to log warning messages.
-     */
-    public boolean isLogWarning() {
-        return logWarning;
-    }
-
-    /**
-     * Whether to log log messages with info level.
-     * 
-     * @return Whether to log info messages.
-     */
-    public boolean isLogInfo() {
-        return logInfo;
-    }
-
-    /**
-     * Whether to log log messages with debug level.
-     * 
-     * @return Whether to log debug messages.
-     */
-    public boolean isLogDebug() {
-        return logDebug;
-    }
-
-    /**
-     * Whether the pipeline should archive itself after running.
-     * 
-     * @return Whether to archive the pipeline.
-     */
-    public boolean isArchive() {
-        return archive;
-    }
-
-    /**
-     * The directory where to store the archive in. This is present if isArchive is true.
-     * If present, then we have write access.
-     * 
-     * @return The directory where to place the archive.
-     */
-    public File getArchiveDir() {
-        return archiveDir;
-    }
-    
-    /**
-     * Whether the source tree should be added to the archive, too.
-     * 
-     * @return Whether the source tree should be archived, too.
-     */
-    public boolean isArchiveSourceTree() {
-        return archiveSourceTree;
-    }
-    
-    /**
-     * Whether the cache directory should be added to the archive, too.
-     * 
-     * @return Whether the cache directory should be archived, too.
-     */
-    public boolean isArchiveCacheDir() {
-        return archiveCacheDir;
-    }
-    
-    /**
-     * Whether the resource directory should be added to the archive, too.
-     * 
-     * @return Whether the resource directory should be archived, too.
-     */
-    public boolean isArchiveResDir() {
-        return archiveResDir;
-    }
-
-    /**
-     * Returns the fully qualified class name of the analysis class.
-     * 
-     * @return The name of the analysis. Never <code>null</code>.
-     */
-    public String getAnalysisClassName() {
-        return analysisClassName;
-    }
-    
-    /**
-     * Returns a set of simple class names. Analyses components with these class name should log their intermediate
-     * results.
-     * 
-     * @return A set of simple class names. Never <code>null</code>.
-     */
-    public Set<String> getLoggingAnalyissComponents() {
-        return loggingAnalyissComponents;
-    }
-
-    /**
-     * The extractor class to use.
-     * 
-     * @return The name of the extractor class. May be <code>null</code>.
-     */
-    public String getCodeExtractorClassName() {
-        return codeExtractorClassName;
-    }
-
-    /**
-     * The extractor class to use.
-     * 
-     * @return The name of the extractor class. May be <code>null</code>.
-     */
-    public String getBuildExtractorClassName() {
-        return buildExtractorClassName;
-    }
-
-    /**
-     * The extractor class to use.
-     * 
-     * @return The name of the extractor class. May be <code>null</code>.
-     */
-    public String getVariabilityExtractorClassName() {
-        return variabilityExtractorClassName;
-    }
-
-    /**
-     * Overrides the archive setting.
-     * 
-     * @param archive The new archive value.
-     */
-    public void setArchive(boolean archive) {
-        this.archive = archive;
-    }
-    
-    /**
      * Returns the file that this configuration was created with.
      * 
      * @return The file with the properties; never <code>null</code>.
@@ -659,130 +411,4 @@ public class Configuration implements IConfiguration {
         this.propertyFile = propertyFile;
     }
     
-    /**
-     * Returns the directory that contains the product line to analyze.
-     * 
-     * @return The source tree directory.
-     */
-    public File getSourceTree() {
-        return sourceTree;
-    }
-    
-    /**
-     * Returns the resource directory where extractors place their resources.
-     * 
-     * @return The resource directory.
-     */
-    public File getResourceDir() {
-        return resourceDir;
-    }
-    
-    /**
-     * Returns the cache directory for extractor data. This may or may not actually exist.
-     * 
-     * @return The cache directory.
-     */
-    public File getCacheDir() {
-        return new File(getProperty("cache_dir"));
-    }
-    
-    /**
-     * Creates a {@link BuildExtractorConfiguration} from this global configuration.
-     * 
-     * @return The {@link BuildExtractorConfiguration} derived from this global configuration.
-     * 
-     * @throws SetUpException If the configuration is not valid.
-     */
-    public BuildExtractorConfiguration getBuildConfiguration() throws SetUpException {
-        BuildExtractorConfiguration config = new BuildExtractorConfiguration();
-        
-        config.setProviderTimeout(readLong("build.provider.timeout", 0));
-        config.setCacheWrite(Boolean.parseBoolean(getProperty("build.provider.cache.write", "false")));
-        config.setCacheRead(Boolean.parseBoolean(getProperty("build.provider.cache.read", "false")));
-        config.setSourceTree(sourceTree);
-        config.setArch(arch);
-        
-        FileProps cacheProps = new FileProps().existing().dir().readable().writeable();
-        if (config.isCacheRead() || config.isCacheWrite()) {
-            cacheProps = cacheProps.require();
-        }
-        config.setCacheDir(readFileProperty("cache_dir", cacheProps));
-        config.setResourceDir(resourceDir);
-        config.setProperties(properties);
-        
-        return config;
-    }
-    
-    /**
-     * Creates a {@link VariabilityExtractorConfiguration} from this global configuration.
-     * 
-     * @return The {@link VariabilityExtractorConfiguration} derived from this global configuration.
-     * 
-     * @throws SetUpException If the configuration is not valid.
-     */
-    public VariabilityExtractorConfiguration getVariabilityConfiguration() throws SetUpException {
-        VariabilityExtractorConfiguration config = new VariabilityExtractorConfiguration();
-        
-        config.setProviderTimeout(readLong("variability.provider.timeout", 0));
-        config.setCacheWrite(Boolean.parseBoolean(getProperty("variability.provider.cache.write", "false")));
-        config.setCacheRead(Boolean.parseBoolean(getProperty("variability.provider.cache.read", "false")));
-        config.setSourceTree(sourceTree);
-        config.setArch(arch);
-        
-        FileProps cacheProps = new FileProps().existing().dir().readable().writeable();
-        if (config.isCacheRead() || config.isCacheWrite()) {
-            cacheProps = cacheProps.require();
-        }
-        config.setCacheDir(readFileProperty("cache_dir", cacheProps));
-        config.setResourceDir(resourceDir);
-        config.setProperties(properties);
-        
-        return config;
-    }
-    
-    /**
-     * Creates a {@link CodeExtractorConfiguration} from this global configuration.
-     * 
-     * @return The {@link CodeExtractorConfiguration} derived from this global configuration.
-     * 
-     * @throws SetUpException If the configuration is not valid.
-     */
-    public CodeExtractorConfiguration getCodeConfiguration() throws SetUpException {
-        CodeExtractorConfiguration config = new CodeExtractorConfiguration();
-        
-        config.setProviderTimeout(readLong("code.provider.timeout", 0));
-        config.setCacheWrite(Boolean.parseBoolean(getProperty("code.provider.cache.write", "false")));
-        config.setCacheRead(Boolean.parseBoolean(getProperty("code.provider.cache.read", "false")));
-        config.setCompressCache(Boolean.parseBoolean(getProperty("code.provider.cache.compress", "false")));
-        
-        String fileListSetting = getProperty("code.extractor.files", "");
-        String[] fileListSettingParts = fileListSetting.split(",");
-        File[] files = new File[fileListSettingParts.length];
-        for (int i = 0; i < files.length; i++) {
-            files[i] = new File(fileListSettingParts[i].trim());
-        }
-        config.setFiles(files);
-        try {
-            Pattern pattern = Pattern.compile(getProperty("code.extractor.file_regex", ".*\\.c"));
-            config.setFilenamePattern(pattern);
-        } catch (PatternSyntaxException e) {
-            throw new SetUpException(e);
-        }
-        
-        config.setThreads((int) readLong("code.extractor.threads", 1));
-        
-        config.setSourceTree(sourceTree);
-        config.setArch(arch);
-        
-        FileProps cacheProps = new FileProps().existing().dir().readable().writeable();
-        if (config.isCacheRead() || config.isCacheWrite()) {
-            cacheProps = cacheProps.require();
-        }
-        config.setCacheDir(readFileProperty("cache_dir", cacheProps));
-        config.setResourceDir(resourceDir);
-        config.setProperties(properties);
-        
-        return config;
-    }
-
 }

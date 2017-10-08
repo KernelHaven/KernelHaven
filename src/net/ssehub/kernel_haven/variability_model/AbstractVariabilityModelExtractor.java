@@ -1,6 +1,5 @@
 package net.ssehub.kernel_haven.variability_model;
 
-import net.ssehub.kernel_haven.config.VariabilityExtractorConfiguration;
 import net.ssehub.kernel_haven.provider.AbstractExtractor;
 
 /**
@@ -8,7 +7,6 @@ import net.ssehub.kernel_haven.provider.AbstractExtractor;
  *
  * @author Adam
  */
-public abstract class AbstractVariabilityModelExtractor extends AbstractExtractor<VariabilityModel,
-        VariabilityExtractorConfiguration> {
+public abstract class AbstractVariabilityModelExtractor extends AbstractExtractor<VariabilityModel> {
 
 }

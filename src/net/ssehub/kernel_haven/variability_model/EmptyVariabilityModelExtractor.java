@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.config.VariabilityExtractorConfiguration;
+import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.ExtractorException;
 
 /**
@@ -16,7 +16,7 @@ import net.ssehub.kernel_haven.util.ExtractorException;
 public class EmptyVariabilityModelExtractor extends AbstractVariabilityModelExtractor {
 
     @Override
-    protected void init(VariabilityExtractorConfiguration config) throws SetUpException {
+    protected void init(Configuration config) throws SetUpException {
     }
 
     @Override

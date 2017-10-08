@@ -101,17 +101,17 @@ public class PipelineAnalysisTest {
         VariabilityModelProvider varProvider = new VariabilityModelProvider();
         PseudoVariabilityExtractor.configure(new File(""), new VariabilityVariable("A", "bool"));
         varProvider.setExtractor(new PseudoVariabilityExtractor());
-        varProvider.setConfig(config.getVariabilityConfiguration());
+        varProvider.setConfig(config);
         analysis.setVariabilityModelProvider(varProvider);
         
         BuildModelProvider buildProvider = new BuildModelProvider();
         buildProvider.setExtractor(new EmptyBuildModelExtractor());
-        buildProvider.setConfig(config.getBuildConfiguration());
+        buildProvider.setConfig(config);
         analysis.setBuildModelProvider(buildProvider);
         
         CodeModelProvider codeProvider = new CodeModelProvider();
         codeProvider.setExtractor(new EmptyCodeModelExtractor());
-        codeProvider.setConfig(config.getCodeConfiguration());
+        codeProvider.setConfig(config);
         analysis.setCodeModelProvider(codeProvider);
         
         return analysis;

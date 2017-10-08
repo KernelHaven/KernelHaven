@@ -3,7 +3,7 @@ package net.ssehub.kernel_haven.build_model;
 import java.io.File;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.config.BuildExtractorConfiguration;
+import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.ExtractorException;
 
 /**
@@ -14,7 +14,7 @@ import net.ssehub.kernel_haven.util.ExtractorException;
 public class EmptyBuildModelExtractor extends AbstractBuildModelExtractor {
 
     @Override
-    protected void init(BuildExtractorConfiguration config) throws SetUpException {
+    protected void init(Configuration config) throws SetUpException {
     }
 
     @Override

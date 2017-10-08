@@ -3,7 +3,6 @@ package net.ssehub.kernel_haven;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
 
@@ -22,10 +21,7 @@ import net.ssehub.kernel_haven.build_model.AbstractBuildModelExtractor;
 import net.ssehub.kernel_haven.build_model.BuildModel;
 import net.ssehub.kernel_haven.code_model.AbstractCodeModelExtractor;
 import net.ssehub.kernel_haven.code_model.SourceFile;
-import net.ssehub.kernel_haven.config.BuildExtractorConfiguration;
-import net.ssehub.kernel_haven.config.CodeExtractorConfiguration;
 import net.ssehub.kernel_haven.config.Configuration;
-import net.ssehub.kernel_haven.config.VariabilityExtractorConfiguration;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.Logger;
@@ -94,7 +90,7 @@ public class PipelineConfiguratiorTest {
     public static class DummyVmExtractor extends AbstractVariabilityModelExtractor {
 
         @Override
-        protected void init(VariabilityExtractorConfiguration config) throws SetUpException {
+        protected void init(Configuration config) throws SetUpException {
         }
 
         @Override
@@ -141,26 +137,6 @@ public class PipelineConfiguratiorTest {
         assertThat(methodNames, hasItem(equalTo("runOnFile")));
         assertThat(methodNames, hasItem(equalTo("init")));
         assertThat(methodNames, hasItem(equalTo("getName")));
-    }
-
-    /**
-     * Tests whether the vmextractor is null if a it is represented by a
-     * classname that was not loaded via the plugins loader.
-     * 
-     * @throws SetUpException
-     *             unwanted.
-     */
-    @Test
-    public void testPluginVmExtractorNegative() throws SetUpException {
-        Properties config = new Properties();
-        config.setProperty("variability.extractor.class", "net.ssehub.kernel_haven.NotExistingExtractor");
-        config.setProperty("build.extractor.class", DummyBmExtractor.class.getName());
-        config.setProperty("plugins_dir", "testdata/plugins");
-        PipelineConfigurator configurator = new PipelineConfigurator();
-        configurator.init(new TestConfiguration(config));
-        configurator.loadPlugins();
-
-        assertThat(configurator.getVmExtractor(), nullValue());
     }
 
     /**
@@ -244,6 +220,7 @@ public class PipelineConfiguratiorTest {
          * @throws SetUpException
          *             If properties contains a key called "fail".
          */
+        @SuppressWarnings("deprecation")
         public DummyAnalysis(Configuration config) throws SetUpException {
             super(config);
             
@@ -317,7 +294,7 @@ public class PipelineConfiguratiorTest {
     public static class DummyBmExtractor extends AbstractBuildModelExtractor {
 
         @Override
-        protected void init(BuildExtractorConfiguration config) throws SetUpException {
+        protected void init(Configuration config) throws SetUpException {
         }
 
         @Override
@@ -376,7 +353,7 @@ public class PipelineConfiguratiorTest {
     public static class DummyCmExtractor extends AbstractCodeModelExtractor {
 
         @Override
-        protected void init(CodeExtractorConfiguration config) throws SetUpException {
+        protected void init(Configuration config) throws SetUpException {
         }
 
         @Override

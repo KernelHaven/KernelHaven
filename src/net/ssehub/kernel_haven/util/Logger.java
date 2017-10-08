@@ -11,6 +11,7 @@ import java.util.List;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
 
 /**
  * A thread-safe singleton logger.
@@ -115,15 +116,15 @@ public class Logger {
      */
 
     public void setup(Configuration config) throws SetUpException {
-        this.fileLogging = config.isLogFile();
-        this.consoleLogging = config.isLogConsole();
-        this.errorLogging = config.isLogError();
-        this.warningLogging = config.isLogWarning();
-        this.debugLogging = config.isLogDebug();
-        this.infoLogging = config.isLogInfo();
+        this.fileLogging = config.getValue(DefaultSettings.LOG_FILE);
+        this.consoleLogging = config.getValue(DefaultSettings.LOG_CONSOLE);
+        this.errorLogging = config.getValue(DefaultSettings.LOG_ERROR);
+        this.warningLogging = config.getValue(DefaultSettings.LOG_WARNING);
+        this.debugLogging = config.getValue(DefaultSettings.LOG_DEBUG);
+        this.infoLogging = config.getValue(DefaultSettings.LOG_INFO);
 
         if (fileLogging) {
-            logFile = new File(config.getLogDir(), 
+            logFile = new File(config.getValue(DefaultSettings.LOG_DIR), 
                     Timestamp.INSTANCE.getFilename("KernelHaven", "log"));
         }
 

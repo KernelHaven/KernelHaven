@@ -15,6 +15,7 @@ import net.ssehub.kernel_haven.code_model.AbstractCodeModelExtractor;
 import net.ssehub.kernel_haven.code_model.CodeModelProvider;
 import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.provider.AbstractExtractor;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.PipelineArchiver;
@@ -205,13 +206,13 @@ public class PipelineConfigurator {
     public void instantiateExtractors() throws SetUpException {
         LOGGER.logInfo("Instantiating extractor factories...");
         
-        vmExtractor = instantiateExtractor(config.getVariabilityExtractorClassName(),
+        vmExtractor = instantiateExtractor(config.getValue(DefaultSettings.VARIABILITY_EXTRACTOR_CLASS),
             EmptyVariabilityModelExtractor.class, "variability");
 
-        bmExtractor = instantiateExtractor(config.getBuildExtractorClassName(),
+        bmExtractor = instantiateExtractor(config.getValue(DefaultSettings.BUILD_EXTRACTOR_CLASS),
             EmptyBuildModelExtractor.class, "build");
         
-        cmExtractor = instantiateExtractor(config.getCodeExtractorClassName(),
+        cmExtractor = instantiateExtractor(config.getValue(DefaultSettings.CODE_EXTRACTOR_CLASS),
             EmptyCodeModelExtractor.class, "code");
     }
 
@@ -228,7 +229,7 @@ public class PipelineConfigurator {
      * @throws SetUpException If loading or instantiating the extractor class fails.
      */
     @SuppressWarnings("unchecked")
-    private <E extends AbstractExtractor<?, ?>> E instantiateExtractor(String extractorClassName,
+    private <E extends AbstractExtractor<?>> E instantiateExtractor(String extractorClassName,
             Class<E> defaultExtractor, String type) throws SetUpException {
         
         E extractor;
@@ -273,17 +274,17 @@ public class PipelineConfigurator {
         
         vmProvider = new VariabilityModelProvider();
         vmProvider.setExtractor(vmExtractor);
-        vmProvider.setConfig(config.getVariabilityConfiguration());
+        vmProvider.setConfig(config);
         LOGGER.logInfo("Created variability provider");
 
         bmProvider = new BuildModelProvider();
         bmProvider.setExtractor(bmExtractor);
-        bmProvider.setConfig(config.getBuildConfiguration());
+        bmProvider.setConfig(config);
         LOGGER.logInfo("Created build provider");
 
         cmProvider = new CodeModelProvider();
         cmProvider.setExtractor(cmExtractor);
-        cmProvider.setConfig(config.getCodeConfiguration());
+        cmProvider.setConfig(config);
         LOGGER.logInfo("Created code provider");
     }
     
@@ -294,7 +295,7 @@ public class PipelineConfigurator {
      */
     private void runPreparation() throws SetUpException {
         // TODO: this is a temporary hack: implement this in a more sane way.
-        if (Boolean.parseBoolean(config.getProperty("prepare_non_boolean"))) {
+        if (config.getValue(DefaultSettings.PREPARE_NON_BOOLEAN)) {
             try {
                 @SuppressWarnings("unchecked")
                 Class<? extends IPreparation> prepartionClass = (Class<? extends IPreparation>)
@@ -319,7 +320,7 @@ public class PipelineConfigurator {
     public void instantiateAnalysis() throws SetUpException {
         LOGGER.logInfo("Instantiating analysis...");
         
-        String analysisName = config.getAnalysisClassName();
+        String analysisName = config.getValue(DefaultSettings.ANALYSIS_CLASS);
         if (analysisName.contains(" ")) {
             LOGGER.logWarning("Analysis class name contains a space character");
         }
@@ -332,7 +333,7 @@ public class PipelineConfigurator {
             analysis.setBuildModelProvider(bmProvider);
             analysis.setCodeModelProvider(cmProvider);
 
-            analysis.setOutputDir(config.getOutputDir());
+            analysis.setOutputDir(config.getValue(DefaultSettings.OUTPUT_DIR));
             LOGGER.logInfo("Successfully instantiated analysis " + analysisName);
 
         } catch (ReflectiveOperationException | IllegalArgumentException | ClassCastException e) {
@@ -382,7 +383,7 @@ public class PipelineConfigurator {
      */
     private void archive() {
         // this setting is overriden by the command line option in Run.main()
-        if (config.isArchive()) {
+        if (config.getValue(DefaultSettings.ARCHIVE)) {
             PipelineArchiver archiver = new PipelineArchiver(config);
             archiver.setAnalysisOutputFiles(analysis.getOutputFiles());
             
@@ -402,7 +403,7 @@ public class PipelineConfigurator {
      * plugins_dir and adds them to the classb path.
      */
     public void loadPlugins() {
-        File pluginsDir = config.getPluginsDir();
+        File pluginsDir = config.getValue(DefaultSettings.PLUGINS_DIR);
         LOGGER.logInfo("Loading jars from directory " + pluginsDir.getAbsolutePath());
         int num = loadJarsFromDirectory(pluginsDir);
         LOGGER.logInfo("Sucessfully loaded " + num + " jars");

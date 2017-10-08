@@ -1,6 +1,5 @@
 package net.ssehub.kernel_haven.code_model;
 
-import net.ssehub.kernel_haven.config.CodeExtractorConfiguration;
 import net.ssehub.kernel_haven.provider.AbstractExtractor;
 
 /**
@@ -8,6 +7,6 @@ import net.ssehub.kernel_haven.provider.AbstractExtractor;
  *
  * @author Adam
  */
-public abstract class AbstractCodeModelExtractor extends AbstractExtractor<SourceFile, CodeExtractorConfiguration> {
+public abstract class AbstractCodeModelExtractor extends AbstractExtractor<SourceFile> {
 
 }

@@ -15,7 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
-import net.ssehub.kernel_haven.config.VariabilityExtractorConfiguration;
+import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.Logger;
@@ -58,7 +58,7 @@ public class VariabilityModelProviderTest {
         }
         
         @Override
-        protected void init(VariabilityExtractorConfiguration config) throws SetUpException {
+        protected void init(Configuration config) throws SetUpException {
         }
 
         @Override
@@ -105,7 +105,7 @@ public class VariabilityModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         assertThat(provider.getResult(), notNullValue());
         assertThat(provider.getException(), nullValue());
@@ -126,7 +126,7 @@ public class VariabilityModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(true);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
 
         assertThat(provider.getResult(), nullValue());
@@ -150,7 +150,7 @@ public class VariabilityModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
 
 
@@ -173,7 +173,7 @@ public class VariabilityModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         
         
@@ -198,7 +198,7 @@ public class VariabilityModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(true);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         assertThat(provider.getResult(), notNullValue());
         assertThat(provider.getException(), nullValue());
@@ -226,7 +226,7 @@ public class VariabilityModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         provider.start();
         assertThat(provider.getResult(), notNullValue());
         assertThat(provider.getException(), nullValue());
@@ -258,7 +258,7 @@ public class VariabilityModelProviderTest {
         PseudoExtractor extractor = new PseudoExtractor(false);
         provider.setExtractor(extractor);
 
-        provider.setConfig(new TestConfiguration(config).getVariabilityConfiguration());
+        provider.setConfig(new TestConfiguration(config));
         assertThat(provider.getResult(), notNullValue());
         assertThat(provider.getException(), nullValue());
     }

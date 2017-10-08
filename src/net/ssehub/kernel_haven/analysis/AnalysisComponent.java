@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Timestamp;
@@ -41,11 +42,11 @@ public abstract class AnalysisComponent<O> {
     public AnalysisComponent(Configuration config) {
         results = new BlockingQueue<>();
         
-        logResults = config.getLoggingAnalyissComponents().contains(getClass().getSimpleName());
+        logResults = config.getValue(DefaultSettings.ANALYSIS_COMPONENTS_LOG).contains(getClass().getSimpleName());
         if (logResults) {
             // TODO properly create this
             try {
-                PrintStream out = new PrintStream(new File(config.getOutputDir(),
+                PrintStream out = new PrintStream(new File(config.getValue(DefaultSettings.OUTPUT_DIR),
                         Timestamp.INSTANCE.getFilename(getClass().getSimpleName() + "_intermediate_result", "csv")));
                 this.out = new CsvWriter(out);
                 

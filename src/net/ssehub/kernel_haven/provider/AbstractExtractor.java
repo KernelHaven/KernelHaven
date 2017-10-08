@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.FormatException;
@@ -16,11 +17,10 @@ import net.ssehub.kernel_haven.util.Logger;
  * and caching. Extractors only need to worry about implementing the abstract methods.
  *
  * @param <ResultType> The type of the result the extractor produces.
- * @param <ConfigType> The type of configuration the extractor needs.
  *
  * @author Adam
  */
-public abstract class AbstractExtractor<ResultType, ConfigType> {
+public abstract class AbstractExtractor<ResultType> {
 
     private static final Logger LOGGER = Logger.get();
     
@@ -28,7 +28,7 @@ public abstract class AbstractExtractor<ResultType, ConfigType> {
     
     private Object isRunningMutex;
     
-    private AbstractProvider<ResultType, ConfigType> provider;
+    private AbstractProvider<ResultType> provider;
     
     /**
      * Creates a new extractor.
@@ -45,7 +45,7 @@ public abstract class AbstractExtractor<ResultType, ConfigType> {
      * 
      * @throws SetUpException If configuring the extractor fails.
      */
-    protected abstract void init(ConfigType config) throws SetUpException;
+    protected abstract void init(Configuration config) throws SetUpException;
     
     /**
      * Runs the extractor on a single target. This may potentially be called in parallel from multiple threads; thus,
@@ -200,7 +200,7 @@ public abstract class AbstractExtractor<ResultType, ConfigType> {
      * 
      * @param provider The provider.
      */
-    public final void setProvider(AbstractProvider<ResultType, ConfigType> provider) {
+    public final void setProvider(AbstractProvider<ResultType> provider) {
         this.provider = provider;
     }
     

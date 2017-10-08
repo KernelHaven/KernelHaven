@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
 
 /**
  * A {@link PipelineAnalysis} that reads the pipeline configuration from the user properties file and instantiates it
@@ -26,7 +27,7 @@ public class ConfiguredPipelineAnalysis extends PipelineAnalysis {
 
     @Override
     protected AnalysisComponent<?> createPipeline() throws SetUpException {
-        String configurationString = config.getProperty("analysis.pipeline");
+        String configurationString = config.getValue(DefaultSettings.ANALYSIS_PIPELINE);
         if (configurationString == null) {
             throw new SetUpException("analysis.pipeline not set");
         }

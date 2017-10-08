@@ -126,7 +126,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      */
     private static class ExtractorDataDuplicator<T> implements Runnable {
         
-        private AbstractProvider<T, ?> provider;
+        private AbstractProvider<T> provider;
         
         private boolean multiple;
         
@@ -138,7 +138,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
          * @param provider The provider to get the data from.
          * @param multiple Whether the provider should be polled multiple times or just onece.
          */
-        public ExtractorDataDuplicator(AbstractProvider<T, ?> provider, boolean multiple) {
+        public ExtractorDataDuplicator(AbstractProvider<T> provider, boolean multiple) {
             this.provider = provider;
             this.multiple = multiple;
             startingComponents = new LinkedList<>();
