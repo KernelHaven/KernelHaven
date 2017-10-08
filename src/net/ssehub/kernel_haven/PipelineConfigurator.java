@@ -10,17 +10,14 @@ import java.net.URLClassLoader;
 import net.ssehub.kernel_haven.analysis.IAnalysis;
 import net.ssehub.kernel_haven.build_model.AbstractBuildModelExtractor;
 import net.ssehub.kernel_haven.build_model.BuildModelProvider;
-import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
 import net.ssehub.kernel_haven.code_model.AbstractCodeModelExtractor;
 import net.ssehub.kernel_haven.code_model.CodeModelProvider;
-import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.provider.AbstractExtractor;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.PipelineArchiver;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
-import net.ssehub.kernel_haven.variability_model.EmptyVariabilityModelExtractor;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelProvider;
 
 /**
@@ -207,20 +204,19 @@ public class PipelineConfigurator {
         LOGGER.logInfo("Instantiating extractor factories...");
         
         vmExtractor = instantiateExtractor(config.getValue(DefaultSettings.VARIABILITY_EXTRACTOR_CLASS),
-            EmptyVariabilityModelExtractor.class, "variability");
+                "variability");
 
         bmExtractor = instantiateExtractor(config.getValue(DefaultSettings.BUILD_EXTRACTOR_CLASS),
-            EmptyBuildModelExtractor.class, "build");
+            "build");
         
         cmExtractor = instantiateExtractor(config.getValue(DefaultSettings.CODE_EXTRACTOR_CLASS),
-            EmptyCodeModelExtractor.class, "code");
+            "code");
     }
 
     /**
      * Generic method to load/instantiate one extractor.
      * 
-     * @param extractorClassName The fully qualified name of the class to load, may be <tt>null</tt>.
-     * @param defaultExtractor The extractor to instantiate if the provided class name is <tt>null</tt>.
+     * @param extractorClassName The fully qualified name of the class to load; not <tt>null</tt>.
      * @param type The type of extractor to load, this is only used in log messages.
      * @param <E> The type of extractor to load.
      * 
@@ -230,25 +226,20 @@ public class PipelineConfigurator {
      */
     @SuppressWarnings("unchecked")
     private <E extends AbstractExtractor<?>> E instantiateExtractor(String extractorClassName,
-            Class<E> defaultExtractor, String type) throws SetUpException {
+            String type) throws SetUpException {
         
         E extractor;
         Class<E> extractorClass;
         
-        if (extractorClassName != null) {
-            if (extractorClassName.contains(" ")) {
-                LOGGER.logWarning("Name of " + type + " extractor contains a space character");
-            }
-            try {
-                extractorClass = (Class<E>) Class.forName(extractorClassName);
+        if (extractorClassName.contains(" ")) {
+            LOGGER.logWarning("Name of " + type + " extractor contains a space character");
+        }
+        try {
+            extractorClass = (Class<E>) Class.forName(extractorClassName);
 
-            } catch (ClassNotFoundException  e) {
-                LOGGER.logException("Error while loading " + type + " extractor class", e);
-                throw new SetUpException(e);
-            }
-        } else {
-            extractorClass = defaultExtractor;
-            LOGGER.logInfo("No " + type + " extractor specified");
+        } catch (ClassNotFoundException  e) {
+            LOGGER.logException("Error while loading " + type + " extractor class", e);
+            throw new SetUpException(e);
         }
         
         try {

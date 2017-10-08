@@ -28,9 +28,6 @@ public class ConfiguredPipelineAnalysis extends PipelineAnalysis {
     @Override
     protected AnalysisComponent<?> createPipeline() throws SetUpException {
         String configurationString = config.getValue(DefaultSettings.ANALYSIS_PIPELINE);
-        if (configurationString == null) {
-            throw new SetUpException("analysis.pipeline not set");
-        }
         return createComponent(configurationString);
     }
     
