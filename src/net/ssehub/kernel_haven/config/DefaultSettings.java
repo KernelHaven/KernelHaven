@@ -19,6 +19,7 @@ import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
 import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
 import net.ssehub.kernel_haven.config.Setting.Type;
+import net.ssehub.kernel_haven.util.io.csv.CsvWriter;
 import net.ssehub.kernel_haven.variability_model.EmptyVariabilityModelExtractor;
 
 /**
@@ -66,9 +67,9 @@ public class DefaultSettings {
      */
     
     public static final Setting<String> ANALYSIS_CLASS = new Setting<>("analysis.class", STRING, true, null, "TODO");
-    public static final Setting<List<String>> ANALYSIS_COMPONENTS_LOG = new Setting<>("analysis.components.log", STRING_LIST, true, "", "TODO");
+    public static final Setting<List<String>> ANALYSIS_COMPONENTS_LOG = new Setting<>("analysis.output.intermediate_results", STRING_LIST, true, "", "Specifies analysis classes (simple class name), which results should be saved.");
     public static final Setting<String> ANALYSIS_PIPELINE = new Setting<>("analysis.pipeline", STRING, true, "", "TODO");
-    public static final Setting<String> ANALYSIS_RESULT = new Setting<>("analysis.result_class", STRING, false, null, "TODO");
+    public static final Setting<String> ANALYSIS_RESULT = new Setting<>("analysis.output_writer.class", STRING, false, null, "Specifies which kind of output writer (and thus which writer) shall be used. Must be the full qualified name of the writer class. A CSV writer will be used by default if nothing is specified. IO-Utils offers: net.ssehub.kernel_haven.io.excel.ExcelBook");
     
     /*
      * Common extractor parameters
