@@ -307,7 +307,6 @@ public class PipelineConfigurator {
      * @throws SetUpException
      *             If the setup fails.
      */
-    @SuppressWarnings("unchecked")
     public void instantiateAnalysis() throws SetUpException {
         LOGGER.logInfo("Instantiating analysis...");
         
@@ -317,6 +316,7 @@ public class PipelineConfigurator {
         }
         
         try {
+            @SuppressWarnings("unchecked")
             Class<? extends IAnalysis> analysisClass = (Class<? extends IAnalysis>) Class.forName(analysisName);
             analysis = analysisClass.getConstructor(Configuration.class).newInstance(config);
 

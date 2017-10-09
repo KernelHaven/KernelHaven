@@ -90,7 +90,6 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
      *             Signals that an I/O exception has occurred. Possible Reasons:
      *             No ReadWrite Access File Already Exists
      */
-    @SuppressWarnings("unchecked")
     @Override
     public VariabilityModel read(File target) throws FormatException, IOException {
         VariabilityModel vm = null;
@@ -110,6 +109,7 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             String[] csv;
             while ((csv = reader.readNextRow()) != null) {
                 String className = csv[0];
+                @SuppressWarnings("unchecked")
                 Class<? extends VariabilityVariable> clazz = (Class<? extends VariabilityVariable>) Class
                         .forName(className);
                 Method m = clazz.getMethod("createFromCsv", String[].class);
