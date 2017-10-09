@@ -87,7 +87,6 @@ public class Setting<T> {
     
     private String defaultValue;
     
-    @SuppressWarnings("unused")
     private String description;
 
     /**
@@ -147,6 +146,15 @@ public class Setting<T> {
      */
     public String getDefaultValue() {
         return defaultValue;
+    }
+    
+    /**
+     * The description of this setting. Can be used to explain the user what this setting is supposed to configure.
+     * 
+     * @return The description text. May contain line breaks.
+     */
+    public String getDescription() {
+        return description;
     }
 
 }
