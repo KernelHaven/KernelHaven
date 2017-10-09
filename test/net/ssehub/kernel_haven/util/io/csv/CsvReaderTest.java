@@ -9,6 +9,10 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.ITableReader;
+import net.ssehub.kernel_haven.util.io.TableRowMetadataTest.Simple;
+
 /**
  * Tests the {@link CsvReader} class.
  *
@@ -98,6 +102,64 @@ public class CsvReaderTest {
             assertThat(reader.readNextRow(), is(new String[] {"1", "2", "3"}));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b;c", "d"}));
             assertThat(reader.readNextRow(), nullValue());
+        }
+    }
+    
+    /**
+     * Tests the {@link ITableReader#readAsObject(net.ssehub.kernel_haven.util.io.ITableReader.Factory)} method.
+     * 
+     * @throws IOException unwanted.
+     * @throws FormatException unwanted.
+     */
+    @Test
+    public void testReadObject() throws IOException, FormatException {
+        String csv = "1;abc\n2;def";
+        
+        try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            Simple obj = reader.readAsObject(new Simple.SimpleFactory());
+            assertThat(obj.getInteger(), is(1));
+            assertThat(obj.getStr(), is("abc"));
+            
+            obj = reader.readAsObject(new Simple.SimpleFactory());
+            assertThat(obj.getInteger(), is(2));
+            assertThat(obj.getStr(), is("def"));
+            
+            assertThat(reader.readAsObject(new Simple.SimpleFactory()), nullValue());
+        }
+    }
+    
+    /**
+     * Tests the {@link ITableReader#readAsObject(net.ssehub.kernel_haven.util.io.ITableReader.Factory)} method.
+     * 
+     * @throws IOException unwanted.
+     * @throws FormatException wanted.
+     */
+    @Test(expected = FormatException.class)
+    public void testReadObjectFormatException() throws IOException, FormatException {
+        String csv = "1;abc\nnot_a_number;def";
+        
+        try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            Simple obj = reader.readAsObject(new Simple.SimpleFactory());
+            assertThat(obj.getInteger(), is(1));
+            assertThat(obj.getStr(), is("abc"));
+            
+            reader.readAsObject(new Simple.SimpleFactory());
+        }
+    }
+    
+    /**
+     * Tests the {@link ITableReader#readFull()} method.
+     * 
+     * @throws IOException unwanted.
+     */
+    public void testReadFull() throws IOException {
+        String csv = "1;2;3\na;b;c;d";
+        
+        try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.readFull(), is(new String[][] {
+                new String[] {"1", "2", "3"},
+                new String[] {"a", "b", "c", "d"}
+            }));
         }
     }
 

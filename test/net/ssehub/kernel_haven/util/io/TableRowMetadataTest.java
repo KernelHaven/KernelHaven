@@ -5,6 +5,9 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.ITableReader.Factory;
+
 /**
  * Tests the {@link TableRowMetadata} class.
  *
@@ -17,6 +20,30 @@ public class TableRowMetadataTest {
      */
     @TableRow
     public static class Simple {
+        
+        /**
+         * A factory for reading a {@link Simple} object.
+         */
+        public static class SimpleFactory implements Factory<Simple> {
+
+            @Override
+            public Simple create(String[] fields) throws FormatException {
+                if (fields.length != 2) {
+                    throw new FormatException();
+                }
+
+                int integer;
+                try {
+                    integer = Integer.parseInt(fields[0]);
+                } catch (NumberFormatException e) {
+                    throw new FormatException(e);
+                }
+                String str = fields[1];
+                
+                return new Simple(integer, str);
+            }
+            
+        }
         
         private int integer;
         
