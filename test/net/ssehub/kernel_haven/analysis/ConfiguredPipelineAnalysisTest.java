@@ -39,6 +39,11 @@ public class ConfiguredPipelineAnalysisTest {
         @Override
         protected void execute() {
         }
+
+        @Override
+        public String getResultName() {
+            return "Dummy1";
+        }
         
     }
     
@@ -62,6 +67,11 @@ public class ConfiguredPipelineAnalysisTest {
         
         @Override
         protected void execute() {
+        }
+
+        @Override
+        public String getResultName() {
+            return "Dummy2";
         }
         
     }
@@ -91,6 +101,11 @@ public class ConfiguredPipelineAnalysisTest {
         
         @Override
         protected void execute() {
+        }
+
+        @Override
+        public String getResultName() {
+            return "Dummy3";
         }
         
     }
@@ -253,6 +268,11 @@ public class ConfiguredPipelineAnalysisTest {
 
         @Override
         protected void execute() {
+        }
+
+        @Override
+        public String getResultName() {
+            return "DummyExtractor";
         }
     }
     

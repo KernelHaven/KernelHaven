@@ -142,6 +142,12 @@ public class PipelineAnalysisTest {
                 addResult(result);
             }
         }
+        
+        @Override
+        public String getResultName() {
+            return "SimpleResult";
+        }
+        
     }
     
     /**
@@ -172,6 +178,12 @@ public class PipelineAnalysisTest {
                 }
             }
         }
+        
+        @Override
+        public String getResultName() {
+            return "CombinedResult";
+        }
+        
     }
     
     /**
@@ -217,6 +229,11 @@ public class PipelineAnalysisTest {
                 addResult(name);
             }
         }
+
+        @Override
+        public String getResultName() {
+            return "VariabilityResult";
+        }
     }
     
     /**
@@ -240,7 +257,7 @@ public class PipelineAnalysisTest {
         File[] outputFiles = tempOutputDir.listFiles();
         assertThat(outputFiles.length, is(1));
         assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
-        assertThat(outputFiles[0].getName(), endsWith("_SimpleAnalysisComponent.csv"));
+        assertThat(outputFiles[0].getName(), endsWith("_SimpleResult.csv"));
         FileContentsAssertion.assertContents(outputFiles[0], "Result1\nResult2\nResult3\n");
     }
     
@@ -270,7 +287,7 @@ public class PipelineAnalysisTest {
         assertThat(outputFiles.length, is(1));
 
         assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
-        assertThat(outputFiles[0].getName(), endsWith("_CombinedAnalysisComponent.csv"));
+        assertThat(outputFiles[0].getName(), endsWith("_CombinedResult.csv"));
         FileContentsAssertion.assertContents(outputFiles[0],
                 "ResultA1\nResultA2\nResultA3\nResultB1\nResultB2\nResultB3\n");
     }
@@ -303,7 +320,7 @@ public class PipelineAnalysisTest {
         assertThat(outputFiles.length, is(1));
 
         assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
-        assertThat(outputFiles[0].getName(), endsWith("_VariabilityAnalysisComponent.csv"));
+        assertThat(outputFiles[0].getName(), endsWith("_VariabilityResult.csv"));
         FileContentsAssertion.assertContents(outputFiles[0],
                 "Var_A\nVar_A_M2\nVar_B\nVar_B_M2\nVar_C\nVar_C_M2\n");
     }
@@ -334,16 +351,16 @@ public class PipelineAnalysisTest {
         assertThat(outputFiles.length, is(2));
         if (outputFiles[0].getName().contains("Combined")) {
             assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
-            assertThat(outputFiles[0].getName(), endsWith("_CombinedAnalysisComponent.csv"));
+            assertThat(outputFiles[0].getName(), endsWith("_CombinedResult.csv"));
             
             assertThat(outputFiles[1].getName(), startsWith("Analysis_"));
-            assertThat(outputFiles[1].getName(), endsWith("SimpleAnalysisComponent.csv"));
+            assertThat(outputFiles[1].getName(), endsWith("SimpleResult.csv"));
         } else {
             assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
-            assertThat(outputFiles[0].getName(), endsWith("SimpleAnalysisComponent.csv"));
+            assertThat(outputFiles[0].getName(), endsWith("SimpleResult.csv"));
 
             assertThat(outputFiles[1].getName(), startsWith("Analysis_"));
-            assertThat(outputFiles[1].getName(), endsWith("_CombinedAnalysisComponent.csv"));
+            assertThat(outputFiles[1].getName(), endsWith("_CombinedResult.csv"));
         }
         
         for (int i = 0; i < 2; i++) {

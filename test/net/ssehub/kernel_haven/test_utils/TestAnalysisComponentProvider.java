@@ -52,5 +52,10 @@ public class TestAnalysisComponentProvider<T> extends AnalysisComponent<T> {
             addResult(element);
         }
     }
+
+    @Override
+    public String getResultName() {
+        return "TestResult";
+    }
     
 }

@@ -42,7 +42,7 @@ public abstract class AnalysisComponent<O> {
         if (logResults) {
             // TODO properly create this
             try {
-                out = PipelineAnalysis.getInstance().getResultCollection().getWriter(getClass().getSimpleName());
+                out = PipelineAnalysis.getInstance().getResultCollection().getWriter(getResultName());
                 
             } catch (IOException e) {
                 LOGGER.logExceptionWarning("Can't create intermediate output file", e);
@@ -121,5 +121,13 @@ public abstract class AnalysisComponent<O> {
      * Executes this component.
      */
     protected abstract void execute();
+    
+    /**
+     * The name to display to users for the output of this component. For example, this will be used to name the
+     * output tables.
+     * 
+     * @return The name describing the output of this component.
+     */
+    public abstract String getResultName();
     
 }

@@ -37,5 +37,10 @@ public class ListCollectorComponent<T> extends AnalysisComponent<List<T>> {
         
         addResult(collected);
     }
+    
+    @Override
+    public String getResultName() {
+        return previousComponent.getResultName() + " List";
+    }
 
 }

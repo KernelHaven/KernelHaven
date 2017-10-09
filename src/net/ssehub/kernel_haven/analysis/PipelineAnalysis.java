@@ -152,7 +152,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             bmStarter.start();
             cmStarter.start();
             
-            try (ITableWriter writer = resultCollection.getWriter(mainComponent.getClass().getSimpleName())) {
+            try (ITableWriter writer = resultCollection.getWriter(mainComponent.getResultName())) {
                 Object result;
                 while ((result = mainComponent.getNextResult()) != null) {
                     LOGGER.logInfo("Got analysis result: " + result.toString());
@@ -296,6 +296,11 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
                     }
                 }
             }
+        }
+
+        @Override
+        public String getResultName() {
+            return "StartingComponent";
         }
         
     }
