@@ -68,6 +68,7 @@ public class DefaultSettings {
     public static final Setting<String> ANALYSIS_CLASS = new Setting<>("analysis.class", STRING, true, null, "TODO");
     public static final Setting<List<String>> ANALYSIS_COMPONENTS_LOG = new Setting<>("analysis.components.log", STRING_LIST, true, "", "TODO");
     public static final Setting<String> ANALYSIS_PIPELINE = new Setting<>("analysis.pipeline", STRING, true, "", "TODO");
+    public static final Setting<String> ANALYSIS_RESULT = new Setting<>("analysis.result_class", STRING, false, null, "TODO");
     
     /*
      * Common extractor parameters

@@ -9,6 +9,7 @@ import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.build_model.BuildModel;
 import net.ssehub.kernel_haven.code_model.SourceFile;
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.provider.AbstractProvider;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.Timestamp;
@@ -90,6 +91,32 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
     }
     
     /**
+     * Creates the result collection from the user settings.
+     * 
+     * @return The result collection to store files in.
+     * 
+     * @throws SetUpException If creating the result collection fails.
+     */
+    private ITableCollection createResultCollection() throws SetUpException {
+        String className = config.getValue(DefaultSettings.ANALYSIS_RESULT);
+        if (className == null) {
+            throw new SetUpException();
+        }
+        
+        try {
+            @SuppressWarnings("unchecked")
+            Class<? extends ITableCollection> clazz = (Class<? extends ITableCollection>) Class.forName(className);
+            
+            // TODO: find a proper way to call the constructor; we currently always call it with one File parameter
+            return clazz.getConstructor(File.class).newInstance(new File(getOutputDir(),
+                    Timestamp.INSTANCE.getFilename("Analysis", "xlsx")));
+            
+        } catch (ReflectiveOperationException | IllegalArgumentException | ClassCastException e) {
+            throw new SetUpException(e);
+        }
+    }
+    
+    /**
      * Creates the pipeline.
      * 
      * @return The "main" (i.e. the last) component of the pipeline.
@@ -106,8 +133,12 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             bmStarter = new ExtractorDataDuplicator<>(bmProvider, false);
             cmStarter = new ExtractorDataDuplicator<>(cmProvider, true);
             
-            resultCollection = new CsvFileCollection(new File(getOutputDir(), 
-                    "Analysis_" + Timestamp.INSTANCE.getFileTimestamp()));
+            try {
+                resultCollection = createResultCollection();
+            } catch (SetUpException e) {
+                resultCollection = new CsvFileCollection(new File(getOutputDir(), 
+                        "Analysis_" + Timestamp.INSTANCE.getFileTimestamp()));
+            }
             
             instance = this;
         
