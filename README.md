@@ -63,7 +63,7 @@ source_tree = /path/to/linux-4.4
 arch = x86
 
 # Analysis
-analysis.class = net.ssehub.kernel_haven.default_analyses.DeadCodeAnalysis
+analysis.class = net.ssehub.kernel_haven.undead_analyzer.DeadCodeAnalysis
 
 # Code Extractor
 code.provider.cache.read = true
