@@ -31,6 +31,8 @@
 	<property name="MetricHaven.location_src" value="${jenkins.location}/KernelHaven_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven_withsource.jar" />
 	<property name="KconfigReaderExtractor.location_src" value="${jenkins.location}/KernelHaven_KconfigReaderExtractor/lastSuccessfulBuild/artifact/build/jar/KconfigReaderExtractor_withsource.jar" />
 	<property name="KbuildMinerExtractor.location_src" value="${jenkins.location}/KernelHaven_KbuildMinerExtractor/lastSuccessfulBuild/artifact/build/jar/KbuildminerExtractor_withsource.jar" />
+	<property name="NonBooleanUtils.location" value="${jenkins.location}/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils.jar" />
+	<property name="NonBooleanUtils.location_src" value="${jenkins.location}/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils_withsource.jar" />
 
 	<!-- Modules that build -->
 	<property name="src.dir" value="${basedir}/src" />
