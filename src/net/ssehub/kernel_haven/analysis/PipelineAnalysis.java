@@ -129,11 +129,8 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
                     writer.writeRow(result);
                 }
 
-                // TODO: hacky, find a better way to find all files of this collection
-                if (resultCollection instanceof CsvFileCollection) {
-                    for (String table : resultCollection.getTableNames()) {
-                        addOutputFile(((CsvFileCollection) resultCollection).getFile(table));
-                    }
+                for (File file : resultCollection.getFiles()) {
+                    addOutputFile(file);
                 }
                 
                 resultCollection.close();
