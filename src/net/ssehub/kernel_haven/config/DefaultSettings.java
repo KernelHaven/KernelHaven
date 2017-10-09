@@ -19,7 +19,6 @@ import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
 import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
 import net.ssehub.kernel_haven.config.Setting.Type;
-import net.ssehub.kernel_haven.util.io.csv.CsvWriter;
 import net.ssehub.kernel_haven.variability_model.EmptyVariabilityModelExtractor;
 
 /**
