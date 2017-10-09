@@ -85,4 +85,9 @@ public class CsvFileCollection implements ITableCollection {
         return new CsvWriter(new FileOutputStream(getFile(name)));
     }
 
+    @Override
+    public void close() throws IOException {
+        // nothing to do
+    }
+
 }

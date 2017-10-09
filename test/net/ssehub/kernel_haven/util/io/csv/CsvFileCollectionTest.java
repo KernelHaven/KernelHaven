@@ -25,20 +25,22 @@ public class CsvFileCollectionTest {
 
     /**
      * Tests whether existing table names are found correctly.
+     * 
+     * @throws IOException unwanted.
      */
     @Test
-    public void testGetTableNames() {
-        CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "test"));
-        
-        Set<String> tables = collection.getTableNames();
-        assertThat(tables.size(), is(2));
-        assertThat(tables, hasItems("table_1", "table_2"));
-        
-        collection = new CsvFileCollection(new File(TESTDATA, "other"));
-        
-        tables = collection.getTableNames();
-        assertThat(tables.size(), is(1));
-        assertThat(tables, hasItems("index"));
+    public void testGetTableNames() throws IOException {
+        try (CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "test"))) {
+            Set<String> tables = collection.getTableNames();
+            assertThat(tables.size(), is(2));
+            assertThat(tables, hasItems("table_1", "table_2"));
+        }
+            
+        try (CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "other"))) {
+            Set<String> tables = collection.getTableNames();
+            assertThat(tables.size(), is(1));
+            assertThat(tables, hasItems("index"));
+        }
     }
     
     /**
@@ -48,12 +50,12 @@ public class CsvFileCollectionTest {
      */
     @Test
     public void testGetReader() throws IOException {
-        CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "test"));
-        
-        try (CsvReader reader = collection.getReader("table_1")) {
-            assertThat(reader.readNextRow(), is(new String[] {"a", "b", "c"}));
-            assertThat(reader.readNextRow(), is(new String[] {"d", "e", "f"}));
-            assertThat(reader.readNextRow(), nullValue());
+        try (CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "test"))) {
+            try (CsvReader reader = collection.getReader("table_1")) {
+                assertThat(reader.readNextRow(), is(new String[] {"a", "b", "c"}));
+                assertThat(reader.readNextRow(), is(new String[] {"d", "e", "f"}));
+                assertThat(reader.readNextRow(), nullValue());
+            }
         }
     }
     
@@ -64,9 +66,9 @@ public class CsvFileCollectionTest {
      */
     @Test(expected = FileNotFoundException.class)
     public void testGetReaderNotExisting() throws IOException {
-        CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "test"));
-        
-        collection.getReader("doesnt_exist");
+        try (CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "test"))) {
+            collection.getReader("doesnt_exist");
+        }
     }
     
     /**
@@ -75,10 +77,10 @@ public class CsvFileCollectionTest {
      * @throws IOException unwanted.
      */
     public void testGetFile() throws IOException {
-        CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "test"));
-        
-        assertThat(collection.getFile("table_1").getName(), is("test_table_1.csv"));
-        assertThat(collection.getFile("doesnt_exist").getName(), is("test_doesnt_exist.csv"));
+        try (CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "test"))) {
+            assertThat(collection.getFile("table_1").getName(), is("test_table_1.csv"));
+            assertThat(collection.getFile("doesnt_exist").getName(), is("test_doesnt_exist.csv"));
+        }
     }
     
     /**
@@ -88,9 +90,9 @@ public class CsvFileCollectionTest {
      */
     @Test(expected = IOException.class)
     public void testGetFileInvalidName() throws IOException {
-        CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "test"));
-        
-        collection.getFile("in$valid");
+        try (CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "test"))) {
+            collection.getFile("in$valid");
+        }
     }
     
     /**
@@ -100,24 +102,23 @@ public class CsvFileCollectionTest {
      */
     @Test
     public void testGetWriter() throws IOException {
-        CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "other"));
-        
-
-        Set<String> tables = collection.getTableNames();
-        assertThat(tables.size(), is(1));
-        assertThat(tables, hasItems("index"));
-        
-        try (CsvWriter writer = collection.getWriter("content")) {
-            writer.writeRow("a", "b",  "c");
+        try (CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "other"))) {
+            Set<String> tables = collection.getTableNames();
+            assertThat(tables.size(), is(1));
+            assertThat(tables, hasItems("index"));
+            
+            try (CsvWriter writer = collection.getWriter("content")) {
+                writer.writeRow("a", "b",  "c");
+            }
+            
+            tables = collection.getTableNames();
+            assertThat(tables.size(), is(2));
+            assertThat(tables, hasItems("index", "content"));
+            
+            File file = collection.getFile("content");
+            FileContentsAssertion.assertContents(file, "a;b;c\n");
+            file.delete();
         }
-        
-        tables = collection.getTableNames();
-        assertThat(tables.size(), is(2));
-        assertThat(tables, hasItems("index", "content"));
-        
-        File file = collection.getFile("content");
-        FileContentsAssertion.assertContents(file, "a;b;c\n");
-        file.delete();
     }
     
 }

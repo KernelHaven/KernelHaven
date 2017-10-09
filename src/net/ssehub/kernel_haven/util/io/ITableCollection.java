@@ -1,5 +1,6 @@
 package net.ssehub.kernel_haven.util.io;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Set;
 
@@ -9,7 +10,7 @@ import java.util.Set;
  *
  * @author Adam
  */
-public interface ITableCollection {
+public interface ITableCollection extends Closeable {
     
     /**
      * Creates a reader for the table with the specified name.
