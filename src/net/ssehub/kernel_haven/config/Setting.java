@@ -156,5 +156,10 @@ public class Setting<T> {
     public String getDescription() {
         return description;
     }
+    
+    @Override
+    public String toString() {
+        return "Setting(" + key + ")"; 
+    }
 
 }
