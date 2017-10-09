@@ -11,7 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     BuildModelCacheTest.class,
     BuildModelProviderTest.class,
-})
+    })
 public class AllBuildModelTests {
 
 }

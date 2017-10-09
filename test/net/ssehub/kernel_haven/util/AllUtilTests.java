@@ -21,7 +21,7 @@ import net.ssehub.kernel_haven.util.logic.AllLogicTests;
     PipelineArchiverTest.class,
     UtilTest.class,
     ZipArchiveTest.class,
-})
+    })
 public class AllUtilTests {
 
 }

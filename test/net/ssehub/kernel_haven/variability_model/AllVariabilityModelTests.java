@@ -11,7 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     VariabilityModelCacheTest.class,
     VariabilityModelProviderTest.class,
-})
+    })
 public class AllVariabilityModelTests {
 
 }

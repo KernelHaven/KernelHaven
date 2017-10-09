@@ -12,7 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
     AnalysisTest.class,
     ConfiguredPipelineAnalysisTest.class,
     PipelineAnalysisTest.class,
-})
+    })
 public class AllAnalysisTests {
 
 }

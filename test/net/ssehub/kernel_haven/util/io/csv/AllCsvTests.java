@@ -12,7 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
     CsvFileCollectionTest.class,
     CsvReaderTest.class,
     CsvWriterTest.class,
-})
+    })
 public class AllCsvTests {
 
 }

@@ -12,7 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
     FormulaTest.class,
     ParserTest.class,
     SubFormulaCheckerTest.class,
-})
+    })
 public class AllLogicTests {
 
 }

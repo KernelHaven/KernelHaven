@@ -26,7 +26,7 @@ import net.ssehub.kernel_haven.variability_model.AllVariabilityModelTests;
     AllVariabilityModelTests.class,
     
     PipelineConfiguratiorTest.class,
-})
+    })
 public class AllTests {
     
     public static final File TESTDATA = new File("testdata");
