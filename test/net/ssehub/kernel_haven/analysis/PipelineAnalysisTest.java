@@ -23,6 +23,7 @@ import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
 import net.ssehub.kernel_haven.code_model.CodeModelProvider;
 import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.test_utils.FileContentsAssertion;
 import net.ssehub.kernel_haven.test_utils.PseudoVariabilityExtractor;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
@@ -336,7 +337,7 @@ public class PipelineAnalysisTest {
         Properties props = new Properties();
         props.put("output_dir", tempOutputDir.getPath());
         props.put("source_tree", tempOutputDir.getPath());
-        props.put("analysis.components.log", "SimpleAnalysisComponent");
+        props.put(DefaultSettings.ANALYSIS_COMPONENTS_LOG.getKey(), "SimpleAnalysisComponent");
         TestConfiguration config = new TestConfiguration(props);
         
         PipelineAnalysis analysis = createAnalysis(config, (pipeline) ->
