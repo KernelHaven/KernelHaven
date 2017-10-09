@@ -53,7 +53,10 @@ public class CsvFileCollection implements ITableCollection {
         
         File parent = baseName.getParentFile();
         if (parent == null) {
-            throw new IOException("Can't get parent directory for " + baseName.getPath());
+            parent = baseName.getCanonicalFile().getParentFile();
+            if (parent == null) {
+                throw new IOException("Can't get parent directory for " + baseName.getPath());
+            }
         }
         
         return new File(parent, baseName.getName() + "_" + tableName + ".csv");

@@ -1,7 +1,7 @@
 package net.ssehub.kernel_haven.analysis;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +12,9 @@ import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.provider.AbstractProvider;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.Timestamp;
-import net.ssehub.kernel_haven.util.io.csv.CsvWriter;
+import net.ssehub.kernel_haven.util.io.ITableCollection;
+import net.ssehub.kernel_haven.util.io.ITableWriter;
+import net.ssehub.kernel_haven.util.io.csv.CsvFileCollection;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 
 /**
@@ -22,6 +24,10 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModel;
  */
 public abstract class PipelineAnalysis extends AbstractAnalysis {
 
+    private static PipelineAnalysis instance;
+    
+    private ITableCollection resultCollection;
+    
     private ExtractorDataDuplicator<VariabilityModel> vmStarter;
     
     private ExtractorDataDuplicator<BuildModel> bmStarter;
@@ -35,6 +41,16 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      */
     public PipelineAnalysis(Configuration config) {
         super(config);
+    }
+    
+    /**
+     * The {@link PipelineAnalysis} that is the current main analysis in this execution. May be null if no
+     * {@link PipelineAnalysis} is the main analysis component.
+     *
+     * @return The current {@link PipelineAnalysis} instance.
+     */
+    static PipelineAnalysis getInstance() {
+        return instance;
     }
     
     /**
@@ -65,6 +81,15 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
     }
     
     /**
+     * The collection that {@link AnalysisComponent}s should write their intermediate output to.
+     *  
+     * @return The {@link ITableCollection} to write output to.
+     */
+    ITableCollection getResultCollection() {
+        return resultCollection;
+    }
+    
+    /**
      * Creates the pipeline.
      * 
      * @return The "main" (i.e. the last) component of the pipeline.
@@ -80,6 +105,11 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             vmStarter = new ExtractorDataDuplicator<>(vmProvider, false);
             bmStarter = new ExtractorDataDuplicator<>(bmProvider, false);
             cmStarter = new ExtractorDataDuplicator<>(cmProvider, true);
+            
+            resultCollection = new CsvFileCollection(new File(getOutputDir(), 
+                    "Analysis_" + Timestamp.INSTANCE.getFileTimestamp()));
+            
+            instance = this;
         
             AnalysisComponent<?> mainComponent = createPipeline();
             
@@ -91,26 +121,25 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             bmStarter.start();
             cmStarter.start();
             
-            PrintStream out = createResultStream(
-                    Timestamp.INSTANCE.getFilename(mainComponent.getClass().getSimpleName() + "_result", "csv"));
-            
-            CsvWriter writer = new CsvWriter(out);
-            
-            Object result;
-            while ((result = mainComponent.getNextResult()) != null) {
-                LOGGER.logInfo("Got analysis result: " + result.toString());
-                // TODO: log result to file
-                try {
+            try (ITableWriter writer = resultCollection.getWriter(mainComponent.getClass().getSimpleName())) {
+                Object result;
+                while ((result = mainComponent.getNextResult()) != null) {
+                    LOGGER.logInfo("Got analysis result: " + result.toString());
+                    // TODO: log result to file
                     writer.writeRow(result);
-                } catch (IOException | IllegalArgumentException e) {
-                    LOGGER.logException("Exception while writing to output file", e);
                 }
-            }
-            
-            try {
-                writer.close();
+
+                // TODO: hacky, find a better way to find all files of this collection
+                if (resultCollection instanceof CsvFileCollection) {
+                    for (String table : resultCollection.getTableNames()) {
+                        addOutputFile(((CsvFileCollection) resultCollection).getFile(table));
+                    }
+                }
+                
+                resultCollection.close();
+                
             } catch (IOException e) {
-                LOGGER.logException("Exception while closing output file writer", e);
+                LOGGER.logException("Exception while writing output file", e);
             }
             
         } catch (SetUpException e) {

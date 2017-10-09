@@ -38,12 +38,21 @@ public class Timestamp {
     }
     
     /**
-     * Returns a this time-stamp in the format 'yyyy-MM-dd HH:mm:ss'.
+     * Returns this time-stamp in the format 'yyyy-MM-dd HH:mm:ss'.
      * 
      * @return This time-stamp as a string.
      */
     public String getTimestamp() {
         return timestamp;
+    }
+    
+    /**
+     * Returns this time-stamp in the format 'yyy-MM-dd_HH-mm-ss'. This is safe to be used in filenames.
+     * 
+     * @return This time-stamp as a string to be used in time-stamps.
+     */
+    public String getFileTimestamp() {
+        return filestamp;
     }
     
     /**

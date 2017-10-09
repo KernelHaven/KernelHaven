@@ -90,6 +90,16 @@ public abstract class AbstractAnalysis implements IAnalysis {
     }
     
     /**
+     * Marks a given file as an output file of the analysis. This should be used for all files that are not created
+     * via {@link #createResultStream(String)}.
+     * 
+     * @param file The file to mark as an output file of this analysis.
+     */
+    protected void addOutputFile(File file) {
+        outputFiles.add(file);
+    }
+    
+    /**
      * Creates a new output stream into a result file.
      * 
      * @param filename The name of the file to write into. Never null.

@@ -1,5 +1,6 @@
 package net.ssehub.kernel_haven.analysis;
 
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
@@ -238,7 +239,8 @@ public class PipelineAnalysisTest {
         
         File[] outputFiles = tempOutputDir.listFiles();
         assertThat(outputFiles.length, is(1));
-        assertThat(outputFiles[0].getName(), startsWith("SimpleAnalysisComponent_result_"));
+        assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
+        assertThat(outputFiles[0].getName(), endsWith("_SimpleAnalysisComponent.csv"));
         FileContentsAssertion.assertContents(outputFiles[0], "Result1\nResult2\nResult3\n");
     }
     
@@ -266,7 +268,9 @@ public class PipelineAnalysisTest {
         
         File[] outputFiles = tempOutputDir.listFiles();
         assertThat(outputFiles.length, is(1));
-        assertThat(outputFiles[0].getName(), startsWith("CombinedAnalysisComponent_result_"));
+
+        assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
+        assertThat(outputFiles[0].getName(), endsWith("_CombinedAnalysisComponent.csv"));
         FileContentsAssertion.assertContents(outputFiles[0],
                 "ResultA1\nResultA2\nResultA3\nResultB1\nResultB2\nResultB3\n");
     }
@@ -297,7 +301,9 @@ public class PipelineAnalysisTest {
         
         File[] outputFiles = tempOutputDir.listFiles();
         assertThat(outputFiles.length, is(1));
-        assertThat(outputFiles[0].getName(), startsWith("VariabilityAnalysisComponent_result_"));
+
+        assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
+        assertThat(outputFiles[0].getName(), endsWith("_VariabilityAnalysisComponent.csv"));
         FileContentsAssertion.assertContents(outputFiles[0],
                 "Var_A\nVar_A_M2\nVar_B\nVar_B_M2\nVar_C\nVar_C_M2\n");
     }
@@ -326,12 +332,18 @@ public class PipelineAnalysisTest {
         
         File[] outputFiles = tempOutputDir.listFiles();
         assertThat(outputFiles.length, is(2));
-        if (outputFiles[0].getName().startsWith("Combined")) {
-            assertThat(outputFiles[0].getName(), startsWith("CombinedAnalysisComponent_result_"));
-            assertThat(outputFiles[1].getName(), startsWith("SimpleAnalysisComponent_intermediate_result_"));
+        if (outputFiles[0].getName().contains("Combined")) {
+            assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
+            assertThat(outputFiles[0].getName(), endsWith("_CombinedAnalysisComponent.csv"));
+            
+            assertThat(outputFiles[1].getName(), startsWith("Analysis_"));
+            assertThat(outputFiles[1].getName(), endsWith("SimpleAnalysisComponent.csv"));
         } else {
-            assertThat(outputFiles[0].getName(), startsWith("SimpleAnalysisComponent_intermediate_result_"));
-            assertThat(outputFiles[1].getName(), startsWith("CombinedAnalysisComponent_result_"));
+            assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
+            assertThat(outputFiles[0].getName(), endsWith("SimpleAnalysisComponent.csv"));
+
+            assertThat(outputFiles[1].getName(), startsWith("Analysis_"));
+            assertThat(outputFiles[1].getName(), endsWith("_CombinedAnalysisComponent.csv"));
         }
         
         for (int i = 0; i < 2; i++) {

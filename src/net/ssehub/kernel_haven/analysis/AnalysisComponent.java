@@ -1,16 +1,12 @@
 package net.ssehub.kernel_haven.analysis;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.Logger;
-import net.ssehub.kernel_haven.util.Timestamp;
 import net.ssehub.kernel_haven.util.io.ITableWriter;
-import net.ssehub.kernel_haven.util.io.csv.CsvWriter;
 
 /**
  * A component of an analysis. Multiple of these can be combined together, to form an analysis pipeline.
@@ -46,9 +42,7 @@ public abstract class AnalysisComponent<O> {
         if (logResults) {
             // TODO properly create this
             try {
-                PrintStream out = new PrintStream(new File(config.getValue(DefaultSettings.OUTPUT_DIR),
-                        Timestamp.INSTANCE.getFilename(getClass().getSimpleName() + "_intermediate_result", "csv")));
-                this.out = new CsvWriter(out);
+                out = PipelineAnalysis.getInstance().getResultCollection().getWriter(getClass().getSimpleName());
                 
             } catch (IOException e) {
                 LOGGER.logExceptionWarning("Can't create intermediate output file", e);
