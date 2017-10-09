@@ -1,6 +1,7 @@
 package net.ssehub.kernel_haven.util.io;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
@@ -41,5 +42,16 @@ public interface ITableCollection extends Closeable {
      * @throws IOException If creating the writer fails.
      */
     public ITableWriter getWriter(String name) throws IOException;
+    
+    /**
+     * Retrieves the set of files that this collection is stored in. This is different from
+     * {@link #getTableNames()}, since this method is concerned with the actual files in the file system that the data
+     * is stored in, rather than the abstract notion of tables. 
+     * 
+     * @return The set of files that this collection is stored in. Never <code>null</code>, but may be empty.
+     * 
+     * @throws IOException If collecting the files fails for some reason.
+     */
+    public Set<File> getFiles() throws IOException;
 
 }

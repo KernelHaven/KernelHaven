@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,6 +82,17 @@ public class CsvFileSet implements ITableCollection {
     @Override
     public void close() throws IOException {
         // nothing to do
+    }
+
+    @Override
+    public Set<File> getFiles() throws IOException {
+        Set<File> files = new HashSet<>();
+        
+        for (File f : this.files.values()) {
+            files.add(f);
+        }
+        
+        return files;
     }
     
 }

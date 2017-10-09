@@ -85,6 +85,7 @@ public class CsvFileSetTest {
         try (CsvFileSet collection = new CsvFileSet(FILE_1)) {
             Set<String> tables = collection.getTableNames();
             assertThat(tables.size(), is(1));
+            assertThat(collection.getFiles().size(), is(1));
             assertThat(tables, hasItems(FILE_1.getAbsolutePath()));
             
             try (CsvWriter writer = collection.getWriter(NEW_FILE.getAbsolutePath())) {
@@ -93,10 +94,32 @@ public class CsvFileSetTest {
             
             tables = collection.getTableNames();
             assertThat(tables.size(), is(2));
+            assertThat(collection.getFiles().size(), is(2));
             assertThat(tables, hasItems(FILE_1.getAbsolutePath(), NEW_FILE.getAbsolutePath()));
+            assertThat(collection.getFiles(), hasItems(FILE_1, NEW_FILE.getCanonicalFile()));
             
             FileContentsAssertion.assertContents(NEW_FILE, "a;b;c\n");
             NEW_FILE.delete();
+        }
+    }
+    
+    /**
+     * Tests whether the getFiles() method works correctly.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testGetFiles() throws IOException {
+        try (CsvFileSet collection = new CsvFileSet(FILE_1)) {
+            Set<File> files = collection.getFiles();
+            assertThat(files.size(), is(1));
+            assertThat(files, hasItems(FILE_1));
+        }
+        
+        try (CsvFileSet collection = new CsvFileSet(FILE_1, FILE_2)) {
+            Set<File> files = collection.getFiles();
+            assertThat(files.size(), is(2));
+            assertThat(files, hasItems(FILE_1, FILE_2));
         }
     }
     

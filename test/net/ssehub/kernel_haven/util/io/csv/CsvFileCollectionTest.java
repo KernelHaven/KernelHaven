@@ -121,4 +121,19 @@ public class CsvFileCollectionTest {
         }
     }
     
+    /**
+     * Tests whether the getFiles() method works correctly.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testGetFiles() throws IOException {
+        try (CsvFileCollection collection = new CsvFileCollection(new File(TESTDATA, "test"))) {
+            Set<File> files = collection.getFiles();
+            assertThat(files.size(), is(2));
+            assertThat(files, hasItems(
+                    new File("testdata/csv/test_table_1.csv"), new File("testdata/csv/test_table_2.csv")));
+        }
+    }
+    
 }

@@ -93,4 +93,15 @@ public class CsvFileCollection implements ITableCollection {
         // nothing to do
     }
 
+    @Override
+    public Set<File> getFiles() throws IOException {
+        Set<File> files = new HashSet<>();
+        
+        for (String name : getTableNames()) {
+            files.add(getFile(name));
+        }
+        
+        return files;
+    }
+
 }
