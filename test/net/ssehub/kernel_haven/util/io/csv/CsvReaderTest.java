@@ -78,10 +78,11 @@ public class CsvReaderTest {
      */
     @Test
     public void testMalformedEscape() throws IOException {
-        String csv = "1\"2;3\na\"b;c\";d\n\"a\"b\"c\"\n\"xy\"z;a\n";
+        String csv = "1\"2;3\n1\"\"2;3\na\"b;c\";d\n\"a\"b\"c\"\n\"xy\"z;a\n";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
             assertThat(reader.readNextRow(), is(new String[] {"1\"2", "3"}));
+            assertThat(reader.readNextRow(), is(new String[] {"1\"\"2", "3"}));
             assertThat(reader.readNextRow(), is(new String[] {"a\"b", "c\"", "d"}));
             assertThat(reader.readNextRow(), is(new String[] {"a\"b\"c"}));
             assertThat(reader.readNextRow(), is(new String[] {"xy\"z;a\n"}));

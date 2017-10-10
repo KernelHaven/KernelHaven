@@ -7,7 +7,9 @@ import java.nio.charset.Charset;
 import net.ssehub.kernel_haven.util.io.AbstractTableWriter;
 
 /**
- * A writer for writing tables as CSV files.
+ * A writer for writing tables as CSV files. The format escapes field values as defined in
+ * <a href="https://tools.ietf.org/html/rfc4180">RFC4180</a>. However, in contrast to the RFC, it uses the semicolon
+ * character (;) as the default field delimiter. It also uses single line-feed characters (\n) for line breaks.
  *
  * @author Adam
  */
@@ -51,9 +53,11 @@ public class CsvWriter extends AbstractTableWriter {
      * Chars that need to be escaped are:
      * <ul>
      *      <li>\n</li>
+     *      <li>\r</li>
      *      <li>"</li>
      *      <li>separator</li>
      * </ul>
+     * See <a href="https://tools.ietf.org/html/rfc4180">RFC4180</a>.
      * 
      * @param field The field value to escape.
      * @return The escaped field value.
@@ -61,7 +65,7 @@ public class CsvWriter extends AbstractTableWriter {
     private String escape(String field) {
         boolean mustBeEscaped = false;
         for (char c : field.toCharArray()) {
-            if (c == separator || c == '\n'  || c == '"') {
+            if (c == separator || c == '\n' || c == '\r' || c == '"') {
                 mustBeEscaped = true;
                 break;
             }

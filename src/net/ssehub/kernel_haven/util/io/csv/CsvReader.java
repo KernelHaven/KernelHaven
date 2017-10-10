@@ -10,7 +10,23 @@ import java.util.List;
 import net.ssehub.kernel_haven.util.io.ITableReader;
 
 /**
- * A reader for reading CSV files.
+ * A reader for reading CSV files. This reader expects fields to be escaped as defined in
+ * <a href="https://tools.ietf.org/html/rfc4180">RFC4180</a>. The behavior for malformed escapes is based on
+ * the behavior observed in LibreOffice Calc. Examples of malformed escapes and how they are handled:
+ * <ul>
+ *      <li>A single " appearing in the middle of an unescaped field: The single " is interpreted as a normal content
+ *          character</li>
+ *      <li>A double "" appearing in the middle of an unescaped field: The double "" are interpreted as normal content
+ *          characters.</li>
+ *      <li>A " appearing at the end of an unescaped field: The " is interpreted as a normal content character.</li>
+ *      <li>A " appearing at the start of a field, but not at the end: The field is not considered to not have ended.
+ *          All characters, until a " at the end position of a field is encountered, are intepreted as normal content
+ *          characters (including all line breaks, separator characters and "; double "" are still escaped to a single
+ *          ")-. For example <code>value 1;"value 2; value 3</code> has 2 fields: "value 1" and "value 2; value3"</li>
+ * </ul>
+ * This reader violates RFC4180 in that it does only support line-breaks denoted by single line-feed character (\n).
+ * \r characters are considered to be normal content characters. Additionally, this reader assumes that the default
+ * field separator is a semicolon (;) character.
  *
  * @author Adam
  */
@@ -89,7 +105,8 @@ public class CsvReader implements ITableReader {
     }
     
     /**
-     * Removes the escaping " from a given field. The same string is returned, if field is not escaped.
+     * Removes the escaping " from a given field. The same string is returned, if field is not escaped. Double ""
+     * are escaped to only one ".
      * 
      * @param field The field to un-escape.
      * @return The un-escaped field.
