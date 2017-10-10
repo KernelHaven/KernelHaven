@@ -91,7 +91,7 @@ public class DefaultSettings {
     public static final Setting<Pattern> CODE_EXTRACTOR_FILE_REGEX = new Setting<>("code.extractor.file_regex", REGEX, true, ".*\\.c", "A Java regular expression defining which files are considered to be source files for parsing. See code.extractor.files for a description on which files this expression is tested on."); 
     public static final Setting<Integer> CODE_EXTRACTOR_THREADS = new Setting<>("code.extractor.threads", INTEGER, true, "1", "The number of threads the code extractor should use. This many files are parsed in parallel.");
     
-    public static final Setting<Boolean> FUZZY_PARSING = new Setting<>("code.extractor.fuzzy_parsing", Type.BOOLEAN, true, "false", "Defines whether non-boolean conditions that are encountered in the code should be (fuzzily) convereted into boolean conditions, instead of throwing an exception. For example, this replaces (A == 1) && B with A__eq__1 && B.");
+    public static final Setting<Boolean> FUZZY_PARSING = new Setting<>("code.extractor.fuzzy_parsing", Type.BOOLEAN, true, "false", "Defines whether non-boolean conditions that are encountered in the code should be (fuzzily) convereted into boolean conditions, instead of throwing an exception. For example, this replaces (A == 1) && B with A_eq_1 && B.");
     
     /*
      * Build model parameters
