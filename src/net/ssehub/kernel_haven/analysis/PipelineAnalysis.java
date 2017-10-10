@@ -156,7 +156,6 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
                 Object result;
                 while ((result = mainComponent.getNextResult()) != null) {
                     LOGGER.logInfo("Got analysis result: " + result.toString());
-                    // TODO: log result to file
                     writer.writeRow(result);
                 }
 
