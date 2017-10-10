@@ -16,7 +16,6 @@ import net.ssehub.kernel_haven.util.logic.AllLogicTests;
     AllLogicTests.class,
     
     BlockingQueueTest.class,
-    ConfigurationTest.class,
     LoggerTest.class,
     PipelineArchiverTest.class,
     UtilTest.class,

@@ -1,4 +1,4 @@
-package net.ssehub.kernel_haven.util;
+package net.ssehub.kernel_haven.config;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -14,17 +14,17 @@ import org.junit.Test;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
 import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
-import net.ssehub.kernel_haven.config.Configuration;
-import net.ssehub.kernel_haven.config.DefaultSettings;
+import net.ssehub.kernel_haven.util.Util;
 import net.ssehub.kernel_haven.variability_model.EmptyVariabilityModelExtractor;
 
 /**
- * Tests the Configuration class.
+ * Tests the Configuration class. This was the test case for the old configuration implementation. This is mainly here
+ * to check for regressions. New test cases should go into {@link ConfigurationTest}.
  * 
  * @author Adam
  * @author Moritz
  */
-public class ConfigurationTest {
+public class OldConfigurationTest {
 
     /**
      * Tests if the configuration initializes correctly with a minimal configuration file and provides

@@ -10,7 +10,10 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ ConfigurationTest.class })
+@SuiteClasses({
+    ConfigurationTest.class,
+    OldConfigurationTest.class,
+    })
 public class AllConfigurationTests {
 
 }
