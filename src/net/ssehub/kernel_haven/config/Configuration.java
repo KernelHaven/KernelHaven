@@ -13,7 +13,6 @@ import java.util.regex.PatternSyntaxException;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Setting.Type;
-import net.ssehub.kernel_haven.util.Logger;
 
 /**
  * The global configuration. This class holds the complete user configuration that defines the pipeline.
@@ -37,10 +36,8 @@ public class Configuration {
      * Creates a configuration from the given properties.
      * 
      * @param propreties The properties. Must not be <code>null</code>.
-     * 
-     * @throws SetUpException If some properties are invalid.
      */
-    public Configuration(Properties propreties) throws SetUpException {
+    public Configuration(Properties propreties) {
         this.properties = propreties;
         this.values = new HashMap<>();
         this.settings = new HashMap<>();
@@ -53,10 +50,8 @@ public class Configuration {
      * 
      * @param propreties The properties. Must not be <code>null</code>.
      * @param doChecks Whether to check constraints for setting values or not.
-     * 
-     * @throws SetUpException If some properties are invalid.
      */
-    protected Configuration(Properties propreties, boolean doChecks) throws SetUpException {
+    protected Configuration(Properties propreties, boolean doChecks) {
         this.properties = propreties;
         this.values = new HashMap<>();
         this.settings = new HashMap<>();
@@ -305,94 +300,6 @@ public class Configuration {
         return properties.getProperty(key, defaultValue);
     }
     
-    /**
-     * Reads a property from the user configuration file and returns a boolean value.<br/>
-     * Will return:
-     * <ol>
-     *   <li>The <tt>defaultValue</tt> if the property was not defined</li>
-     *   <li><tt>true</tt> if specified value was <tt>"true"</tt> (ignoring case)</li>
-     *   <li><tt>false</tt> else</li>
-     * </ol>
-     * @param key The key of the property.
-     * @param defaultValue The default value to return if not specified in file.
-     * @return The value set by the user, or the default value.
-     */
-    @Deprecated
-    public boolean getBooleanProperty(String key, boolean defaultValue) {
-        boolean result = defaultValue;
-        String value = properties.getProperty(key);
-        if (null != value) {
-            result = Boolean.valueOf(value);
-        }
-        
-        return result;
-    }
-    
-    /**
-     * Reads a property from the user configuration file and returns an File object.<br/>
-     * Will return:
-     * <ol>
-     *   <li>The read value treated as absolute position</li>
-     *   <li>The read value treated as position relative to the source tree</li>
-     * </ol>
-     * @param key The key of the property to read.
-     * @return The value as file object.
-     * @throws SetUpException If the property was not specified or the file does not exist.
-     */
-    @Deprecated
-    public File getFileProperty(String key) throws SetUpException {
-        String strFile = getProperty(key);
-        if (null == strFile) {
-            throw new SetUpException(key + " property was not specified.");
-        }
-        
-        // First try to load this file as absolute position
-        File file = new File(strFile);
-        if (!file.exists()) {
-            // Fallback: Try to load the parameter as relative path
-            file = new File(getValue(DefaultSettings.SOURCE_TREE), strFile);
-            
-            if (!file.exists()) {
-                throw new SetUpException(key + " = " + strFile + " points to an invalid location.");
-            }
-        }
-        
-        return file;
-    }
-    
-    /**
-     * Reads a property from the user configuration and returns an enum value.<br/>
-     * Will return:
-     * <ol>
-     *   <li>The <tt>defaultValue</tt> if the property was not defined</li>
-     *   <li>The specified enum value if the specified value is a valid literal (case insensitive).</li>
-     *   <li>An {@link SetUpException} if the specified value does not exist.</li>
-     * </ol>
-     * @param key The key of the property.
-     * @param defaultValue The default value to return if not specified in file.
-     * @param <E> The enum type for which an literal shall be returned.
-     * @return The specified value or the default value.
-     * @throws SetUpException If a value was specified, which does not exist for the defined enumeration.
-     */
-    @Deprecated
-    public <E extends Enum<E>> E getEnumProperty(String key, E defaultValue) throws SetUpException {
-        String tmp = getProperty(key);
-        
-        E result;
-        if (null == tmp) {
-            Logger.get().logInfo("\"" + key + "\" not defined, will use \"" + defaultValue.name() + "\".");
-            result = defaultValue;
-        } else {
-            try {
-                result = Enum.valueOf(defaultValue.getDeclaringClass(), tmp.toUpperCase());
-            } catch (IllegalArgumentException exc) {
-                throw new SetUpException("\"" + key + "=" + tmp + "\" is an invalid option.");
-            }
-        }
-        
-        return result;
-    }
-
     /**
      * Returns the file that this configuration was created with.
      * 
