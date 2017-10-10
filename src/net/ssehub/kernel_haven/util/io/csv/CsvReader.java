@@ -24,9 +24,8 @@ import net.ssehub.kernel_haven.util.io.ITableReader;
  *          characters (including all line breaks, separator characters and "; double "" are still escaped to a single
  *          ")-. For example <code>value 1;"value 2; value 3</code> has 2 fields: "value 1" and "value 2; value3"</li>
  * </ul>
- * This reader violates RFC4180 in that it does only support line-breaks denoted by single line-feed character (\n).
- * \r characters are considered to be normal content characters. Additionally, this reader assumes that the default
- * field separator is a semicolon (;) character.
+ * This reader violates RFC4180 in that it considers any of the following sequences to be line-breaks: \r, \n, \r\n.
+ * Additionally, this reader assumes that the default field separator is a semicolon (;) character.
  *
  * @author Adam
  */
@@ -144,7 +143,9 @@ public class CsvReader implements ITableReader {
      * 
      * @throws IOException If reading the stream fails.
      */
+    // CHECKSTYLE:OFF // TODO: this method is too long.
     private String[] readLine() throws IOException {
+    // CHECKSTYLE:ON
         List<String> parts = new LinkedList<>();
         
         // whether we are currently inside an escape sequence
@@ -180,14 +181,22 @@ public class CsvReader implements ITableReader {
                 } else if (inEscaped) {
                     // check if we are at the end of a field, by peeking at the next character
                     int peek = peek();
-                    if (peek == -1 || peek == separator || peek == '\n') {
+                    if (peek == -1 || peek == separator || peek == '\n' || peek == '\r') {
                         // we found a " at the end of a field -> escaping ended
                         inEscaped = false;
                         // the next iteration will read() the end of field, so we don't have to do anything
                     }
                 }
                 
-            } else if (c == '\n' && !inEscaped) {
+            } else if ((c == '\n' || c == '\r') && !inEscaped) {
+                // check if line-break is \r\n
+                if (c == '\r') {
+                    int next = peek();
+                    if (next == '\n') {
+                        // if \r is followed by \n, read the \n so that it doesn't re-appear in the next iteration.
+                        read();
+                    }
+                }
                 // a non-escaped end of line -> we are done with this row
                 break;
             }

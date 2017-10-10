@@ -163,5 +163,36 @@ public class CsvReaderTest {
             }));
         }
     }
+    
+    /**
+     * Tests whether \r and \r\n are considered to be line-breaks, too.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testOtherLineBreaks() throws IOException {
+        String csv = "1;2;3\ra;b;c\r\nx;y;z";
+        
+        try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.readNextRow(), is(new String[] {"1", "2", "3"}));
+            assertThat(reader.readNextRow(), is(new String[] {"a", "b", "c"}));
+            assertThat(reader.readNextRow(), is(new String[] {"x", "y", "z"}));
+        }
+    }
+    
+    /**
+     * Tests whether \r and \r\n are handled correctly when they appear in escaped fields.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testOtherLineBreaksInEscaped() throws IOException {
+        String csv = "1;2;\"3\r\"\r\na;\"b\r\nb\";c\n";
+        
+        try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.readNextRow(), is(new String[] {"1", "2", "3\r"}));
+            assertThat(reader.readNextRow(), is(new String[] {"a", "b\r\nb", "c"}));
+        }
+    }
 
 }
