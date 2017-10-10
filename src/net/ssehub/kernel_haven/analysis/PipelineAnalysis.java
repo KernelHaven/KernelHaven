@@ -162,11 +162,14 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
                 for (File file : resultCollection.getFiles()) {
                     addOutputFile(file);
                 }
-                
-                resultCollection.close();
-                
             } catch (IOException e) {
                 LOGGER.logException("Exception while writing output file", e);
+            }
+            
+            try {
+                resultCollection.close();
+            } catch (IOException e) {
+                LOGGER.logException("Exception while closing output file", e);
             }
             
         } catch (SetUpException e) {
