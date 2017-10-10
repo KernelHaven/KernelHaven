@@ -66,7 +66,7 @@ public class BuildModelProviderTest {
         @Override
         protected BuildModel runOnFile(File target) throws ExtractorException {
             try {
-                Thread.sleep(500);
+                Thread.sleep(150);
             } catch (InterruptedException e) {
             }
             

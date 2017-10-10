@@ -231,7 +231,7 @@ public class UtilTest {
     public static void main(String[] args) {
         if (args[0].equals("sleep")) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
             }
         } else if (args[0].equals("print")) {

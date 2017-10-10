@@ -70,7 +70,7 @@ public class CodeModelProviderTest {
             filesToParse.add(target);
             
             try {
-                Thread.sleep(500);
+                Thread.sleep(150);
             } catch (InterruptedException e) {
             }
             if (throwException) {
