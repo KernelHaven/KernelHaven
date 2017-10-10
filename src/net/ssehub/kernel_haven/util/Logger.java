@@ -385,7 +385,9 @@ public class Logger {
      *            be null.
      */
     public void logException(String comment, Throwable exc) {
-        logException("error", comment, exc);
+        if (errorLogging) {
+            logException("error", comment, exc);
+        }
     }
     
     /**
@@ -400,7 +402,9 @@ public class Logger {
      *            be null.
      */
     public void logExceptionDebug(String comment, Throwable exc) {
-        logException("debug", comment, exc);
+        if (debugLogging) {
+            logException("debug", comment, exc);
+        }
     }
     
     /**
@@ -415,7 +419,9 @@ public class Logger {
      *            be null.
      */
     public void logExceptionWarning(String comment, Throwable exc) {
-        logException("warning", comment, exc);
+        if (warningLogging) {
+            logException("warning", comment, exc);
+        }
     }
     
     /**
@@ -430,7 +436,9 @@ public class Logger {
      *            be null.
      */
     public void logExceptionInfo(String comment, Throwable exc) {
-        logException("info", comment, exc);
+        if (infoLogging) {
+            logException("info", comment, exc);
+        }
     }
     
     /**
