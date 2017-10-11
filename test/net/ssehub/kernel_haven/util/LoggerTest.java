@@ -38,12 +38,15 @@ public class LoggerTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Logger.init(out);
         Logger l = Logger.get(); // just a shortcut
+        l.setLevel(Logger.Level.DEBUG);
 
         l.logError("a");
         l.logWarning("a");
         l.logInfo("a");
         l.logDebug("a");
         l.logException("a", new Exception());
+        
+        l.setLevel(Logger.Level.INFO);
 
         String[] lines = out.toString().split("\n");
 

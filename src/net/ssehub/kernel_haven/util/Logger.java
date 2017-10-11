@@ -21,6 +21,47 @@ import net.ssehub.kernel_haven.config.DefaultSettings;
  * @author moritz
  */
 public class Logger {
+    
+    /**
+     * Enum of the available log levels.
+     */
+    public static enum Level {
+        ERROR("error", 0),
+        WARNING("warning", 1),
+        INFO("info", 2),
+        DEBUG("debug", 3);
+        
+        private String str;
+        
+        private int level;
+        
+        /**
+         * Creates a log level.
+         * 
+         * @param str The string representation of this log level.
+         * @param level The level. All log levels with values <= this value will be logged.
+         */
+        private Level(String str, int level) {
+            this.str = str;
+            this.level = level;
+        }
+        
+        /**
+         * Whether a message with the specified level will be logged, if the logger is set to this level.
+         * 
+         * @param other The other level to check.
+         * @return Whether the other level will be logged if this level is set.
+         */
+        public boolean isLog(Level other) {
+            return this.level >= other.level;
+        }
+        
+        @Override
+        public String toString() {
+            return str;
+        }
+        
+    }
 
     private static final int LOG_MESSAGE_SIZE_CONSOLE_LIMIT = 10;
 
@@ -30,18 +71,8 @@ public class Logger {
      */
     private static Logger instance;
 
-    /** Activates error logging. */
-    private boolean errorLogging = true;
-
-    /** Activates warning logging. */
-    private boolean warningLogging = true;
-
-    /** Activates debug logging. */
-    private boolean debugLogging = true;
-
-    /** Activates info logging. */
-    private boolean infoLogging = true;
-
+    private Level level;
+    
     /** Activates file logging. */
     private boolean fileLogging = false;
 
@@ -104,6 +135,7 @@ public class Logger {
     private Logger(Charset charset) {
         this.targets = new ArrayList<>(2);
         this.charset = charset;
+        this.level = Level.INFO;
     }
 
     /**
@@ -118,10 +150,7 @@ public class Logger {
     public void setup(Configuration config) throws SetUpException {
         this.fileLogging = config.getValue(DefaultSettings.LOG_FILE);
         this.consoleLogging = config.getValue(DefaultSettings.LOG_CONSOLE);
-        this.errorLogging = config.getValue(DefaultSettings.LOG_ERROR);
-        this.warningLogging = config.getValue(DefaultSettings.LOG_WARNING);
-        this.debugLogging = config.getValue(DefaultSettings.LOG_DEBUG);
-        this.infoLogging = config.getValue(DefaultSettings.LOG_INFO);
+        this.level = config.getValue(DefaultSettings.LOG_LEVEL);
 
         if (fileLogging) {
             logFile = new File(config.getValue(DefaultSettings.LOG_DIR), 
@@ -129,7 +158,7 @@ public class Logger {
         }
 
         if (!consoleLogging) {
-            log("info", "Stop logging to console");
+            log(Level.INFO, "Stop logging to console");
             targets.clear();
         }
         
@@ -141,7 +170,7 @@ public class Logger {
             
             try {
                 targets.add(new Target(new FileOutputStream(logFile)));
-                log("info", "Logging to log file " + logFile.getAbsolutePath());
+                log(Level.INFO, "Logging to log file " + logFile.getAbsolutePath());
             } catch (FileNotFoundException e) {
                 throw new SetUpException(e);
             }
@@ -199,6 +228,15 @@ public class Logger {
     public static Logger get() {
         return instance;
     }
+    
+    /**
+     * Overwrite the current log level.
+     * 
+     * @param level The new log level.
+     */
+    public void setLevel(Level level) {
+        this.level = level;
+    }
 
     /**
      * Creates a "header" prefix for log lines. The lines contain the specified
@@ -229,8 +267,11 @@ public class Logger {
      *            The lines that are written together as one log entry. Must not
      *            be null.
      */
-    private void log(String level, String... lines) {
-        String header = constructHeader(level);
+    private void log(Level level, String... lines) {
+        if (!this.level.isLog(level)) {
+            return;
+        }
+        String header = constructHeader(level.toString());
         String indent = "";
         if (lines.length > 1) {
             indent = header.replaceAll(".", " ");
@@ -287,9 +328,7 @@ public class Logger {
      *            The content of the log entry. Must not be null.
      */
     public void logInfo(String... lines) {
-        if (infoLogging) {
-            log("info", lines);
-        }
+        log(Level.INFO, lines);
     }
 
     /**
@@ -299,9 +338,7 @@ public class Logger {
      *            The content of the log entry. Must not be null.
      */
     public void logDebug(String... lines) {
-        if (debugLogging) {
-            log("debug", lines);
-        }
+        log(Level.DEBUG, lines);
     }
 
     /**
@@ -311,9 +348,7 @@ public class Logger {
      *            The content of the log entry.
      */
     public void logWarning(String... lines) {
-        if (warningLogging) {
-            log("warning", lines);
-        }
+        log(Level.WARNING, lines);
     }
 
     /**
@@ -323,9 +358,7 @@ public class Logger {
      *            The content of the log entry. Must not be null.
      */
     public void logError(String... lines) {
-        if (errorLogging) {
-            log("error", lines);
-        }
+        log(Level.ERROR, lines);
     }
 
     /**
@@ -366,7 +399,7 @@ public class Logger {
      *            The exception to log. A stack trace will be logged. Must not
      *            be null.
      */
-    private void logException(String level, String comment, Throwable exc) {
+    private void logException(Level level, String comment, Throwable exc) {
         List<String> lines = new ArrayList<>(exc.getStackTrace().length + 2);
         lines.add(comment + ":");
         exceptionToString(exc, lines);
@@ -385,9 +418,7 @@ public class Logger {
      *            be null.
      */
     public void logException(String comment, Throwable exc) {
-        if (errorLogging) {
-            logException("error", comment, exc);
-        }
+        logException(Level.ERROR, comment, exc);
     }
     
     /**
@@ -402,9 +433,7 @@ public class Logger {
      *            be null.
      */
     public void logExceptionDebug(String comment, Throwable exc) {
-        if (debugLogging) {
-            logException("debug", comment, exc);
-        }
+        logException(Level.DEBUG, comment, exc);
     }
     
     /**
@@ -419,9 +448,7 @@ public class Logger {
      *            be null.
      */
     public void logExceptionWarning(String comment, Throwable exc) {
-        if (warningLogging) {
-            logException("warning", comment, exc);
-        }
+        logException(Level.WARNING, comment, exc);
     }
     
     /**
@@ -436,9 +463,7 @@ public class Logger {
      *            be null.
      */
     public void logExceptionInfo(String comment, Throwable exc) {
-        if (infoLogging) {
-            logException("info", comment, exc);
-        }
+        logException(Level.INFO, comment, exc);
     }
     
     /**

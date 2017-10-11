@@ -14,6 +14,7 @@ import org.junit.Test;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
 import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
+import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Util;
 import net.ssehub.kernel_haven.variability_model.EmptyVariabilityModelExtractor;
 
@@ -76,11 +77,8 @@ public class OldConfigurationTest {
         assertThat(config.getValue(DefaultSettings.LOG_DIR), is(new File(".")));
         assertThat(config.getValue(DefaultSettings.ARCHIVE), is(false));
         assertThat(config.getValue(DefaultSettings.LOG_CONSOLE), is(true));
-        assertThat(config.getValue(DefaultSettings.LOG_DEBUG), is(false));
-        assertThat(config.getValue(DefaultSettings.LOG_ERROR), is(true));
+        assertThat(config.getValue(DefaultSettings.LOG_LEVEL), is(Logger.Level.INFO));
         assertThat(config.getValue(DefaultSettings.LOG_FILE), is(false));
-        assertThat(config.getValue(DefaultSettings.LOG_INFO), is(true));
-        assertThat(config.getValue(DefaultSettings.LOG_WARNING), is(true));
 
         assertThat(config.getValue(DefaultSettings.ARCH), nullValue());
         
@@ -122,12 +120,9 @@ public class OldConfigurationTest {
         assertThat(config.getValue(DefaultSettings.LOG_DIR), equalTo(somefolder));
         assertThat(config.getValue(DefaultSettings.ARCHIVE), is(true));
         assertThat(config.getValue(DefaultSettings.LOG_CONSOLE), is(false));
-        assertThat(config.getValue(DefaultSettings.LOG_DEBUG), is(true));
-        assertThat(config.getValue(DefaultSettings.LOG_ERROR), is(false));
+        assertThat(config.getValue(DefaultSettings.LOG_LEVEL), is(Logger.Level.DEBUG));
         assertThat(config.getValue(DefaultSettings.LOG_FILE), is(true));
-        assertThat(config.getValue(DefaultSettings.LOG_INFO), is(false));
-        assertThat(config.getValue(DefaultSettings.LOG_WARNING), is(false));
-
+        
         assertThat(config.getValue(DefaultSettings.SOURCE_TREE), equalTo(somefolder));
         assertThat(config.getValue(DefaultSettings.CACHE_DIR), equalTo(somefolder));
         assertThat(config.getValue(DefaultSettings.ARCH), is("x86"));

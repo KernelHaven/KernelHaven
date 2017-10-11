@@ -20,6 +20,7 @@ import net.ssehub.kernel_haven.analysis.ConfiguredPipelineAnalysis;
 import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
 import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
 import net.ssehub.kernel_haven.config.Setting.Type;
+import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.variability_model.EmptyVariabilityModelExtractor;
 
 /**
@@ -48,10 +49,7 @@ public class DefaultSettings {
     
     public static final Setting<Boolean> LOG_CONSOLE = new Setting<>("log.console", BOOLEAN, true, "true", "If set to true all log messages will be written to console.");
     public static final Setting<Boolean> LOG_FILE = new Setting<>("log.file", BOOLEAN, true, "false", "If set to true all log messages will be written to a file in the log directory.");
-    public static final Setting<Boolean> LOG_ERROR = new Setting<>("log.error", BOOLEAN, true, "true", "Defines whether log messages with level error should be logged.");
-    public static final Setting<Boolean> LOG_WARNING = new Setting<>("log.warning", BOOLEAN, true, "true", "Defines whether log messages with level warning should be logged.");
-    public static final Setting<Boolean> LOG_INFO = new Setting<>("log.info", BOOLEAN, true, "true", "Defines whether log messages with level info should be logged.");
-    public static final Setting<Boolean> LOG_DEBUG = new Setting<>("log.debug", BOOLEAN, true, "false", "Defines whether log messages with level debugshould be logged.");
+    public static final Setting<Logger.Level> LOG_LEVEL = new EnumSetting<Logger.Level>("log.level", Logger.Level.class, true, Logger.Level.INFO, "Defines the maximum log level to log."); 
     
     /*
      * Archiving
