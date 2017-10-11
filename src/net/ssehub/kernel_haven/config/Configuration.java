@@ -72,8 +72,8 @@ public class Configuration {
         this.doChecks = true;
         this.propertyFile = propertyFile;
         
-        try {
-            properties.load(new FileReader(propertyFile));
+        try (FileReader in = new FileReader(propertyFile)) {
+            properties.load(in);
         } catch (IOException e) {
             throw new SetUpException(e);
         }
