@@ -74,8 +74,11 @@ public class Run {
      * @param args
      *            the command line arguments. Used for parsing property-file
      *            location and flags.
+     * @return Whether run was successful or not.
      */
-    public static void main(String... args) {
+    // CHECKSTYLE:OFF // ignore "too many returns" error
+    public static boolean run(String... args) {
+    // CHECKSTYLE:ON
         Thread.currentThread().setName("Setup");
         
         Thread.setDefaultUncaughtExceptionHandler((Thread thread, Throwable exc) -> {
@@ -94,18 +97,18 @@ public class Run {
                     propertiesFile = new File(arg);
                 } else {
                     LOGGER.logError("You must not define more than one properties file");
-                    System.exit(1);
+                    return false;
                 }
 
             } else {
                 LOGGER.logError("Unknown command line option " + arg);
-                System.exit(1);
+                return false;
             }
         }
 
         if (propertiesFile == null) {
             LOGGER.logError("No properties-file provided. Stopping system");
-            System.exit(1);
+            return false;
         }
 
         Configuration config = null;
@@ -122,7 +125,7 @@ public class Run {
 
         } catch (SetUpException e) {
             LOGGER.logError("Invalid configuration detected:", e.getMessage());
-            System.exit(1);
+            return false;
         }
         try {
             LOGGER.setup(config);
@@ -136,5 +139,22 @@ public class Run {
         printSystemInfo();
 
         PipelineConfigurator.instance().execute();
+        return true;
     }
+    
+    /**
+     * Main method to execute the Pipeline defined in the the properties file.
+     *
+     * 
+     * @param args
+     *            the command line arguments. Used for parsing property-file
+     *            location and flags.
+     */
+    public static void main(String... args) {
+        boolean success = run(args);
+        if (!success) {
+            System.exit(1);
+        }
+    }
+    
 }
