@@ -20,7 +20,7 @@ import net.ssehub.kernel_haven.util.io.ITableCollection;
  */
 public class CsvFileCollection implements ITableCollection {
     
-    private static final Pattern ALLOWED_NAMES = Pattern.compile("[A-Za-z0-9_]+"); 
+    private static final Pattern ALLOWED_NAMES = Pattern.compile("[ A-Za-z0-9_]+"); 
     
     private File baseName;
 
