@@ -75,7 +75,7 @@ public class Run {
      *            the command line arguments. Used for parsing property-file
      *            location and flags.
      */
-    public static void main(String[] args) {
+    public static void main(String... args) {
         Thread.currentThread().setName("Setup");
         
         Thread.setDefaultUncaughtExceptionHandler((Thread thread, Throwable exc) -> {
