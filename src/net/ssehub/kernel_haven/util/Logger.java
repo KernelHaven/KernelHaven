@@ -158,7 +158,6 @@ public class Logger {
         }
 
         if (!consoleLogging) {
-            log(Level.INFO, "Stop logging to console");
             targets.clear();
         }
         
@@ -170,7 +169,6 @@ public class Logger {
             
             try {
                 targets.add(new Target(new FileOutputStream(logFile)));
-                log(Level.INFO, "Logging to log file " + logFile.getAbsolutePath());
             } catch (FileNotFoundException e) {
                 throw new SetUpException(e);
             }

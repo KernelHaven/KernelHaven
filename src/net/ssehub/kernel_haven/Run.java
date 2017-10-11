@@ -82,8 +82,6 @@ public class Run {
             LOGGER.logException("Unhandled exception in thread " + thread.getName(), exc);
         });
 
-        LOGGER.logInfo("Starting up...");
-        LOGGER.logDebug("Please stand by. We are saddling the unicorn.");
         File propertiesFile = null;
 
         boolean archiveParam = false;
@@ -113,7 +111,6 @@ public class Run {
         Configuration config = null;
 
         try {
-            LOGGER.logInfo("Loading properties from " + propertiesFile.getAbsolutePath());
             config = new Configuration(propertiesFile);
             DefaultSettings.registerAllSettings(config);
 
@@ -128,7 +125,6 @@ public class Run {
             System.exit(1);
         }
         try {
-            LOGGER.logDebug("Changing logger Setup by properties.");
             LOGGER.setup(config);
 
         } catch (SetUpException exc) {
@@ -136,6 +132,7 @@ public class Run {
                     "Was not able to setup the Logger as defined in the properties. Logging now to Console only", exc);
         }
         
+        LOGGER.logInfo("Start executing KernelHaven with configuration file " + propertiesFile.getPath());
         printSystemInfo();
 
         PipelineConfigurator.instance().execute();

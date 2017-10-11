@@ -356,8 +356,7 @@ public class LoggerTest {
         String[] lines = result.split("\n");
         
         // we expect 12 lines: 10 (maxLogLines) + 1 (the log shortened message)
-        //                      + 1 (a previous message about file logging)
-        assertThat(lines.length, is(l.getTargets().get(0).getMaxLogLines() + 2));
+        assertThat(lines.length, is(l.getTargets().get(0).getMaxLogLines() + 1));
         assertThat(lines[lines.length - 1].trim(), is("... (log shortened, see log file for full output)"));
         
         // clean up
