@@ -152,28 +152,57 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             bmStarter.start();
             cmStarter.start();
             
-            try (ITableWriter writer = resultCollection.getWriter(mainComponent.getResultName())) {
-                Object result;
-                while ((result = mainComponent.getNextResult()) != null) {
-                    LOGGER.logInfo("Got analysis result: " + result.toString());
-                    writer.writeRow(result);
+            if (mainComponent instanceof JoinComponent) {
+                List<Thread> threads = new LinkedList<>();
+                
+                for (AnalysisComponent<?> component : ((JoinComponent) mainComponent).getInputs()) {
+                    Thread th = new Thread(() -> {
+                        pollAndWriteOutput(component);
+                    }, "AnalysisPipelineControllerOutputThread");
+                    threads.add(th);
+                    th.start();
                 }
-
-                for (File file : resultCollection.getFiles()) {
-                    addOutputFile(file);
+                
+                for (Thread th : threads) {
+                    try {
+                        th.join();
+                    } catch (InterruptedException e) {
+                    }
                 }
-            } catch (IOException e) {
-                LOGGER.logException("Exception while writing output file", e);
+                
+            } else {
+                pollAndWriteOutput(mainComponent);
             }
             
             try {
                 resultCollection.close();
+                
+                for (File file : resultCollection.getFiles()) {
+                    addOutputFile(file);
+                }
             } catch (IOException e) {
                 LOGGER.logException("Exception while closing output file", e);
             }
             
         } catch (SetUpException e) {
             LOGGER.logException("Exception while setting up", e);
+        }
+    }
+    
+    /**
+     * Polls all output from the given component and writes it to the output file.
+     * 
+     * @param component The component to read the output from.
+     */
+    private void pollAndWriteOutput(AnalysisComponent<?> component) {
+        try (ITableWriter writer = resultCollection.getWriter(component.getResultName())) {
+            Object result;
+            while ((result = component.getNextResult()) != null) {
+                LOGGER.logInfo("Got analysis result: " + result.toString());
+                writer.writeRow(result);
+            }
+        } catch (IOException e) {
+            LOGGER.logException("Exception while writing output file", e);
         }
     }
     

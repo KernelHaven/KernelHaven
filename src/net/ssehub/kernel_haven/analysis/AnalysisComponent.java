@@ -6,6 +6,7 @@ import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.Logger;
+import net.ssehub.kernel_haven.util.io.ITableCollection;
 import net.ssehub.kernel_haven.util.io.ITableWriter;
 
 /**
@@ -38,12 +39,21 @@ public abstract class AnalysisComponent<O> {
     public AnalysisComponent(Configuration config) {
         results = new BlockingQueue<>();
         
-        logResults = config.getValue(DefaultSettings.ANALYSIS_COMPONENTS_LOG).contains(getClass().getSimpleName());
+        setLogResults(config.getValue(DefaultSettings.ANALYSIS_COMPONENTS_LOG).contains(getClass().getSimpleName()));
+    }
+    
+    /**
+     * Changes whether this component should log its results or not. Results are logged to console and to the 
+     * {@link ITableCollection} provided by the {@link PipelineAnalysis#getInstance()}.
+     * This method should not be called once this component has started.
+     * 
+     * @param logResults Whether to log results or not.
+     */
+    public void setLogResults(boolean logResults) {
+        this.logResults = logResults;
         if (logResults) {
-            // TODO properly create this
             try {
                 out = PipelineAnalysis.getInstance().getResultCollection().getWriter(getResultName());
-                
             } catch (IOException e) {
                 LOGGER.logExceptionWarning("Can't create intermediate output file", e);
             }
@@ -53,7 +63,7 @@ public abstract class AnalysisComponent<O> {
     /**
      * Starts a new thread that executes this analysis component.
      */
-    private synchronized void start() {
+    synchronized void start() {
         Thread th = new Thread(() -> {
             try {
                 execute();

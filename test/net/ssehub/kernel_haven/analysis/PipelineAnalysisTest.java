@@ -238,6 +238,43 @@ public class PipelineAnalysisTest {
     }
     
     /**
+     * A simple analysis component reads strings and appends some suffix to them.
+     */
+    private static class StringConsumerComponent extends AnalysisComponent<String> {
+
+        private AnalysisComponent<String> input;
+        
+        private String suffix;
+        
+        /**
+         * Creates this {@link SimpleAnalysisComponent}.
+         * 
+         * @param config The configuration.
+         * @param input The input to get the strings from.
+         * @param suffix The suffix to append to the strings.
+         */
+        public StringConsumerComponent(Configuration config, AnalysisComponent<String> input, String suffix) {
+            super(config);
+            this.input = input;
+            this.suffix = suffix;
+        }
+
+        @Override
+        protected void execute() {
+            String data;
+            while ((data = input.getNextResult()) != null) {
+                addResult(data + suffix);
+            }
+        }
+        
+        @Override
+        public String getResultName() {
+            return "StringConsumer" + suffix;
+        }
+        
+    }
+    
+    /**
      * Creates and runs a simple pipeline with a single analysis component. Tests whether the output file contains
      * the expected output.
      * 
@@ -367,6 +404,57 @@ public class PipelineAnalysisTest {
         for (int i = 0; i < 2; i++) {
             FileContentsAssertion.assertContents(outputFiles[i],
                     "Result1\nResult2\nResult3\n");
+        }
+    }
+    
+    /**
+     * Tests the {@link SplitComponent}.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testSplitComponent() throws SetUpException {
+        Properties props = new Properties();
+        props.put("output_dir", tempOutputDir.getPath());
+        props.put("source_tree", tempOutputDir.getPath());
+        TestConfiguration config = new TestConfiguration(props);
+        
+        PipelineAnalysis analysis = createAnalysis(config, (pipeline) -> {
+            SplitComponent<String> split = new SplitComponent<>(config,
+                    new SimpleAnalysisComponent(config, "Result1", "Result2", "Result3")
+            );
+            
+            AnalysisComponent<String> out1 = new StringConsumerComponent(config, split.createOutputComponent(), " 1");
+            AnalysisComponent<String> out2 = new StringConsumerComponent(config, split.createOutputComponent(), " 2");
+            
+            return new JoinComponent(config, out1, out2);
+        });
+        
+        analysis.run();
+        
+        File[] outputFiles = tempOutputDir.listFiles();
+        assertThat(outputFiles.length, is(2));
+
+        if (outputFiles[0].getName().contains("StringConsumer 1")) {
+            assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
+            assertThat(outputFiles[0].getName(), endsWith("_StringConsumer 1.csv"));
+            FileContentsAssertion.assertContents(outputFiles[0],
+                    "Result1 1\nResult2 1\nResult3 1\n");
+            
+            assertThat(outputFiles[1].getName(), startsWith("Analysis_"));
+            assertThat(outputFiles[1].getName(), endsWith("_StringConsumer 2.csv"));
+            FileContentsAssertion.assertContents(outputFiles[1],
+                    "Result1 2\nResult2 2\nResult3 2\n");
+        } else {
+            assertThat(outputFiles[1].getName(), startsWith("Analysis_"));
+            assertThat(outputFiles[1].getName(), endsWith("_StringConsumer 1.csv"));
+            FileContentsAssertion.assertContents(outputFiles[1],
+                    "Result1 1\nResult2 1\nResult3 1\n");
+            
+            assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
+            assertThat(outputFiles[0].getName(), endsWith("_StringConsumer 2.csv"));
+            FileContentsAssertion.assertContents(outputFiles[0],
+                    "Result1 2\nResult2 2\nResult3 2\n");
         }
     }
     
