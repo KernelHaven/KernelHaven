@@ -198,7 +198,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         try (ITableWriter writer = resultCollection.getWriter(component.getResultName())) {
             Object result;
             while ((result = component.getNextResult()) != null) {
-                LOGGER.logInfo("Got analysis result: " + result.toString());
+//                LOGGER.logInfo("Got analysis result: " + result.toString());
                 writer.writeRow(result);
             }
         } catch (IOException e) {

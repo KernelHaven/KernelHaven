@@ -101,8 +101,8 @@ public abstract class AnalysisComponent<O> {
         results.add(result);
         
         if (logResults) {
-            LOGGER.logInfo("Analysis component " + getClass().getSimpleName()
-                    + " intermediate result: " + result);
+//            LOGGER.logInfo("Analysis component " + getClass().getSimpleName()
+//                    + " intermediate result: " + result);
             if (out != null) {
                 try {
                     out.writeRow(result);
