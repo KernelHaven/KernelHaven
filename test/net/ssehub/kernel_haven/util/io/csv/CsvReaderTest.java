@@ -60,13 +60,14 @@ public class CsvReaderTest {
      */
     @Test
     public void testEscaped() throws IOException {
-        String csv = "1;\"2;3\";3\na;\"b\nc\";d\ne;f\"\"g;h\n\"9;8\"\"7\n6\"\n";
+        String csv = "1;\"2;3\";3\na;\"b\nc\";d\ne;f\"\"g;h\n\"9;8\"\"7\n6\"\n\"\"\"a\"\"\"";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
             assertThat(reader.readNextRow(), is(new String[] {"1", "2;3", "3"}));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b\nc", "d"}));
             assertThat(reader.readNextRow(), is(new String[] {"e", "f\"\"g", "h"}));
             assertThat(reader.readNextRow(), is(new String[] {"9;8\"7\n6"}));
+            assertThat(reader.readNextRow(), is(new String[] {"\"a\""}));
             assertThat(reader.readNextRow(), nullValue());
         }
     }
