@@ -8,13 +8,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
@@ -123,63 +120,6 @@ public class Util {
 
                 }
             }
-        }
-    }
-
-    /**
-     * Extracts an zip archive from the current JAR and also extracts this zip archive. This method can also be used
-     * during development and testing as it works also without a surrounding JAR archive.
-     * 
-     * @param packedArchive
-     *            The name and path of the zip archive within the JAR file.
-     * @param destination
-     *            The destination file to write the content to (this is overwritten if already present). Must not be
-     *            null.
-     * @throws IOException
-     *             If extracting of the resource fails.
-     */
-    public static void extractArchiveFormJar(String packedArchive, File destination) throws IOException {
-        URL packedLocation = Util.class.getClassLoader().getResource(packedArchive);
-        if (null == packedArchive) {
-            throw new IOException("Packed ressource not found: " + packedArchive);
-        }
-        if (!destination.exists()) {
-            destination.mkdirs();
-        }
-        if (packedLocation.getPath().toLowerCase().endsWith(".jar")) {
-            extractJarResourceToFile(packedArchive, destination);
-        } else {
-            File sourceFile = new File(packedLocation.getPath());
-            copyFile(sourceFile, new File(destination, sourceFile.getName()));
-        }
-
-        File zip = new File(destination, packedArchive);
-        if (zip.exists()) {
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(zip);
-                ZipInputStream zis = new ZipInputStream(fis);
-                ZipEntry entry = zis.getNextEntry();
-                while (null != entry) {
-                    if (!entry.isDirectory()) {
-                        FileOutputStream fos = null;
-                        try {
-                            File out = new File(destination, entry.getName());
-                            out.getParentFile().mkdirs();
-                            fos = new FileOutputStream(out);
-                            copyStream(zis, fos);
-                        } finally {
-                            fos.close();
-                        }
-                    }
-                    entry = zis.getNextEntry();
-                }
-            } catch (IOException e) {
-                throw e;
-            } finally {
-                fis.close();
-            }
-
         }
     }
 

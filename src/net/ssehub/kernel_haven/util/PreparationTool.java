@@ -61,8 +61,17 @@ public class PreparationTool {
                 destination.getParentFile().mkdirs();
             }
             
+            File tmp = null;
+            ZipArchive archive = null;
             try {
-                Util.extractArchiveFormJar(sourceInJar, destination);
+                tmp = Util.extractJarResourceToTemporaryFile(sourceInJar);
+                archive = new ZipArchive(tmp);
+                destination.mkdirs();
+                for (File f : archive.listFiles()) {
+                    File target = new File(destination, f.getPath());
+                    target.getParentFile().mkdirs();
+                    archive.extract(f, target);
+                }
                 
                 if (null != executable) {
                     File exec = new File(destination, executable);
@@ -75,6 +84,23 @@ public class PreparationTool {
             } catch (IOException e) {
                 throw new SetUpException("Could not extract specified ressource: \"" + sourceInJar + "\", "
                         + "cause: " + e.getMessage());
+            } finally {
+                if (tmp != null) {
+                    if (tmp.isDirectory()) {
+                        try {
+                            Util.deleteFolder(tmp);
+                        } catch (IOException e) {
+                        }
+                    } else {
+                        tmp.delete();
+                    }
+                }
+                if (archive != null) {
+                    try {
+                        archive.close();
+                    } catch (IOException e) {
+                    }
+                }
             }
         }
     }
