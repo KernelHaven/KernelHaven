@@ -9,6 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+    CodeBlockTest.class,
     CodeModelCacheTest.class,
     CodeModelProviderTest.class,
     SyntaxElementCsvUtilTest.class,
