@@ -28,6 +28,7 @@ import net.ssehub.kernel_haven.variability_model.AllVariabilityModelTests;
     AllVariabilityModelTests.class,
     
     PipelineConfiguratiorTest.class,
+    RunTest.class,
     })
 public class AllTests {
     
