@@ -249,7 +249,7 @@ public class SyntaxElement implements CodeElement {
     private String toString(String relation, String indentation) {
         StringBuilder result = new StringBuilder();
         
-        String conditionStr = condition.toString();
+        String conditionStr = condition == null ? "<null>" : condition.toString();
         if (conditionStr.length() > 64) {
             conditionStr = "...";
         }

@@ -11,6 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     CodeModelCacheTest.class,
     CodeModelProviderTest.class,
+    SyntaxElementCsvUtilTest.class,
     SyntaxElementTest.class,
     })
 public class AllCodeModelTests {

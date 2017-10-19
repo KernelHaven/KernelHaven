@@ -256,7 +256,7 @@ public class CodeModelCacheTest {
      * @param expected
      *            The expected value.
      */
-    private void assertSyntaxElementEqual(SyntaxElement actual, SyntaxElement expected) {
+    public static void assertSyntaxElementEqual(SyntaxElement actual, SyntaxElement expected) {
         assertThat(actual.getClass(), is((Object) expected.getClass()));
         assertThat(actual.getSourceFile().getPath(), is(expected.getSourceFile().getPath()));
         assertThat(actual.getLineStart(), is(expected.getLineStart()));
@@ -265,7 +265,7 @@ public class CodeModelCacheTest {
         assertThat(actual.getPresenceCondition(), is(expected.getPresenceCondition()));
         assertThat(actual.getNestedElementCount(), is(expected.getNestedElementCount()));
 
-        assertThat(actual.getType(), is(expected.getType()));
+        assertThat(actual.getType().toString(), is(expected.getType().toString()));
         for (int i = 0; i < actual.getNestedElementCount(); i++) {
             assertThat(actual.getRelation(i), is(expected.getRelation(i)));
         }

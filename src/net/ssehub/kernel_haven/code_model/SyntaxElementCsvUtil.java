@@ -75,7 +75,12 @@ public class SyntaxElementCsvUtil {
             }
         }
         
-        Formula condition = readFormula(csv[3], parser, formulaCache);
+        Formula condition;
+        if (csv[3].equals("null")) {
+            condition = null;
+        } else {
+            condition = readFormula(csv[3], parser, formulaCache);
+        }
         Formula presenceConditon = readFormula(csv[4], parser, formulaCache);
         
         ISyntaxElementType type;
