@@ -116,8 +116,6 @@ public class SyntaxElementTest {
                 + "\t [1] [<unknown>:-1] BreakStatement\n"
                 + "\tsecond [VAR_B] [<unknown>:-1] ExprStatement\n" 
                 + "\tthird [...] [testfile.c:1] ExprStatement\n"));
-        
-        System.out.println(main.toString());
     }
     
 }
