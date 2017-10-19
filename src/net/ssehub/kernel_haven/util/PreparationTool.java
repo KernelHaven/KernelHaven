@@ -2,7 +2,6 @@ package net.ssehub.kernel_haven.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
 
 import net.ssehub.kernel_haven.SetUpException;
 
@@ -14,15 +13,6 @@ import net.ssehub.kernel_haven.SetUpException;
  */
 public class PreparationTool {
     
-    /**
-     * Possible supported platforms / operating sytems.
-     * @author El-Sharkawy
-     *
-     */
-    public static enum OSType {
-        WIN32, WIN64, LINUX32, LINUX64, MACOS64;
-    }
-
     private File destination;
     private String executable;
     private String sourceInJar;
@@ -156,38 +146,4 @@ public class PreparationTool {
         return destination.exists();
     }
     
-    /**
-     * Determines the installed operating system (including bit version of the OS).
-     * @return OS and bit version of the OS, <tt>null</tt> if it could not be determined.
-     * @see <a href="https://stackoverflow.com/a/18417382">https://stackoverflow.com/a/18417382</a> for determining
-     * rules.
-     */
-    public OSType determineOS() {
-        OSType result = null;
-        String os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-        // Checks only if the JRE is a 64 Bit version, but it's still possible to install 32 Bit Java on 64 Bit OS.
-        boolean is64JRE = (System.getProperty("os.arch").indexOf("64") != -1);
-        
-        if (null != os) {
-            if (os.startsWith("win")) {
-                if (is64JRE || (System.getenv("ProgramFiles(x86)") != null)) {
-                    result = OSType.WIN64;
-                } else {
-                    result = OSType.WIN32;
-                }
-            } else if (os.indexOf("nux") >= 0) {
-                if (is64JRE) {
-                    // Warning: This is not complete test, since you might install a 32 Bit JRE on 64 Bit Linux.
-                    result = OSType.LINUX64;
-                } else {
-                    result = OSType.LINUX32;
-                }
-            } else if ((os.indexOf("mac") >= 0) || (os.indexOf("darwin") >= 0)) {
-                // As far as I know is 32 Bit MacOS now longer supported
-                result = OSType.MACOS64;
-            }
-        }
-        
-        return result;
-    }
 }

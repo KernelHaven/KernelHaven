@@ -18,6 +18,8 @@ import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.util.Util.OSType;
+
 
 /**
  * Tests the utility functions from the Util class.
@@ -320,6 +322,73 @@ public class UtilTest {
         assertThat(Util.formatBytes(32134341), is("30.64 MiB"));
         assertThat(Util.formatBytes(3213434341L), is("2.99 GiB"));
         assertThat(Util.formatBytes(32134343345341L), is("29.22 TiB"));
+    }
+    
+    /**
+     * Tests the determineOS() method.
+     */
+    @Test
+    public void testDetermineOS() {
+        String originalName = System.getProperty("os.name");
+        String originalArch = System.getProperty("os.arch");
+        try {
+            
+            String[][] input = {
+                // can't spoof 32 bit Windows, because it uses System.getenv() in detection
+                {"Windows 7", "amd64"},
+                {"Windows XP", "amd64"},
+                {"Windows 2003", "amd64"},
+                {"Windows 2000", "amd64"},
+                {"Windows 98", "amd64"},
+                {"Windows NT", "amd64"},
+                {"Windows Me", "amd64"},
+                
+                {"Linux", "amd64"},
+                {"Linux", "i386"},
+                {"Linux", "x86"},
+                
+                {"SunOS", "x86"},
+                {"SunOS", "sparc"},
+                {"FreeBSD", "i386"},
+                
+                {"Mac OS X", "i386"},
+                {"Mac OS X", "ppc"},
+            };
+            
+            Util.OSType[] expected = {
+                OSType.WIN64,
+                OSType.WIN64,
+                OSType.WIN64,
+                OSType.WIN64,
+                OSType.WIN64,
+                OSType.WIN64,
+                OSType.WIN64,
+                
+                OSType.LINUX64,
+                OSType.LINUX32,
+                OSType.LINUX32,
+                
+                null,
+                null, // TODO: check if this should be Linux instead
+                null,
+                
+                OSType.MACOS64, // TODO: check if this should be 32 bit instead
+                OSType.MACOS64,
+            };
+
+            for (int i = 0; i < input.length; i++) {
+                System.setProperty("os.name", input[i][0]);
+                System.setProperty("os.arch", input[i][1]);
+                assertThat(Util.determineOS(), is(expected[i]));
+            }
+            
+        } finally {
+            // make sure to always set properties back to original value
+            System.out.println(originalName);
+            System.out.println(originalArch);
+            System.setProperty("os.name", originalName);
+            System.setProperty("os.arch", originalArch);
+        }
     }
     
 }
