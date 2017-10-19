@@ -34,7 +34,8 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModelProvider;
 import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
 
 /**
- * Tests the {@link PipelineAnalysis} class.
+ * Tests the {@link PipelineAnalysis}, {@link SplitComponent}, {@link JoinComponent} and {@link ListCollectorComponent}
+ * classes.
  *
  * @author Adam
  */
@@ -408,7 +409,7 @@ public class PipelineAnalysisTest {
     }
     
     /**
-     * Tests the {@link SplitComponent}.
+     * Tests the {@link SplitComponent} (and {@link JoinComponent}).
      * 
      * @throws SetUpException unwanted.
      */
@@ -456,6 +457,35 @@ public class PipelineAnalysisTest {
             FileContentsAssertion.assertContents(outputFiles[0],
                     "Result1 2\nResult2 2\nResult3 2\n");
         }
+    }
+    
+    /**
+     * Tests the {@link ListCollectorComponent}.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testListCollectorComponent() throws SetUpException {
+        Properties props = new Properties();
+        props.put("output_dir", tempOutputDir.getPath());
+        props.put("source_tree", tempOutputDir.getPath());
+        TestConfiguration config = new TestConfiguration(props);
+        
+        PipelineAnalysis analysis = createAnalysis(config, (pipeline) -> 
+            new ListCollectorComponent<>(config, 
+                new SimpleAnalysisComponent(config, "Result1", "Result2", "Result3")
+            )
+        );
+        
+        analysis.run();
+        
+        File[] outputFiles = tempOutputDir.listFiles();
+        assertThat(outputFiles.length, is(1));
+        
+        assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
+        assertThat(outputFiles[0].getName(), endsWith("_SimpleResult List.csv"));
+        FileContentsAssertion.assertContents(outputFiles[0],
+                "[Result1, Result2, Result3]\n");
     }
     
 }

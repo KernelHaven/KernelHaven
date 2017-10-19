@@ -24,6 +24,7 @@ public class ListCollectorComponent<T> extends AnalysisComponent<List<T>> {
      */
     public ListCollectorComponent(Configuration config, AnalysisComponent<T> previousComponent) {
         super(config);
+        this.previousComponent = previousComponent;
     }
 
     @Override
