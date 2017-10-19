@@ -48,7 +48,12 @@ public final class False extends Formula {
     }
     
     @Override
-    public void accept(IFormulaVisitor visitor) {
+    protected <T> T accept(IFormulaVisitor<T> visitor) {
+        return visitor.visitFalse(this);
+    }
+    
+    @Override
+    protected void accept(IVoidFormulaVisitor visitor) {
         visitor.visitFalse(this);
     }
     

@@ -10,40 +10,46 @@ import java.util.Set;
  * @author El-Sharkawy
  *
  */
-public class VariableFinder implements IFormulaVisitor {
+public class VariableFinder implements IFormulaVisitor<Set<Variable>> {
 
     private Set<Variable> variables = new HashSet<>();
     
     @Override
-    public void visitFalse(False falseConstant) {
+    public Set<Variable> visitFalse(False falseConstant) {
         // Not needed
+        return variables;
     }
 
     @Override
-    public void visitTrue(True trueConstant) {
+    public Set<Variable> visitTrue(True trueConstant) {
         // Not needed
+        return variables;
     }
 
     @Override
-    public void visitVariable(Variable variable) {
+    public Set<Variable> visitVariable(Variable variable) {
         variables.add(variable);
+        return variables;
     }
 
     @Override
-    public void visitNegation(Negation formula) {
+    public Set<Variable> visitNegation(Negation formula) {
         formula.getFormula().accept(this);
+        return variables;
     }
 
     @Override
-    public void visitDisjunction(Disjunction formula) {
+    public Set<Variable> visitDisjunction(Disjunction formula) {
         formula.getLeft().accept(this);
         formula.getRight().accept(this);
+        return variables;
     }
 
     @Override
-    public void visitConjunction(Conjunction formula) {
+    public Set<Variable> visitConjunction(Conjunction formula) {
         formula.getLeft().accept(this);
         formula.getRight().accept(this);
+        return variables;
     }
     
     /**

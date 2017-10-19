@@ -57,7 +57,19 @@ public abstract class Formula implements Serializable {
     
     /**
      * Visiting method for visitors.
+     * 
+     * @param visitor A visitor, which shall visit <tt>this</tt> formula.
+     * 
+     * @param <T> The return type of the visitor
+     * 
+     * @return The return value for the visitor.
+     */
+    protected abstract <T> T accept(IFormulaVisitor<T> visitor);
+    
+    /**
+     * Visiting method for void visitors.
+     * 
      * @param visitor A visitor, which shall visit <tt>this</tt> formula.
      */
-    public abstract void accept(IFormulaVisitor visitor);
+    protected abstract void accept(IVoidFormulaVisitor visitor);
 }

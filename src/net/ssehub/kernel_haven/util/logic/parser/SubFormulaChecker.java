@@ -4,7 +4,7 @@ import net.ssehub.kernel_haven.util.logic.Conjunction;
 import net.ssehub.kernel_haven.util.logic.Disjunction;
 import net.ssehub.kernel_haven.util.logic.False;
 import net.ssehub.kernel_haven.util.logic.Formula;
-import net.ssehub.kernel_haven.util.logic.IFormulaVisitor;
+import net.ssehub.kernel_haven.util.logic.IVoidFormulaVisitor;
 import net.ssehub.kernel_haven.util.logic.Negation;
 import net.ssehub.kernel_haven.util.logic.True;
 import net.ssehub.kernel_haven.util.logic.Variable;
@@ -14,7 +14,7 @@ import net.ssehub.kernel_haven.util.logic.Variable;
  * @author El-Sharkawy
  *
  */
-public class SubFormulaChecker implements IFormulaVisitor {
+public class SubFormulaChecker implements IVoidFormulaVisitor {
     
     private Formula nestedFormula;
     private boolean isNested;
@@ -63,7 +63,7 @@ public class SubFormulaChecker implements IFormulaVisitor {
             if (!isNested()) {
                 // Doesn't change the size of the formula, for this reason no additional size check
                 // However, this means that a toplevel negation will also be checked even if it is already to short
-                formula.getFormula().accept(this);
+                visit(formula.getFormula());
             }
         }
     }
@@ -76,14 +76,14 @@ public class SubFormulaChecker implements IFormulaVisitor {
             if (!isNested()) {
                 Formula leftFormula = formula.getLeft();
                 if (leftFormula.getLiteralSize() >= formulaSize) {
-                    leftFormula.accept(this);
+                    visit(leftFormula);
                 }
             }
             
             if (!isNested()) {
                 Formula rightFormula = formula.getRight();
                 if (rightFormula.getLiteralSize() >= formulaSize) {
-                    rightFormula.accept(this);
+                    visit(rightFormula);
                 }
             }
         }
@@ -97,14 +97,14 @@ public class SubFormulaChecker implements IFormulaVisitor {
             if (!isNested()) {
                 Formula leftFormula = formula.getLeft();
                 if (leftFormula.getLiteralSize() >= formulaSize) {
-                    leftFormula.accept(this);
+                    visit(leftFormula);
                 }
             }
             
             if (!isNested()) {
                 Formula rightFormula = formula.getRight();
                 if (rightFormula.getLiteralSize() >= formulaSize) {
-                    rightFormula.accept(this);
+                    visit(rightFormula);
                 }
             }
         }

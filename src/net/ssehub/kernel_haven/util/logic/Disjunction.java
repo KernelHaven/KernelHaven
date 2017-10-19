@@ -83,7 +83,12 @@ public final class Disjunction extends Formula {
     }
     
     @Override
-    public void accept(IFormulaVisitor visitor) {
+    protected <T> T accept(IFormulaVisitor<T> visitor) {
+        return visitor.visitDisjunction(this);
+    }
+    
+    @Override
+    protected void accept(IVoidFormulaVisitor visitor) {
         visitor.visitDisjunction(this);
     }
     

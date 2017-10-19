@@ -71,7 +71,12 @@ public final class Variable extends Formula {
     }
     
     @Override
-    public void accept(IFormulaVisitor visitor) {
+    protected <T> T accept(IFormulaVisitor<T> visitor) {
+        return visitor.visitVariable(this);
+    }
+    
+    @Override
+    protected void accept(IVoidFormulaVisitor visitor) {
         visitor.visitVariable(this);
     }
     
