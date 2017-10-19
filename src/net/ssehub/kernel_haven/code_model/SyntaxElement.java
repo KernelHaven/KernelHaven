@@ -256,9 +256,7 @@ public class SyntaxElement implements CodeElement {
         
         result.append(indentation).append(relation).append(" [").append(conditionStr).append("] ");
         
-        if (sourceFile != null) {
-            result.append('[').append(sourceFile.getName()).append(':').append(lineStart).append("] ");
-        }
+        result.append('[').append(sourceFile.getName()).append(':').append(lineStart).append("] ");
         
         result.append(type.toString()).append('\n');
         
