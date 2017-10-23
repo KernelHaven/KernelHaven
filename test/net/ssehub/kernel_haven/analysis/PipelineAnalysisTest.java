@@ -53,13 +53,13 @@ public class PipelineAnalysisTest {
     
     /**
      * Creates the empty {@link #tempOutputDir}.
+     * 
+     * @throws IOException unwanted.
      */
     @Before
-    public void setUp() {
-        try {
+    public void setUp() throws IOException {
+        if (tempOutputDir.exists()) {
             Util.deleteFolder(tempOutputDir);
-        } catch (IOException e) {
-            // ignore
         }
         tempOutputDir.mkdir();
         
@@ -68,13 +68,13 @@ public class PipelineAnalysisTest {
     
     /**
      * Deletes the {@link #tempOutputDir}.
+     * 
+     * @throws IOException unwanted.
      */
     @After
-    public void tearDown() {
-        try {
+    public void tearDown() throws IOException {
+        if (tempOutputDir.exists()) {
             Util.deleteFolder(tempOutputDir);
-        } catch (IOException e) {
-            // ignore
         }
     }
     
