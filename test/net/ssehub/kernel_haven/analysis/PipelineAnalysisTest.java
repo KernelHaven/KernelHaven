@@ -2,11 +2,18 @@ package net.ssehub.kernel_haven.analysis;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -29,6 +36,10 @@ import net.ssehub.kernel_haven.test_utils.PseudoVariabilityExtractor;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Util;
+import net.ssehub.kernel_haven.util.io.AbstractTableWriter;
+import net.ssehub.kernel_haven.util.io.ITableCollection;
+import net.ssehub.kernel_haven.util.io.ITableReader;
+import net.ssehub.kernel_haven.util.io.ITableWriter;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelProvider;
 import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
@@ -73,6 +84,8 @@ public class PipelineAnalysisTest {
      */
     @After
     public void tearDown() throws IOException {
+        TestOutputWriter.TABLES.clear();
+        
         if (tempOutputDir.exists()) {
             Util.deleteFolder(tempOutputDir);
         }
@@ -298,6 +311,13 @@ public class PipelineAnalysisTest {
         assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
         assertThat(outputFiles[0].getName(), endsWith("_SimpleResult.csv"));
         FileContentsAssertion.assertContents(outputFiles[0], "Result1\nResult2\nResult3\n");
+        
+        assertThat(analysis.getOutputFiles().size(), is(1));
+        Set<File> files = new HashSet<>();
+        for (File f : outputFiles) {
+            files.add(f);
+        }
+        assertThat(analysis.getOutputFiles(), is(files));
     }
     
     /**
@@ -329,6 +349,13 @@ public class PipelineAnalysisTest {
         assertThat(outputFiles[0].getName(), endsWith("_CombinedResult.csv"));
         FileContentsAssertion.assertContents(outputFiles[0],
                 "ResultA1\nResultA2\nResultA3\nResultB1\nResultB2\nResultB3\n");
+        
+        assertThat(analysis.getOutputFiles().size(), is(1));
+        Set<File> files = new HashSet<>();
+        for (File f : outputFiles) {
+            files.add(f);
+        }
+        assertThat(analysis.getOutputFiles(), is(files));
     }
     
     /**
@@ -362,6 +389,13 @@ public class PipelineAnalysisTest {
         assertThat(outputFiles[0].getName(), endsWith("_VariabilityResult.csv"));
         FileContentsAssertion.assertContents(outputFiles[0],
                 "Var_A\nVar_A_M2\nVar_B\nVar_B_M2\nVar_C\nVar_C_M2\n");
+        
+        assertThat(analysis.getOutputFiles().size(), is(1));
+        Set<File> files = new HashSet<>();
+        for (File f : outputFiles) {
+            files.add(f);
+        }
+        assertThat(analysis.getOutputFiles(), is(files));
     }
     
     /**
@@ -406,6 +440,137 @@ public class PipelineAnalysisTest {
             FileContentsAssertion.assertContents(outputFiles[i],
                     "Result1\nResult2\nResult3\n");
         }
+        
+        assertThat(analysis.getOutputFiles().size(), is(2));
+        Set<File> files = new HashSet<>();
+        for (File f : outputFiles) {
+            files.add(f);
+        }
+        assertThat(analysis.getOutputFiles(), is(files));
+    }
+    
+    /**
+     * An output writer that can be used for a {@link PipelineAnalysis} as a different output writer.
+     */
+    private static class TestOutputWriter extends AbstractTableWriter implements ITableCollection {
+
+        /**
+         * Global mapping of tablename -> lines. This is used for all instances of {@link TestOutputWriter}.
+         */
+        public static final Map<String, List<String>> TABLES = new HashMap<>();
+        
+        private String name;
+
+        /**
+         * Creates a test output writer. This instance can be used as a {@link ITableCollection} for the
+         * {@link PipelineAnalysis}.
+         * 
+         * @param file Ignored.
+         */
+        @SuppressWarnings("unused")
+        public TestOutputWriter(File file) {
+        }
+        
+        /**
+         * Creates a test output writer with the given table name.
+         * @param name The name of the table.
+         */
+        private TestOutputWriter(String name) {
+            this.name = name;
+        }
+        
+        @Override
+        public void close() throws IOException {
+        }
+
+        @Override
+        public ITableReader getReader(String name) throws IOException {
+            return null;
+        }
+
+        @Override
+        public Set<String> getTableNames() throws IOException {
+            return TABLES.keySet();
+        }
+
+        @Override
+        public ITableWriter getWriter(String name) throws IOException {
+            TABLES.putIfAbsent(name, new LinkedList<>());
+            return new TestOutputWriter(name);
+        }
+
+        @Override
+        public Set<File> getFiles() throws IOException {
+            return new HashSet<>();
+        }
+
+        @Override
+        public void writeRow(String... fields) throws IOException {
+            TABLES.get(name).add(Arrays.toString(fields));
+        }
+        
+    }
+    
+    /**
+     * Tests whether a different output writer class is used correctly.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testDifferentOutputWriter() throws SetUpException {
+        Properties props = new Properties();
+        props.put("output_dir", tempOutputDir.getPath());
+        props.put("source_tree", tempOutputDir.getPath());
+        props.put("analysis.output_writer.class", TestOutputWriter.class.getName());
+        TestConfiguration config = new TestConfiguration(props);
+        
+        PipelineAnalysis analysis = createAnalysis(config, (pipeline) ->
+                new SimpleAnalysisComponent(config, "Result1", "Result2", "Result3"));
+        
+        analysis.run();
+        
+        File[] outputFiles = tempOutputDir.listFiles();
+        assertThat(outputFiles.length, is(0));
+        assertThat(analysis.getOutputFiles().size(), is(0));
+        
+        assertThat(TestOutputWriter.TABLES.size(), is(1));
+        List<String> lines = TestOutputWriter.TABLES.get("SimpleResult");
+        assertThat(lines, notNullValue());
+        assertThat(lines, is(Arrays.asList("[Result1]", "[Result2]", "[Result3]")));
+    }
+    
+    /**
+     * Tests whether a wrong output writer class name is handled correctly.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testWrongOutputWriter() throws SetUpException {
+        Properties props = new Properties();
+        props.put("output_dir", tempOutputDir.getPath());
+        props.put("source_tree", tempOutputDir.getPath());
+        props.put("analysis.output_writer.class", "doesnt_exist");
+        TestConfiguration config = new TestConfiguration(props);
+        
+        PipelineAnalysis analysis = createAnalysis(config, (pipeline) ->
+                new SimpleAnalysisComponent(config, "Result1", "Result2", "Result3"));
+        
+        analysis.run();
+        
+        File[] outputFiles = tempOutputDir.listFiles();
+        assertThat(outputFiles.length, is(1));
+        assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
+        assertThat(outputFiles[0].getName(), endsWith("_SimpleResult.csv"));
+        FileContentsAssertion.assertContents(outputFiles[0], "Result1\nResult2\nResult3\n");
+        
+        assertThat(analysis.getOutputFiles().size(), is(1));
+        Set<File> files = new HashSet<>();
+        for (File f : outputFiles) {
+            files.add(f);
+        }
+        assertThat(analysis.getOutputFiles(), is(files));
+        
+        assertThat(TestOutputWriter.TABLES.size(), is(0));
     }
     
     /**
@@ -457,6 +622,13 @@ public class PipelineAnalysisTest {
             FileContentsAssertion.assertContents(outputFiles[0],
                     "Result1 2\nResult2 2\nResult3 2\n");
         }
+        
+        assertThat(analysis.getOutputFiles().size(), is(2));
+        Set<File> files = new HashSet<>();
+        for (File f : outputFiles) {
+            files.add(f);
+        }
+        assertThat(analysis.getOutputFiles(), is(files));
     }
     
     /**
@@ -486,6 +658,13 @@ public class PipelineAnalysisTest {
         assertThat(outputFiles[0].getName(), endsWith("_SimpleResult List.csv"));
         FileContentsAssertion.assertContents(outputFiles[0],
                 "[Result1, Result2, Result3]\n");
+        
+        assertThat(analysis.getOutputFiles().size(), is(1));
+        Set<File> files = new HashSet<>();
+        for (File f : outputFiles) {
+            files.add(f);
+        }
+        assertThat(analysis.getOutputFiles(), is(files));
     }
     
 }
