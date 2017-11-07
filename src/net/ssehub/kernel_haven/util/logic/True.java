@@ -62,4 +62,9 @@ public final class True extends Formula {
         return 3;
     }
     
+    @Override
+    public void toString(StringBuffer result) {
+        result.append(toString());
+    }
+    
 }

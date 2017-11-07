@@ -64,6 +64,27 @@ public final class Disjunction extends Formula {
     }
     
     @Override
+    public void toString(StringBuffer result) {
+        if (!(left instanceof Disjunction) && left.getPrecedence() <= this.getPrecedence()) {
+            result.append('(');
+            left.toString(result);
+            result.append(')');
+        } else {
+            left.toString(result);
+        }
+        
+        result.append(" || ");
+                
+        if (!(right instanceof Disjunction) && right.getPrecedence() <= this.getPrecedence()) {
+            result.append('(');
+            right.toString(result);
+            result.append(')');
+        } else {
+            right.toString(result);
+        }
+    }
+    
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Disjunction) {
             Disjunction other = (Disjunction) obj;

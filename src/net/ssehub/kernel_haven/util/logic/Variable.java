@@ -85,4 +85,8 @@ public final class Variable extends Formula {
         return 3;
     }
     
+    @Override
+    public void toString(StringBuffer result) {
+        result.append(toString());
+    }
 }

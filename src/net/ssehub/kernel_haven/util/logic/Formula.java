@@ -37,6 +37,14 @@ public abstract class Formula implements Serializable {
     public abstract String toString();
     
     /**
+     * Converts the formula into a string representation.
+     * 
+     * @param result The result object to which the result in a C-style like format shall be appended to
+     *     (must not be <tt>null</tt>) .
+     */
+    public abstract void toString(StringBuffer result);
+    
+    /**
      * Checks whether two {@link Formula}s are equal. {@link Formula}s are equal,
      * if they contain the same operators in the same hierarchy with the same
      * variable names.

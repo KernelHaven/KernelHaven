@@ -61,5 +61,10 @@ public final class False extends Formula {
     protected int getPrecedence() {
         return 3;
     }
+
+    @Override
+    public void toString(StringBuffer result) {
+        result.append(toString());
+    }
     
 }

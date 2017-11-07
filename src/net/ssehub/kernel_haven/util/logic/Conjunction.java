@@ -65,6 +65,27 @@ public final class Conjunction extends Formula {
     }
     
     @Override
+    public void toString(StringBuffer result) {
+        if (!(left instanceof Conjunction) && left.getPrecedence() <= this.getPrecedence()) {
+            result.append('(');
+            left.toString(result);
+            result.append(')');
+        } else {
+            left.toString(result);
+        }
+        
+        result.append(" && ");
+                
+        if (!(right instanceof Conjunction) && right.getPrecedence() <= this.getPrecedence()) {
+            result.append('(');
+            right.toString(result);
+            result.append(')');
+        } else {
+            right.toString(result);
+        }
+    }
+    
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Conjunction) {
             Conjunction other = (Conjunction) obj;

@@ -46,6 +46,18 @@ public final class Negation extends Formula {
     }
     
     @Override
+    public void toString(StringBuffer result) {
+        result.append('!');
+        if (!(formula instanceof Negation) && formula.getPrecedence() <= this.getPrecedence()) {
+            result.append('(');
+            formula.toString(result);
+            result.append(')');
+        } else {
+            formula.toString(result);
+        }
+    }
+    
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Negation) {
             Negation other = (Negation) obj;
