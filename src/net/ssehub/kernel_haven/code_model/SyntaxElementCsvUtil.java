@@ -143,8 +143,18 @@ public class SyntaxElementCsvUtil {
         result.add(element.getLineStart() + "");
         result.add(element.getLineEnd() + "");
         result.add(element.getSourceFile().getPath());
-        result.add(element.getCondition() == null ? "null" : element.getCondition().toString());
-        result.add(element.getPresenceCondition().toString());
+        if (null != element.getCondition()) {
+            StringBuffer formula = new StringBuffer();
+            element.getCondition().toString(formula);
+            result.add(formula.toString());
+        } else {
+            result.add("null");
+        }
+//        result.add(element.getCondition() == null ? "null" : element.getCondition().toString());
+        StringBuffer formula = new StringBuffer();
+        element.getPresenceCondition().toString(formula);
+//        result.add(element.getPresenceCondition().toString());
+        result.add(formula.toString());
         result.add(typeText);
         
         result.add(element.getNestedElementCount() + "");
