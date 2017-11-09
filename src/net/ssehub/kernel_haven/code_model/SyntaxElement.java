@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.FormulaCache;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
 
@@ -189,6 +190,17 @@ public class SyntaxElement implements CodeElement {
     @Override
     public List<String> serializeCsv() {
         return SyntaxElementCsvUtil.elementToCsv(this);
+    }
+    
+    /**
+     * Serializes this element, like {@link #serializeCsv()}, but uses a {@link FormulaCache} to reduce the overhead
+     * while serializing formulas of this element.
+     * TODO SE: @Adam I think a visitor would be much more beautiful.
+     * @param cache The formula cache to cache the serialized formulas.
+     * @return The CSV parts representing this element.
+     */
+    public List<String> serializeCsv(FormulaCache cache) {
+        return SyntaxElementCsvUtil.elementToCsv(this, cache);
     }
     
     /**
