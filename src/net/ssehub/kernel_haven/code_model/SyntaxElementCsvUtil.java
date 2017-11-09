@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.FormulaCache;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
@@ -155,6 +156,48 @@ public class SyntaxElementCsvUtil {
         element.getPresenceCondition().toString(formula);
 //        result.add(element.getPresenceCondition().toString());
         result.add(formula.toString());
+        result.add(typeText);
+        
+        result.add(element.getNestedElementCount() + "");
+        for (int i = 0; i < element.getNestedElementCount(); i++) {
+            result.add(element.getRelation(i));
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Converts a syntax element into CSV.
+     * 
+     * @param element The element to convert.
+     * @param cache A {@link FormulaCache} which may be used to cache already serialized formulas.
+     * @return The CSV.
+     */
+    public static List<String> elementToCsv(SyntaxElement element, FormulaCache cache) {
+        List<String> result = new ArrayList<>(7);
+        
+        String typeText;
+        ISyntaxElementType type = element.getType();
+        if (type instanceof LiteralSyntaxElement) {
+            typeText = "Literal: " + ((LiteralSyntaxElement) type).getContent();
+        } else if (type instanceof ErrorSyntaxElement) {
+            typeText = "Error: " + ((ErrorSyntaxElement) type).getMessage();
+        } else if (type instanceof SyntaxElementTypes) {
+            typeText = type.toString();
+        } else {
+            // TODO: error handling
+            typeText = "Error: Unknown type found in AST";
+        }
+        
+        result.add(element.getLineStart() + "");
+        result.add(element.getLineEnd() + "");
+        result.add(element.getSourceFile().getPath());
+        if (null != element.getCondition()) {
+            result.add(cache.getSerializedFormula(element.getCondition()));
+        } else {
+            result.add("null");
+        }
+        result.add(cache.getSerializedFormula(element.getPresenceCondition()));
         result.add(typeText);
         
         result.add(element.getNestedElementCount() + "");
