@@ -170,7 +170,7 @@ public class SyntaxElementCsvUtil {
      * Converts a syntax element into CSV.
      * 
      * @param element The element to convert.
-     * @param cache A {@link FormulaCache} which may be used to cache already serialized formulas.
+     * @param cache A {@link FormulaCache} which may be used to cache already serialized presence conditions (formulas).
      * @return The CSV.
      */
     public static List<String> elementToCsv(SyntaxElement element, FormulaCache cache) {
@@ -193,7 +193,9 @@ public class SyntaxElementCsvUtil {
         result.add(element.getLineEnd() + "");
         result.add(element.getSourceFile().getPath());
         if (null != element.getCondition()) {
-            result.add(cache.getSerializedFormula(element.getCondition()));
+            StringBuffer formula = new StringBuffer();
+            element.getCondition().toString(formula);
+            result.add(formula.toString());
         } else {
             result.add("null");
         }
