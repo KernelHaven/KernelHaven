@@ -126,44 +126,7 @@ public class SyntaxElementCsvUtil {
      * @return The CSV.
      */
     public static List<String> elementToCsv(SyntaxElement element) {
-        List<String> result = new ArrayList<>(7);
-        
-        String typeText;
-        ISyntaxElementType type = element.getType();
-        if (type instanceof LiteralSyntaxElement) {
-            typeText = "Literal: " + ((LiteralSyntaxElement) type).getContent();
-        } else if (type instanceof ErrorSyntaxElement) {
-            typeText = "Error: " + ((ErrorSyntaxElement) type).getMessage();
-        } else if (type instanceof SyntaxElementTypes) {
-            typeText = type.toString();
-        } else {
-            // TODO: error handling
-            typeText = "Error: Unknown type found in AST";
-        }
-        
-        result.add(element.getLineStart() + "");
-        result.add(element.getLineEnd() + "");
-        result.add(element.getSourceFile().getPath());
-        if (null != element.getCondition()) {
-            StringBuffer formula = new StringBuffer();
-            element.getCondition().toString(formula);
-            result.add(formula.toString());
-        } else {
-            result.add("null");
-        }
-//        result.add(element.getCondition() == null ? "null" : element.getCondition().toString());
-        StringBuffer formula = new StringBuffer();
-        element.getPresenceCondition().toString(formula);
-//        result.add(element.getPresenceCondition().toString());
-        result.add(formula.toString());
-        result.add(typeText);
-        
-        result.add(element.getNestedElementCount() + "");
-        for (int i = 0; i < element.getNestedElementCount(); i++) {
-            result.add(element.getRelation(i));
-        }
-        
-        return result;
+        return elementToCsv(element, null);
     }
     
     /**
@@ -171,6 +134,8 @@ public class SyntaxElementCsvUtil {
      * 
      * @param element The element to convert.
      * @param cache A {@link FormulaCache} which may be used to cache already serialized presence conditions (formulas).
+     *      May be <code>null</code>.
+     * 
      * @return The CSV.
      */
     public static List<String> elementToCsv(SyntaxElement element, FormulaCache cache) {
@@ -192,6 +157,8 @@ public class SyntaxElementCsvUtil {
         result.add(element.getLineStart() + "");
         result.add(element.getLineEnd() + "");
         result.add(element.getSourceFile().getPath());
+        
+//      result.add(element.getCondition() == null ? "null" : element.getCondition().toString());
         if (null != element.getCondition()) {
             StringBuffer formula = new StringBuffer();
             element.getCondition().toString(formula);
@@ -199,7 +166,17 @@ public class SyntaxElementCsvUtil {
         } else {
             result.add("null");
         }
-        result.add(cache.getSerializedFormula(element.getPresenceCondition()));
+        
+//        result.add(element.getPresenceCondition().toString());
+        if (cache != null) {
+            result.add(cache.getSerializedFormula(element.getPresenceCondition()));
+        } else {
+            StringBuffer formula = new StringBuffer();
+            element.getPresenceCondition().toString(formula);
+            result.add(formula.toString());
+        }
+        
+        
         result.add(typeText);
         
         result.add(element.getNestedElementCount() + "");
