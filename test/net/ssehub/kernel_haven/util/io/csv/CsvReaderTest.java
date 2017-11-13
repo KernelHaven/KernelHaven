@@ -178,6 +178,7 @@ public class CsvReaderTest {
             assertThat(reader.readNextRow(), is(new String[] {"1", "2", "3"}));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b", "c"}));
             assertThat(reader.readNextRow(), is(new String[] {"x", "y", "z"}));
+            assertThat(reader.readNextRow(), nullValue());
         }
     }
     
@@ -193,6 +194,110 @@ public class CsvReaderTest {
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
             assertThat(reader.readNextRow(), is(new String[] {"1", "2", "3\r"}));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b\r\nb", "c"}));
+            assertThat(reader.readNextRow(), nullValue());
+        }
+    }
+    
+    /**
+     * Tests reading data with escaped fields. This tests whether an escaped quote in front of a delimiter is handled
+     * correctly.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testEscapeQuotesBeforeDelimiter() throws IOException {
+        String csv = "a;\"b\"\";\";c";
+        
+        try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.readNextRow(), is(new String[] {"a", "b\";", "c"}));
+            assertThat(reader.readNextRow(), nullValue());
+        }
+    }
+    
+    /**
+     * Tests reading data with escaped fields. This tests whether an escaped quote after of a delimiter is handled
+     * correctly.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testEscapeQuotesAfterDelimiter() throws IOException {
+        String csv = "a;\"b;\"\"b\";c";
+        
+        try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.readNextRow(), is(new String[] {"a", "b;\"b", "c"}));
+            assertThat(reader.readNextRow(), nullValue());
+        }
+    }
+    
+    /**
+     * Tests reading data with escaped fields. This tests whether an escaped quote after of a delimiter at the end of
+     * a field is handled correctly.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testEscapeQuotesAfterDelimiterAtEndOfField() throws IOException {
+        String csv = "a;\"b;\"\"\";c";
+        
+        try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.readNextRow(), is(new String[] {"a", "b;\"", "c"}));
+            assertThat(reader.readNextRow(), nullValue());
+        }
+    }
+    
+    /**
+     * Tests reading data with escaped fields. This tests whether an escaped quote after and before a delimiter is
+     * handled correctly.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testEscapeQuotesAfterAndBeforeDelimiter() throws IOException {
+        String csv = "a;\"b\"\";\"\"b\";c";
+        
+        try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.readNextRow(), is(new String[] {"a", "b\";\"b", "c"}));
+            assertThat(reader.readNextRow(), nullValue());
+        }
+    }
+    
+    /**
+     * Tests reading data with escaped fields. This test case derived from a bug that was found with real-world data.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testDifficultEscape() throws IOException {
+        String csv = "net.ssehub.kernel_haven.code_model.SyntaxElement;0;34;32;arch/x86/include/asm/alternative.h;1;1;"
+                + "StringLit;1;Value\nnet.ssehub.kernel_haven.code_model.SyntaxElement;1;34;32;arch/x86/include/asm/"
+                + "alternative.h;1;1;\"Literal: \"\";\"\"\";0\n";
+        
+        try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.readNextRow(), is(new String[] {
+                "net.ssehub.kernel_haven.code_model.SyntaxElement",
+                "0",
+                "34",
+                "32",
+                "arch/x86/include/asm/alternative.h",
+                "1",
+                "1",
+                "StringLit",
+                "1",
+                "Value"
+            }));
+            assertThat(reader.readNextRow(), is(new String[] {
+                "net.ssehub.kernel_haven.code_model.SyntaxElement",
+                "1",
+                "34",
+                "32",
+                "arch/x86/include/asm/alternative.h",
+                "1",
+                "1",
+                "Literal: \";\"",
+                "0"
+            }));
+            assertThat(reader.readNextRow(), nullValue());
         }
     }
 

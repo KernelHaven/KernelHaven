@@ -154,6 +154,11 @@ public class CsvReader implements ITableReader {
         // the end " must be the last character of a field
         boolean inEscaped = false;
         
+        // only relevant if inEscaped = true
+        // whether the last read character was a "
+        // used to detect the edge case that an escaped " is in front of a delimiter (e.g. "";  )
+        boolean wasQuote = false;
+        
         // contains characters of the current field
         // new characters are added until a (unescaped) separator is found
         // when a (unescaped) separator is found, the contents of this contain the previous field
@@ -164,6 +169,11 @@ public class CsvReader implements ITableReader {
             char c = (char) read();
             if (isEnd) {
                 break;
+            }
+            
+            if (c != '"') {
+                // wasQuote is only relevant to detect double quotes ("")
+                wasQuote = false;
             }
             
             if (c == separator && !inEscaped) {
@@ -178,14 +188,21 @@ public class CsvReader implements ITableReader {
                     // we found a " at the beginning of a field -> the field is escaped
                     inEscaped = true;
                     
-                } else if (inEscaped) {
+                } else if (inEscaped && !wasQuote) {
                     // check if we are at the end of a field, by peeking at the next character
                     int peek = peek();
                     if (peek == -1 || peek == separator || peek == '\n' || peek == '\r') {
                         // we found a " at the end of a field -> escaping ended
                         inEscaped = false;
                         // the next iteration will read() the end of field, so we don't have to do anything
+                        
+                    } else {
+                        // we just found a " in the middle of an escaped field
+                        wasQuote = true;
                     }
+                } else if (inEscaped) {
+                    // we are the " after another "
+                    wasQuote = false;
                 }
                 
             } else if ((c == '\n' || c == '\r') && !inEscaped) {
