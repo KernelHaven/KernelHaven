@@ -154,8 +154,8 @@ public class SyntaxElementCsvUtil {
             typeText = "Error: Unknown type found in AST";
         }
         
-        result.add(element.getLineStart() + "");
-        result.add(element.getLineEnd() + "");
+        result.add(Integer.toString(element.getLineStart()));
+        result.add(Integer.toString(element.getLineEnd()));
         result.add(element.getSourceFile().getPath());
         
 //      result.add(element.getCondition() == null ? "null" : element.getCondition().toString());
@@ -179,7 +179,7 @@ public class SyntaxElementCsvUtil {
         
         result.add(typeText);
         
-        result.add(element.getNestedElementCount() + "");
+        result.add(Integer.toString(element.getNestedElementCount()));
         for (int i = 0; i < element.getNestedElementCount(); i++) {
             result.add(element.getRelation(i));
         }

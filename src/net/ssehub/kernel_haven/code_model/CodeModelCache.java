@@ -143,7 +143,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
         
         String[] csvParts = new String[serialized.size() + 2];
         csvParts[0] = element.getClass().getName();
-        csvParts[1] = level + "";
+        csvParts[1] = Integer.toString(level);
         int i = 2;
         for (String part : serialized) {
             csvParts[i++] = part;

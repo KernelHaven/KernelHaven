@@ -108,8 +108,8 @@ public class CodeBlock implements CodeElement {
     public List<String> serializeCsv() {
         List<String> result = new ArrayList<>(5);
         
-        result.add(lineStart + "");
-        result.add(lineEnd + "");
+        result.add(Integer.toString(lineStart));
+        result.add(Integer.toString(lineEnd));
         result.add(sourceFile.getPath());
         result.add(condition == null ? "null" : condition.toString());
         result.add(presenceCondition.toString());
