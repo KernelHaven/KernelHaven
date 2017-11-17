@@ -144,10 +144,6 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         
             AnalysisComponent<?> mainComponent = createPipeline();
             
-            vmProvider.start();
-            bmProvider.start();
-            cmProvider.start();
-            
             vmStarter.start();
             bmStarter.start();
             cmStarter.start();
