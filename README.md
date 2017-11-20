@@ -103,6 +103,9 @@ also can have their own configuration options.
 * [The user documentation](https://github.com/KernelHaven/Documentation/raw/master/UserDocumentation/KernelHaven%20User%20Documentation.pdf), for users who want to run analyzes with the infrastructure.
 * [The developer documentation](https://github.com/KernelHaven/Documentation/raw/master/DeveloperDocumentation/Arbeit.pdf), for developers who want to write new extractors and analyzes.
 
+## Video Tutorial ##
+[![KernelHaven - ICSE 2018 Demonstration Video](https://img.youtube.com/vi/IbNc-H1NoZU/0.jpg)](https://www.youtube.com/watch?v=IbNc-H1NoZU)
+
 ## Acknowledgments
 
 This work is partially supported by the ITEA3 project [REVaMP<sup>2</sup>](https://itea3.org/project/revamp2.html), funded by the BMBF (German Ministry of Research and Education) under grant 01IS16042H.
