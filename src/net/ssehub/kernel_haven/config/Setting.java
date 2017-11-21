@@ -95,8 +95,8 @@ public class Setting<T> {
      * @param key The key in the properties file.
      * @param type The type of setting. The generic should be set accordingly. Based on this type, checks are done at
      *      register time (and possibly exceptions thrown).
-     * @param mandatory Whether this setting is mandatory. If this is <code>true</code>>, the properties file does not
-     *      contain this key and the default value is <code>null</code>, then an exception is thrown when the setting
+     * @param mandatory Whether this setting is mandatory. If this is <code>true</code>, the properties file does not
+     *      contain this key, and the default value is <code>null</code>, then an exception is thrown when the setting
      *      is registered.
      * @param defaultValue The default value to use if the key is not specified in the properties. May be
      *      <code>null</code>, in which case no default value is used.
