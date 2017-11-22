@@ -251,7 +251,7 @@ public class Configuration {
         
         if (!(setting instanceof EnumSetting)) {
             throw new SetUpException("Setting with key " + key
-                    + " has tybe ENUM but is not an instance of EnumSetting");
+                    + " has type ENUM but is not an instance of EnumSetting");
         }
         
         EnumSetting<?> enumSetting = (EnumSetting<?>) setting;
