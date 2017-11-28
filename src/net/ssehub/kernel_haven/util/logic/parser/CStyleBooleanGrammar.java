@@ -67,7 +67,8 @@ public class CStyleBooleanGrammar extends Grammar<Formula> {
 
     @Override
     public boolean isWhitespaceChar(char[] str, int it) {
-        return str[it] == ' ';
+        return Character.isWhitespace(str[it]);
+//        return str[it] == ' ' || ;
     }
 
     @Override
