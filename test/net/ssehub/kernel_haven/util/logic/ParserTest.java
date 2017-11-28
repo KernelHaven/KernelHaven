@@ -311,6 +311,29 @@ public class ParserTest {
     }
     
     /**
+     * Tests whether additional whitespace characters (e.g. \n) are treated correctly.
+     * 
+     * @throws ExpressionFormatException unwanted.
+     */
+    @Test
+    public void testWhitespace() throws ExpressionFormatException {
+        VariableCache cache = new VariableCache();
+        Parser<Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache));
+        String str = "(A      &&\n B && \r\n (!A \t\t || B))";
+        
+        Formula f = parser.parse(str);
+        
+        Formula[] t1 = assertConjunction(f);
+        assertVariable(t1[0], "A");
+        Formula[] t2 = assertConjunction(t1[1]);
+        assertVariable(t2[0], "B");
+        Formula[] t3 = assertDisjunction(t2[1]);
+        assertVariable(assertNegation(t3[0]), "A");
+        assertVariable(t3[1], "B");
+        Assert.assertEquals(2, cache.getNumVariables());
+    }
+    
+    /**
      * Checks if the given formula is a variable with the given name.
      * 
      * @param formula The formula that must be a variable.
