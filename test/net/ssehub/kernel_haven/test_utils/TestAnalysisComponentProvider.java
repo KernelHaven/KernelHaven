@@ -32,6 +32,23 @@ public class TestAnalysisComponentProvider<T> extends AnalysisComponent<T> {
         }
         this.data.end();
     }
+    
+    /**
+     * Creates a new instance with the given data.
+     * 
+     * @param data The data that this component should "create" and pass to the next component.
+     * 
+     * @throws SetUpException Shouldn't happen.
+     */
+    @SafeVarargs
+    public TestAnalysisComponentProvider(T... data) throws SetUpException {
+        super(new TestConfiguration(new Properties()));
+        this.data = new BlockingQueue<>();
+        for (T t : data) {
+            this.data.add(t);
+        }
+        this.data.end();
+    }
         /**
      * Creates a new instance with the given data.
      * 
