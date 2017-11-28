@@ -470,5 +470,37 @@ public class Util {
         
         return result;
     }
+    
+    /**
+     * Checks if the given file is nested inside the given directory. This method creates the canonical form of the
+     * given input files.
+     * 
+     * @param dir The directory that the other file may be nested in.
+     * @param file The file that should be checked.
+     * 
+     * @return <code>true</code> if, <ul>
+     *      <li><code>file</code> is equal to <code>dir</code></li>
+     *      <li><code>file</code> is a file directly in <code>dir</code></li>
+     *      <li><code>file</code> is a file in any sub-directory (fully recursive) of <code>dir</code></li>
+     * </ul>
+     * 
+     * @throws IOException If retrieving the canonical file form is not possible. See {@link File#getCanonicalFile()}.
+     */
+    public static boolean isNestedInDirectory(File dir, File file) throws IOException {
+        dir = dir.getCanonicalFile();
+        file = file.getCanonicalFile();
+        
+        boolean result = dir.equals(file);
+        
+        if (!result) {
+            File parent = file.getParentFile();
+            
+            if (parent != null) {
+                result = isNestedInDirectory(dir, parent);
+            }
+        }
+        
+        return result;
+    }
 
 }

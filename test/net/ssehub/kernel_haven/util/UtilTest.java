@@ -384,11 +384,64 @@ public class UtilTest {
             
         } finally {
             // make sure to always set properties back to original value
-            System.out.println(originalName);
-            System.out.println(originalArch);
             System.setProperty("os.name", originalName);
             System.setProperty("os.arch", originalArch);
         }
+    }
+    
+    /**
+     * Tests that {@link Util#isNestedInDirectory(File, File)} returns true if the same file is passed to it.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testIsNestedInDirectorySameFile() throws IOException {
+        File dir = new File("some/dir");
+        File file = new File("some/dir");
+        
+        // same object
+        assertThat(Util.isNestedInDirectory(dir, dir), is(true));
+        // different objects, same content
+        assertThat(Util.isNestedInDirectory(dir, file), is(true));
+        // different content, but same dir
+        assertThat(Util.isNestedInDirectory(dir, new File("some/dir/sub/..")), is(true));
+    }
+    
+    /**
+     * Tests that {@link Util#isNestedInDirectory(File, File)} returns false is non-nested files are passed to it.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testIsNestedInDirectoryFalse() throws IOException {
+        assertThat(Util.isNestedInDirectory(new File("some/dir/"), new File("other/dir/file")), is(false));
+        assertThat(Util.isNestedInDirectory(new File("some/dir/"), new File("some/dir/..")), is(false));
+        assertThat(Util.isNestedInDirectory(new File("some/dir/"), new File("some/")), is(false));
+    }
+    
+    /**
+     * Tests that {@link Util#isNestedInDirectory(File, File)} returns true for files that are directly nested in the
+     * given directory.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testIsNestedInDirectoryDirectly() throws IOException {
+        assertThat(Util.isNestedInDirectory(new File("some/dir/"), new File("some/dir/file")), is(true));
+        assertThat(Util.isNestedInDirectory(new File("some/dir/"), new File("some/dir/other_file.txt")), is(true));
+    }
+    
+    /**
+     * Tests that {@link Util#isNestedInDirectory(File, File)} returns true for files that are nested in
+     * sub-directories.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testIsNestedInDirectorySubDirectories() throws IOException {
+        assertThat(Util.isNestedInDirectory(new File("some/dir/"), new File("some/dir/another/file")), is(true));
+        assertThat(Util.isNestedInDirectory(new File("some/dir/"), new File("some/dir/a/b/c/other_file.txt")),
+                is(true));
     }
     
 }
