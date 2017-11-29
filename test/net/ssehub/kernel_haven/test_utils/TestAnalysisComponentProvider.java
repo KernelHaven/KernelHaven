@@ -61,7 +61,7 @@ public class TestAnalysisComponentProvider<T> extends AnalysisComponent<T> {
         this.data = new BlockingQueue<>();
         this.data.add(data);
         this.data.end();
-    }
+    }
 
     @Override
     protected void execute() {
