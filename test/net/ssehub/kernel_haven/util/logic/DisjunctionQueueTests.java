@@ -20,14 +20,14 @@ public class DisjunctionQueueTests {
         // 1st test with constant values
         queue.add(True.INSTANCE);
         queue.add(False.INSTANCE);
-        Formula f = queue.getDisjunction(null);
+        Formula f = queue.getDisjunction();
         Assert.assertEquals(new Disjunction(True.INSTANCE, False.INSTANCE), f);
         
         // 2nd test with variable
         Variable varA = new Variable("A");
         queue.add(varA);
         queue.add(varA);
-        f = queue.getDisjunction(null);
+        f = queue.getDisjunction();
         Assert.assertEquals(new Disjunction(varA, varA), f);
     }
     
@@ -41,13 +41,13 @@ public class DisjunctionQueueTests {
         // 1st test: Add true first
         queue.add(True.INSTANCE);
         queue.add(False.INSTANCE);
-        Formula f = queue.getDisjunction(null);
+        Formula f = queue.getDisjunction();
         Assert.assertEquals(True.INSTANCE, f);
         
         // 2nd test: Add true last
         queue.add(False.INSTANCE);
         queue.add(True.INSTANCE);
-        f = queue.getDisjunction(null);
+        f = queue.getDisjunction();
         Assert.assertEquals(True.INSTANCE, f);
     }
     
@@ -61,7 +61,25 @@ public class DisjunctionQueueTests {
         Variable varA = new Variable("A");
         queue.add(varA);
         queue.add(varA);
-        Formula f = queue.getDisjunction(null);
+        Formula f = queue.getDisjunction();
         Assert.assertEquals(varA, f);
+    }
+    
+    /**
+     * Tests if a simplifier can be used.
+     */
+    @Test
+    public void  testUseSimplifier() {
+        /* 
+         * A simplifier mock (will change the result to a fixed expression),
+         * not a real simplifier but sufficient for testing
+         */
+        Variable varB = new Variable("B");
+        DisjunctionQueue queue = new DisjunctionQueue(f -> varB);
+        
+        Variable varA = new Variable("A");
+        queue.add(varA);
+        Formula f = queue.getDisjunction();
+        Assert.assertSame(varB, f);
     }
 }

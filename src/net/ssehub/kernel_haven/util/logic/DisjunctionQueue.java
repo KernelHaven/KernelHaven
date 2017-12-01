@@ -85,6 +85,17 @@ public class DisjunctionQueue {
     /**
      * Creates one disjunction term based on the elements passed to the queue. This will also clear all contents from
      * this queue.
+     * @return The disjunction, maybe {@link True} if one of the passed elements was {@link True},
+     *     never be <tt>null</tt>.
+     * @see #getDisjunction(String)
+     */
+    public Formula getDisjunction() {
+        return getDisjunction(null);
+    }
+    
+    /**
+     * Creates one disjunction term based on the elements passed to the queue. This will also clear all contents from
+     * this queue.
      * @param varName Optional: The name of the variable for which the disjunction is currently be created, this is only
      *     used to create an error log in case of an error.
      * @return The disjunction, maybe {@link True} if one of the passed elements was {@link True},
