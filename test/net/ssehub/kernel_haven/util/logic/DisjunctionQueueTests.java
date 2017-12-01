@@ -1,7 +1,13 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import net.ssehub.kernel_haven.util.Logger;
 
 /**
  * Tests the {@link DisjunctionQueue}.
@@ -81,5 +87,23 @@ public class DisjunctionQueueTests {
         queue.add(varA);
         Formula f = queue.getDisjunction();
         Assert.assertSame(varB, f);
+    }
+    
+    /**
+     * Tests that the {@link DisjunctionQueue} produces no error log in case of correct optimizations.
+     * Based on detect bug.
+     */
+    @Test
+    public void testNoErrorLogWhenSimplifyingTrue() {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        Logger.init(buffer);
+        
+        DisjunctionQueue queue = new DisjunctionQueue(true);
+        queue.add(new Variable("X"));
+        queue.add(True.INSTANCE);
+        queue.getDisjunction("Test Case");
+        
+        String log = buffer.toString();
+        Assert.assertTrue("Error log produced even if there was no error: " + log, log.isEmpty());
     }
 }

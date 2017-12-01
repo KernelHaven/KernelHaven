@@ -120,14 +120,14 @@ public class DisjunctionQueue {
             if (null != simplifier) {
                 result = simplifier.apply(result);
             }
-        }
-        
-        // Check if all elements have been processed
-        if (!queue.isEmpty()) {
-            if (null != varName) {
-                Logger.get().logError("Error while creating disjunction for conditions of " + varName);                
-            } else {
-                Logger.get().logError("Error while creating disjunction.");
+            
+            // Check if all elements have been processed
+            if (!queue.isEmpty()) {
+                if (null != varName) {
+                    Logger.get().logError("Error while creating disjunction for conditions of " + varName);
+                } else {
+                    Logger.get().logError("Error while creating disjunction.");
+                }
             }
         }
         
