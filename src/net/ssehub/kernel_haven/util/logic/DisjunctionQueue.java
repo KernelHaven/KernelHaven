@@ -125,9 +125,9 @@ public class DisjunctionQueue {
         // Check if all elements have been processed
         if (!queue.isEmpty()) {
             if (null != varName) {
-                Logger.get().logError("Error while aggregating conditions for " + varName);                
+                Logger.get().logError("Error while creating disjunction for conditions of " + varName);                
             } else {
-                Logger.get().logError("Error while aggregating conditions.");
+                Logger.get().logError("Error while creating disjunction.");
             }
         }
         
