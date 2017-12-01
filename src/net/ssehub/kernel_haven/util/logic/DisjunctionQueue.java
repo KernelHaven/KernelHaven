@@ -105,7 +105,7 @@ public class DisjunctionQueue {
         Formula result;
         
         // Create disjunction of all elements
-        if (isTrue) {
+        if (isTrue || queue.isEmpty()) {
             result = True.INSTANCE;
         } else {
             // Try to create a balanced, flat tree
