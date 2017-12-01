@@ -63,22 +63,24 @@ public class DisjunctionQueue {
     
     /**
      * Adds a new formula to the queue.
-     * @param condition The formula to add, should not be <tt>null</tt>.
+     * @param condition The formula to add (<tt>null</tt> will be ignored).
      */
     public void add(Formula condition) {
-        if (simplify) {
-            // Default case: Avoid doubled formulas and handle TRUE/FALSE literals
-            if (!isTrue && !conditions.contains(condition) && !(condition instanceof False)) {
-                if (condition instanceof True) {
-                    isTrue = true;
-                } else {
-                    conditions.add(condition);
-                    queue.add(condition);
+        if (null != condition) {
+            if (simplify) {
+                // Default case: Avoid doubled formulas and handle TRUE/FALSE literals
+                if (!isTrue && !conditions.contains(condition) && !(condition instanceof False)) {
+                    if (condition instanceof True) {
+                        isTrue = true;
+                    } else {
+                        conditions.add(condition);
+                        queue.add(condition);
+                    }
                 }
+            } else {
+                // No optimization
+                queue.add(condition);
             }
-        } else {
-            // No optimization
-            queue.add(condition);
         }
     }
     
