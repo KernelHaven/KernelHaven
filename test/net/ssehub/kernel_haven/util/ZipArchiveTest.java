@@ -6,19 +6,28 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Tests the {@link ZipArchive} class. If the test archive "archive.zip" is destroyed, replace it with
- * "archive_original.zip".
+ * Tests the {@link ZipArchive} class.
  *
  * @author Adam
  */
 public class ZipArchiveTest {
 
-
     private static final File TESTDATA = new File("testdata/zipArchive");
+    
+    /**
+     * In case the test file archive.zip is destroyed, replace it with archive_original.zip.
+     * 
+     * @throws IOException unwanted. 
+     */
+    @AfterClass
+    public static void cleanUp() throws IOException {
+        Util.copyFile(new File(TESTDATA, "archive_original.zip"), new File(TESTDATA, "archive.zip"));
+    }
     
     /**
      * Tests whether a new zip archive is correctly created.
