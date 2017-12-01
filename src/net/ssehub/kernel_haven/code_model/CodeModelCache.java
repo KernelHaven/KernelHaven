@@ -170,8 +170,9 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
         // always try uncompressed first, since its faster
         boolean compressed = false;
         File cacheFile = getCacheFile(path);
-        if (!cacheFile.exists()) {
-            cacheFile = getCompressedCacheFile(path);
+        File compressedCacheFile = getCompressedCacheFile(path);
+        if (!cacheFile.exists() && compressedCacheFile.isFile()) {
+            cacheFile = compressedCacheFile;
             compressed = true;
         }
         
