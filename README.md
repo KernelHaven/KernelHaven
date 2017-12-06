@@ -17,20 +17,147 @@ These archives contain the infrastructure as well as all public [plug-ins](https
 ## Plug-ins
 
 The following table lists commonly used plug-ins for KernelHaven. They mostly focus on analysing the Linux Kernel.
-
-| Plug-in | Type | License | Download | Status |
-|---------|------|---------|----------|--------|
-|[KconfigReaderExtractor](https://github.com/KernelHaven/KconfigReaderExtractor)| **VariabilityModel-Extractor:** Kconfig | [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_KconfigReaderExtractor/lastSuccessfulBuild/artifact/build/jar/KconfigReaderExtractor.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_KconfigReaderExtractor/lastSuccessfulBuild/artifact/build/jar/KconfigReaderExtractor_withsource.jar) | ![Build Status of KconfigReaderExtractor](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_KconfigReaderExtractor) |
-|[UndertakerExtractor](https://github.com/KernelHaven/UndertakerExtractor)| **CodeModel-Extractor:** `*.c, *.h, *.S` | [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor_withsource.jar) | ![Build Status of KernelHaven_UndertakerExtractor](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_UndertakerExtractor) |
-|[TypeChefExtractor](https://github.com/KernelHaven/TypeChefExtractor)| **CodeModel-Extractor:** `*.c, *.h, *.S` | [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor_withsource.jar) | ![Build Status of TypeChefExtractor](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_TypeChefExtractor) |
-|[srcMLExtractor](https://github.com/KernelHaven/srcMLExtractor)| **CodeModel-Extractor:** `*.c` | [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_SrcMlExtractor/lastSuccessfulBuild/artifact/build/jar/SrcMLExtractor.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_SrcMlExtractor/lastSuccessfulBuild/artifact/build/jar/SrcMLExtractor_withsource.jar) | ![Build Status of srcMLExtractor](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_SrcMlExtractor) |
-|[KbuildMinerExtractor](https://github.com/KernelHaven/KbuildMinerExtractor)| **BuildModel-Extractor:** Kbuild (`Kbuild*, Makefile*`)| [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_KbuildMinerExtractor/lastSuccessfulBuild/artifact/build/jar/KbuildminerExtractor.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_KbuildMinerExtractor/lastSuccessfulBuild/artifact/build/jar/KbuildminerExtractor_withsource.jar) | ![Build Status of KbuildMinerExtractor](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_KbuildMinerExtractor) |
-|[CnfUtils](https://github.com/KernelHaven/CnfUtils)| Utilities for analysis plug-ins| [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_CnfUtils/lastSuccessfulBuild/artifact/build/jar/CnfUtils.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_CnfUtils/lastSuccessfulBuild/artifact/build/jar/CnfUtils_withsource.jar) | ![Build Status of CnfUtils](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_CnfUtils) |
-|[IOUtils](https://github.com/KernelHaven/IOUtils)| Readers and Writers for extractors and analysis plug-ins| [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils_withsource.jar) | ![Build Status of IOUtils](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_IOUtils) |
-|[NonBooleanUtils](https://github.com/KernelHaven/NonBooleanUtils)| Utilities to handle models, which are not pure Boolean (Pseuo-SAT)| [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils_withsource.jar) | ![Build Status of NonBooleanUtils](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_NonBooleanUtils) |
-|[UnDeadAnalyzer](https://github.com/KernelHaven/UnDeadAnalyzer)| **Analysis:** Detection of dead code and unused variables of the variability model | [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/defaultanalyses.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/defaultanalyses_withsource.jar) | ![Build Status of UnDeadAnalyzer](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_UnDeadAnalyzer) |
-|[FeatureEffectAnalyzer](https://github.com/KernelHaven/FeatureEffectAnalysis)| **Analysis:** Detection of presence conditions and feature effects | [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis_withsource.jar) | ![Build Status of FeatureEffectAnalyzer](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_FeatureEffectAnalysis) |
-|[MetricHaven](https://github.com/KernelHaven/MetricHaven)| **Analysis:** Metric Infrastructure for SPL-Metrics | [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0.html) | [JAR](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven.jar), [JAR with sources](http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven_withsource.jar) | ![Build Status of MetricHaven](http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_MetricHaven) |
+<table style="width:100%">
+  <tr>
+    <th>Plug-in</th>
+    <th>Type</th>
+    <th>License</th>
+    <th>Download</th>
+    <th>Status</th>
+  </tr>
+  <!-- KconfigReaderExtractor -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/KconfigReaderExtractor">KconfigReaderExtractor</a></td>
+    <td><b>VariabilityModel-Extractor:</b> Kconfig</td>
+    <td><a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a></td>
+    <td><ul>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_KconfigReaderExtractor/lastSuccessfulBuild/artifact/build/jar/KconfigReaderExtractor.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_KconfigReaderExtractor/lastSuccessfulBuild/artifact/build/jar/KconfigReaderExtractor_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_KconfigReaderExtractor" alt="Build Status of KconfigReaderExtractor"></td>
+  </tr>
+  <!-- UndertakerExtractor -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/UndertakerExtractor">UndertakerExtractor</a></td>
+    <td><b>CodeModel-Extractor:</b> <code>*.c, *.h, *.S</code></td>
+    <td><a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a></td>
+    <td><ul>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_UndertakerExtractor" alt="Build Status of UndertakerExtractor"></td>
+  </tr>
+  <!-- TypeChefExtractor -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/TypeChefExtractor">TypeChefExtractor</a></td>
+    <td><b>CodeModel-Extractor:</b> <code>*.c, *.h, *.S</code></td>
+    <td><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><ul>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_TypeChefExtractor" alt="Build Status of TypeChefExtractor"></td>
+  </tr>
+  <!-- srcMLExtractor -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/srcMLExtractor">srcMLExtractor</a></td>
+    <td><b>CodeModel-Extractor:</b> <code>*.c</code></td>
+    <td><a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a></td>
+    <td><ul>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_SrcMlExtractor/lastSuccessfulBuild/artifact/build/jar/SrcMLExtractor.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_SrcMlExtractor/lastSuccessfulBuild/artifact/build/jar/SrcMLExtractor_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_SrcMlExtractor" alt="Build Status of srcMLExtractor"></td>
+  </tr>
+  <!-- KbuildMinerExtractor -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/KbuildMinerExtractor">KbuildMinerExtractor</a></td>
+    <td><b>BuildModel-Extractor:</b> <code>Kbuild*, Makefile*</code></td>
+    <td><a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a></td>
+    <td><ul>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_KbuildMinerExtractor/lastSuccessfulBuild/artifact/build/jar/KbuildminerExtractor.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_KbuildMinerExtractor/lastSuccessfulBuild/artifact/build/jar/KbuildminerExtractor_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_KbuildMinerExtractor" alt="Build Status of KbuildMinerExtractor"></td>
+  </tr>
+  <!-- CnfUtils -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/CnfUtils">CnfUtils</a></td>
+    <td><b>Utilities:</b> SAT-Solver, CNF-Converter, Formula simplifiers, ...</td>
+    <td><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><ul>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_CnfUtils/lastSuccessfulBuild/artifact/build/jar/CnfUtils.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_CnfUtils/lastSuccessfulBuild/artifact/build/jar/CnfUtils_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_CnfUtils" alt="Build Status of CnfUtils"></td>
+  </tr>
+  <!-- IOUtils -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/IOUtils">IOUtils</a></td>
+    <td><b>Utilities:</b> Excel-readers and writers for extractors and analysis plug-ins</td>
+    <td><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><ul>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_IOUtils" alt="Build Status of IOUtils"></td>
+  </tr>
+  <!-- NonBooleanUtils -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/NonBooleanUtils">NonBooleanUtils</a></td>
+    <td><b>Utilities:</b> Utilities to handle models, which are not pure Boolean (Pseudo-SAT)</td>
+    <td><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><ul>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_NonBooleanUtils" alt="Build Status of NonBooleanUtils"></td>
+  </tr>
+  <!-- UnDeadAnalyzer -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/UnDeadAnalyzer">UnDeadAnalyzer</a></td>
+    <td><b>Analysis:</b> Detection of dead code and unused variables of the variability model</td>
+    <td><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><ul>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/defaultanalyses.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/defaultanalyses_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_UnDeadAnalyzer" alt="Build Status of UnDeadAnalyzer"></td>
+  </tr>
+  <!-- FeatureEffectAnalyzer -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/FeatureEffectAnalysis">FeatureEffectAnalyzer</a></td>
+    <td><b>Analysis:</b> Detection of presence conditions and feature effects</td>
+    <td><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><ul>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_FeatureEffectAnalysis" alt="Build Status of FeatureEffectAnalyzer"></td>
+  </tr>
+  <!-- MetricHaven -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/MetricHaven">MetricHaven</a></td>
+    <td><b>Analysis:</b> Metric Infrastructure for SPL-Metrics</td>
+    <td><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><ul>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_MetricHaven" alt="Build Status of MetricHaven"></td>
+  </tr>
+  <!-- Configuration Mismatches -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/ConfigurationMismatchAnalysis">Configuration Mismatches</a></td>
+    <td><b>Analysis:</b> Detection of Configuration Mismatches</td>
+    <td><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><ul>
+      <li><a href="">JAR</a></li>
+      <li><a href="">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_Configuration_Mismatches" alt="Build Status of Configuration Mismatches"></td>
+  </tr>
+</table>
 
 ## Setup
 
