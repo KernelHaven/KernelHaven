@@ -152,8 +152,8 @@ The following table lists commonly used plug-ins for KernelHaven. They mostly fo
     <td><b>Analysis:</b> Detection of Configuration Mismatches</td>
     <td><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
     <td><ul>
-      <li><a href="">JAR</a></li>
-      <li><a href="">JAR with sources</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis_withsource.jar">JAR with sources</a></li>
     </ul></td>
     <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_Configuration_Mismatches" alt="Build Status of Configuration Mismatches"></td>
   </tr>
