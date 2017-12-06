@@ -1,12 +1,10 @@
 package net.ssehub.kernel_haven;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.io.File;
 import java.io.IOException;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -116,7 +114,8 @@ public abstract class AbstractScenarioTest {
             throws Exception {
         // CHECKSTYLE:ON
         boolean success = Run.run(getPropertiesFile().getPath());
-        assertThat(success, is(true));
+        Assert.assertTrue(success);
+        //assertThat(success, is(true));
         
         checkOutputDirResult(outputDir);
         checkCacheDirResult(cacheDir);
