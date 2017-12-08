@@ -285,12 +285,11 @@ public class PipelineConfigurator {
      * @throws SetUpException If instantiating or executing the preparation class fails.
      */
     private void runPreparation() throws SetUpException {
-        // TODO: this is a temporary hack: implement this in a more sane way.
-        if (config.getValue(DefaultSettings.PREPARE_NON_BOOLEAN)) {
+        for (String className : config.getValue(DefaultSettings.PREPARATION_CLASSES)) {
             try {
                 @SuppressWarnings("unchecked")
-                Class<? extends IPreparation> prepartionClass = (Class<? extends IPreparation>)
-                        Class.forName("net.ssehub.kernel_haven.non_boolean.NonBooleanPreperation");
+                Class<? extends IPreparation> prepartionClass =
+                        (Class<? extends IPreparation>) Class.forName(className);
                 
                 IPreparation preparation = prepartionClass.newInstance();
                 preparation.run(config);

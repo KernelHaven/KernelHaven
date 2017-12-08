@@ -4,6 +4,7 @@ import static net.ssehub.kernel_haven.config.Setting.Type.BOOLEAN;
 import static net.ssehub.kernel_haven.config.Setting.Type.DIRECTORY;
 import static net.ssehub.kernel_haven.config.Setting.Type.INTEGER;
 import static net.ssehub.kernel_haven.config.Setting.Type.REGEX;
+import static net.ssehub.kernel_haven.config.Setting.Type.SETTING_LIST;
 import static net.ssehub.kernel_haven.config.Setting.Type.STRING;
 import static net.ssehub.kernel_haven.config.Setting.Type.STRING_LIST;
 
@@ -113,7 +114,7 @@ public class DefaultSettings {
      * Other
      */
     
-    public static final Setting<Boolean> PREPARE_NON_BOOLEAN = new Setting<>("prepare_non_boolean", BOOLEAN, true, "false", "Temporary setting, will change in the future.\nDefines whether a special preparation step should be done before starting extraction on the product line. This preparation does modifications to the source tree that replace all non-boolean conditions with a pure boolean supplement. This assumes that the project uses finite integer variables. The NonBooleanUtils plugin has to available if this setting is turned on.");
+    public static final Setting<List<String>> PREPARATION_CLASSES = new Setting<>("preparation.class", SETTING_LIST, false, null, "A list of fully qualified class names that defines which preparations to run. A preparation class has to implement IPreperation. The preparations defined here are executed in the defined order.");
     
     // CHECKSTYLE:ON
     /**
