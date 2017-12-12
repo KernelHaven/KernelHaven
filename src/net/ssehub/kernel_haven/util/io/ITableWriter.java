@@ -37,4 +37,14 @@ public interface ITableWriter extends Closeable {
      */
     public void writeRow(String... fields) throws IOException;
 
+    /**
+     * Optional possibility how to handle a row, which is intended to be an header.
+     * 
+     * @see #writeRow(String...)
+     * @param fields The field values to write. Not null. May be empty.
+     * @throws IOException If writing to the file fails.
+     */
+    public default void writeHeader(String... fields) throws IOException {
+        writeRow(fields);
+    }
 }

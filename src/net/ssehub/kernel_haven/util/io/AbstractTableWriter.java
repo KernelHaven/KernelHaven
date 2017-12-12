@@ -20,7 +20,7 @@ public abstract class AbstractTableWriter implements ITableWriter {
             initialized = true;
             if (TableRowMetadata.isTableRow(row.getClass())) {
                 metadata = new TableRowMetadata(row.getClass());
-                writeRow(metadata.getHeaders());
+                writeHeader(metadata.getHeaders());
             }
         }
         
