@@ -4,7 +4,7 @@ import java.io.IOException;
 
 /**
  * Implements {@link #writeRow(Object)}. Sub-classes don't have to worry about the annotation metadata, they only have
- * to implemenet {@link #writeRow(String...)}.
+ * to implement {@link #writeRow(String...)}.
  *
  * @author Adam
  */
