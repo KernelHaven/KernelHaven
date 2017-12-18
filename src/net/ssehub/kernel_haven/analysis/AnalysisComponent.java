@@ -49,7 +49,7 @@ public abstract class AnalysisComponent<O> {
      * 
      * @param logResults Whether to log results or not.
      */
-    public void setLogResults(boolean logResults) {
+    public final void setLogResults(boolean logResults) {
         this.logResults = logResults;
         if (logResults) {
             try {
@@ -62,9 +62,12 @@ public abstract class AnalysisComponent<O> {
     
     /**
      * Starts a new thread that executes this analysis component.
+     * Package visibility for {@link SplitComponent}.
      */
     synchronized void start() {
         Thread th = new Thread(() -> {
+            LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " starting");
+            
             try {
                 execute();
             } finally {
@@ -83,7 +86,7 @@ public abstract class AnalysisComponent<O> {
      * 
      * @return The next result. <code>null</code> if this analysis is done and does not produce any results anymore.
      */
-    public O getNextResult() {
+    public final O getNextResult() {
         synchronized (this) {
             if (!started) {
                 start();
@@ -97,12 +100,12 @@ public abstract class AnalysisComponent<O> {
      * 
      * @param result The result to pass to the next component. Must not be <code>null</code>.
      */
-    protected void addResult(O result) {
+    protected final void addResult(O result) {
         results.add(result);
         
         if (logResults) {
-//            LOGGER.logInfo("Analysis component " + getClass().getSimpleName()
-//                    + " intermediate result: " + result);
+            LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " intermediate result: " + result);
+            
             if (out != null) {
                 try {
                     out.writeRow(result);
@@ -116,7 +119,9 @@ public abstract class AnalysisComponent<O> {
     /**
      * Signal the next component that this component is done and will not produce any more results.
      */
-    private void done() {
+    private final void done() {
+        LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " done");
+        
         results.end();
         if (out != null) {
             try {

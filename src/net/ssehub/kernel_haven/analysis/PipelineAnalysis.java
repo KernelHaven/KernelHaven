@@ -144,6 +144,8 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         
             AnalysisComponent<?> mainComponent = createPipeline();
             
+            LOGGER.logDebug("Starting extractor starting components...");
+            
             vmStarter.start();
             bmStarter.start();
             cmStarter.start();
@@ -170,7 +172,10 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
                 pollAndWriteOutput(mainComponent);
             }
             
+            LOGGER.logDebug("Analysis components done");
+            
             try {
+                LOGGER.logDebug("Closing result collection");
                 resultCollection.close();
                 
                 for (File file : resultCollection.getFiles()) {
@@ -191,10 +196,14 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * @param component The component to read the output from.
      */
     private void pollAndWriteOutput(AnalysisComponent<?> component) {
+        LOGGER.logDebug("Starting and polling output of analysis component (" + component.getClass().getSimpleName()
+                + ")...");
+        
         try (ITableWriter writer = resultCollection.getWriter(component.getResultName())) {
             Object result;
             while ((result = component.getNextResult()) != null) {
-//                LOGGER.logInfo("Got analysis result: " + result.toString());
+                LOGGER.logDebug("Got analysis result: " + result.toString());
+                
                 writer.writeRow(result);
             }
         } catch (IOException e) {
