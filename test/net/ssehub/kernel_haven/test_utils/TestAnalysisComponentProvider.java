@@ -17,6 +17,8 @@ public class TestAnalysisComponentProvider<T> extends AnalysisComponent<T> {
 
     private BlockingQueue<T> data;
     
+    private String name;
+    
     /**
      * Creates a new instance with the given data.
      * 
@@ -31,6 +33,7 @@ public class TestAnalysisComponentProvider<T> extends AnalysisComponent<T> {
             this.data.add(t);
         }
         this.data.end();
+        this.name = "TestComponent";
     }
     
     /**
@@ -42,28 +45,28 @@ public class TestAnalysisComponentProvider<T> extends AnalysisComponent<T> {
      */
     @SafeVarargs
     public TestAnalysisComponentProvider(T... data) throws SetUpException {
+        this("TestComponent", data);
+    }
+    
+    /**
+     * Creates a new instance with the given data.
+     * 
+     * @param name The name that {@link #getResultName()} should return.
+     * @param data The data that this component should "create" and pass to the next component.
+     * 
+     * @throws SetUpException Shouldn't happen.
+     */
+    @SafeVarargs
+    public TestAnalysisComponentProvider(String name, T... data) throws SetUpException {
         super(new TestConfiguration(new Properties()));
         this.data = new BlockingQueue<>();
         for (T t : data) {
             this.data.add(t);
         }
         this.data.end();
+        this.name = name;
     }
-        /**
-     * Creates a new instance with the given data.
-     * 
-     * @param data The data that this component should "create" and pass to the next component.
-     * 
-     * @throws SetUpException Shouldn't happen.
-     */
-    public TestAnalysisComponentProvider(T data) throws SetUpException {
-        super(new TestConfiguration(new Properties()));
-        this.data = new BlockingQueue<>();
-        this.data.add(data);
-        this.data.end();
-    }
-
-    @Override
+        @Override
     protected void execute() {
         for (T element : this.data) {
             addResult(element);
@@ -72,7 +75,7 @@ public class TestAnalysisComponentProvider<T> extends AnalysisComponent<T> {
 
     @Override
     public String getResultName() {
-        return "TestResult";
+        return name;
     }
     
 }
