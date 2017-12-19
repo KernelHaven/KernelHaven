@@ -10,34 +10,69 @@ import java.io.IOException;
  */
 public abstract class AbstractTableWriter implements ITableWriter {
 
+    /**
+     * The type of Object -> Columns translation to use.
+     */
+    private static enum Type {
+        
+        /**
+         * Instances are marked with the {@link TableRow} annotation.
+         */
+        ANNOATION,
+        
+        /**
+         * Instances implement the {@link ITableRow} interface.
+         */
+        INTERFACE,
+        
+        /**
+         * Instances have no special markup; just use the {@link #toString()} method.
+         */
+        TOSTRING,
+        
+    }
+    
     private TableRowMetadata metadata;
     
-    private boolean initialized;
+    private Type type;
     
     @Override
     public void writeRow(Object row) throws IOException, IllegalArgumentException {
-        if (!initialized) {
-            initialized = true;
+        if (type == null) {
             if (TableRowMetadata.isTableRow(row.getClass())) {
+                type = Type.ANNOATION;
                 metadata = new TableRowMetadata(row.getClass());
                 writeHeader(metadata.getHeaders());
+                
+            } else if (row instanceof ITableRow) {
+                type = Type.INTERFACE;
+                writeHeader(((ITableRow) row).getHeader());
+                
+            } else {
+                type = Type.TOSTRING;
             }
         }
         
-        if (metadata != null) {
+        switch (type) {
+        case ANNOATION:
             if (!metadata.isSameClass(row)) {
                 throw new IllegalArgumentException("Incompatible type of row passed to writeRow(): "
                         + row.getClass().getName());
             }
-            
             try {
                 writeRow(metadata.getContent(row));
             } catch (ReflectiveOperationException e) {
                 throw new IOException("Can't read field values", e);
             }
+            break;
             
-        } else {
+        case INTERFACE:
+            writeRow(((ITableRow) row).getContent());
+            break;
+            
+        default:
             writeRow(new String[] {row.toString()});
+            break;
         }
     }
 

@@ -108,6 +108,34 @@ public class TableRowMetadataTest {
     }
     
     /**
+     * Small class with a {@link TableElement} which is private.
+     */
+    @TableRow
+    private static class PrivateTableRow {
+        
+        /**
+         * Test method. 
+         * 
+         * @return "test".
+         */
+        @TableElement(index = 0, name = "A")
+        private String getA() {
+            return "a";
+        }
+        
+        /**
+         * Test method. 
+         * 
+         * @return "test".
+         */
+        @TableElement(index = 1, name = "B")
+        public String getB() {
+            return "b";
+        }
+        
+    }
+    
+    /**
      * Tests the isTablRow() method.
      */
     @Test
@@ -173,5 +201,33 @@ public class TableRowMetadataTest {
         
         metadata.getContent(new NoAnnotations('b', "bee"));
     }
+    
+    /**
+     * Tests that a private method annotated with {@link TableElement} is correctly ignored.
+     * 
+     * @throws ReflectiveOperationException unwanted.
+     */
+    @Test
+    public void testIgnorePrivateMethod() throws ReflectiveOperationException {
+        TableRowMetadata metadata = new TableRowMetadata(PrivateTableRow.class);
+        
+        String[] content = metadata.getContent(new PrivateTableRow());
+        // "a" should be ignored, because its private
+        assertThat(content, is(new String[] {"b"}));
+    }
+    
+    /**
+     * Tests that a <code>null</code> value is correctly turned into an empty string.
+     * 
+     * @throws ReflectiveOperationException unwanted.
+     */
+    @Test
+    public void testNullValue() throws ReflectiveOperationException {
+        TableRowMetadata metadata = new TableRowMetadata(Simple.class);
+        
+        String[] content = metadata.getContent(new Simple(0, null));
+        assertThat(content, is(new String[] {"0", ""}));
+    }
+
 
 }

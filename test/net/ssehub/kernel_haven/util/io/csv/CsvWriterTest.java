@@ -6,12 +6,15 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import javax.swing.text.AbstractWriter;
+
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.util.io.ITableRow;
 import net.ssehub.kernel_haven.util.io.TableRowMetadataTest;
 
 /**
- * Tests the {@link CsvWriter}.
+ * Tests the {@link CsvWriter} and {@link AbstractWriter} classes.
  *
  * @author Adam
  */
@@ -71,6 +74,57 @@ public class CsvWriterTest {
     }
     
     /**
+     * A simple table row that implements {@link ITableRow}.
+     */
+    private static class SimpleInterfaceRow implements ITableRow {
+
+        private String[] content;
+        
+        private String[] header;
+        
+        /**
+         * Creates a {@link SimpleInterfaceRow}.
+         * 
+         * @param content The content.
+         * @param header The header.
+         */
+        public SimpleInterfaceRow(String[] content, String[] header) {
+            this.content = content;
+            this.header = header;
+        }
+
+        @Override
+        public String[] getHeader() {
+            return header;
+        }
+
+        @Override
+        public String[] getContent() {
+            return content;
+        }
+        
+    }
+    
+    /**
+     * Tests whether a simple structure which implements the {@link ITableRow} interface can be written.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testWriteInterface() throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        
+        try (CsvWriter writer = new CsvWriter(out)) {
+            writer.writeRow(new SimpleInterfaceRow(new String[] {"a", "b", "c"},
+                    new String[] {"Column 1", "Column 2", "Column 3"}));
+            writer.writeRow(new SimpleInterfaceRow(new String[] {"d", "e", "f"}, null));
+            
+        }
+        
+        assertThat(out.toString(), is("Column 1;Column 2;Column 3\na;b;c\nd;e;f\n"));
+    }
+    
+    /**
      * Tests whether fields are correctly escaped.
      * 
      * @throws IOException unwanted.
@@ -126,5 +180,5 @@ public class CsvWriterTest {
         
         assertThat(out.toString(), is("a,b;c,c\nd,e,f\n"));
     }
-
+    
 }

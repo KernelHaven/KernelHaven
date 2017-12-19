@@ -10,7 +10,8 @@ import java.lang.annotation.Target;
  * Marks an (getter of an) attribute inside a class marked via the {@link TableRow} as a single column element. The
  * {@link #toString()} method of the return value will be used to fill the field in the table. The marked getter must
  * return a value that a {@link #toString()} can be called on, and must not have any parameters. If it returns null,
- * then an empty string ("") is inserted into the table at that position.
+ * then an empty string ("") is inserted into the table at that position. The method marked by this annotation must be
+ * public, otherwise it is ignored.
  *
  * @author Adam
  */
