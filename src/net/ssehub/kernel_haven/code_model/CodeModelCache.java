@@ -141,7 +141,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
     private void serializeElement(CodeElement element, int level, CsvWriter writer) throws IOException {
         List<String> serialized = element.serializeCsv();
         
-        String[] csvParts = new String[serialized.size() + 2];
+        Object[] csvParts = new String[serialized.size() + 2];
         csvParts[0] = element.getClass().getName();
         csvParts[1] = Integer.toString(level);
         int i = 2;

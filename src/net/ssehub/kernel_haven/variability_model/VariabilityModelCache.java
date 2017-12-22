@@ -67,7 +67,7 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
                 
                 List<String> serialized = vv.serializeCsv();
                 
-                String[] csvParts = new String[serialized.size() + 1];
+                Object[] csvParts = new String[serialized.size() + 1];
                 csvParts[0] = vv.getClass().getName();
                 int i = 1;
                 for (String part : serialized) {

@@ -13,17 +13,19 @@ public interface ITableRow {
      * of this arrays is the same as {@link #getContent()}. This method will (most likely) be only called for the first
      * row of a table; thus, it should be descriptive for the complete table, instead of just this single row.
      * 
-     * @return An array of strings that describes the columns of this table row. Never <code>null</code>. No element in
-     *      this array should be <code>null</code>.
+     * @return An array of strings that describes the columns of this table row. Never <code>null</code>.
+     *      <code>null</code> elements inside this array will be converted into empty strings ("").
+     *      Non-<code>null</code> elements will be converted via their {@link Object#toString()} method.
      */
-    public String[] getHeader();
+    public Object[] getHeader();
     
     /**
      * Returns the column values for this row.
      * 
-     * @return An array containing the column values for this row. Never <code>null</code>. No element in this array
-     *      should be <code>null</code>.
+     * @return An array containing the column values for this row. Never <code>null</code>. <code>null</code> elements
+     *      inside this array will be converted into empty strings (""). Non-<code>null</code> elements will be
+     *      converted via their {@link Object#toString()} method.
      */
-    public String[] getContent();
+    public Object[] getContent();
     
 }

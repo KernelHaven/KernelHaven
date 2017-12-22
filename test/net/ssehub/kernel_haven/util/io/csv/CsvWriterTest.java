@@ -30,9 +30,9 @@ public class CsvWriterTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         try (CsvWriter writer = new CsvWriter(out)) {
-            writer.writeRow(new TableRowMetadataTest.Simple(1, "one"));
-            writer.writeRow(new TableRowMetadataTest.Simple(2, "two"));
-            writer.writeRow(new TableRowMetadataTest.Simple(3, "three"));
+            writer.writeObject(new TableRowMetadataTest.Simple(1, "one"));
+            writer.writeObject(new TableRowMetadataTest.Simple(2, "two"));
+            writer.writeObject(new TableRowMetadataTest.Simple(3, "three"));
             
         }
         
@@ -49,8 +49,8 @@ public class CsvWriterTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         try (CsvWriter writer = new CsvWriter(out)) {
-            writer.writeRow(new TableRowMetadataTest.Simple(1, "one"));
-            writer.writeRow(new TableRowMetadataTest.NoAnnotations('b', "three"));
+            writer.writeObject(new TableRowMetadataTest.Simple(1, "one"));
+            writer.writeObject(new TableRowMetadataTest.NoAnnotations('b', "three"));
         }
     }
     
@@ -64,9 +64,9 @@ public class CsvWriterTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         try (CsvWriter writer = new CsvWriter(out)) {
-            writer.writeRow(new TableRowMetadataTest.NoAnnotations('a', "one"));
-            writer.writeRow(new TableRowMetadataTest.NoAnnotations('b', "two"));
-            writer.writeRow(new TableRowMetadataTest.NoAnnotations('c', "three"));
+            writer.writeObject(new TableRowMetadataTest.NoAnnotations('a', "one"));
+            writer.writeObject(new TableRowMetadataTest.NoAnnotations('b', "two"));
+            writer.writeObject(new TableRowMetadataTest.NoAnnotations('c', "three"));
             
         }
         
@@ -115,9 +115,9 @@ public class CsvWriterTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         try (CsvWriter writer = new CsvWriter(out)) {
-            writer.writeRow(new SimpleInterfaceRow(new String[] {"a", "b", "c"},
+            writer.writeObject(new SimpleInterfaceRow(new String[] {"a", "b", "c"},
                     new String[] {"Column 1", "Column 2", "Column 3"}));
-            writer.writeRow(new SimpleInterfaceRow(new String[] {"d", "e", "f"}, null));
+            writer.writeObject(new SimpleInterfaceRow(new String[] {"d", "e", "f"}, null));
             
         }
         
@@ -144,7 +144,7 @@ public class CsvWriterTest {
     }
     
     /**
-     * Tests the field based {@link CsvWriter#writeRow(String...)} method.
+     * Tests the field based {@link CsvWriter#writeRow(Object...)} method.
      * 
      * @throws IOException unwanted.
      */
@@ -155,9 +155,9 @@ public class CsvWriterTest {
         try (CsvWriter writer = new CsvWriter(out)) {
             writer.writeRow("one", "two", "three");
             writer.writeRow("1", "2");
-            writer.writeRow("empty");
+            writer.writeObject("empty");
             writer.writeRow();
-            writer.writeRow("1;2");
+            writer.writeObject("1;2");
             
         }
         
@@ -179,6 +179,24 @@ public class CsvWriterTest {
         }
         
         assertThat(out.toString(), is("a,b;c,c\nd,e,f\n"));
+    }
+    
+    /**
+     * Tests that the {@link CsvWriter#writeRow(Object...)} handles non-string parameters correctly.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testWriteRowWithNonStrings() throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        
+        try (CsvWriter writer = new CsvWriter(out)) {
+            writer.writeRow("a", 2, 'c');
+            writer.writeRow(new TableRowMetadataTest.NoAnnotations('z', "abc"), null, true);
+        }
+        
+        assertThat(out.toString(), is("a;2;c\nz abc;;true\n"));
+        
     }
     
 }

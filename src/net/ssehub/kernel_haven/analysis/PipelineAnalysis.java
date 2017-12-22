@@ -204,7 +204,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             while ((result = component.getNextResult()) != null) {
                 LOGGER.logDebug("Got analysis result: " + result.toString());
                 
-                writer.writeRow(result);
+                writer.writeObject(result);
             }
         } catch (IOException e) {
             LOGGER.logException("Exception while writing output file", e);

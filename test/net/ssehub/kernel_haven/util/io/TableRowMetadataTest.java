@@ -184,9 +184,9 @@ public class TableRowMetadataTest {
     public void testGetContent() throws ReflectiveOperationException {
         TableRowMetadata metadata = new TableRowMetadata(Simple.class);
         
-        String[] content = metadata.getContent(new Simple(34, "thirtythree"));
+        Object[] content = metadata.getContent(new Simple(34, "thirtythree"));
         assertThat(content.length, is(2));
-        assertThat(content[0], is("34"));
+        assertThat(content[0], is(34));
         assertThat(content[1], is("thirtythree"));
     }
     
@@ -211,7 +211,7 @@ public class TableRowMetadataTest {
     public void testIgnorePrivateMethod() throws ReflectiveOperationException {
         TableRowMetadata metadata = new TableRowMetadata(PrivateTableRow.class);
         
-        String[] content = metadata.getContent(new PrivateTableRow());
+        Object[] content = metadata.getContent(new PrivateTableRow());
         // "a" should be ignored, because its private
         assertThat(content, is(new String[] {"b"}));
     }
@@ -225,8 +225,8 @@ public class TableRowMetadataTest {
     public void testNullValue() throws ReflectiveOperationException {
         TableRowMetadata metadata = new TableRowMetadata(Simple.class);
         
-        String[] content = metadata.getContent(new Simple(0, null));
-        assertThat(content, is(new String[] {"0", ""}));
+        Object[] content = metadata.getContent(new Simple(0, null));
+        assertThat(content, is(new Object[] {0, null}));
     }
 
 

@@ -108,7 +108,7 @@ public abstract class AnalysisComponent<O> {
             
             if (out != null) {
                 try {
-                    out.writeRow(result);
+                    out.writeObject(result);
                 } catch (IOException | IllegalArgumentException e) {
                     LOGGER.logException("Exception while writing to output file", e);
                 }

@@ -505,8 +505,8 @@ public class PipelineAnalysisTest {
         }
 
         @Override
-        public void writeRow(String... fields) throws IOException {
-            TABLES.get(name).add(Arrays.toString(fields));
+        public void writeRow(Object... columns) throws IOException {
+            TABLES.get(name).add(Arrays.toString(columns));
         }
         
     }

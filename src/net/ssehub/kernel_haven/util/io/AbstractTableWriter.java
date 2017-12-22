@@ -3,8 +3,8 @@ package net.ssehub.kernel_haven.util.io;
 import java.io.IOException;
 
 /**
- * Implements {@link #writeRow(Object)}. Sub-classes don't have to worry about the annotation metadata, they only have
- * to implement {@link #writeRow(String...)}.
+ * Implements {@link #writeObject(Object)}. Sub-classes don't have to worry about the annotation metadata, they
+ * only have to implement {@link #writeRow(Object...)}.
  *
  * @author Adam
  */
@@ -37,7 +37,7 @@ public abstract class AbstractTableWriter implements ITableWriter {
     private Type type;
     
     @Override
-    public void writeRow(Object row) throws IOException, IllegalArgumentException {
+    public void writeObject(Object row) throws IOException, IllegalArgumentException {
         if (type == null) {
             if (TableRowMetadata.isTableRow(row.getClass())) {
                 type = Type.ANNOATION;
@@ -71,7 +71,7 @@ public abstract class AbstractTableWriter implements ITableWriter {
             break;
             
         default:
-            writeRow(new String[] {row.toString()});
+            writeRow(new Object[] {row.toString()});
             break;
         }
     }

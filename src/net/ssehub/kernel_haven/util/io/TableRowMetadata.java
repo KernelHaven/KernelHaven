@@ -56,7 +56,7 @@ public class TableRowMetadata {
      * 
      * @return The header names. Not <code>null</code>.
      */
-    public String[] getHeaders() {
+    public Object[] getHeaders() {
         return headers;
     }
     
@@ -69,18 +69,14 @@ public class TableRowMetadata {
      * @throws ReflectiveOperationException If retrieving the field contents fails (e.g. because the given object is
      *      not an instance of the class that this metadata is made for).
      */
-    public String[] getContent(Object instance) throws ReflectiveOperationException {
-        String[] values = new String[fields.length];
+    public Object[] getContent(Object instance) throws ReflectiveOperationException {
+        Object[] values = new Object[fields.length];
         
         try {
             int index = 0;
-            for (Method field : fields) {
+           for (Method field : fields) {
                 Object result = field.invoke(instance);
-                if (result != null) {
-                    values[index++] = result.toString();
-                } else {
-                    values[index++] = "";
-                }
+                values[index++] = result;
             }
             
         } catch (IllegalArgumentException e) {

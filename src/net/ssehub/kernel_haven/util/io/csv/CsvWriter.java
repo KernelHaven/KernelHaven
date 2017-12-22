@@ -94,10 +94,11 @@ public class CsvWriter extends AbstractTableWriter {
      * 
      * @throws IOException If writing to the output stream fails.
      */
-    private void writeLine(String... fields) throws IOException {
+    private void writeLine(Object... fields) throws IOException {
         StringBuffer line = new StringBuffer();
-        for (String field : fields) {
-            line.append(escape(field)).append(separator);
+        for (Object field : fields) {
+            String str = field != null ? field.toString() : "";
+            line.append(escape(str)).append(separator);
         }
         if (line.length() > 0) {
             // remove trailing separator
@@ -109,8 +110,8 @@ public class CsvWriter extends AbstractTableWriter {
     }
     
     @Override
-    public void writeRow(String... fields) throws IOException {
-        writeLine(fields);
+    public void writeRow(Object... columns) throws IOException {
+        writeLine(columns);
     }
 
 }
