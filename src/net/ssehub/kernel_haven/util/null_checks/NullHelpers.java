@@ -22,8 +22,10 @@ public class NullHelpers {
      * @param msg An error message for the assertion if the value is <code>null</code>.
      * 
      * @return The same value, with a {@link NonNull} annotation.
+     * 
+     * @throws AssertionError If the value is <code>null</code>.
      */
-    public static @NonNull <T> T assertNonNull(@Nullable T value, @Nullable String msg) {
+    public static @NonNull <T> T notNull(@Nullable T value, @Nullable String msg) throws AssertionError {
         if (value == null) {
             throw new AssertionError(msg);
         }
@@ -37,11 +39,23 @@ public class NullHelpers {
      * @param value The value that should actually be {@link NonNull}.
      * 
      * @return The same value, with a {@link NonNull} annotation.
+     * 
+     * @throws AssertionError If the value is <code>null</code>.
      */
-    public static @NonNull <T> T assertNonNull(@Nullable T value) {
+    public static @NonNull <T> T notNull(@Nullable T value) throws AssertionError {
         if (value == null) {
             throw new AssertionError("Supplied value is null, but was expected not null");
         }
+        return value;
+    }
+    
+    /**
+     * Declares an unmarked value as {@link Nullable}. This may be needed for some calls of methods from libraries.
+     * 
+     * @param value The value that may be <code>null</code>.
+     * @return The {@link Nullable} annotated value.
+     */
+    public static @Nullable <T> T maybeNull(T value) {
         return value;
     }
     
