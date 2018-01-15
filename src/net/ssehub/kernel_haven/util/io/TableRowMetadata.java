@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util.io;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.maybeNull;
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.TreeMap;
@@ -33,7 +36,7 @@ public class TableRowMetadata {
         
         Map<Integer, Method> methods = new TreeMap<>();
         for (Method method: rowClass.getMethods()) {
-            TableElement annotation = method.getAnnotation(TableElement.class);
+            TableElement annotation = maybeNull(method.getAnnotation(TableElement.class));
             if (annotation != null) {
                 methods.put(annotation.index(), method);
             }
@@ -46,7 +49,7 @@ public class TableRowMetadata {
             // we silently ignore if index != entry.getKey(); the order is correct, because of the TreeMap; we don't
             //  care about "holes" in the ordering
             fields[index] = entry.getValue();
-            headers[index] = entry.getValue().getAnnotation(TableElement.class).name();
+            headers[index] = notNull(entry.getValue().getAnnotation(TableElement.class)).name();
             index++;
         }
     }
@@ -103,7 +106,7 @@ public class TableRowMetadata {
      * @return Whether the given class has the annotation.
      */
     public static boolean isTableRow(Class<?> clazz) {
-        TableRow annotation = clazz.getAnnotation(TableRow.class);
+        TableRow annotation = maybeNull(clazz.getAnnotation(TableRow.class));
         return annotation != null;
     }
 
