@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -243,7 +245,7 @@ public class PipelineConfigurator {
         }
         
         try {
-            extractor = extractorClass.getConstructor().newInstance();
+            extractor = notNull(extractorClass.getConstructor().newInstance());
             
             LOGGER.logInfo("Successfully instantiated " + type + " extractor " + extractor.getClass().getName());
         } catch (ReflectiveOperationException | IllegalArgumentException | ClassCastException e) {
@@ -291,7 +293,7 @@ public class PipelineConfigurator {
                 Class<? extends IPreparation> prepartionClass =
                         (Class<? extends IPreparation>) Class.forName(className);
                 
-                IPreparation preparation = prepartionClass.newInstance();
+                IPreparation preparation = notNull(prepartionClass.newInstance());
                 preparation.run(config);
             
             } catch (ReflectiveOperationException | ClassCastException e) {

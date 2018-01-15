@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.test_utils;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -110,7 +112,7 @@ public class AnalysisComponentExecuter {
             // instantiate the component
             @SuppressWarnings("unchecked")
             AnalysisComponent<T> component = (AnalysisComponent<T>)
-                    componentClass.getConstructor(parameterTypes).newInstance(parameterValues);
+                    notNull(componentClass.getConstructor(parameterTypes).newInstance(parameterValues));
             
             // execute the component
             T r;
