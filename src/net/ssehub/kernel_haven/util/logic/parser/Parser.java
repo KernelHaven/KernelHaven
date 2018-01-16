@@ -3,6 +3,8 @@ package net.ssehub.kernel_haven.util.logic.parser;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 
 /**
  * Parses strings based on {@link Grammar}s.
@@ -13,14 +15,14 @@ import java.util.List;
  */
 public class Parser<T> {
     
-    private Grammar<T> grammar;
+    private @NonNull Grammar<T> grammar;
     
     /**
      * Creates a new parser for the given {@link Grammar}.
      * 
      * @param grammar The {@link Grammar} that describes the format to parse.
      */
-    public Parser(Grammar<T> grammar) {
+    public Parser(@NonNull Grammar<T> grammar) {
         this.grammar = grammar;
     }
     
@@ -33,7 +35,7 @@ public class Parser<T> {
      * 
      * @throws ExpressionFormatException If the supplied string is not a valid expression for the given {@link Grammar}.
      */
-    public T parse(String expression) throws ExpressionFormatException  {
+    public @NonNull T parse(@NonNull String expression) throws ExpressionFormatException  {
         Token[] tokens = lex(expression);
         T f = parse(tokens, 0, tokens.length - 1);
         return f;

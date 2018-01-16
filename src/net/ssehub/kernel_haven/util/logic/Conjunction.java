@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A boolean conjunction operator (AND).
@@ -11,9 +13,9 @@ public final class Conjunction extends Formula {
 
     private static final long serialVersionUID = 8595985320940207982L;
 
-    private Formula left;
+    private @NonNull Formula left;
     
-    private Formula right;
+    private @NonNull Formula right;
     
     /**
      * Creates a boolean conjunction (AND).
@@ -21,7 +23,7 @@ public final class Conjunction extends Formula {
      * @param left The left operand.
      * @param right The right operand.
      */
-    public Conjunction(Formula left, Formula right) {
+    public Conjunction(@NonNull Formula left, @NonNull Formula right) {
         this.left = left;
         this.right = right;
     }
@@ -31,7 +33,7 @@ public final class Conjunction extends Formula {
      * 
      * @return The left operand.
      */
-    public Formula getLeft() {
+    public @NonNull Formula getLeft() {
         return left;
     }
     
@@ -40,7 +42,7 @@ public final class Conjunction extends Formula {
      * 
      * @return The right operand.
      */
-    public Formula getRight() {
+    public @NonNull Formula getRight() {
         return right;
     }
     
@@ -50,7 +52,7 @@ public final class Conjunction extends Formula {
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         String leftStr = left.toString();
         if (!(left instanceof Conjunction) && left.getPrecedence() <= this.getPrecedence()) {
             leftStr = '(' + leftStr + ')';
@@ -65,7 +67,7 @@ public final class Conjunction extends Formula {
     }
     
     @Override
-    public void toString(StringBuffer result) {
+    public void toString(@NonNull StringBuffer result) {
         if (!(left instanceof Conjunction) && left.getPrecedence() <= this.getPrecedence()) {
             result.append('(');
             left.toString(result);
@@ -86,7 +88,7 @@ public final class Conjunction extends Formula {
     }
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (obj instanceof Conjunction) {
             Conjunction other = (Conjunction) obj;
             return left.equals(other.getLeft()) && right.equals(other.getRight());
@@ -105,12 +107,12 @@ public final class Conjunction extends Formula {
     }
     
     @Override
-    protected <T> T accept(IFormulaVisitor<T> visitor) {
+    protected <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
         return visitor.visitConjunction(this);
     }
     
     @Override
-    protected void accept(IVoidFormulaVisitor visitor) {
+    protected void accept(@NonNull IVoidFormulaVisitor visitor) {
         visitor.visitConjunction(this);
     }
     

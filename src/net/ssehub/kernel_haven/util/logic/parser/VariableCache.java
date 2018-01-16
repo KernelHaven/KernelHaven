@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.ssehub.kernel_haven.util.logic.Variable;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A cache to help ensure that a {@link Formula} does not contain duplicate
@@ -14,7 +15,7 @@ import net.ssehub.kernel_haven.util.logic.Variable;
  */
 public class VariableCache {
 
-    private Map<String, Variable> variables;
+    private @NonNull Map<String, Variable> variables;
     
     /**
      * Initializes an empty cache.
@@ -30,7 +31,7 @@ public class VariableCache {
      * @param name The name of the variable.
      * @return The instance of the variable with the given name.
      */
-    public Variable getVariable(String name) {
+    public @NonNull Variable getVariable(@NonNull String name) {
         Variable var = variables.get(name);
         if (var == null) {
             var = new Variable(name);

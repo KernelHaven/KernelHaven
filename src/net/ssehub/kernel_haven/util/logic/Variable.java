@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * A boolean variable.
  * 
@@ -10,7 +13,7 @@ public final class Variable extends Formula {
     
     private static final long serialVersionUID = -5566369071417331297L;
 
-    private String name;
+    private @NonNull String name;
     
     private boolean value;
     
@@ -19,7 +22,7 @@ public final class Variable extends Formula {
      * 
      * @param name The name of this variable.
      */
-    public Variable(String name) {
+    public Variable(@NonNull String name) {
         this.name = name;
     }
     
@@ -28,7 +31,7 @@ public final class Variable extends Formula {
      * 
      * @return The name of this variable.
      */
-    public String getName() {
+    public @NonNull String getName() {
         return name;
     }
     
@@ -47,12 +50,12 @@ public final class Variable extends Formula {
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return name;
     }
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (obj instanceof Variable) {
             Variable other = (Variable) obj;
             return name.equals(other.name);
@@ -71,12 +74,12 @@ public final class Variable extends Formula {
     }
     
     @Override
-    protected <T> T accept(IFormulaVisitor<T> visitor) {
+    protected <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
         return visitor.visitVariable(this);
     }
     
     @Override
-    protected void accept(IVoidFormulaVisitor visitor) {
+    protected void accept(@NonNull IVoidFormulaVisitor visitor) {
         visitor.visitVariable(this);
     }
     
@@ -86,7 +89,7 @@ public final class Variable extends Formula {
     }
     
     @Override
-    public void toString(StringBuffer result) {
+    public void toString(@NonNull StringBuffer result) {
         result.append(toString());
     }
 }

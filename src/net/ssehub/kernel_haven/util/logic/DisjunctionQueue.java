@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 import net.ssehub.kernel_haven.util.Logger;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * Queue to create balanced (and simplified) {@link Disjunction} terms. <br/>
@@ -65,7 +67,7 @@ public class DisjunctionQueue {
      * Adds a new formula to the queue.
      * @param condition The formula to add (<tt>null</tt> will be ignored).
      */
-    public void add(Formula condition) {
+    public void add(@Nullable Formula condition) {
         if (null != condition) {
             if (simplify) {
                 // Default case: Avoid doubled formulas and handle TRUE/FALSE literals
@@ -91,7 +93,7 @@ public class DisjunctionQueue {
      *     never be <tt>null</tt>.
      * @see #getDisjunction(String)
      */
-    public Formula getDisjunction() {
+    public @NonNull Formula getDisjunction() {
         return getDisjunction(null);
     }
     
@@ -103,7 +105,7 @@ public class DisjunctionQueue {
      * @return The disjunction, maybe {@link True} if one of the passed elements was {@link True},
      *     never be <tt>null</tt>.
      */
-    public Formula getDisjunction(String varName) {
+    public @NonNull Formula getDisjunction(@Nullable String varName) {
         Formula result;
         
         // Create disjunction of all elements

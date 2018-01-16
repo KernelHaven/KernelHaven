@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * Visitor interface for {@link Formula}s.
  * 
@@ -16,14 +18,14 @@ public interface IFormulaVisitor<T> {
      * @param falseConstant The constant expression to visit.
      * @return Some return value.
      */
-    public T visitFalse(False falseConstant);
+    public T visitFalse(@NonNull False falseConstant);
     
     /**
      * Visits a <tt>TRUE</tt> constant.
      * @param trueConstant The constant expression to visit.
      * @return Some return value.
      */
-    public T visitTrue(True trueConstant);
+    public T visitTrue(@NonNull True trueConstant);
     
     /**
      * Visits a variable.
@@ -31,7 +33,7 @@ public interface IFormulaVisitor<T> {
      * @param variable The variable to visit.
      * @return Some return value.
      */
-    public T visitVariable(Variable variable);
+    public T visitVariable(@NonNull Variable variable);
 
     /**
      * Visits a negated formula.
@@ -39,14 +41,14 @@ public interface IFormulaVisitor<T> {
      * @param formula The formula to visit.
      * @return Some return value.
      */ 
-    public T visitNegation(Negation formula);
+    public T visitNegation(@NonNull Negation formula);
     /**
      * Visits an <tt>OR</tt> formula.
      * 
      * @param formula The formula to visit.
      * @return Some return value.
      */
-    public T visitDisjunction(Disjunction formula);
+    public T visitDisjunction(@NonNull Disjunction formula);
     
     /**
      * Visits an <tt>AND</tt> formula.
@@ -54,7 +56,7 @@ public interface IFormulaVisitor<T> {
      * @param formula The formula to visit.
      * @return Some return value.
      */
-    public T visitConjunction(Conjunction formula);
+    public T visitConjunction(@NonNull Conjunction formula);
     
     /**
      * Visits the given formula.
@@ -62,7 +64,7 @@ public interface IFormulaVisitor<T> {
      * @param formula The formula to visit.
      * @return The return value of this visitor.
      */
-    public default T visit(Formula formula) {
+    public default T visit(@NonNull Formula formula) {
         return formula.accept(this);
     }
 

@@ -2,6 +2,9 @@ package net.ssehub.kernel_haven.util.logic;
 
 import java.io.Serializable;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * A boolean formula.
  * 
@@ -34,7 +37,7 @@ public abstract class Formula implements Serializable {
      * @return A string representation of this formula, in a C-style like format.
      */
     @Override
-    public abstract String toString();
+    public abstract @NonNull String toString();
     
     /**
      * Converts the formula into a string representation.
@@ -42,7 +45,7 @@ public abstract class Formula implements Serializable {
      * @param result The result object to which the result in a C-style like format shall be appended to
      *     (must not be <tt>null</tt>) .
      */
-    public abstract void toString(StringBuffer result);
+    public abstract void toString(@NonNull StringBuffer result);
     
     /**
      * Checks whether two {@link Formula}s are equal. {@link Formula}s are equal,
@@ -50,7 +53,7 @@ public abstract class Formula implements Serializable {
      * variable names.
      */
     @Override
-    public abstract boolean equals(Object obj);
+    public abstract boolean equals(@Nullable Object obj);
     
     
     @Override
@@ -72,12 +75,12 @@ public abstract class Formula implements Serializable {
      * 
      * @return The return value for the visitor.
      */
-    protected abstract <T> T accept(IFormulaVisitor<T> visitor);
+    protected abstract <T> T accept(@NonNull IFormulaVisitor<T> visitor);
     
     /**
      * Visiting method for void visitors.
      * 
      * @param visitor A visitor, which shall visit <tt>this</tt> formula.
      */
-    protected abstract void accept(IVoidFormulaVisitor visitor);
+    protected abstract void accept(@NonNull IVoidFormulaVisitor visitor);
 }

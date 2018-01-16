@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * The boolean constant "true".
  * 
@@ -12,7 +15,7 @@ public final class True extends Formula {
      * Shared instance for this class.
      * Currently not a pure singleton to avoid refactoring of complete architecture.
      */
-    public static final True INSTANCE = new True();
+    public static final @NonNull True INSTANCE = new True();
 
     private static final long serialVersionUID = 2252789480365343658L;
     
@@ -28,12 +31,12 @@ public final class True extends Formula {
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return "1";
     }
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         return obj instanceof True;
     }
     
@@ -48,12 +51,12 @@ public final class True extends Formula {
     }
     
     @Override
-    protected <T> T accept(IFormulaVisitor<T> visitor) {
+    protected <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
         return visitor.visitTrue(this);
     }
     
     @Override
-    protected void accept(IVoidFormulaVisitor visitor) {
+    protected void accept(@NonNull IVoidFormulaVisitor visitor) {
         visitor.visitTrue(this);
     }
     
@@ -63,7 +66,7 @@ public final class True extends Formula {
     }
     
     @Override
-    public void toString(StringBuffer result) {
+    public void toString(@NonNull StringBuffer result) {
         result.append(toString());
     }
     

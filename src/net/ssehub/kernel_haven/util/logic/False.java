@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * The boolean constant "false".
  * 
@@ -12,7 +15,7 @@ public final class False extends Formula {
      * Shared instance for this class.
      * Currently not a pure singleton to avoid refactoring of complete architecture.
      */
-    public static final False INSTANCE = new False();
+    public static final @NonNull False INSTANCE = new False();
     
     private static final long serialVersionUID = 6422261057525028423L;
 
@@ -28,12 +31,12 @@ public final class False extends Formula {
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return "0";
     }
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         return obj instanceof False;
     }
     
@@ -48,12 +51,12 @@ public final class False extends Formula {
     }
     
     @Override
-    protected <T> T accept(IFormulaVisitor<T> visitor) {
+    protected <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
         return visitor.visitFalse(this);
     }
     
     @Override
-    protected void accept(IVoidFormulaVisitor visitor) {
+    protected void accept(@NonNull IVoidFormulaVisitor visitor) {
         visitor.visitFalse(this);
     }
     
@@ -63,7 +66,7 @@ public final class False extends Formula {
     }
 
     @Override
-    public void toString(StringBuffer result) {
+    public void toString(@NonNull StringBuffer result) {
         result.append(toString());
     }
     

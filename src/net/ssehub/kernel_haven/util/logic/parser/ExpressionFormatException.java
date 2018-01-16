@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util.logic.parser;
 
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * An exception to indicate that parsing an expression string failed.
  * 
@@ -14,7 +16,7 @@ public class ExpressionFormatException extends Exception {
      * 
      * @param message A message describing the failure.
      */
-    public ExpressionFormatException(String message) {
+    public ExpressionFormatException(@Nullable String message) {
         super(message);
     }
     

@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * The boolean negation operator (NOT).
  * 
@@ -10,14 +13,14 @@ public final class Negation extends Formula {
     
     private static final long serialVersionUID = -7539218655156469390L;
     
-    private Formula formula;
+    private @NonNull Formula formula;
     
     /**
      * Creates a boolean negation (NOT).
      * 
      * @param formula The operand of this negation.
      */
-    public Negation(Formula formula) {
+    public Negation(@NonNull Formula formula) {
         this.formula = formula;
     }
     
@@ -26,7 +29,7 @@ public final class Negation extends Formula {
      * 
      * @return The operand of this negation.
      */
-    public Formula getFormula() {
+    public @NonNull Formula getFormula() {
         return formula;
     }
 
@@ -36,7 +39,7 @@ public final class Negation extends Formula {
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         String innerStr = formula.toString();
         if (!(formula instanceof Negation) && formula.getPrecedence() <= this.getPrecedence()) {
             innerStr = '(' + innerStr + ')';
@@ -46,7 +49,7 @@ public final class Negation extends Formula {
     }
     
     @Override
-    public void toString(StringBuffer result) {
+    public void toString(@NonNull StringBuffer result) {
         result.append('!');
         if (!(formula instanceof Negation) && formula.getPrecedence() <= this.getPrecedence()) {
             result.append('(');
@@ -58,7 +61,7 @@ public final class Negation extends Formula {
     }
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (obj instanceof Negation) {
             Negation other = (Negation) obj;
             return formula.equals(other.formula);
@@ -77,12 +80,12 @@ public final class Negation extends Formula {
     }
     
     @Override
-    protected <T> T accept(IFormulaVisitor<T> visitor) {
+    protected <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
         return visitor.visitNegation(this);
     }
     
     @Override
-    protected void accept(IVoidFormulaVisitor visitor) {
+    protected void accept(@NonNull IVoidFormulaVisitor visitor) {
         visitor.visitNegation(this);
     }
     

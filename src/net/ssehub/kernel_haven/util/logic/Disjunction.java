@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * A boolean disjunction operator (OR).
  * 
@@ -10,9 +13,9 @@ public final class Disjunction extends Formula {
 
     private static final long serialVersionUID = 8416793994383200822L;
 
-    private Formula left;
+    private @NonNull Formula left;
     
-    private Formula right;
+    private @NonNull Formula right;
     
     /**
     * Creates a boolean disjunction (OR).
@@ -20,7 +23,7 @@ public final class Disjunction extends Formula {
     * @param left The left operand.
     * @param right The right operand.
     */
-    public Disjunction(Formula left, Formula right) {
+    public Disjunction(@NonNull Formula left, @NonNull Formula right) {
         this.left = left;
         this.right = right;
     }
@@ -30,7 +33,7 @@ public final class Disjunction extends Formula {
      * 
      * @return The left operand.
      */
-    public Formula getLeft() {
+    public @NonNull Formula getLeft() {
         return left;
     }
     
@@ -39,7 +42,7 @@ public final class Disjunction extends Formula {
      * 
      * @return The right operand.
      */
-    public Formula getRight() {
+    public @NonNull Formula getRight() {
         return right;
     }
     
@@ -49,7 +52,7 @@ public final class Disjunction extends Formula {
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         String leftStr = left.toString();
         if (!(left instanceof Disjunction) && left.getPrecedence() <= this.getPrecedence()) {
             leftStr = '(' + leftStr + ')';
@@ -64,7 +67,7 @@ public final class Disjunction extends Formula {
     }
     
     @Override
-    public void toString(StringBuffer result) {
+    public void toString(@NonNull StringBuffer result) {
         if (!(left instanceof Disjunction) && left.getPrecedence() <= this.getPrecedence()) {
             result.append('(');
             left.toString(result);
@@ -85,7 +88,7 @@ public final class Disjunction extends Formula {
     }
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (obj instanceof Disjunction) {
             Disjunction other = (Disjunction) obj;
             return left.equals(other.getLeft()) && right.equals(other.getRight());
@@ -104,12 +107,12 @@ public final class Disjunction extends Formula {
     }
     
     @Override
-    protected <T> T accept(IFormulaVisitor<T> visitor) {
+    protected <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
         return visitor.visitDisjunction(this);
     }
     
     @Override
-    protected void accept(IVoidFormulaVisitor visitor) {
+    protected void accept(@NonNull IVoidFormulaVisitor visitor) {
         visitor.visitDisjunction(this);
     }
     
