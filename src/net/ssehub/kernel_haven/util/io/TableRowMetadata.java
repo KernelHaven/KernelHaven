@@ -77,7 +77,7 @@ public class TableRowMetadata {
         
         try {
             int index = 0;
-           for (Method field : fields) {
+            for (Method field : fields) {
                 Object result = field.invoke(instance);
                 values[index++] = result;
             }

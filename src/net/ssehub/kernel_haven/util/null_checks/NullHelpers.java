@@ -18,6 +18,8 @@ public class NullHelpers {
      * Converts a {@link Nullable} (or undefined) value to a {@link NonNull} one. This method should only be called,
      * if the caller is sure that the value must be {@link NonNull}.
      * 
+     * @param <T> The type of the value to convert.
+     * 
      * @param value The value that should actually be {@link NonNull}.
      * @param msg An error message for the assertion if the value is <code>null</code>.
      * 
