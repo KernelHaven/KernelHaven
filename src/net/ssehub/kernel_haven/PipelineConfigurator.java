@@ -19,6 +19,8 @@ import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.provider.AbstractExtractor;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.PipelineArchiver;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelProvider;
 
@@ -35,7 +37,7 @@ public class PipelineConfigurator {
 
     private static final Logger LOGGER = Logger.get();
 
-    private static final PipelineConfigurator INSTANCE = new PipelineConfigurator();
+    private static final @NonNull PipelineConfigurator INSTANCE = new PipelineConfigurator();
 
     private Configuration config;
     
@@ -68,7 +70,7 @@ public class PipelineConfigurator {
      * 
      * @throws SetUpException If the config is invalid. 
      */
-    public void init(Configuration config) throws SetUpException {
+    public void init(@NonNull Configuration config) throws SetUpException {
         this.config = config;
     }
 
@@ -79,7 +81,7 @@ public class PipelineConfigurator {
      * 
      * @return The vm extractor.
      */
-    AbstractVariabilityModelExtractor getVmExtractor() {
+    @Nullable AbstractVariabilityModelExtractor getVmExtractor() {
         return vmExtractor;
     }
 
@@ -89,7 +91,7 @@ public class PipelineConfigurator {
      * 
      * @return The variability model provider.
      */
-    public VariabilityModelProvider getVmProvider() {
+    public @Nullable VariabilityModelProvider getVmProvider() {
         return vmProvider;
     }
 
@@ -100,7 +102,7 @@ public class PipelineConfigurator {
      * 
      * @return The bm extractor.
      */
-    AbstractBuildModelExtractor getBmExtractor() {
+    @Nullable AbstractBuildModelExtractor getBmExtractor() {
         return bmExtractor;
     }
 
@@ -110,7 +112,7 @@ public class PipelineConfigurator {
      * 
      * @return The build model provider.
      */
-    public BuildModelProvider getBmProvider() {
+    public @Nullable BuildModelProvider getBmProvider() {
         return bmProvider;
     }
 
@@ -121,7 +123,7 @@ public class PipelineConfigurator {
      * 
      * @return The cm extractor.
      */
-    AbstractCodeModelExtractor getCmExtractor() {
+    @Nullable AbstractCodeModelExtractor getCmExtractor() {
         return cmExtractor;
     }
 
@@ -131,17 +133,17 @@ public class PipelineConfigurator {
      * 
      * @return The code model provider.
      */
-    public CodeModelProvider getCmProvider() {
+    public @Nullable CodeModelProvider getCmProvider() {
         return cmProvider;
     }
 
     /**
      * Returns the analysis that was configured for this pipeline. This is
-     * <code>null</code> until. instantiateAnalysis() is called.
+     * <code>null</code> until instantiateAnalysis() is called.
      * 
      * @return The analysis.
      */
-    public IAnalysis getAnalysis() {
+    public @Nullable IAnalysis getAnalysis() {
         return analysis;
     }
 
@@ -155,7 +157,7 @@ public class PipelineConfigurator {
      *            
      * @return Whether the loading was successful or not.
      */
-    private boolean addJarToClasspath(File jarFile) {
+    private boolean addJarToClasspath(@NonNull File jarFile) {
         boolean status;
         try {
             URL url = jarFile.toURI().toURL();
@@ -183,7 +185,7 @@ public class PipelineConfigurator {
      *            the directory containing the jar files. Must not be null.
      * @return The number of successfully loaded jars.
      */
-    private int loadJarsFromDirectory(File dir) {
+    private int loadJarsFromDirectory(@NonNull File dir) {
         int numLoaded = 0;
         File[] jars = dir.listFiles((directory, fileName) -> fileName.toLowerCase().endsWith(".jar"));
         for (File jar : jars) {
@@ -227,8 +229,8 @@ public class PipelineConfigurator {
      * @throws SetUpException If loading or instantiating the extractor class fails.
      */
     @SuppressWarnings("unchecked")
-    private <E extends AbstractExtractor<?>> E instantiateExtractor(String extractorClassName,
-            String type) throws SetUpException {
+    private <E extends AbstractExtractor<?>> @NonNull E instantiateExtractor(@NonNull String extractorClassName,
+            @NonNull String type) throws SetUpException {
         
         E extractor;
         Class<E> extractorClass;
@@ -406,7 +408,7 @@ public class PipelineConfigurator {
      * 
      * @return The singleton instance.
      */
-    public static PipelineConfigurator instance() {
+    public static @NonNull PipelineConfigurator instance() {
         return INSTANCE;
     }
 

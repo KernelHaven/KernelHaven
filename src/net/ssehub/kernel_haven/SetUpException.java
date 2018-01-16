@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven;
 
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * An exception that is thrown if the setup of the pipeline fails.
  * 
@@ -22,7 +24,7 @@ public class SetUpException extends Exception {
      * @param message
      *            A message describing the failure.
      */
-    public SetUpException(String message) {
+    public SetUpException(@Nullable String message) {
         super(message);
     }
 
@@ -32,7 +34,7 @@ public class SetUpException extends Exception {
      * @param cause
      *            The exception that caused this exception.
      */
-    public SetUpException(Throwable cause) {
+    public SetUpException(@Nullable Throwable cause) {
         super(cause);
     }
     
@@ -49,7 +51,7 @@ public class SetUpException extends Exception {
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
      */
-    public SetUpException(String message, Throwable cause) {
+    public SetUpException(@Nullable String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 

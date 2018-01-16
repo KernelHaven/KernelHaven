@@ -1,6 +1,7 @@
 package net.ssehub.kernel_haven;
 
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A preparation that is executed before the analysis or extractors start. This preparation is created after the
@@ -19,6 +20,6 @@ public interface IPreparation {
      * 
      * @throws SetUpException If the preparation fails.
      */
-    public void run(Configuration config) throws SetUpException;
+    public void run(@NonNull Configuration config) throws SetUpException;
     
 }
