@@ -11,7 +11,7 @@ public class NullHelpers {
     /**
      * Don't allow any instances.
      */
-    public NullHelpers() {
+    private NullHelpers() {
     }
     
     /**
