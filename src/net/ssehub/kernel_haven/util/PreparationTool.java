@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * This tool is able to check the existence of auxiliary tools which are packed inside a JAr and shall also be unpacked.
@@ -26,7 +28,7 @@ public class PreparationTool {
      *     as file separators to be platform independent.
      * @param sourceInJar The destination inside the JAR archive, which shall be unpacked.
      */
-    protected void init(File destination, String executable, String sourceInJar) {
+    protected void init(@NonNull File destination, @Nullable String executable, @NonNull String sourceInJar) {
         this.destination = destination;
         this.executable = executable;
         this.sourceInJar = sourceInJar;

@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util;
 
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * Exception for unexpected structure of file-content.
  * 
@@ -24,7 +26,7 @@ public class FormatException extends Exception {
      * 
      * @param message The message to display.
      */
-    public FormatException(String message) {
+    public FormatException(@Nullable String message) {
         super(message);
     }
     
@@ -33,7 +35,7 @@ public class FormatException extends Exception {
      * 
      * @param cause The exception that caused this exception.
      */
-    public FormatException(Throwable cause) {
+    public FormatException(@Nullable Throwable cause) {
         super(cause);
     }
 }

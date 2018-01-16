@@ -8,6 +8,8 @@ import java.util.Set;
 
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A class for archiving an execution of KernelHaven.
@@ -18,11 +20,11 @@ public class PipelineArchiver {
     
     private static final Logger LOGGER = Logger.get();
     
-    private Configuration config;
+    private @NonNull Configuration config;
 
-    private Set<File> outputFiles;
+    private @Nullable Set<File> outputFiles;
     
-    private File kernelHavenJarOverride;
+    private @Nullable File kernelHavenJarOverride;
     
     private File relativeBase;
     
@@ -31,7 +33,7 @@ public class PipelineArchiver {
      * 
      * @param config The configuration of the pipeline.
      */
-    public PipelineArchiver(Configuration config) {
+    public PipelineArchiver(@NonNull Configuration config) {
         this.config = config;
     }
     
@@ -40,7 +42,7 @@ public class PipelineArchiver {
      * 
      * @param outputFiles The set of output files created by the analysis.
      */
-    public void setAnalysisOutputFiles(Set<File> outputFiles) {
+    public void setAnalysisOutputFiles(@Nullable Set<File> outputFiles) {
         this.outputFiles = outputFiles;
     }
     
@@ -49,7 +51,7 @@ public class PipelineArchiver {
      * 
      * @param kernelHavenJarOverride The kernelhaven jar to add.
      */
-    void setKernelHavenJarOverride(File kernelHavenJarOverride) {
+    void setKernelHavenJarOverride(@Nullable File kernelHavenJarOverride) {
         this.kernelHavenJarOverride = kernelHavenJarOverride;
     }
 
@@ -60,7 +62,7 @@ public class PipelineArchiver {
      * 
      * @throws IOException If creating the archive fails.
      */
-    public File archive() throws IOException {
+    public @NonNull File archive() throws IOException {
         LOGGER.logInfo("Archiving the pipeline...");
         
         File archiveTargetDir = config.getValue(DefaultSettings.ARCHIVE_DIR);

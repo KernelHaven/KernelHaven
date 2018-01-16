@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * Utility functions.
@@ -48,7 +50,9 @@ public class Util {
      * 
      * @throws SetUpException If creating the resource directory failed for some reason.
      */
-    public static File getExtractorResourceDir(Configuration config, Class<?> extractor) throws SetUpException {
+    public static @NonNull File getExtractorResourceDir(@NonNull Configuration config, @NonNull Class<?> extractor)
+            throws SetUpException {
+        
         File extractorResDir = new File(config.getValue(DefaultSettings.RESOURCE_DIR), extractor.getName());
         extractorResDir.mkdir();
         
@@ -71,7 +75,7 @@ public class Util {
      * @throws IOException
      *             If extracting the resource fails.
      */
-    public static File extractJarResourceToTemporaryFile(String resource) throws IOException {
+    public static @NonNull File extractJarResourceToTemporaryFile(@NonNull String resource) throws IOException {
         // split at dot, to find the file suffix
         int index = resource.lastIndexOf('.');
         File tempFile = File.createTempFile("resource", resource.substring(index));
@@ -94,7 +98,9 @@ public class Util {
      * @throws IOException
      *             If extracting the resource fails.
      */
-    public static void extractJarResourceToFile(String resource, File destination) throws IOException {
+    public static void extractJarResourceToFile(@NonNull String resource, @NonNull File destination)
+            throws IOException {
+        
         InputStream in = Util.class.getClassLoader().getResourceAsStream(resource);
 
         if (in == null) {
@@ -132,7 +138,7 @@ public class Util {
      * @throws IOException
      *             If reading the stream fails.
      */
-    public static String readStream(InputStream in) throws IOException {
+    public static @NonNull String readStream(@NonNull InputStream in) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         copyStream(in, out);
@@ -146,7 +152,7 @@ public class Util {
      *            The process to wait for. Must not be <code>null</code>.
      * @return The exit code of the process.
      */
-    public static int waitForProcess(Process process) {
+    public static int waitForProcess(@NonNull Process process) {
         return waitForProcess(process, 0);
     }
 
@@ -161,7 +167,7 @@ public class Util {
      *            should be used.
      * @return The exit code of the process, or <code>null</code> if the process was killed.
      */
-    public static Integer waitForProcess(Process process, long timeout) {
+    public static @Nullable Integer waitForProcess(@NonNull Process process, long timeout) {
         int returnValue = 0;
         boolean timeoutReached = false;
 
@@ -201,7 +207,9 @@ public class Util {
      * @throws IOException
      *             If executing the process or reading it's output fails.
      */
-    public static boolean executeProcess(ProcessBuilder processBuilder, String name) throws IOException {
+    public static boolean executeProcess(@NonNull ProcessBuilder processBuilder, @NonNull String name)
+            throws IOException {
+        
         Process process = processBuilder.start();
 
         BufferThread th1 = new BufferThread(process.getInputStream());
@@ -251,8 +259,9 @@ public class Util {
      * @throws IOException
      *             If executing the process or reading it's output fails.
      */
-    public static boolean executeProcess(ProcessBuilder processBuilder, String name, OutputStream stdout,
-            OutputStream stderr, long timeout) throws IOException {
+    public static boolean executeProcess(@NonNull ProcessBuilder processBuilder, @NonNull String name,
+            @NonNull OutputStream stdout, @NonNull OutputStream stderr, long timeout) throws IOException {
+        
         Process process = processBuilder.start();
 
         BufferThread th1 = new BufferThread(process.getInputStream(), stdout);
@@ -330,7 +339,7 @@ public class Util {
      * @throws IOException
      *             If deleting the folder fails.
      */
-    public static void deleteFolder(File folder) throws IOException {
+    public static void deleteFolder(@NonNull File folder) throws IOException {
         Files.walk(folder.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
     }
 
@@ -338,13 +347,13 @@ public class Util {
      * Copies the contents of one file to another file.
      * 
      * @param src
-     *            The source file, to read the contents from. If null IOException.
+     *            The source file, to read the contents from. Not <code>null</code>.
      * @param dst
-     *            The destination file, to write the contents to. If null IOException.
+     *            The destination file, to write the contents to. Not <code>null</code>.
      * @throws IOException
      *             If reading or writing operations fail.
      */
-    public static void copyFile(File src, File dst) throws IOException {
+    public static void copyFile(@NonNull File src, @NonNull File dst) throws IOException {
         FileInputStream in = null;
         FileOutputStream out = null;
 
@@ -383,7 +392,7 @@ public class Util {
      * @throws IOException
      *             If reading or writing throws an exception.
      */
-    private static void copyStream(InputStream in, OutputStream out) throws IOException {
+    private static void copyStream(@NonNull InputStream in, @NonNull OutputStream out) throws IOException {
         final int bufferSize = 1024;
 
         byte[] buffer = new byte[bufferSize];
@@ -403,7 +412,7 @@ public class Util {
      * 
      * @return A string representing the amount of bytes.
      */
-    public static String formatBytes(long amount) {
+    public static @NonNull String formatBytes(long amount) {
 
         int i = 0;
         String[] suffix = {"B", "KiB", "MiB", "GiB", "TiB"};
@@ -442,7 +451,7 @@ public class Util {
      * @see <a href="https://stackoverflow.com/a/18417382">https://stackoverflow.com/a/18417382</a> for determining
      * rules.
      */
-    public static OSType determineOS() {
+    public static @Nullable OSType determineOS() {
         OSType result = null;
         String os = System.getProperty("os.name", "generic").toLowerCase();
         // Checks only if the JRE is a 64 Bit version, but it's still possible to install 32 Bit Java on 64 Bit OS.
@@ -486,7 +495,7 @@ public class Util {
      * 
      * @throws IOException If retrieving the canonical file form is not possible. See {@link File#getCanonicalFile()}.
      */
-    public static boolean isNestedInDirectory(File dir, File file) throws IOException {
+    public static boolean isNestedInDirectory(@NonNull File dir, @NonNull File file) throws IOException {
         dir = dir.getCanonicalFile();
         file = file.getCanonicalFile();
         

@@ -3,6 +3,8 @@ package net.ssehub.kernel_haven.util;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * A time-stamp for creating filenames that want to identify which execution created them.
  * The global singleton instance  ensures that all time-stamps originating from one execution are equal.
@@ -14,17 +16,17 @@ public class Timestamp {
     /**
      * Global time-stamp to ensure that files created by one execution all get the same time-stamp.
      */
-    public static final Timestamp INSTANCE = new Timestamp();
+    public static final @NonNull Timestamp INSTANCE = new Timestamp();
     
     /**
      * Time-stamp for normal output.
      */
-    private String timestamp;
+    private @NonNull String timestamp;
     
     /**
      * Time-stamp for filenames (no spaces or colons).
      */
-    private String filestamp;
+    private @NonNull String filestamp;
     
     /**
      * Creates a time-stamp for the current time and date.
@@ -42,7 +44,7 @@ public class Timestamp {
      * 
      * @return This time-stamp as a string.
      */
-    public String getTimestamp() {
+    public @NonNull String getTimestamp() {
         return timestamp;
     }
     
@@ -51,7 +53,7 @@ public class Timestamp {
      * 
      * @return This time-stamp as a string to be used in time-stamps.
      */
-    public String getFileTimestamp() {
+    public @NonNull String getFileTimestamp() {
         return filestamp;
     }
     
@@ -64,12 +66,12 @@ public class Timestamp {
      * @param suffix The suffix to be appended after a '.'.
      * @return A filename containing this time-stamp.
      */
-    public String getFilename(String prefix, String suffix) {
+    public @NonNull String getFilename(@NonNull String prefix, @NonNull String suffix) {
         return prefix + '_' + filestamp + '.' + suffix;
     }
     
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return getTimestamp();
     }
 

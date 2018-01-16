@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.TimeoutException;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * A blocking queue that can send data from one thread to another. One thread can push data into the queue, that will
  * be read from the other thread. If the queue is currently empty, the reading thread will wait until there is data
@@ -71,7 +74,7 @@ public class BlockingQueue<T> implements Iterable<T> {
      * @return The next element in the queue, or <code>null</code> if the other thread
      *      signaled that it does not want to insert any more data.
      */
-    public T get() {
+    public @Nullable T get() {
         T result = null;
         
         try {
@@ -94,7 +97,7 @@ public class BlockingQueue<T> implements Iterable<T> {
      *      
      * @throws TimeoutException If the timeout exceeded.
      */
-    public T get(long timeout) throws TimeoutException {
+    public @Nullable T get(long timeout) throws TimeoutException {
         T result = null;
         
         synchronized (internalQueue) {
@@ -127,7 +130,7 @@ public class BlockingQueue<T> implements Iterable<T> {
      * @return The next element in the queue, or <code>null</code> if the other thread
      *      signaled that it does not want to insert any more data.
      */
-    public T peek() {
+    public @Nullable T peek() {
         T result = null;
         
         try {
@@ -150,7 +153,7 @@ public class BlockingQueue<T> implements Iterable<T> {
      *      
      * @throws TimeoutException If the timeout exceeded.
      */
-    public T peek(long timeout) throws TimeoutException {
+    public @Nullable T peek(long timeout) throws TimeoutException {
         T result = null;
         
         synchronized (internalQueue) {
@@ -183,7 +186,7 @@ public class BlockingQueue<T> implements Iterable<T> {
      * 
      * @throws IllegalStateException If {@link #end()} has already been called.
      */
-    public void add(T element) {
+    public void add(@NonNull T element) {
         synchronized (internalQueue) {
             
             if (end) {
@@ -219,7 +222,7 @@ public class BlockingQueue<T> implements Iterable<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public @NonNull Iterator<T> iterator() {
         return new Iterator<T>() {
 
             @Override

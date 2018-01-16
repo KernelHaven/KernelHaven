@@ -12,6 +12,8 @@ import java.util.List;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A thread-safe singleton logger.
@@ -31,7 +33,7 @@ public class Logger {
         INFO("info", 2),
         DEBUG("debug", 3);
         
-        private String str;
+        private @NonNull String str;
         
         private int level;
         
@@ -41,7 +43,7 @@ public class Logger {
          * @param str The string representation of this log level.
          * @param level The level. All log levels with values <= this value will be logged.
          */
-        private Level(String str, int level) {
+        private Level(@NonNull String str, int level) {
             this.str = str;
             this.level = level;
         }
@@ -52,12 +54,12 @@ public class Logger {
          * @param other The other level to check.
          * @return Whether the other level will be logged if this level is set.
          */
-        public boolean isLog(Level other) {
+        public boolean isLog(@NonNull Level other) {
             return this.level >= other.level;
         }
         
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return str;
         }
         
@@ -147,7 +149,7 @@ public class Logger {
      *             valid directory.
      */
 
-    public void setup(Configuration config) throws SetUpException {
+    public void setup(@NonNull Configuration config) throws SetUpException {
         this.fileLogging = config.getValue(DefaultSettings.LOG_FILE);
         this.consoleLogging = config.getValue(DefaultSettings.LOG_CONSOLE);
         this.level = config.getValue(DefaultSettings.LOG_LEVEL);
@@ -200,7 +202,7 @@ public class Logger {
      *            The output target of the logger. The logger will only write to
      *            it if it obtains a lock on it. Must not be null.
      */
-    public static void init(OutputStream target) {
+    public static void init(@NonNull OutputStream target) {
         init(target, Charset.forName("UTF-8"));
     }
 
@@ -213,7 +215,7 @@ public class Logger {
      * @param charset
      *            The charset the logger writes in. Must not be null.
      */
-    public static void init(OutputStream target, Charset charset) {
+    public static void init(@NonNull OutputStream target, @NonNull Charset charset) {
         instance = new Logger(charset);
         instance.targets.add(new Target(target));
     }
@@ -223,7 +225,7 @@ public class Logger {
      *
      * @return the logger
      */
-    public static Logger get() {
+    public static @Nullable Logger get() {
         return instance;
     }
     
@@ -232,7 +234,7 @@ public class Logger {
      * 
      * @param level The new log level.
      */
-    public void setLevel(Level level) {
+    public void setLevel(@NonNull Level level) {
         this.level = level;
     }
 
@@ -265,7 +267,7 @@ public class Logger {
      *            The lines that are written together as one log entry. Must not
      *            be null.
      */
-    private void log(Level level, String... lines) {
+    private void log(@NonNull Level level, @NonNull String... lines) {
         if (!this.level.isLog(level)) {
             return;
         }
@@ -325,7 +327,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logInfo(String... lines) {
+    public void logInfo(@NonNull String... lines) {
         log(Level.INFO, lines);
     }
 
@@ -335,7 +337,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logDebug(String... lines) {
+    public void logDebug(@NonNull String... lines) {
         log(Level.DEBUG, lines);
     }
 
@@ -345,7 +347,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry.
      */
-    public void logWarning(String... lines) {
+    public void logWarning(@NonNull String... lines) {
         log(Level.WARNING, lines);
     }
 
@@ -355,7 +357,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logError(String... lines) {
+    public void logError(@NonNull String... lines) {
         log(Level.ERROR, lines);
     }
 
@@ -371,7 +373,7 @@ public class Logger {
      *            The output target. The lines are appended to this list. Must
      *            not be null.
      */
-    private void exceptionToString(Throwable exc, List<String> lines) {
+    private void exceptionToString(@NonNull Throwable exc, @NonNull List<String> lines) {
         lines.add(exc.toString());
 
         StackTraceElement[] stack = exc.getStackTrace();
@@ -397,7 +399,7 @@ public class Logger {
      *            The exception to log. A stack trace will be logged. Must not
      *            be null.
      */
-    private void logException(Level level, String comment, Throwable exc) {
+    private void logException(@NonNull Level level, @NonNull String comment, @NonNull Throwable exc) {
         List<String> lines = new ArrayList<>(exc.getStackTrace().length + 2);
         lines.add(comment + ":");
         exceptionToString(exc, lines);
@@ -415,7 +417,7 @@ public class Logger {
      *            The exception to log. A stack trace will be logged. Must not
      *            be null.
      */
-    public void logException(String comment, Throwable exc) {
+    public void logException(@NonNull String comment, @NonNull Throwable exc) {
         logException(Level.ERROR, comment, exc);
     }
     
@@ -430,7 +432,7 @@ public class Logger {
      *            The exception to log. A stack trace will be logged. Must not
      *            be null.
      */
-    public void logExceptionDebug(String comment, Throwable exc) {
+    public void logExceptionDebug(@NonNull String comment, @NonNull Throwable exc) {
         logException(Level.DEBUG, comment, exc);
     }
     
@@ -445,7 +447,7 @@ public class Logger {
      *            The exception to log. A stack trace will be logged. Must not
      *            be null.
      */
-    public void logExceptionWarning(String comment, Throwable exc) {
+    public void logExceptionWarning(@NonNull String comment, @NonNull Throwable exc) {
         logException(Level.WARNING, comment, exc);
     }
     
@@ -460,7 +462,7 @@ public class Logger {
      *            The exception to log. A stack trace will be logged. Must not
      *            be null.
      */
-    public void logExceptionInfo(String comment, Throwable exc) {
+    public void logExceptionInfo(@NonNull String comment, @NonNull Throwable exc) {
         logException(Level.INFO, comment, exc);
     }
     
@@ -469,7 +471,7 @@ public class Logger {
      * 
      * @return the file used as logging target. May be null if not logging to a file.
      */
-    public File getLogFile() {
+    public @Nullable File getLogFile() {
         return logFile;
     }
 

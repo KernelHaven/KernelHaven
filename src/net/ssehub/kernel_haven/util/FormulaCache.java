@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.ssehub.kernel_haven.util.logic.Formula;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Caches transparently serialized formulas.<br/>
@@ -24,7 +25,7 @@ public class FormulaCache {
      * @param formula The formula to serialize.
      * @return The serialized form ({@link Formula#toString()}).
      */
-    public String getSerializedFormula(Formula formula) {
+    public @NonNull String getSerializedFormula(@NonNull Formula formula) {
         String serialized = cache.get(formula);
         if (null == serialized) {
             // Serialize formula

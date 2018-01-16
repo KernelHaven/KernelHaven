@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * Wrapper for accessing files inside a zip archive.
  * 
@@ -37,7 +39,7 @@ public class ZipArchive implements Closeable {
      * 
      * @throws IOException If creating the empty archive fails.
      */
-    public ZipArchive(File location) throws IOException {
+    public ZipArchive(@NonNull File location) throws IOException {
         URI uri = URI.create("jar:" + location.toURI().normalize());
 
         // create empty zip file if target does not exist
@@ -59,7 +61,7 @@ public class ZipArchive implements Closeable {
      * 
      * @throws IOException If reading the zip archive fails.
      */
-    public boolean containsFile(File file) {
+    public boolean containsFile(@NonNull File file) {
         Path inZip = archive.getPath(file.getPath());
         return Files.isRegularFile(inZip);
     }
@@ -71,7 +73,7 @@ public class ZipArchive implements Closeable {
      * 
      * @throws IOException If collecting the filenames fails. 
      */
-    public Set<File> listFiles() throws IOException {
+    public @NonNull Set<File> listFiles() throws IOException {
         return Files.walk(archive.getPath("/"))
                 // we only want files, not directories
                 .filter((path) -> Files.isRegularFile(path))
@@ -90,7 +92,7 @@ public class ZipArchive implements Closeable {
      * @throws FileNotFoundException If the archive does not contain the given file.
      * @throws IOException If reading the file fails.
      */
-    public String readFile(File file) throws FileNotFoundException, IOException {
+    public @NonNull String readFile(@NonNull File file) throws FileNotFoundException, IOException {
         InputStream in = getInputStream(file);
         String content = Util.readStream(in);
         in.close();
@@ -107,7 +109,7 @@ public class ZipArchive implements Closeable {
      * 
      * @throws IOException If opening the input stream fails.
      */
-    public InputStream getInputStream(File file) throws IOException {
+    public @NonNull InputStream getInputStream(@NonNull File file) throws IOException {
         if (!containsFile(file)) {
             throw new FileNotFoundException("Archive does not contain file " + file);
         }
@@ -125,7 +127,7 @@ public class ZipArchive implements Closeable {
      * 
      * @throws IOException If reading the file size fails.
      */
-    public long getSize(File file) throws IOException {
+    public long getSize(@NonNull File file) throws IOException {
         if (!containsFile(file)) {
             throw new FileNotFoundException("Archive does not contain file " + file);
         }
@@ -144,7 +146,7 @@ public class ZipArchive implements Closeable {
      * 
      * @throws IOException If creating the stream fails.
      */
-    public OutputStream getOutputStream(File file) throws IOException {
+    public @NonNull OutputStream getOutputStream(@NonNull File file) throws IOException {
         Path inZip = archive.getPath(file.getPath());
         if (inZip.getParent() != null) {
             Files.createDirectories(inZip.getParent());
@@ -161,7 +163,7 @@ public class ZipArchive implements Closeable {
      * 
      * @throws IOException If writing the file fails.
      */
-    public void writeFile(File file, String content) throws IOException {
+    public void writeFile(@NonNull File file, @NonNull String content) throws IOException {
         OutputStream out = getOutputStream(file);
         out.write(content.getBytes(Charset.forName("UTF-8")));
         out.close();
@@ -175,7 +177,7 @@ public class ZipArchive implements Closeable {
      * @throws FileNotFoundException If the given file does not exist.
      * @throws IOException If an IO error occurs.
      */
-    public void deleteFile(File file) throws FileNotFoundException, IOException {
+    public void deleteFile(@NonNull File file) throws FileNotFoundException, IOException {
         if (!containsFile(file)) {
             throw new FileNotFoundException("Archive does not contain file " + file);
         }
@@ -193,7 +195,7 @@ public class ZipArchive implements Closeable {
      * @throws FileNotFoundException If <code>toCopy</code> is not found.
      * @throws IOException If reading or writing the files fails.
      */
-    public void copyFileToArchive(File file, File toCopy) throws FileNotFoundException, IOException {
+    public void copyFileToArchive(@NonNull File file, @NonNull File toCopy) throws FileNotFoundException, IOException {
         Path inZip = archive.getPath(file.getPath());
         if (inZip.getParent() != null) {
             Files.createDirectories(inZip.getParent());
@@ -213,7 +215,7 @@ public class ZipArchive implements Closeable {
      * @throws FileNotFoundException If the given file in the archive does not exist.
      * @throws IOException If reading or writing the files fails.
      */
-    public void extract(File file, File target) throws FileNotFoundException, IOException {
+    public void extract(@NonNull File file, @NonNull File target) throws FileNotFoundException, IOException {
         Path inZip = archive.getPath(file.getPath());
         Files.copy(inZip, target.toPath());
     }

@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util;
 
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * Exception thrown if an extractor fails.
  * 
@@ -21,7 +23,7 @@ public class ExtractorException extends Exception {
      * 
      * @param message The message to show.
      */
-    public ExtractorException(String message) {
+    public ExtractorException(@Nullable String message) {
         super(message);
     }
     
@@ -30,7 +32,7 @@ public class ExtractorException extends Exception {
      * 
      * @param cause The exception that caused the failure.
      */
-    public ExtractorException(Throwable cause) {
+    public ExtractorException(@Nullable Throwable cause) {
         super(cause);
     }
     
@@ -41,7 +43,7 @@ public class ExtractorException extends Exception {
      * @param message The message to show.
      * @param cause The exception that caused the failure.
      */
-    public ExtractorException(String message, Throwable cause) {
+    public ExtractorException(@Nullable String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 
