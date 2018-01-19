@@ -270,7 +270,7 @@ public class Logger {
      *            The lines that are written together as one log entry. Must not
      *            be null.
      */
-    private void log(@NonNull Level level, @NonNull String @NonNull ... lines) {
+    private void log(@NonNull Level level, String @NonNull ... lines) {
         if (!this.level.isLog(level)) {
             return;
         }
@@ -330,7 +330,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logInfo(@NonNull String @NonNull ... lines) {
+    public void logInfo(String @NonNull ... lines) {
         log(Level.INFO, lines);
     }
 
@@ -340,7 +340,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logDebug(@NonNull String @NonNull ... lines) {
+    public void logDebug(String @NonNull ... lines) {
         log(Level.DEBUG, lines);
     }
 
@@ -350,7 +350,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry.
      */
-    public void logWarning(@NonNull String @NonNull ... lines) {
+    public void logWarning(String @NonNull ... lines) {
         log(Level.WARNING, lines);
     }
 
@@ -360,7 +360,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logError(@NonNull String @NonNull ... lines) {
+    public void logError(String @NonNull ... lines) {
         log(Level.ERROR, lines);
     }
 
@@ -399,14 +399,20 @@ public class Logger {
      *            A comment that is displayed above the exception. A ":" is
      *            appended to it by this method. Must not be null.
      * @param exc
-     *            The exception to log. A stack trace will be logged. Must not
-     *            be null.
+     *            The exception to log. A stack trace will be logged.
      */
-    private void logException(@NonNull Level level, @NonNull String comment, @NonNull Throwable exc) {
-        List<String> lines = new ArrayList<>(exc.getStackTrace().length + 2);
-        lines.add(comment + ":");
-        exceptionToString(exc, lines);
-        log(level, notNullArrayWithNotNullContent(lines.toArray(new  String[0])));
+    private void logException(@NonNull Level level, @NonNull String comment, @Nullable Throwable exc) {
+        List<String> lines;
+        if (exc != null) {
+            lines = new ArrayList<>(exc.getStackTrace().length + 2);
+            lines.add(comment + ":");
+            exceptionToString(exc, lines);
+            
+        } else {
+            lines = new ArrayList<>(1);
+            lines.add(comment + ": <exception is null>");
+        }
+        log(level, notNullArrayWithNotNullContent(lines.toArray(new String[0])));
     }
 
     /**
@@ -417,10 +423,9 @@ public class Logger {
      *            A comment that is displayed above the exception. A ":" is
      *            appended to it by this method. Must not be null.
      * @param exc
-     *            The exception to log. A stack trace will be logged. Must not
-     *            be null.
+     *            The exception to log. A stack trace will be logged.
      */
-    public void logException(@NonNull String comment, @NonNull Throwable exc) {
+    public void logException(@NonNull String comment, @Nullable Throwable exc) {
         logException(Level.ERROR, comment, exc);
     }
     
@@ -432,10 +437,9 @@ public class Logger {
      *            A comment that is displayed above the exception. A ":" is
      *            appended to it by this method. Must not be null.
      * @param exc
-     *            The exception to log. A stack trace will be logged. Must not
-     *            be null.
+     *            The exception to log. A stack trace will be logged.
      */
-    public void logExceptionDebug(@NonNull String comment, @NonNull Throwable exc) {
+    public void logExceptionDebug(@NonNull String comment, @Nullable Throwable exc) {
         logException(Level.DEBUG, comment, exc);
     }
     
@@ -447,10 +451,9 @@ public class Logger {
      *            A comment that is displayed above the exception. A ":" is
      *            appended to it by this method. Must not be null.
      * @param exc
-     *            The exception to log. A stack trace will be logged. Must not
-     *            be null.
+     *            The exception to log. A stack trace will be logged.
      */
-    public void logExceptionWarning(@NonNull String comment, @NonNull Throwable exc) {
+    public void logExceptionWarning(@NonNull String comment, @Nullable Throwable exc) {
         logException(Level.WARNING, comment, exc);
     }
     
@@ -462,10 +465,9 @@ public class Logger {
      *            A comment that is displayed above the exception. A ":" is
      *            appended to it by this method. Must not be null.
      * @param exc
-     *            The exception to log. A stack trace will be logged. Must not
-     *            be null.
+     *            The exception to log. A stack trace will be logged.
      */
-    public void logExceptionInfo(@NonNull String comment, @NonNull Throwable exc) {
+    public void logExceptionInfo(@NonNull String comment, @Nullable Throwable exc) {
         logException(Level.INFO, comment, exc);
     }
     

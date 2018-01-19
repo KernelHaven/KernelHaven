@@ -118,6 +118,21 @@ public class LoggerTest {
             Assert.assertTrue(lines[i].trim().startsWith("at "));
         }
     }
+    
+    /**
+     * Test logging of <code>null</code> exceptions.
+     */
+    @Test
+    public void testLogNullException() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Logger.init(out);
+        Logger l = Logger.get(); // just a shortcut
+        
+        l.logException("This is the comment", null);
+        
+        String[] lines = out.toString().split("\n");
+        Assert.assertThat(lines[0], endsWith("This is the comment: <exception is null>"));
+    }
 
     /**
      * Test logging of exception with Cause.
