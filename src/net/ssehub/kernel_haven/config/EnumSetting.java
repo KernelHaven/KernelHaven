@@ -2,6 +2,9 @@ package net.ssehub.kernel_haven.config;
 
 import static net.ssehub.kernel_haven.config.Setting.Type.ENUM;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * A setting for values based on a Java enum.
  *
@@ -11,7 +14,7 @@ import static net.ssehub.kernel_haven.config.Setting.Type.ENUM;
  */
 public class EnumSetting<E extends Enum<E>> extends Setting<E> {
 
-    private Class<E> enumClass;
+    private @NonNull Class<E> enumClass;
     
     /**
      * Creates an enum setting.
@@ -26,7 +29,9 @@ public class EnumSetting<E extends Enum<E>> extends Setting<E> {
      * @param description The description of this setting. Currently not used, but should be provided for documentation
      *      purposes.
      */
-    public EnumSetting(String key, Class<E> enumClass, boolean mandatory, E defaultValue, String description) {
+    public EnumSetting(@NonNull String key, @NonNull Class<E> enumClass, boolean mandatory, @Nullable E defaultValue,
+            @NonNull String description) {
+        
         super(key, ENUM, mandatory, defaultValue != null ? defaultValue.name() : null, description);
         this.enumClass = enumClass;
     }
@@ -36,7 +41,7 @@ public class EnumSetting<E extends Enum<E>> extends Setting<E> {
      * 
      * @return The enum class.
      */
-    public Class<E> getEnumClass() {
+    public @NonNull Class<E> getEnumClass() {
         return enumClass;
     }
 

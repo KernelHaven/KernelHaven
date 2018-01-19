@@ -13,6 +13,8 @@ import java.util.regex.PatternSyntaxException;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Setting.Type;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * The global configuration. This class holds the complete user configuration that defines the pipeline.
@@ -22,13 +24,13 @@ import net.ssehub.kernel_haven.config.Setting.Type;
  */
 public class Configuration {
     
-    private Properties properties;
+    private @NonNull Properties properties;
     
-    private File propertyFile;
+    private @Nullable File propertyFile;
     
-    private Map<String, Object> values;
+    private @NonNull Map<String, Object> values;
     
-    private Map<String, Setting<?>> settings;
+    private @NonNull Map<String, Setting<?>> settings;
     
     private boolean doChecks;
     
@@ -37,7 +39,7 @@ public class Configuration {
      * 
      * @param propreties The properties. Must not be <code>null</code>.
      */
-    public Configuration(Properties propreties) {
+    public Configuration(@NonNull Properties propreties) {
         this.properties = propreties;
         this.values = new HashMap<>();
         this.settings = new HashMap<>();
@@ -51,7 +53,7 @@ public class Configuration {
      * @param propreties The properties. Must not be <code>null</code>.
      * @param doChecks Whether to check constraints for setting values or not.
      */
-    protected Configuration(Properties propreties, boolean doChecks) {
+    protected Configuration(@NonNull Properties propreties, boolean doChecks) {
         this.properties = propreties;
         this.values = new HashMap<>();
         this.settings = new HashMap<>();
@@ -65,7 +67,7 @@ public class Configuration {
      * 
      * @throws SetUpException If some properties are invalid or the file cannot be read.
      */
-    public Configuration(File propertyFile) throws SetUpException {
+    public Configuration(@NonNull File propertyFile) throws SetUpException {
         this.properties = new Properties();
         this.values = new HashMap<>();
         this.settings = new HashMap<>();
@@ -88,7 +90,7 @@ public class Configuration {
      * @throws SetUpException If the constraints for a setting are not satisfied, or a different setting with a same
      *      key was already registered.
      */
-    public void registerSetting(Setting<?> setting) throws SetUpException {
+    public void registerSetting(@NonNull Setting<?> setting) throws SetUpException {
         String key = setting.getKey();
         if (settings.containsKey(key)) {
             if (settings.get(key) != setting) {
@@ -121,7 +123,7 @@ public class Configuration {
      * @throws IllegalArgumentException If the setting has not been registered before this call.
      */
     @SuppressWarnings("unchecked")
-    public <T> T getValue(Setting<T> setting) throws IllegalArgumentException {
+    public <T> T getValue(@NonNull Setting<T> setting) throws IllegalArgumentException {
         if (!values.containsKey(setting.getKey())) {
             throw new IllegalArgumentException("Can't access setting that is not yet registered");
         }
@@ -138,7 +140,7 @@ public class Configuration {
      * 
      * @throws IllegalArgumentException If the setting has not been registered before this call.
      */
-    public <T> void setValue(Setting<T> setting, T value) throws IllegalArgumentException {
+    public <T> void setValue(@NonNull Setting<T> setting, @Nullable T value) throws IllegalArgumentException {
         if (!values.containsKey(setting.getKey())) {
             throw new IllegalArgumentException("Can't set setting that is not yet registered");
         }
@@ -153,7 +155,7 @@ public class Configuration {
      * 
      * @throws SetUpException If any constraints of the setting are violated.
      */
-    private Object readValue(Setting<?> setting) throws SetUpException {
+    private @Nullable Object readValue(@NonNull Setting<?> setting) throws SetUpException {
         Object result;
         String key = setting.getKey();
         String value = properties.getProperty(key, setting.getDefaultValue());
@@ -224,7 +226,7 @@ public class Configuration {
      * @param setting The setting to read.
      * @return The read list.
      */
-    private List<String> readSettingList(Setting<?> setting) {
+    private @NonNull List<String> readSettingList(@NonNull Setting<?> setting) {
         List<String> result = new LinkedList<>();
         int index = 0;
         String baseKey = setting.getKey();
@@ -246,7 +248,7 @@ public class Configuration {
      * 
      * @throws SetUpException If reading the enum value fails.
      */
-    private Object readEnumSetting(Setting<?> setting) throws SetUpException {
+    private @Nullable Object readEnumSetting(@NonNull Setting<?> setting) throws SetUpException {
         String key = setting.getKey();
         
         if (!(setting instanceof EnumSetting)) {
@@ -284,7 +286,7 @@ public class Configuration {
      * @return The value set for the key, or <code>null</code> if not specified.
      */
     @Deprecated
-    public String getProperty(String key) {
+    public @Nullable String getProperty(@NonNull String key) {
         return properties.getProperty(key);
     }
     
@@ -296,16 +298,16 @@ public class Configuration {
      * @return The value set by the user, or the default value.
      */
     @Deprecated
-    public String getProperty(String key, String defaultValue) {
+    public @NonNull String getProperty(@NonNull String key, @NonNull String defaultValue) {
         return properties.getProperty(key, defaultValue);
     }
     
     /**
      * Returns the file that this configuration was created with.
      * 
-     * @return The file with the properties; never <code>null</code>.
+     * @return The file with the properties.
      */
-    public File getPropertyFile() {
+    public @Nullable File getPropertyFile() {
         return propertyFile;
     }
     
@@ -314,7 +316,7 @@ public class Configuration {
      * 
      * @param propertyFile The property file.
      */
-    protected void setPropertyFile(File propertyFile) {
+    protected void setPropertyFile(@Nullable File propertyFile) {
         this.propertyFile = propertyFile;
     }
     

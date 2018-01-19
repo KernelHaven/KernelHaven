@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * A single setting in the configuration. This holds the property key and other useful information. Instances of
  * this are registered in a {@link Configuration} object. After that, the values can accessed through this instance of
@@ -79,15 +82,15 @@ public class Setting<T> {
         
     }
     
-    private String key;
+    private @NonNull String key;
     
-    private Type type;
+    private @NonNull Type type;
     
     private boolean mandatory;
     
-    private String defaultValue;
+    private @Nullable String defaultValue;
     
-    private String description;
+    private @NonNull String description;
 
     /**
      * Creates a new setting.
@@ -103,7 +106,9 @@ public class Setting<T> {
      * @param description The description of this setting. Currently not used, but should be provided for documentation
      *      purposes.
      */
-    public Setting(String key, Type type, boolean mandatory, String defaultValue, String description) {
+    public Setting(@NonNull String key, @NonNull Type type, boolean mandatory, @Nullable String defaultValue,
+            @NonNull String description) {
+        
         this.key = key;
         this.type = type;
         this.mandatory = mandatory;
@@ -116,7 +121,7 @@ public class Setting<T> {
      * 
      * @return The key that this setting is specified as in the properties.
      */
-    public String getKey() {
+    public @NonNull String getKey() {
         return key;
     }
     
@@ -126,7 +131,7 @@ public class Setting<T> {
      * 
      * @return The type of setting.
      */
-    public Type getType() {
+    public @NonNull Type getType() {
         return type;
     }
     
@@ -144,7 +149,7 @@ public class Setting<T> {
      * 
      * @return The default value; <code>null</code> if no default value should be used.
      */
-    public String getDefaultValue() {
+    public @Nullable String getDefaultValue() {
         return defaultValue;
     }
     
@@ -153,12 +158,12 @@ public class Setting<T> {
      * 
      * @return The description text. May contain line breaks.
      */
-    public String getDescription() {
+    public @NonNull String getDescription() {
         return description;
     }
     
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return "Setting(" + key + ")"; 
     }
 
