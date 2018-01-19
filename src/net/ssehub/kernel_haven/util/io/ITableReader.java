@@ -34,12 +34,14 @@ public interface ITableReader extends Closeable {
      * @throws IOException If reading the file fails.
      */
     public default @NonNull String @NonNull [] @NonNull [] readFull() throws IOException {
-        List<String[]> rows = new LinkedList<String[]>();
+        List<@NonNull String[]> rows = new LinkedList<>();
         String[] row;
         while ((row = readNextRow()) != null) {
             rows.add(row);
         }
-        return rows.toArray(new String[0][]);
+        @SuppressWarnings("null")
+        @NonNull String @NonNull [] @NonNull [] result = rows.toArray(new String[0][]);
+        return result;
     }
     
     /**
@@ -74,7 +76,7 @@ public interface ITableReader extends Closeable {
      */
     public default <T> T readAsObject(@NonNull Factory<T> factory) throws IOException, FormatException {
         T result = null;
-        String[] row = readNextRow();
+        @NonNull String[] row = readNextRow();
         if (row != null) {
             result = factory.create(row);
         }

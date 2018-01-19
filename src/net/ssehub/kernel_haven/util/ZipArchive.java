@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,13 +76,15 @@ public class ZipArchive implements Closeable {
      * @throws IOException If collecting the filenames fails. 
      */
     public @NonNull Set<File> listFiles() throws IOException {
-        return Files.walk(archive.getPath("/"))
+        Set<File> result = Files.walk(archive.getPath("/"))
                 // we only want files, not directories
                 .filter((path) -> Files.isRegularFile(path))
                 // convert Path to File (and remove leading '/')
                 .map((path) -> new File(path.toString().substring(1)))
                 // collect into set
                 .collect(Collectors.toSet());
+        
+        return notNull(result);
     }
     
     /**
@@ -116,7 +120,7 @@ public class ZipArchive implements Closeable {
         
         Path inZip = archive.getPath(file.getPath());
         
-        return Files.newInputStream(inZip);
+        return notNull(Files.newInputStream(inZip));
     }
     
     /**
@@ -152,7 +156,7 @@ public class ZipArchive implements Closeable {
             Files.createDirectories(inZip.getParent());
         }
         
-        return Files.newOutputStream(inZip, StandardOpenOption.CREATE);
+        return notNull(Files.newOutputStream(inZip, StandardOpenOption.CREATE));
     }
     
     /**

@@ -27,7 +27,7 @@ public class NullHelpers {
      * 
      * @throws AssertionError If the value is <code>null</code>.
      */
-    public static <T> @NonNull T notNull(@Nullable T value, @Nullable String msg) throws AssertionError {
+    public static final <T> @NonNull T notNull(@Nullable T value, @Nullable String msg) throws AssertionError {
         if (value == null) {
             throw new AssertionError(msg);
         }
@@ -46,7 +46,7 @@ public class NullHelpers {
      * 
      * @throws AssertionError If the value is <code>null</code>.
      */
-    public static <T> @NonNull T notNull(@Nullable T value) throws AssertionError {
+    public static final <T> @NonNull T notNull(@Nullable T value) throws AssertionError {
         if (value == null) {
             throw new AssertionError("Supplied value is null, but was expected not null");
         }
@@ -61,7 +61,7 @@ public class NullHelpers {
      * @param value The value that may be <code>null</code>.
      * @return The {@link Nullable} annotated value.
      */
-    public static <T> @Nullable T maybeNull(T value) {
+    public static final <T> @Nullable T maybeNull(T value) {
         return value;
     }
     
@@ -76,7 +76,7 @@ public class NullHelpers {
      * @throws AssertionError If <code>array==null</code>.
      */
     @SuppressWarnings("null")
-    public static <T> @Nullable T @NonNull [] notNullArrayWithNullableContent(T[] array) throws AssertionError {
+    public static final <T> @Nullable T @NonNull [] notNullArrayWithNullableContent(T[] array) throws AssertionError {
         if (array == null) {
             throw new AssertionError("Supplied array is null, but was expected not null");
         }
@@ -94,7 +94,7 @@ public class NullHelpers {
      * @throws AssertionError If <code>array==null</code>. Elements inside the array are <b>not</b> checked.
      */
     @SuppressWarnings("null")
-    public static <T> @NonNull T @NonNull [] notNullArrayWithNotNullContent(T[] array) throws AssertionError {
+    public static final <T> @NonNull T @NonNull [] notNullArrayWithNotNullContent(T[] array) throws AssertionError {
         if (array == null) {
             throw new AssertionError("Supplied array is null, but was expected not null");
         }

@@ -1,7 +1,6 @@
 package net.ssehub.kernel_haven.util;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
-import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNullArrayWithNotNullContent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -412,7 +411,7 @@ public class Logger {
             lines = new ArrayList<>(1);
             lines.add(comment + ": <exception is null>");
         }
-        log(level, notNullArrayWithNotNullContent(lines.toArray(new String[0])));
+        log(level, notNull(lines.toArray(new String[0])));
     }
 
     /**

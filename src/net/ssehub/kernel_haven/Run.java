@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,7 +66,7 @@ public class Run {
         lines.add("\tMaximum Memory: " + Util.formatBytes(runtime.maxMemory()));
         lines.add("\tAvailable Processors: " + runtime.availableProcessors());
         
-        LOGGER.logInfo(lines.toArray(new String[] {}));
+        LOGGER.logInfo(notNull(lines.toArray(new String[0])));
     }
 
     /**

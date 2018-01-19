@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util.io.csv;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -134,7 +136,7 @@ public class CsvReader implements ITableReader {
             }
         }
         
-        return escaped.toString();
+        return notNull(escaped.toString());
     }
     
     /**
@@ -148,7 +150,7 @@ public class CsvReader implements ITableReader {
     // CHECKSTYLE:OFF // TODO: this method is too long.
     private @NonNull String @Nullable [] readLine() throws IOException {
     // CHECKSTYLE:ON
-        List<String> parts = new LinkedList<>();
+        List<@NonNull String> parts = new LinkedList<>();
         
         // whether we are currently inside an escape sequence
         // an escaped sequence starts with a " and ends with a "
@@ -180,7 +182,7 @@ public class CsvReader implements ITableReader {
             
             if (c == separator && !inEscaped) {
                 // we found an unescaped separator
-                parts.add(currentElement.toString());
+                parts.add(notNull(currentElement.toString()));
                 currentElement.setLength(0);
                 // jump back to start, to not add the separator to the next field
                 continue;
@@ -222,7 +224,7 @@ public class CsvReader implements ITableReader {
             currentElement.append(c);
         }
         
-        String[] result;
+        @NonNull String @Nullable [] result;
         if (parts.isEmpty() && currentElement.length() == 0 && peek() == -1) {
             // ignore last line in file, if its empty
             // we know that we are at the last line, if we didn't find any fields
@@ -232,12 +234,11 @@ public class CsvReader implements ITableReader {
             
         } else {
             // add the last field (which we didn't find a separator for, because it was ended with a \n)
-            parts.add(currentElement.toString());
+            parts.add(notNull(currentElement.toString()));
             
-            result = new String[parts.size()];
-            int i = 0;
-            for (String part : parts) {
-                result[i++] = unescape(part);
+            result = notNull(parts.toArray(new @NonNull String[0]));
+            for (int i = 0; i < result.length; i++) {
+                result[i] = unescape(result[i]);
             }
         }
         return result;
@@ -245,7 +246,7 @@ public class CsvReader implements ITableReader {
     
     @Override
     public @NonNull String @Nullable [] readNextRow() throws IOException {
-        String[] result = null;
+        @NonNull String @Nullable [] result = null;
         
         if (!isEnd) {
             result = readLine();
