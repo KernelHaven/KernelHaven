@@ -3,6 +3,8 @@ package net.ssehub.kernel_haven.util.io;
 import java.io.Closeable;
 import java.io.IOException;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * A writer for writing structured, table-like data.
  *
@@ -34,7 +36,7 @@ public interface ITableWriter extends Closeable {
      * @throws IllegalArgumentException If different types of rows (i.e. different classes) are passed to the same
      *      writer, and this violates the internal state of the writer.
      */
-    public void writeObject(Object row) throws IOException, IllegalArgumentException;
+    public void writeObject(@NonNull Object row) throws IOException, IllegalArgumentException;
     
     /**
      * Writes a single row of data. The given fields are written directly. <b>This method should not be mixed with the
@@ -49,7 +51,7 @@ public interface ITableWriter extends Closeable {
      * 
      * @throws IOException If writing to the file fails.
      */
-    public void writeRow(Object... columns) throws IOException;
+    public void writeRow(@NonNull Object... columns) throws IOException;
 
     /**
      * Optional possibility how to handle a row, which is intended to be an header. Some specific writers may have
@@ -61,7 +63,7 @@ public interface ITableWriter extends Closeable {
      * 
      * @throws IOException If writing to the file fails.
      */
-    public default void writeHeader(Object... fields) throws IOException {
+    public default void writeHeader(@NonNull Object... fields) throws IOException {
         writeRow(fields);
     }
 

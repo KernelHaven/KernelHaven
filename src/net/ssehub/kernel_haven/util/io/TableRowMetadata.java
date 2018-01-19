@@ -7,6 +7,8 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * Metadata about the fields for a class that is annotated via the {@link TableRow} annotation.
  *
@@ -14,11 +16,11 @@ import java.util.TreeMap;
  */
 public class TableRowMetadata {
     
-    private Class<?> rowClass;
+    private @NonNull Class<?> rowClass;
     
-    private Method[] fields;
+    private @NonNull Method[] fields;
     
-    private String[] headers;
+    private @NonNull String[] headers;
     
     /**
      * Creates the metadata for the given table row class.
@@ -27,7 +29,7 @@ public class TableRowMetadata {
      * 
      * @throws IllegalArgumentException If the given class does not have the {@link TableRow} annotation.
      */
-    public TableRowMetadata(Class<?> tableRowClass) throws IllegalArgumentException {
+    public TableRowMetadata(@NonNull Class<?> tableRowClass) throws IllegalArgumentException {
         if (!isTableRow(tableRowClass)) {
             throw new IllegalArgumentException("Can only create TableMetadata for classes annotated with @TableRow");
         }
@@ -59,7 +61,7 @@ public class TableRowMetadata {
      * 
      * @return The header names. Not <code>null</code>.
      */
-    public Object[] getHeaders() {
+    public @NonNull Object[] getHeaders() {
         return headers;
     }
     
@@ -72,7 +74,7 @@ public class TableRowMetadata {
      * @throws ReflectiveOperationException If retrieving the field contents fails (e.g. because the given object is
      *      not an instance of the class that this metadata is made for).
      */
-    public Object[] getContent(Object instance) throws ReflectiveOperationException {
+    public @NonNull Object[] getContent(@NonNull Object instance) throws ReflectiveOperationException {
         Object[] values = new Object[fields.length];
         
         try {
@@ -95,7 +97,7 @@ public class TableRowMetadata {
      * @param instance The instance to check.
      * @return Whether the instance is an instance of this class.
      */
-    public boolean isSameClass(Object instance) {
+    public boolean isSameClass(@NonNull Object instance) {
         return instance.getClass() == rowClass;
     }
     
@@ -105,7 +107,7 @@ public class TableRowMetadata {
      * @param clazz The class to check.
      * @return Whether the given class has the annotation.
      */
-    public static boolean isTableRow(Class<?> clazz) {
+    public static boolean isTableRow(@NonNull Class<?> clazz) {
         TableRow annotation = maybeNull(clazz.getAnnotation(TableRow.class));
         return annotation != null;
     }

@@ -40,6 +40,7 @@ import net.ssehub.kernel_haven.util.io.AbstractTableWriter;
 import net.ssehub.kernel_haven.util.io.ITableCollection;
 import net.ssehub.kernel_haven.util.io.ITableReader;
 import net.ssehub.kernel_haven.util.io.ITableWriter;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelProvider;
 import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
@@ -459,7 +460,7 @@ public class PipelineAnalysisTest {
          */
         public static final Map<String, List<String>> TABLES = new HashMap<>();
         
-        private String name;
+        private @NonNull String name;
 
         /**
          * Creates a test output writer. This instance can be used as a {@link ITableCollection} for the
@@ -468,14 +469,14 @@ public class PipelineAnalysisTest {
          * @param file Ignored.
          */
         @SuppressWarnings("unused")
-        public TestOutputWriter(File file) {
+        public TestOutputWriter(@NonNull File file) {
         }
         
         /**
          * Creates a test output writer with the given table name.
          * @param name The name of the table.
          */
-        private TestOutputWriter(String name) {
+        private TestOutputWriter(@NonNull String name) {
             this.name = name;
         }
         
@@ -484,28 +485,28 @@ public class PipelineAnalysisTest {
         }
 
         @Override
-        public ITableReader getReader(String name) throws IOException {
-            return null;
+        public @NonNull ITableReader getReader(@NonNull String name) throws IOException {
+            throw new IOException();
         }
 
         @Override
-        public Set<String> getTableNames() throws IOException {
+        public @NonNull Set<String> getTableNames() throws IOException {
             return TABLES.keySet();
         }
 
         @Override
-        public ITableWriter getWriter(String name) throws IOException {
+        public @NonNull ITableWriter getWriter(@NonNull String name) throws IOException {
             TABLES.putIfAbsent(name, new LinkedList<>());
             return new TestOutputWriter(name);
         }
 
         @Override
-        public Set<File> getFiles() throws IOException {
+        public @NonNull Set<File> getFiles() throws IOException {
             return new HashSet<>();
         }
 
         @Override
-        public void writeRow(Object... columns) throws IOException {
+        public void writeRow(@NonNull Object... columns) throws IOException {
             TABLES.get(name).add(Arrays.toString(columns));
         }
         

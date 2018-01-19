@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.ssehub.kernel_haven.util.io.ITableCollection;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A collection of CSV files. The files share a common base name. The individual "table" names are suffixes added to
@@ -22,19 +23,19 @@ public class CsvFileCollection implements ITableCollection {
     
     private static final Pattern ALLOWED_NAMES = Pattern.compile("[ A-Za-z0-9_]+"); 
     
-    private File baseName;
+    private @NonNull File baseName;
 
     /**
      * Creates a new collection of CSV file.
      * 
      * @param baseName The location and base-name for all the CSV files.
      */
-    public CsvFileCollection(File baseName) {
+    public CsvFileCollection(@NonNull File baseName) {
         this.baseName = baseName;
     }
 
     @Override
-    public CsvReader getReader(String name) throws IOException {
+    public @NonNull CsvReader getReader(@NonNull String name) throws IOException {
         return new CsvReader(new FileInputStream(getFile(name)));
     }
     
@@ -46,7 +47,7 @@ public class CsvFileCollection implements ITableCollection {
      * 
      * @throws IOException If the table name is invalid.
      */
-    public File getFile(String tableName) throws IOException {
+    public @NonNull File getFile(@NonNull String tableName) throws IOException {
         if (!ALLOWED_NAMES.matcher(tableName).matches()) {
             throw new IOException("Can only access tables with names that match " + ALLOWED_NAMES.pattern());
         }
@@ -63,7 +64,7 @@ public class CsvFileCollection implements ITableCollection {
     }
 
     @Override
-    public Set<String> getTableNames() {
+    public @NonNull Set<String> getTableNames() {
         Set<String> result = new HashSet<>();
         
         File dir = baseName.getParentFile();
@@ -84,7 +85,7 @@ public class CsvFileCollection implements ITableCollection {
     }
 
     @Override
-    public CsvWriter getWriter(String name) throws IOException {
+    public @NonNull CsvWriter getWriter(@NonNull String name) throws IOException {
         return new CsvWriter(new FileOutputStream(getFile(name)));
     }
 
@@ -94,7 +95,7 @@ public class CsvFileCollection implements ITableCollection {
     }
 
     @Override
-    public Set<File> getFiles() throws IOException {
+    public @NonNull Set<File> getFiles() throws IOException {
         Set<File> files = new HashSet<>();
         
         for (String name : getTableNames()) {

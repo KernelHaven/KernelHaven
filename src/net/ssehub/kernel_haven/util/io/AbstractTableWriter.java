@@ -2,6 +2,8 @@ package net.ssehub.kernel_haven.util.io;
 
 import java.io.IOException;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * Implements {@link #writeObject(Object)}. Sub-classes don't have to worry about the annotation metadata, they
  * only have to implement {@link #writeRow(Object...)}.
@@ -37,7 +39,7 @@ public abstract class AbstractTableWriter implements ITableWriter {
     private Type type;
     
     @Override
-    public void writeObject(Object row) throws IOException, IllegalArgumentException {
+    public void writeObject(@NonNull Object row) throws IOException, IllegalArgumentException {
         if (type == null) {
             if (TableRowMetadata.isTableRow(row.getClass())) {
                 type = Type.ANNOATION;

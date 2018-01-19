@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.io.ITableRow;
 import net.ssehub.kernel_haven.util.io.TableRowMetadataTest;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Tests the {@link CsvWriter} and {@link AbstractWriter} classes.
@@ -78,9 +79,9 @@ public class CsvWriterTest {
      */
     private static class SimpleInterfaceRow implements ITableRow {
 
-        private String[] content;
+        private @NonNull String[] content;
         
-        private String[] header;
+        private @NonNull String[] header;
         
         /**
          * Creates a {@link SimpleInterfaceRow}.
@@ -88,18 +89,18 @@ public class CsvWriterTest {
          * @param content The content.
          * @param header The header.
          */
-        public SimpleInterfaceRow(String[] content, String[] header) {
+        public SimpleInterfaceRow(@NonNull String[] content, @NonNull String[] header) {
             this.content = content;
             this.header = header;
         }
 
         @Override
-        public String[] getHeader() {
+        public @NonNull String[] getHeader() {
             return header;
         }
 
         @Override
-        public String[] getContent() {
+        public @NonNull String[] getContent() {
             return content;
         }
         

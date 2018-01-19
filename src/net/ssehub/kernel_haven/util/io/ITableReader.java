@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A reader for reading structured, table-like data.
@@ -21,7 +23,7 @@ public interface ITableReader extends Closeable {
      * 
      * @throws IOException If reading the file fails.
      */
-    public String[] readNextRow() throws IOException;
+    public @Nullable String[] readNextRow() throws IOException;
     
     /**
      * Reads the complete (remaining) table data. 
@@ -31,7 +33,7 @@ public interface ITableReader extends Closeable {
      * 
      * @throws IOException If reading the file fails.
      */
-    public default String[][] readFull() throws IOException {
+    public default @NonNull String[][] readFull() throws IOException {
         List<String[]> rows = new LinkedList<String[]>();
         String[] row;
         while ((row = readNextRow()) != null) {
@@ -55,7 +57,7 @@ public interface ITableReader extends Closeable {
          * 
          * @throws FormatException If the fields are invalid for creating an object of this type.
          */
-        public T create(String[] fields) throws FormatException;
+        public T create(@NonNull String[] fields) throws FormatException;
         
     }
     
@@ -70,7 +72,7 @@ public interface ITableReader extends Closeable {
      * @throws IOException If reading the file fails.
      * @throws FormatException If the factory throws a format exception.
      */
-    public default <T> T readAsObject(Factory<T> factory) throws IOException, FormatException {
+    public default <T> T readAsObject(@NonNull Factory<T> factory) throws IOException, FormatException {
         T result = null;
         String[] row = readNextRow();
         if (row != null) {

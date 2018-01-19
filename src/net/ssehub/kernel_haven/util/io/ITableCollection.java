@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * A collection of tables. Access to the different nested tables is available via {@link ITableReader}s and
  * {@link ITableWriter}s. Each table has a uniquely identifying name.
@@ -17,11 +19,11 @@ public interface ITableCollection extends Closeable {
      * Creates a reader for the table with the specified name.
      * 
      * @param name The name of the table to create a reader for.
-     * @return A reader for the specified table. <code>null</code> if no table with the specified name exists. 
+     * @return A reader for the specified table.
      * 
      * @throws IOException If creating the reader fails.
      */
-    public ITableReader getReader(String name) throws IOException;
+    public @NonNull ITableReader getReader(@NonNull String name) throws IOException;
     
     /**
      * Retrieves a set of all available table names.
@@ -30,7 +32,7 @@ public interface ITableCollection extends Closeable {
      * 
      * @throws IOException If creating the set fails.
      */
-    public Set<String> getTableNames() throws IOException;
+    public @NonNull Set<String> getTableNames() throws IOException;
     
     /**
      * Creates a writer for the table with the specified name. If such a table already exists, it is deleted and
@@ -41,7 +43,7 @@ public interface ITableCollection extends Closeable {
      * 
      * @throws IOException If creating the writer fails.
      */
-    public ITableWriter getWriter(String name) throws IOException;
+    public @NonNull ITableWriter getWriter(@NonNull String name) throws IOException;
     
     /**
      * Retrieves the set of files that this collection is stored in. This is different from
@@ -52,6 +54,6 @@ public interface ITableCollection extends Closeable {
      * 
      * @throws IOException If collecting the files fails for some reason.
      */
-    public Set<File> getFiles() throws IOException;
+    public @NonNull Set<File> getFiles() throws IOException;
 
 }

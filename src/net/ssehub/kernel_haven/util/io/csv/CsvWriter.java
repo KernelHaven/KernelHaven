@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import net.ssehub.kernel_haven.util.io.AbstractTableWriter;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A writer for writing tables as CSV files. The format escapes field values as defined in
@@ -17,7 +18,7 @@ public class CsvWriter extends AbstractTableWriter {
     
     public static final char DEFAULT_SEPARATOR = ';';
 
-    private OutputStream out;
+    private @NonNull OutputStream out;
     
     private char separator;
     
@@ -26,7 +27,7 @@ public class CsvWriter extends AbstractTableWriter {
      * 
      * @param out The output stream to write the CSV to. This object will close this stream once it is closed.
      */
-    public CsvWriter(OutputStream out) {
+    public CsvWriter(@NonNull OutputStream out) {
         this(out, DEFAULT_SEPARATOR);
     }
     
@@ -36,7 +37,7 @@ public class CsvWriter extends AbstractTableWriter {
      * @param out The output stream to write the CSV to. This object will close this stream once it is closed.
      * @param separator The separator character to use.
      */
-    public CsvWriter(OutputStream out, char separator) {
+    public CsvWriter(@NonNull OutputStream out, char separator) {
         this.out = out;
         this.separator = separator;
     }
@@ -62,7 +63,7 @@ public class CsvWriter extends AbstractTableWriter {
      * @param field The field value to escape.
      * @return The escaped field value.
      */
-    private String escape(String field) {
+    private @NonNull String escape(@NonNull String field) {
         boolean mustBeEscaped = false;
         for (char c : field.toCharArray()) {
             if (c == separator || c == '\n' || c == '\r' || c == '"') {
@@ -94,7 +95,7 @@ public class CsvWriter extends AbstractTableWriter {
      * 
      * @throws IOException If writing to the output stream fails.
      */
-    private void writeLine(Object... fields) throws IOException {
+    private void writeLine(@NonNull Object... fields) throws IOException {
         StringBuffer line = new StringBuffer();
         for (Object field : fields) {
             String str = field != null ? field.toString() : "";
@@ -110,7 +111,7 @@ public class CsvWriter extends AbstractTableWriter {
     }
     
     @Override
-    public void writeRow(Object... columns) throws IOException {
+    public void writeRow(@NonNull Object... columns) throws IOException {
         writeLine(columns);
     }
 

@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.ssehub.kernel_haven.util.io.ITableReader;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A reader for reading CSV files. This reader expects fields to be escaped as defined in
@@ -31,7 +33,7 @@ import net.ssehub.kernel_haven.util.io.ITableReader;
  */
 public class CsvReader implements ITableReader {
 
-    private InputStreamReader in;
+    private @NonNull InputStreamReader in;
     
     private char separator;
     
@@ -44,7 +46,7 @@ public class CsvReader implements ITableReader {
      * 
      * @param in The input stream to read the CSV data from.
      */
-    public CsvReader(InputStream in) {
+    public CsvReader(@NonNull InputStream in) {
         this(in, CsvWriter.DEFAULT_SEPARATOR);
     }
     
@@ -54,7 +56,7 @@ public class CsvReader implements ITableReader {
      * @param in The input stream to read the CSV data from.
      * @param separator The separator character to use.
      */
-    public CsvReader(InputStream in, char separator) {
+    public CsvReader(@NonNull InputStream in, char separator) {
         this.in = new InputStreamReader(in, Charset.forName("UTF-8"));
         this.separator = separator;
     }
@@ -110,7 +112,7 @@ public class CsvReader implements ITableReader {
      * @param field The field to un-escape.
      * @return The un-escaped field.
      */
-    private String unescape(String field) {
+    private @NonNull String unescape(@NonNull String field) {
         StringBuilder escaped = new StringBuilder();
         
         if (field.isEmpty() || field.charAt(0) != '"') {
@@ -136,7 +138,7 @@ public class CsvReader implements ITableReader {
     }
     
     /**
-     * Reads and parses a single line of CSV data. Splits at separator character. Considers (an un-escapes)
+     * Reads and parses a single line of CSV data. Splits at separator character. Considers (and un-escapes)
      * escaped values.
      * 
      * @return The fields found in the CSV.
@@ -144,7 +146,7 @@ public class CsvReader implements ITableReader {
      * @throws IOException If reading the stream fails.
      */
     // CHECKSTYLE:OFF // TODO: this method is too long.
-    private String[] readLine() throws IOException {
+    private @Nullable String[] readLine() throws IOException {
     // CHECKSTYLE:ON
         List<String> parts = new LinkedList<>();
         
@@ -242,7 +244,7 @@ public class CsvReader implements ITableReader {
     }
     
     @Override
-    public String[] readNextRow() throws IOException {
+    public @Nullable String[] readNextRow() throws IOException {
         String[] result = null;
         
         if (!isEnd) {

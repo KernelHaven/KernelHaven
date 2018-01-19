@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.ssehub.kernel_haven.util.io.ITableCollection;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A collection of pre-defined CSV files. This is an alternative to {@link CsvFileCollection} that allows setting an
@@ -21,14 +22,14 @@ import net.ssehub.kernel_haven.util.io.ITableCollection;
  */
 public class CsvFileSet implements ITableCollection {
 
-    private Map<String, File> files;
+    private @NonNull Map<String, File> files;
     
     /**
      * Creates a new set of CSV files.
      * 
      * @param files The files that are contained in this set.
      */
-    public CsvFileSet(Set<File> files) {
+    public CsvFileSet(@NonNull Set<File> files) {
         this.files = new HashMap<>();
         for (File file : files) {
             this.files.put(file.getAbsolutePath(), file);
@@ -40,7 +41,7 @@ public class CsvFileSet implements ITableCollection {
      * 
      * @param files The files that are contained in this set.
      */
-    public CsvFileSet(File... files) {
+    public CsvFileSet(@NonNull File... files) {
         this.files = new HashMap<>();
         for (File file : files) {
             this.files.put(file.getAbsolutePath(), file);
@@ -48,7 +49,7 @@ public class CsvFileSet implements ITableCollection {
     }
     
     @Override
-    public CsvReader getReader(String name) throws IOException {
+    public @NonNull CsvReader getReader(@NonNull String name) throws IOException {
         File file = files.get(name);
         if (file == null) {
             throw new FileNotFoundException("File " + name + " is not contained in this set");
@@ -58,12 +59,12 @@ public class CsvFileSet implements ITableCollection {
     }
     
     @Override
-    public Set<String> getTableNames() throws IOException {
+    public @NonNull Set<String> getTableNames() throws IOException {
         return files.keySet();
     }
     
     @Override
-    public CsvWriter getWriter(String name) throws IOException {
+    public @NonNull CsvWriter getWriter(@NonNull String name) throws IOException {
         File file = files.get(name);
         FileOutputStream out;
         if (file != null) {
@@ -85,7 +86,7 @@ public class CsvFileSet implements ITableCollection {
     }
 
     @Override
-    public Set<File> getFiles() throws IOException {
+    public @NonNull Set<File> getFiles() throws IOException {
         Set<File> files = new HashSet<>();
         
         for (File f : this.files.values()) {

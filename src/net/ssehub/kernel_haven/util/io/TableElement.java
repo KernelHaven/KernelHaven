@@ -6,6 +6,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * Marks an (getter of an) attribute inside a class marked via the {@link TableRow} as a single column element. The
  * {@link #toString()} method of the return value will be used to fill the field in the table. The marked getter must
@@ -32,6 +34,6 @@ public @interface TableElement {
      * 
      * @return The name of this field, to be used in the table header.
      */
-    String name() default "";
+    @NonNull String name() default "";
 
 }
