@@ -18,9 +18,9 @@ public class TableRowMetadata {
     
     private @NonNull Class<?> rowClass;
     
-    private @NonNull Method[] fields;
+    private @NonNull Method @NonNull [] fields;
     
-    private @NonNull String[] headers;
+    private @NonNull String @NonNull [] headers;
     
     /**
      * Creates the metadata for the given table row class.
@@ -61,7 +61,7 @@ public class TableRowMetadata {
      * 
      * @return The header names. Not <code>null</code>.
      */
-    public @NonNull Object[] getHeaders() {
+    public @NonNull Object @NonNull [] getHeaders() {
         return headers;
     }
     
@@ -74,7 +74,7 @@ public class TableRowMetadata {
      * @throws ReflectiveOperationException If retrieving the field contents fails (e.g. because the given object is
      *      not an instance of the class that this metadata is made for).
      */
-    public @NonNull Object[] getContent(@NonNull Object instance) throws ReflectiveOperationException {
+    public @NonNull Object @NonNull [] getContent(@NonNull Object instance) throws ReflectiveOperationException {
         Object[] values = new Object[fields.length];
         
         try {

@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util.io.csv;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,7 +31,7 @@ public class CsvFileSet implements ITableCollection {
      * 
      * @param files The files that are contained in this set.
      */
-    public CsvFileSet(@NonNull Set<File> files) {
+    public CsvFileSet(@NonNull Set<@NonNull File> files) {
         this.files = new HashMap<>();
         for (File file : files) {
             this.files.put(file.getAbsolutePath(), file);
@@ -41,7 +43,7 @@ public class CsvFileSet implements ITableCollection {
      * 
      * @param files The files that are contained in this set.
      */
-    public CsvFileSet(@NonNull File... files) {
+    public CsvFileSet(@NonNull File @NonNull ... files) {
         this.files = new HashMap<>();
         for (File file : files) {
             this.files.put(file.getAbsolutePath(), file);
@@ -59,8 +61,10 @@ public class CsvFileSet implements ITableCollection {
     }
     
     @Override
-    public @NonNull Set<String> getTableNames() throws IOException {
-        return files.keySet();
+    public @NonNull Set<@NonNull String> getTableNames() throws IOException {
+        @SuppressWarnings("null")
+        @NonNull Set<@NonNull String> result = notNull(files.keySet());
+        return result;
     }
     
     @Override
@@ -86,11 +90,11 @@ public class CsvFileSet implements ITableCollection {
     }
 
     @Override
-    public @NonNull Set<File> getFiles() throws IOException {
-        Set<File> files = new HashSet<>();
+    public @NonNull Set<@NonNull File> getFiles() throws IOException {
+        Set<@NonNull File> files = new HashSet<>();
         
         for (File f : this.files.values()) {
-            files.add(f);
+            files.add(notNull(f));
         }
         
         return files;

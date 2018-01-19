@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A writer for writing structured, table-like data.
@@ -51,7 +52,7 @@ public interface ITableWriter extends Closeable {
      * 
      * @throws IOException If writing to the file fails.
      */
-    public void writeRow(@NonNull Object... columns) throws IOException;
+    public void writeRow(@Nullable Object @NonNull ... columns) throws IOException;
 
     /**
      * Optional possibility how to handle a row, which is intended to be an header. Some specific writers may have
@@ -63,7 +64,7 @@ public interface ITableWriter extends Closeable {
      * 
      * @throws IOException If writing to the file fails.
      */
-    public default void writeHeader(@NonNull Object... fields) throws IOException {
+    public default void writeHeader(@Nullable Object @NonNull ... fields) throws IOException {
         writeRow(fields);
     }
 

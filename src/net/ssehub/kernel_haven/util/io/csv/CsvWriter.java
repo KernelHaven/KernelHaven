@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 
 import net.ssehub.kernel_haven.util.io.AbstractTableWriter;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A writer for writing tables as CSV files. The format escapes field values as defined in
@@ -95,7 +96,7 @@ public class CsvWriter extends AbstractTableWriter {
      * 
      * @throws IOException If writing to the output stream fails.
      */
-    private void writeLine(@NonNull Object... fields) throws IOException {
+    private void writeLine(@Nullable Object @NonNull ... fields) throws IOException {
         StringBuffer line = new StringBuffer();
         for (Object field : fields) {
             String str = field != null ? field.toString() : "";
@@ -111,7 +112,7 @@ public class CsvWriter extends AbstractTableWriter {
     }
     
     @Override
-    public void writeRow(@NonNull Object... columns) throws IOException {
+    public void writeRow(@Nullable Object @NonNull ... columns) throws IOException {
         writeLine(columns);
     }
 

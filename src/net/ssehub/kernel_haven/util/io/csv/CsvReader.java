@@ -146,7 +146,7 @@ public class CsvReader implements ITableReader {
      * @throws IOException If reading the stream fails.
      */
     // CHECKSTYLE:OFF // TODO: this method is too long.
-    private @Nullable String[] readLine() throws IOException {
+    private @NonNull String @Nullable [] readLine() throws IOException {
     // CHECKSTYLE:ON
         List<String> parts = new LinkedList<>();
         
@@ -244,7 +244,7 @@ public class CsvReader implements ITableReader {
     }
     
     @Override
-    public @Nullable String[] readNextRow() throws IOException {
+    public @NonNull String @Nullable [] readNextRow() throws IOException {
         String[] result = null;
         
         if (!isEnd) {

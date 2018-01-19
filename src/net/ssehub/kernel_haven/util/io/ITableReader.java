@@ -23,7 +23,7 @@ public interface ITableReader extends Closeable {
      * 
      * @throws IOException If reading the file fails.
      */
-    public @Nullable String[] readNextRow() throws IOException;
+    public @NonNull String @Nullable [] readNextRow() throws IOException;
     
     /**
      * Reads the complete (remaining) table data. 
@@ -33,7 +33,7 @@ public interface ITableReader extends Closeable {
      * 
      * @throws IOException If reading the file fails.
      */
-    public default @NonNull String[][] readFull() throws IOException {
+    public default @NonNull String @NonNull [] @NonNull [] readFull() throws IOException {
         List<String[]> rows = new LinkedList<String[]>();
         String[] row;
         while ((row = readNextRow()) != null) {
@@ -57,7 +57,7 @@ public interface ITableReader extends Closeable {
          * 
          * @throws FormatException If the fields are invalid for creating an object of this type.
          */
-        public T create(@NonNull String[] fields) throws FormatException;
+        public T create(@NonNull String @NonNull [] fields) throws FormatException;
         
     }
     

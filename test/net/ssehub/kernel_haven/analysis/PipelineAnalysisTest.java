@@ -41,6 +41,7 @@ import net.ssehub.kernel_haven.util.io.ITableCollection;
 import net.ssehub.kernel_haven.util.io.ITableReader;
 import net.ssehub.kernel_haven.util.io.ITableWriter;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelProvider;
 import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
@@ -460,7 +461,7 @@ public class PipelineAnalysisTest {
          */
         public static final Map<String, List<String>> TABLES = new HashMap<>();
         
-        private @NonNull String name;
+        private String name;
 
         /**
          * Creates a test output writer. This instance can be used as a {@link ITableCollection} for the
@@ -490,8 +491,10 @@ public class PipelineAnalysisTest {
         }
 
         @Override
-        public @NonNull Set<String> getTableNames() throws IOException {
-            return TABLES.keySet();
+        public @NonNull Set<@NonNull String> getTableNames() throws IOException {
+            @SuppressWarnings("null")
+            @NonNull Set<@NonNull String> result = TABLES.keySet();
+            return result;
         }
 
         @Override
@@ -501,12 +504,12 @@ public class PipelineAnalysisTest {
         }
 
         @Override
-        public @NonNull Set<File> getFiles() throws IOException {
+        public @NonNull Set<@NonNull File> getFiles() throws IOException {
             return new HashSet<>();
         }
 
         @Override
-        public void writeRow(@NonNull Object... columns) throws IOException {
+        public void writeRow(@Nullable Object @NonNull ... columns) throws IOException {
             TABLES.get(name).add(Arrays.toString(columns));
         }
         

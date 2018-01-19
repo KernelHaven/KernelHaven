@@ -22,7 +22,7 @@ public class PipelineArchiver {
     
     private @NonNull Configuration config;
 
-    private @Nullable Set<File> outputFiles;
+    private @Nullable Set<@NonNull File> outputFiles;
     
     private @Nullable File kernelHavenJarOverride;
     
@@ -42,7 +42,7 @@ public class PipelineArchiver {
      * 
      * @param outputFiles The set of output files created by the analysis.
      */
-    public void setAnalysisOutputFiles(@Nullable Set<File> outputFiles) {
+    public void setAnalysisOutputFiles(@Nullable Set<@NonNull File> outputFiles) {
         this.outputFiles = outputFiles;
     }
     

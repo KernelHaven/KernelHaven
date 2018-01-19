@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.io.ITableReader.Factory;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Tests the {@link TableRowMetadata} class.
@@ -24,10 +25,10 @@ public class TableRowMetadataTest {
         /**
          * A factory for reading a {@link Simple} object.
          */
-        public static class SimpleFactory implements Factory<Simple> {
+        public static class SimpleFactory implements Factory<@NonNull Simple> {
 
             @Override
-            public Simple create(String[] fields) throws FormatException {
+            public Simple create(@NonNull String @NonNull [] fields) throws FormatException {
                 if (fields.length != 2) {
                     throw new FormatException();
                 }

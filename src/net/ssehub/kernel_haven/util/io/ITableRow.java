@@ -1,6 +1,7 @@
 package net.ssehub.kernel_haven.util.io;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * Interface for types that represent table rows. This means, that an instance of the class represents a single row
@@ -19,7 +20,7 @@ public interface ITableRow {
      *      <code>null</code> elements inside this array will be converted into empty strings ("").
      *      Non-<code>null</code> elements will be converted via their {@link Object#toString()} method.
      */
-    public @NonNull Object[] getHeader();
+    public @Nullable Object @NonNull [] getHeader();
     
     /**
      * Returns the column values for this row.
@@ -28,6 +29,6 @@ public interface ITableRow {
      *      inside this array will be converted into empty strings (""). Non-<code>null</code> elements will be
      *      converted via their {@link Object#toString()} method.
      */
-    public @NonNull Object[] getContent();
+    public @Nullable Object @NonNull [] getContent();
     
 }

@@ -13,6 +13,7 @@ import org.junit.Test;
 import net.ssehub.kernel_haven.util.io.ITableRow;
 import net.ssehub.kernel_haven.util.io.TableRowMetadataTest;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * Tests the {@link CsvWriter} and {@link AbstractWriter} classes.
@@ -79,9 +80,9 @@ public class CsvWriterTest {
      */
     private static class SimpleInterfaceRow implements ITableRow {
 
-        private @NonNull String[] content;
+        private @Nullable String @NonNull [] content;
         
-        private @NonNull String[] header;
+        private @Nullable String @NonNull [] header;
         
         /**
          * Creates a {@link SimpleInterfaceRow}.
@@ -89,18 +90,18 @@ public class CsvWriterTest {
          * @param content The content.
          * @param header The header.
          */
-        public SimpleInterfaceRow(@NonNull String[] content, @NonNull String[] header) {
+        public SimpleInterfaceRow(@Nullable String @NonNull [] content, @Nullable String @NonNull [] header) {
             this.content = content;
             this.header = header;
         }
 
         @Override
-        public @NonNull String[] getHeader() {
+        public @Nullable String @NonNull [] getHeader() {
             return header;
         }
 
         @Override
-        public @NonNull String[] getContent() {
+        public @Nullable String @NonNull [] getContent() {
             return content;
         }
         
@@ -118,7 +119,7 @@ public class CsvWriterTest {
         try (CsvWriter writer = new CsvWriter(out)) {
             writer.writeObject(new SimpleInterfaceRow(new String[] {"a", "b", "c"},
                     new String[] {"Column 1", "Column 2", "Column 3"}));
-            writer.writeObject(new SimpleInterfaceRow(new String[] {"d", "e", "f"}, null));
+            writer.writeObject(new SimpleInterfaceRow(new String[] {"d", "e", "f"}, new String[0]));
             
         }
         

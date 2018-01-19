@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util.io;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNullArrayWithNullableContent;
+
 import java.io.IOException;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -44,11 +46,11 @@ public abstract class AbstractTableWriter implements ITableWriter {
             if (TableRowMetadata.isTableRow(row.getClass())) {
                 type = Type.ANNOATION;
                 metadata = new TableRowMetadata(row.getClass());
-                writeHeader(metadata.getHeaders());
+                writeHeader(notNullArrayWithNullableContent(metadata.getHeaders()));
                 
             } else if (row instanceof ITableRow) {
                 type = Type.INTERFACE;
-                writeHeader(((ITableRow) row).getHeader());
+                writeHeader(notNullArrayWithNullableContent(((ITableRow) row).getHeader()));
                 
             } else {
                 type = Type.TOSTRING;
@@ -62,18 +64,18 @@ public abstract class AbstractTableWriter implements ITableWriter {
                         + row.getClass().getName());
             }
             try {
-                writeRow(metadata.getContent(row));
+                writeRow(notNullArrayWithNullableContent(metadata.getContent(row)));
             } catch (ReflectiveOperationException e) {
                 throw new IOException("Can't read field values", e);
             }
             break;
             
         case INTERFACE:
-            writeRow(((ITableRow) row).getContent());
+            writeRow(notNullArrayWithNullableContent(((ITableRow) row).getContent()));
             break;
             
         default:
-            writeRow(new Object[] {row.toString()});
+            writeRow(notNullArrayWithNullableContent(new Object[] {row.toString()}));
             break;
         }
     }

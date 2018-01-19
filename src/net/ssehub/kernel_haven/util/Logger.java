@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNullArrayWithNotNullContent;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -192,7 +195,7 @@ public class Logger {
      * Initializes the logger to log to stdout in UTF-8.
      */
     public static void init() {
-        init(System.out);
+        init(notNull(System.out));
     }
 
     /**
@@ -203,7 +206,7 @@ public class Logger {
      *            it if it obtains a lock on it. Must not be null.
      */
     public static void init(@NonNull OutputStream target) {
-        init(target, Charset.forName("UTF-8"));
+        init(target, notNull(Charset.forName("UTF-8")));
     }
 
     /**
@@ -267,7 +270,7 @@ public class Logger {
      *            The lines that are written together as one log entry. Must not
      *            be null.
      */
-    private void log(@NonNull Level level, @NonNull String... lines) {
+    private void log(@NonNull Level level, @NonNull String @NonNull ... lines) {
         if (!this.level.isLog(level)) {
             return;
         }
@@ -327,7 +330,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logInfo(@NonNull String... lines) {
+    public void logInfo(@NonNull String @NonNull ... lines) {
         log(Level.INFO, lines);
     }
 
@@ -337,7 +340,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logDebug(@NonNull String... lines) {
+    public void logDebug(@NonNull String @NonNull ... lines) {
         log(Level.DEBUG, lines);
     }
 
@@ -347,7 +350,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry.
      */
-    public void logWarning(@NonNull String... lines) {
+    public void logWarning(@NonNull String @NonNull ... lines) {
         log(Level.WARNING, lines);
     }
 
@@ -357,7 +360,7 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logError(@NonNull String... lines) {
+    public void logError(@NonNull String @NonNull ... lines) {
         log(Level.ERROR, lines);
     }
 
@@ -403,7 +406,7 @@ public class Logger {
         List<String> lines = new ArrayList<>(exc.getStackTrace().length + 2);
         lines.add(comment + ":");
         exceptionToString(exc, lines);
-        log(level, lines.toArray(new String[0]));
+        log(level, notNullArrayWithNotNullContent(lines.toArray(new  String[0])));
     }
 
     /**

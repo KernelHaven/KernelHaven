@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +33,7 @@ public class FormulaCache {
             // Serialize formula
             StringBuffer buffer = new StringBuffer();
             formula.toString(buffer);
-            serialized = buffer.toString();
+            serialized = notNull(buffer.toString());
             
             // Cache result
             cache.put(formula, serialized);

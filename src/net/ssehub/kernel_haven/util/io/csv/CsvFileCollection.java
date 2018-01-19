@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util.io.csv;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -64,16 +66,16 @@ public class CsvFileCollection implements ITableCollection {
     }
 
     @Override
-    public @NonNull Set<String> getTableNames() {
-        Set<String> result = new HashSet<>();
+    public @NonNull Set<@NonNull String> getTableNames() {
+        Set<@NonNull String> result = new HashSet<>();
         
         File dir = baseName.getParentFile();
         
         for (File file : dir.listFiles()) {
             String filename = file.getName();
             if (filename.startsWith(baseName.getName()) && filename.endsWith(".csv")) {
-                String tableName = filename.substring(baseName.getName().length() + 1,
-                        filename.length() - ".csv".length());
+                String tableName = notNull(filename.substring(baseName.getName().length() + 1,
+                        filename.length() - ".csv".length()));
                 
                 if (ALLOWED_NAMES.matcher(tableName).matches()) {
                     result.add(tableName);
@@ -95,8 +97,8 @@ public class CsvFileCollection implements ITableCollection {
     }
 
     @Override
-    public @NonNull Set<File> getFiles() throws IOException {
-        Set<File> files = new HashSet<>();
+    public @NonNull Set<@NonNull File> getFiles() throws IOException {
+        Set<@NonNull File> files = new HashSet<>();
         
         for (String name : getTableNames()) {
             files.add(getFile(name));

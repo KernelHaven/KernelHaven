@@ -32,7 +32,7 @@ public interface ITableCollection extends Closeable {
      * 
      * @throws IOException If creating the set fails.
      */
-    public @NonNull Set<String> getTableNames() throws IOException;
+    public @NonNull Set<@NonNull String> getTableNames() throws IOException;
     
     /**
      * Creates a writer for the table with the specified name. If such a table already exists, it is deleted and
@@ -54,6 +54,6 @@ public interface ITableCollection extends Closeable {
      * 
      * @throws IOException If collecting the files fails for some reason.
      */
-    public @NonNull Set<File> getFiles() throws IOException;
+    public @NonNull Set<@NonNull File> getFiles() throws IOException;
 
 }
