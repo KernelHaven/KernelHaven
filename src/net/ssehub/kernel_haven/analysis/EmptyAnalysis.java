@@ -5,6 +5,7 @@ import net.ssehub.kernel_haven.build_model.BuildModel;
 import net.ssehub.kernel_haven.code_model.SourceFile;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.ExtractorException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 
 /**
@@ -19,7 +20,7 @@ public class EmptyAnalysis extends AbstractAnalysis {
      * 
      * @param config The configuration.
      */
-    public EmptyAnalysis(Configuration config) {
+    public EmptyAnalysis(@NonNull Configuration config) {
         super(config);
     }
     

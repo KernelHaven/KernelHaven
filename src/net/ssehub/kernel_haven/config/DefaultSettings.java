@@ -117,7 +117,7 @@ public class DefaultSettings {
      * Other
      */
     
-    public static final @NonNull Setting<@Nullable List<String>> PREPARATION_CLASSES = new Setting<>("preparation.class", SETTING_LIST, false, null, "A list of fully qualified class names that defines which preparations to run. A preparation class has to implement IPreperation. The preparations defined here are executed in the defined order.");
+    public static final @NonNull Setting<@NonNull List<String>> PREPARATION_CLASSES = new Setting<>("preparation.class", SETTING_LIST, false, null, "A list of fully qualified class names that defines which preparations to run. A preparation class has to implement IPreperation. The preparations defined here are executed in the defined order.");
     
     // CHECKSTYLE:ON
     /**

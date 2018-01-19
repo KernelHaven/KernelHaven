@@ -39,7 +39,7 @@ public class PipelineConfigurator {
 
     private static final @NonNull PipelineConfigurator INSTANCE = new PipelineConfigurator();
 
-    private Configuration config;
+    private @Nullable Configuration config;
     
     private AbstractVariabilityModelExtractor vmExtractor;
 
@@ -189,7 +189,7 @@ public class PipelineConfigurator {
         int numLoaded = 0;
         File[] jars = dir.listFiles((directory, fileName) -> fileName.toLowerCase().endsWith(".jar"));
         for (File jar : jars) {
-            if (addJarToClasspath(jar)) {
+            if (addJarToClasspath(notNull(jar))) {
                 numLoaded++;
             }
         }
@@ -206,6 +206,10 @@ public class PipelineConfigurator {
      */
     public void instantiateExtractors() throws SetUpException {
         LOGGER.logInfo("Instantiating extractor factories...");
+        Configuration config = this.config;
+        if (config == null) {
+            throw new SetUpException("Configuration not set");
+        }
         
         vmExtractor = instantiateExtractor(config.getValue(DefaultSettings.VARIABILITY_EXTRACTOR_CLASS),
                 "variability");
@@ -289,11 +293,17 @@ public class PipelineConfigurator {
      * @throws SetUpException If instantiating or executing the preparation class fails.
      */
     private void runPreparation() throws SetUpException {
+        Configuration config = this.config;
+        if (config == null) {
+            throw new SetUpException("Configuration not set");
+        }
         for (String className : config.getValue(DefaultSettings.PREPARATION_CLASSES)) {
             try {
                 @SuppressWarnings("unchecked")
                 Class<? extends IPreparation> prepartionClass =
                         (Class<? extends IPreparation>) Class.forName(className);
+                
+                LOGGER.logInfo("Running preparation " + prepartionClass.getCanonicalName());
                 
                 IPreparation preparation = notNull(prepartionClass.newInstance());
                 preparation.run(config);
@@ -312,6 +322,10 @@ public class PipelineConfigurator {
      */
     public void instantiateAnalysis() throws SetUpException {
         LOGGER.logInfo("Instantiating analysis...");
+        Configuration config = this.config;
+        if (config == null) {
+            throw new SetUpException("Configuration not set");
+        }
         
         String analysisName = config.getValue(DefaultSettings.ANALYSIS_CLASS);
         if (analysisName.contains(" ")) {
@@ -376,6 +390,11 @@ public class PipelineConfigurator {
      * itself, results, log, properties and a sweet cocktail cherry.
      */
     private void archive() {
+        Configuration config = this.config;
+        if (config == null) {
+            throw new RuntimeException("Configuration not set");
+        }
+        
         // this setting is overriden by the command line option in Run.main()
         if (config.getValue(DefaultSettings.ARCHIVE)) {
             PipelineArchiver archiver = new PipelineArchiver(config);
@@ -397,6 +416,11 @@ public class PipelineConfigurator {
      * plugins_dir and adds them to the classb path.
      */
     public void loadPlugins() {
+        Configuration config = this.config;
+        if (config == null) {
+            throw new RuntimeException("Configuration not set");
+        }
+        
         File pluginsDir = config.getValue(DefaultSettings.PLUGINS_DIR);
         LOGGER.logInfo("Loading jars from directory " + pluginsDir.getAbsolutePath());
         int num = loadJarsFromDirectory(pluginsDir);

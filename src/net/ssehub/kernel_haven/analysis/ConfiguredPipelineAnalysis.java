@@ -7,6 +7,7 @@ import java.util.List;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A {@link PipelineAnalysis} that reads the pipeline configuration from the user properties file and instantiates it
@@ -21,7 +22,7 @@ public class ConfiguredPipelineAnalysis extends PipelineAnalysis {
      * 
      * @param config The global configuration.
      */
-    public ConfiguredPipelineAnalysis(Configuration config) {
+    public ConfiguredPipelineAnalysis(@NonNull Configuration config) {
         super(config);
     }
 

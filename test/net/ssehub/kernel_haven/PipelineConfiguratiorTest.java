@@ -25,6 +25,7 @@ import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.Logger;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 
@@ -221,7 +222,7 @@ public class PipelineConfiguratiorTest {
          *             If properties contains a key called "fail".
          */
         @SuppressWarnings("deprecation")
-        public DummyAnalysis(Configuration config) throws SetUpException {
+        public DummyAnalysis(@NonNull Configuration config) throws SetUpException {
             super(config);
             
             if (config.getProperty("fail") != null) {

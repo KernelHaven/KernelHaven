@@ -14,7 +14,11 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.util.Util;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Tests the {@link AbstractAnalysis} class.
@@ -28,13 +32,14 @@ public class AnalysisTest {
      * Tests whether the output stream properly creates files.
      * 
      * @throws IOException unwanted.
+     * @throws SetUpException unwanted.
      */
     @Test
-    public void testOutputStream() throws IOException {
+    public void testOutputStream() throws IOException, SetUpException {
         File outputDir = new File("testdata/tmp_output");
         outputDir.mkdir();
         
-        TestAnalysis analysis = new TestAnalysis();
+        TestAnalysis analysis = new TestAnalysis(new TestConfiguration(null));
         analysis.setOutputDir(outputDir);
         
         analysis.run();
@@ -56,13 +61,14 @@ public class AnalysisTest {
      * Tests whether the output stream properly creates files.
      * 
      * @throws IOException unwanted.
+     * @throws SetUpException unwanted.
      */
     @Test
-    public void testOutputFileSet() throws IOException {
+    public void testOutputFileSet() throws IOException, SetUpException {
         File outputDir = new File("testdata/tmp_output");
         outputDir.mkdir();
         
-        TestAnalysis analysis = new TestAnalysis();
+        TestAnalysis analysis = new TestAnalysis(new TestConfiguration(null));
         analysis.setOutputDir(outputDir);
         analysis.run();
 
@@ -82,8 +88,8 @@ public class AnalysisTest {
         /**
          * Creates a new test analysis.
          */
-        public TestAnalysis() {
-            super(null);
+        public TestAnalysis(@NonNull Configuration config) {
+            super(config);
         }
         
         @Override

@@ -13,6 +13,7 @@ import net.ssehub.kernel_haven.build_model.BuildModel;
 import net.ssehub.kernel_haven.code_model.SourceFile;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 
 /**
@@ -286,7 +287,7 @@ public class ConfiguredPipelineAnalysisTest {
          * 
          * @param config The configuration.
          */
-        public TestsConfiguredPipelineAnalysis(Configuration config) {
+        public TestsConfiguredPipelineAnalysis(@NonNull Configuration config) {
             super(config);
         }
         

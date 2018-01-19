@@ -5,6 +5,7 @@ import java.util.Set;
 
 import net.ssehub.kernel_haven.build_model.BuildModelProvider;
 import net.ssehub.kernel_haven.code_model.CodeModelProvider;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelProvider;
 
 /**
@@ -19,35 +20,35 @@ public interface IAnalysis {
      * 
      * @param provider  The provider to use.
      */
-    public void setVariabilityModelProvider(VariabilityModelProvider provider);
+    public void setVariabilityModelProvider(@NonNull VariabilityModelProvider provider);
     
     /**
      * Sets the provider that this analysis should use for extracting the build model.
      * 
      * @param provider The provider to use.
      */
-    public void setBuildModelProvider(BuildModelProvider provider);
+    public void setBuildModelProvider(@NonNull BuildModelProvider provider);
     
     /**
      * Sets the provider that this analysis should use for extracting the code model.
      * 
      * @param provider The provider to use.
      */
-    public void setCodeModelProvider(CodeModelProvider provider);
+    public void setCodeModelProvider(@NonNull CodeModelProvider provider);
     
     /**
      * Sets the directory where the analysis can place it output files.
      * 
      * @param outputDir The directory for output storage. This is a directory where we have write access.
      */
-    public void setOutputDir(File outputDir);
+    public void setOutputDir(@NonNull File outputDir);
     
     /**
      * Returns all files that were created by the analysis.
      * 
      * @return All output files of the analysis.
      */
-    public Set<File> getOutputFiles();
+    public @NonNull Set<@NonNull File> getOutputFiles();
     
     /**
      * Executes the analysis.

@@ -16,6 +16,7 @@ import net.ssehub.kernel_haven.util.Timestamp;
 import net.ssehub.kernel_haven.util.io.ITableCollection;
 import net.ssehub.kernel_haven.util.io.ITableWriter;
 import net.ssehub.kernel_haven.util.io.csv.CsvFileCollection;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
 
 /**
@@ -40,7 +41,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * 
      * @param config The global configuration.
      */
-    public PipelineAnalysis(Configuration config) {
+    public PipelineAnalysis(@NonNull Configuration config) {
         super(config);
     }
     

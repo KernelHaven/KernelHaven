@@ -103,7 +103,7 @@ public class PipelineAnalysisTest {
      * 
      * @throws SetUpException unwanted.
      */
-    private PipelineAnalysis createAnalysis(Configuration config,
+    private PipelineAnalysis createAnalysis(@NonNull Configuration config,
             Function<PipelineAnalysis, AnalysisComponent<?>> supplier) throws SetUpException {
         
         PipelineAnalysis analysis = new PipelineAnalysis(config) {
