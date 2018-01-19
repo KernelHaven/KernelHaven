@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
@@ -23,11 +25,13 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  */
 public class DisjunctionQueue {
     
-    private Queue<Formula> queue = new ArrayDeque<>();
+    private static final Logger LOGGER = Logger.get();
+    
+    private Queue<@NonNull Formula> queue = new ArrayDeque<>();
     private boolean isTrue = false;
     private Set<Formula> conditions = new HashSet<>();
     private boolean simplify;
-    private Function<Formula, Formula> simplifier;
+    private Function<@NonNull Formula, @NonNull Formula> simplifier;
     
     /**
      * Allows to specify if the above mentioned simplification rules shall be applied, won't use a simplifier for
@@ -46,7 +50,7 @@ public class DisjunctionQueue {
      * <pre><code>f -> LogicUtils.simplify(f)</code></pre>
      * @see #DisjunctionQueue(boolean, Function)
      */
-    public DisjunctionQueue(Function<Formula, Formula> simplifier) {
+    public DisjunctionQueue(Function<@NonNull Formula, @NonNull Formula> simplifier) {
         this(true, simplifier);
     }
     
@@ -58,7 +62,7 @@ public class DisjunctionQueue {
      *     <tt>simplifier = false</tt>). Probably use:
      * <pre><code>f -> LogicUtils.simplify(f)</code></pre>
      */
-    public DisjunctionQueue(boolean simplify, Function<Formula, Formula> simplifier) {
+    public DisjunctionQueue(boolean simplify, Function<@NonNull Formula, @NonNull Formula> simplifier) {
         this.simplify = simplify;
         this.simplifier = this.simplify ? simplifier : null;
     }
@@ -106,7 +110,7 @@ public class DisjunctionQueue {
      *     never be <tt>null</tt>.
      */
     public @NonNull Formula getDisjunction(@Nullable String varName) {
-        Formula result;
+        @NonNull Formula result;
         
         // Create disjunction of all elements
         if (isTrue || queue.isEmpty()) {
@@ -116,19 +120,19 @@ public class DisjunctionQueue {
             while (queue.size() > 1) {
                 queue.add(new Disjunction(queue.poll(), queue.poll()));
             }
-            result = queue.poll();
+            result = notNull(queue.poll()); // this can't be null, since queue.size()==1
             
             // Simplification if wished and if possible
             if (null != simplifier) {
-                result = simplifier.apply(result);
+                result = notNull(simplifier.apply(result));
             }
             
             // Check if all elements have been processed
             if (!queue.isEmpty()) {
                 if (null != varName) {
-                    Logger.get().logError("Error while creating disjunction for conditions of " + varName);
+                    LOGGER.logError("Error while creating disjunction for conditions of " + varName);
                 } else {
-                    Logger.get().logError("Error while creating disjunction.");
+                    LOGGER.logError("Error while creating disjunction.");
                 }
             }
         }

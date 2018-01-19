@@ -7,6 +7,7 @@ import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.Negation;
 import net.ssehub.kernel_haven.util.logic.True;
 import net.ssehub.kernel_haven.util.logic.Variable;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A {@link Grammar} for C-style boolean expressions.
@@ -24,7 +25,7 @@ import net.ssehub.kernel_haven.util.logic.Variable;
  * 
  * @author Adam (from KernelMiner project)
  */
-public class CStyleBooleanGrammar extends Grammar<Formula> {
+public class CStyleBooleanGrammar extends Grammar<@NonNull Formula> {
 
     protected static final Operator AND = new Operator("&&", true, 2);
 

@@ -15,9 +15,9 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  */
 public class PreparationTool {
     
-    private File destination;
-    private String executable;
-    private String sourceInJar;
+    private @Nullable File destination;
+    private @Nullable String executable;
+    private @Nullable String sourceInJar;
 
     /**
      * Should be called as part of the constructor of the sub class.
@@ -42,6 +42,12 @@ public class PreparationTool {
      */
     public void prepare() throws SetUpException {
         if (!isPrepared()) {
+            File destination = this.destination;
+            String sourceInJar = this.sourceInJar;
+            if (destination == null || sourceInJar == null) {
+                throw new SetUpException("Called prepare() before init()");
+            }
+            
             if (destination.exists()) {
                 try {
                     Util.deleteFolder(destination);
@@ -145,7 +151,7 @@ public class PreparationTool {
      * @return <tt>true</tt> if it was already extracted, <tt>false</tt> if it still needs to be extracted.
      */
     protected boolean isExistent() {
-        return destination.exists();
+        return destination != null && destination.exists();
     }
     
 }

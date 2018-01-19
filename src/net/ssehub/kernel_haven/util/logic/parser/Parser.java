@@ -35,7 +35,7 @@ public class Parser<T> {
      * 
      * @throws ExpressionFormatException If the supplied string is not a valid expression for the given {@link Grammar}.
      */
-    public @NonNull T parse(@NonNull String expression) throws ExpressionFormatException  {
+    public T parse(@NonNull String expression) throws ExpressionFormatException  {
         Token[] tokens = lex(expression);
         T f = parse(tokens, 0, tokens.length - 1);
         return f;

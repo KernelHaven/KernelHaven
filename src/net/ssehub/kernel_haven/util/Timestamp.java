@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -35,8 +37,8 @@ public class Timestamp {
         DateTimeFormatter file = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         DateTimeFormatter normal = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        timestamp = normal.format(now);
-        filestamp = file.format(now);
+        timestamp = notNull(normal.format(now));
+        filestamp = notNull(file.format(now));
     }
     
     /**

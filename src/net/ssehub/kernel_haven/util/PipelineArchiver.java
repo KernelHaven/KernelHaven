@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -70,9 +72,14 @@ public class PipelineArchiver {
                 Timestamp.INSTANCE.getFilename("archived_execution", "zip"));
         ZipArchive archive = new ZipArchive(archiveTargetFile);
         
-        relativeBase = new File(config.getPropertyFile().getCanonicalPath()).getParentFile();
+        File propertyFile = config.getPropertyFile();
+        if (propertyFile != null) {
+            relativeBase = new File(propertyFile.getCanonicalPath()).getParentFile();
+            addFileToArchive(archive, propertyFile, new File(""), "Could not archive configuration");
+        } else {
+            relativeBase = new File("").getCanonicalFile(); // current working dir
+        }
         
-        addFileToArchive(archive, config.getPropertyFile(), new File(""), "Could not archive configuration");
         for (File plugin : config.getValue(DefaultSettings.PLUGINS_DIR).listFiles()) {
             addFileToArchive(archive, plugin, new File("plugins"), "Could not archive plugin " + plugin.getName());
         }
@@ -81,8 +88,9 @@ public class PipelineArchiver {
                 addFileToArchive(archive, outputFile, new File("output"), "Could not archive output file");
             }
         }
-        if (LOGGER.getLogFile() != null) {
-            addFileToArchive(archive, LOGGER.getLogFile(), new File("log"), "Could not archive log file");
+        File logFile = LOGGER.getLogFile();
+        if (logFile != null) {
+            addFileToArchive(archive, logFile, new File("log"), "Could not archive log file");
         }
         if (config.getValue(DefaultSettings.ARCHIVE_SOURCE_TREE)) {
             addDirToArchive(archive, config.getValue(DefaultSettings.SOURCE_TREE), new File("source_tree"),
@@ -119,7 +127,8 @@ public class PipelineArchiver {
      *      will be appended to this.
      * @param message A warning message to be displayed if archiving this file failed.
      */
-    private void addFileToArchive(ZipArchive archive, File toAdd, File fallbackDir, String message) {
+    private void addFileToArchive(@NonNull ZipArchive archive, @NonNull File toAdd, @NonNull File fallbackDir,
+            @NonNull String message) {
         try {
             File inZipLocation = new File(fallbackDir, toAdd.getName());
             
@@ -144,7 +153,9 @@ public class PipelineArchiver {
      * @param fallbackDir The path inside the archive to use instead, if toAdd is not relative to relativeBase.
      * @param message The message to be displayed if archiving this file failed.
      */
-    private void addDirToArchive(ZipArchive archive, File dirToAdd, File fallbackDir, String message) {
+    private void addDirToArchive(@NonNull ZipArchive archive, @NonNull File dirToAdd, @NonNull File fallbackDir,
+            @NonNull String message) {
+        
         try {
             File inZipLocationMutable = fallbackDir;
             String fullToAdd = dirToAdd.getCanonicalPath();
@@ -162,7 +173,7 @@ public class PipelineArchiver {
                         //   this is based on the inZipLocation
                         File inZip = new File(inZipLocation, dirToAdd.toPath().relativize(path).toString());
                         try {
-                            archive.copyFileToArchive(inZip, path.toFile());
+                            archive.copyFileToArchive(inZip, notNull(path.toFile()));
                         } catch (IOException e) {
                             throw new UncheckedIOException(e);
                         }

@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -78,7 +80,7 @@ public class Util {
     public static @NonNull File extractJarResourceToTemporaryFile(@NonNull String resource) throws IOException {
         // split at dot, to find the file suffix
         int index = resource.lastIndexOf('.');
-        File tempFile = File.createTempFile("resource", resource.substring(index));
+        File tempFile = notNull(File.createTempFile("resource", resource.substring(index)));
 
         extractJarResourceToFile(resource, tempFile);
         return tempFile;
@@ -142,7 +144,7 @@ public class Util {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         copyStream(in, out);
-        return out.toString();
+        return notNull(out.toString());
     }
 
     /**
@@ -153,7 +155,7 @@ public class Util {
      * @return The exit code of the process.
      */
     public static int waitForProcess(@NonNull Process process) {
-        return waitForProcess(process, 0);
+        return notNull(waitForProcess(process, 0)); // can't be null, because timeout=0
     }
 
     /**
@@ -212,8 +214,8 @@ public class Util {
         
         Process process = processBuilder.start();
 
-        BufferThread th1 = new BufferThread(process.getInputStream());
-        BufferThread th2 = new BufferThread(process.getErrorStream());
+        BufferThread th1 = new BufferThread(notNull(process.getInputStream()));
+        BufferThread th2 = new BufferThread(notNull(process.getErrorStream()));
         th1.start();
         th2.start();
 
@@ -228,11 +230,11 @@ public class Util {
 
         String stdout = th1.content;
         if (stdout != null && !stdout.equals("")) {
-            LOGGER.logDebug(("Stdout:\n" + stdout).split("\n"));
+            LOGGER.logDebug(notNull(("Stdout:\n" + stdout).split("\n")));
         }
         String stderr = th2.content;
         if (stderr != null && !stderr.equals("")) {
-            LOGGER.logDebug(("Stderr:\n" + stderr).split("\n"));
+            LOGGER.logDebug(notNull(("Stderr:\n" + stderr).split("\n")));
         }
 
         return returnValue == 0;
@@ -264,8 +266,8 @@ public class Util {
         
         Process process = processBuilder.start();
 
-        BufferThread th1 = new BufferThread(process.getInputStream(), stdout);
-        BufferThread th2 = new BufferThread(process.getErrorStream(), stderr);
+        BufferThread th1 = new BufferThread(notNull(process.getInputStream()), stdout);
+        BufferThread th2 = new BufferThread(notNull(process.getErrorStream()), stderr);
         th1.start();
         th2.start();
 
@@ -287,9 +289,9 @@ public class Util {
      */
     private static class BufferThread extends Thread {
 
-        private InputStream in;
+        private @NonNull InputStream in;
 
-        private OutputStream out;
+        private @Nullable OutputStream out;
 
         private String content;
 
@@ -299,7 +301,7 @@ public class Util {
          * @param in
          *            The stream to read.
          */
-        public BufferThread(InputStream in) {
+        public BufferThread(@NonNull InputStream in) {
             this.in = in;
         }
 
@@ -311,7 +313,7 @@ public class Util {
          * @param out
          *            The stream to write to.
          */
-        public BufferThread(InputStream in, OutputStream out) {
+        public BufferThread(@NonNull InputStream in, @NonNull OutputStream out) {
             this.in = in;
             this.out = out;
         }
@@ -319,6 +321,7 @@ public class Util {
         @Override
         public void run() {
             try {
+                OutputStream out = this.out;
                 if (out == null) {
                     content = readStream(in);
                 } else {
@@ -496,8 +499,8 @@ public class Util {
      * @throws IOException If retrieving the canonical file form is not possible. See {@link File#getCanonicalFile()}.
      */
     public static boolean isNestedInDirectory(@NonNull File dir, @NonNull File file) throws IOException {
-        dir = dir.getCanonicalFile();
-        file = file.getCanonicalFile();
+        dir = notNull(dir.getCanonicalFile());
+        file = notNull(file.getCanonicalFile());
         
         boolean result = dir.equals(file);
         

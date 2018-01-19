@@ -2,6 +2,7 @@ package net.ssehub.kernel_haven.util.io;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.maybeNull;
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNullArrayWithNotNullContent;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -44,8 +45,8 @@ public class TableRowMetadata {
             }
         }
 
-        fields = new Method[methods.size()];
-        headers = new String[methods.size()];
+        Method[] fields = new Method[methods.size()];
+        String[] headers = new String[methods.size()];
         int index = 0;
         for (Map.Entry<Integer, Method> entry : methods.entrySet()) {
             // we silently ignore if index != entry.getKey(); the order is correct, because of the TreeMap; we don't
@@ -54,6 +55,9 @@ public class TableRowMetadata {
             headers[index] = notNull(entry.getValue().getAnnotation(TableElement.class)).name();
             index++;
         }
+        
+        this.fields = notNullArrayWithNotNullContent(fields);
+        this.headers = notNullArrayWithNotNullContent(headers); 
     }
     
     /**
@@ -88,7 +92,7 @@ public class TableRowMetadata {
             throw new ReflectiveOperationException("Can't access field value", e);
         }
         
-        return values;
+        return notNullArrayWithNotNullContent(values);
     }
     
     /**

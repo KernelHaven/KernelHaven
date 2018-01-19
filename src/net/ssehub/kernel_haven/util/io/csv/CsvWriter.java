@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util.io.csv;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -83,7 +85,7 @@ public class CsvWriter extends AbstractTableWriter {
                 }
             }
             str.insert(0, '"').append('"');
-            field = str.toString();
+            field = notNull(str.toString());
         }
         return field;
     }
@@ -100,6 +102,9 @@ public class CsvWriter extends AbstractTableWriter {
         StringBuffer line = new StringBuffer();
         for (Object field : fields) {
             String str = field != null ? field.toString() : "";
+            if (str == null) {
+                str = "";
+            }
             line.append(escape(str)).append(separator);
         }
         if (line.length() > 0) {
