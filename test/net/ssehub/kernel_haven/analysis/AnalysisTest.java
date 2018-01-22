@@ -87,6 +87,7 @@ public class AnalysisTest {
         
         /**
          * Creates a new test analysis.
+         * @param config The pipeline configuration, is not used here, thus, it may be <tt>null</tt>
          */
         public TestAnalysis(@NonNull Configuration config) {
             super(config);
