@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class AnalysisTest {
         File outputDir = new File("testdata/tmp_output");
         outputDir.mkdir();
         
-        TestAnalysis analysis = new TestAnalysis(new TestConfiguration(null));
+        TestAnalysis analysis = new TestAnalysis(new TestConfiguration(new Properties()));
         analysis.setOutputDir(outputDir);
         
         analysis.run();
@@ -68,7 +69,7 @@ public class AnalysisTest {
         File outputDir = new File("testdata/tmp_output");
         outputDir.mkdir();
         
-        TestAnalysis analysis = new TestAnalysis(new TestConfiguration(null));
+        TestAnalysis analysis = new TestAnalysis(new TestConfiguration(new Properties()));
         analysis.setOutputDir(outputDir);
         analysis.run();
 

@@ -169,6 +169,8 @@ public class PipelineConfiguratiorTest {
         config.setProperty("output_dir", "not_used");
         PipelineConfigurator configurator = new PipelineConfigurator();
         configurator.init(new TestConfiguration(config));
+        configurator.instantiateExtractors();
+        configurator.createProviders();
         configurator.instantiateAnalysis();
 
         assertThat(configurator.getAnalysis(), instanceOf(DummyAnalysis.class));

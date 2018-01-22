@@ -6,6 +6,7 @@ import java.util.Properties;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A configuration that does no consistency checks. Useful for test cases.
@@ -23,7 +24,7 @@ public class TestConfiguration extends Configuration {
      * 
      * @throws SetUpException Never thrown.
      */
-    public TestConfiguration(Properties properties) throws SetUpException {
+    public TestConfiguration(@NonNull Properties properties) throws SetUpException {
         super(properties, false);
         
         DefaultSettings.registerAllSettings(this);
