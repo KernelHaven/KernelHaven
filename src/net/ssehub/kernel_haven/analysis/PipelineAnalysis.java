@@ -60,7 +60,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * 
      * @return The {@link AnalysisComponent} that provides the variability model.
      */
-    protected AnalysisComponent<VariabilityModel> getVmComponent() {
+    protected @NonNull AnalysisComponent<VariabilityModel> getVmComponent() {
         return vmStarter.createNewStartingComponent(config);
     }
     
@@ -69,7 +69,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * 
      * @return The {@link AnalysisComponent} that provides the build model.
      */
-    protected AnalysisComponent<BuildModel> getBmComponent() {
+    protected @NonNull AnalysisComponent<BuildModel> getBmComponent() {
         return bmStarter.createNewStartingComponent(config);
     }
     
@@ -78,7 +78,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * 
      * @return The {@link AnalysisComponent} that provides the code model.
      */
-    protected AnalysisComponent<SourceFile> getCmComponent() {
+    protected @NonNull AnalysisComponent<SourceFile> getCmComponent() {
         return cmStarter.createNewStartingComponent(config);
     }
     
@@ -124,7 +124,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * 
      * @throws SetUpException If setting up the pipeline fails.
      */
-    protected abstract AnalysisComponent<?> createPipeline() throws SetUpException;
+    protected abstract @NonNull AnalysisComponent<?> createPipeline() throws SetUpException;
 
     @Override
     public void run() {
@@ -196,7 +196,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * 
      * @param component The component to read the output from.
      */
-    private void pollAndWriteOutput(AnalysisComponent<?> component) {
+    private void pollAndWriteOutput(@NonNull AnalysisComponent<?> component) {
         LOGGER.logDebug("Starting and polling output of analysis component (" + component.getClass().getSimpleName()
                 + ")...");
         
@@ -220,19 +220,19 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      */
     private static class ExtractorDataDuplicator<T> implements Runnable {
         
-        private AbstractProvider<T> provider;
+        private @NonNull AbstractProvider<T> provider;
         
         private boolean multiple;
         
-        private List<StartingComponent<T>> startingComponents;
+        private @NonNull List<@NonNull StartingComponent<T>> startingComponents;
         
         /**
          * Creates a new ExtractorDataDuplicator.
          * 
          * @param provider The provider to get the data from.
-         * @param multiple Whether the provider should be polled multiple times or just onece.
+         * @param multiple Whether the provider should be polled multiple times or just once.
          */
-        public ExtractorDataDuplicator(AbstractProvider<T> provider, boolean multiple) {
+        public ExtractorDataDuplicator(@NonNull AbstractProvider<T> provider, boolean multiple) {
             this.provider = provider;
             this.multiple = multiple;
             startingComponents = new LinkedList<>();
@@ -245,7 +245,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
          * 
          * @return The starting component that can be used as input data for other analysis components.
          */
-        public StartingComponent<T> createNewStartingComponent(Configuration config) {
+        public @NonNull StartingComponent<T> createNewStartingComponent(@NonNull Configuration config) {
             StartingComponent<T> component = new StartingComponent<>(config);
             startingComponents.add(component);
             return component;
@@ -256,7 +256,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
          * 
          * @param data The data to add.
          */
-        private void addToAllComponents(T data) {
+        private void addToAllComponents(@NonNull T data) {
             for (StartingComponent<T> component : startingComponents) {
                 component.addResult(data);
             }
@@ -318,7 +318,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
          * 
          * @param config The global configuration.
          */
-        public StartingComponent(Configuration config) {
+        public StartingComponent(@NonNull Configuration config) {
             super(config);
         }
 

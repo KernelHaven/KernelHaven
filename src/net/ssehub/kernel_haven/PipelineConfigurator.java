@@ -337,9 +337,9 @@ public class PipelineConfigurator {
             Class<? extends IAnalysis> analysisClass = (Class<? extends IAnalysis>) Class.forName(analysisName);
             analysis = analysisClass.getConstructor(Configuration.class).newInstance(config);
 
-            analysis.setVariabilityModelProvider(vmProvider);
-            analysis.setBuildModelProvider(bmProvider);
-            analysis.setCodeModelProvider(cmProvider);
+            analysis.setVariabilityModelProvider(notNull(vmProvider));
+            analysis.setBuildModelProvider(notNull(bmProvider));
+            analysis.setCodeModelProvider(notNull(cmProvider));
 
             analysis.setOutputDir(config.getValue(DefaultSettings.OUTPUT_DIR));
             LOGGER.logInfo("Successfully instantiated analysis " + analysisName);

@@ -1,5 +1,6 @@
 package net.ssehub.kernel_haven.analysis;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -104,13 +105,13 @@ public class PipelineAnalysisTest {
      * @throws SetUpException unwanted.
      */
     private PipelineAnalysis createAnalysis(@NonNull Configuration config,
-            Function<PipelineAnalysis, AnalysisComponent<?>> supplier) throws SetUpException {
+            Function<PipelineAnalysis, @NonNull AnalysisComponent<?>> supplier) throws SetUpException {
         
         PipelineAnalysis analysis = new PipelineAnalysis(config) {
             
             @Override
-            protected AnalysisComponent<?> createPipeline() throws SetUpException {
-                return supplier.apply(this);
+            protected @NonNull AnalysisComponent<?> createPipeline() throws SetUpException {
+                return notNull(supplier.apply(this));
             }
         };
         analysis.setOutputDir(tempOutputDir);

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A component that collects all results from the previous component into one list.
@@ -14,7 +15,7 @@ import net.ssehub.kernel_haven.config.Configuration;
  */
 public class ListCollectorComponent<T> extends AnalysisComponent<List<T>> {
 
-    private AnalysisComponent<T> previousComponent;
+    private @NonNull AnalysisComponent<T> previousComponent;
     
     /**
      * Creates anew {@link ListCollectorComponent} for the given previous component.
@@ -22,7 +23,7 @@ public class ListCollectorComponent<T> extends AnalysisComponent<List<T>> {
      * @param config The global configuration.
      * @param previousComponent The previous component
      */
-    public ListCollectorComponent(Configuration config, AnalysisComponent<T> previousComponent) {
+    public ListCollectorComponent(@NonNull Configuration config, @NonNull AnalysisComponent<T> previousComponent) {
         super(config);
         this.previousComponent = previousComponent;
     }
@@ -40,7 +41,7 @@ public class ListCollectorComponent<T> extends AnalysisComponent<List<T>> {
     }
     
     @Override
-    public String getResultName() {
+    public @NonNull String getResultName() {
         return previousComponent.getResultName() + " List";
     }
 

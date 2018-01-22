@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A special analysis component that passes the data it receives to multiple other components. The input component
@@ -18,7 +19,7 @@ import net.ssehub.kernel_haven.config.Configuration;
  */
 public final class SplitComponent<T> extends AnalysisComponent<Void> {
 
-    private Configuration config;
+    private @NonNull Configuration config;
     
     private AnalysisComponent<T> inputComponent;
     
@@ -32,7 +33,7 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
      * @param config The global configuration.
      * @param inputComponent The component to get the results to pass to both other components.
      */
-    public SplitComponent(Configuration config, AnalysisComponent<T> inputComponent) {
+    public SplitComponent(@NonNull Configuration config, @NonNull AnalysisComponent<T> inputComponent) {
         super(config);
         this.config = config;
         this.inputComponent = inputComponent;
@@ -75,7 +76,7 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
     }
 
     @Override
-    public String getResultName() {
+    public @NonNull String getResultName() {
         return "PseudoSplitComponent";
     }
     
@@ -91,7 +92,7 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
          * 
          * @param config The global configuration.
          */
-        public OutputComponent(Configuration config) {
+        public OutputComponent(@NonNull Configuration config) {
             super(config);
         }
 
@@ -118,7 +119,7 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
         }
 
         @Override
-        public String getResultName() {
+        public @NonNull String getResultName() {
             return "PseudoOutputComponent";
         }
         

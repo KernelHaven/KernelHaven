@@ -8,6 +8,8 @@ import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.io.ITableCollection;
 import net.ssehub.kernel_haven.util.io.ITableWriter;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A component of an analysis. Multiple of these can be combined together, to form an analysis pipeline.
@@ -23,7 +25,7 @@ public abstract class AnalysisComponent<O> {
      */
     protected static final Logger LOGGER = Logger.get();
     
-    private BlockingQueue<O> results;
+    private @NonNull BlockingQueue<O> results;
     
     private boolean logResults;
     
@@ -36,7 +38,7 @@ public abstract class AnalysisComponent<O> {
      * 
      * @param config The pipeline configuration.
      */
-    public AnalysisComponent(Configuration config) {
+    public AnalysisComponent(@NonNull Configuration config) {
         results = new BlockingQueue<>();
         
         setLogResults(config.getValue(DefaultSettings.ANALYSIS_COMPONENTS_LOG).contains(getClass().getSimpleName()));
@@ -86,7 +88,7 @@ public abstract class AnalysisComponent<O> {
      * 
      * @return The next result. <code>null</code> if this analysis is done and does not produce any results anymore.
      */
-    public final O getNextResult() {
+    public final @Nullable O getNextResult() {
         synchronized (this) {
             if (!started) {
                 start();
@@ -100,7 +102,7 @@ public abstract class AnalysisComponent<O> {
      * 
      * @param result The result to pass to the next component. Must not be <code>null</code>.
      */
-    protected final void addResult(O result) {
+    protected final void addResult(@NonNull O result) {
         results.add(result);
         
         if (logResults) {
@@ -143,6 +145,6 @@ public abstract class AnalysisComponent<O> {
      * 
      * @return The name describing the output of this component.
      */
-    public abstract String getResultName();
+    public abstract @NonNull String getResultName();
     
 }

@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.analysis;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +29,7 @@ public class ConfiguredPipelineAnalysis extends PipelineAnalysis {
     }
 
     @Override
-    protected AnalysisComponent<?> createPipeline() throws SetUpException {
+    protected @NonNull AnalysisComponent<?> createPipeline() throws SetUpException {
         String configurationString = config.getValue(DefaultSettings.ANALYSIS_PIPELINE);
         return createComponent(configurationString);
     }
@@ -43,7 +45,7 @@ public class ConfiguredPipelineAnalysis extends PipelineAnalysis {
      * 
      * @throws SetUpException If creating the component fails or the string is malformed.
      */
-    private AnalysisComponent<?> createComponent(String configuration) throws SetUpException {
+    private @NonNull AnalysisComponent<?> createComponent(String configuration) throws SetUpException {
         configuration = configuration.trim();
         
         int openingBracket = configuration.indexOf('(');
@@ -94,7 +96,7 @@ public class ConfiguredPipelineAnalysis extends PipelineAnalysis {
                     parameterValues[i] = parameters.get(i - 1);
                 }
                 
-                result = componentClass.getConstructor(parameterTypes).newInstance(parameterValues);
+                result = notNull(componentClass.getConstructor(parameterTypes).newInstance(parameterValues));
                 
             } catch (ReflectiveOperationException | ClassCastException | IllegalArgumentException e) {
                 throw new SetUpException(e);
