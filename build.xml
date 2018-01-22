@@ -49,7 +49,7 @@
     <antcall target="test" />
     <antcall target="jar" />
     <antcall target="jarwithsources" />
-    <antcall target="check" />
+    <!-- antcall target="check" /-->
     <antcall target="jacoco_report" />
     <!-- antcall target="zip_workspace" / -->
   </target>
