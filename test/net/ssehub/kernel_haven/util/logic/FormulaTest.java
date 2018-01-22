@@ -27,6 +27,7 @@ public class FormulaTest {
     /**
      * Tests whether evaluate() works on a single variable.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testEvaluateSimpleVariable() {
         Variable a = new Variable("A");
@@ -50,6 +51,7 @@ public class FormulaTest {
     /**
      * Tests whether evaluate() works on negations.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testEvaluateSimpleNegation() {
         Variable a = new Variable("A");
@@ -65,6 +67,7 @@ public class FormulaTest {
     /**
      * Tests whether evaluate() works on conjunctions.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testEvaluateSimpleConjunction() {
         Variable a = new Variable("A");
@@ -91,6 +94,7 @@ public class FormulaTest {
     /**
      * Tests whether evaluate() works on disjunctions.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testEvaluateSimpleDisjunction() {
         Variable a = new Variable("A");
@@ -117,6 +121,7 @@ public class FormulaTest {
     /**
      * Tests whether evaluate() works on complex formulas.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testEvaluateComplex() {
         Variable a = new Variable("A");

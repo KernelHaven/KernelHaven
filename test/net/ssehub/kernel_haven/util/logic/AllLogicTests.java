@@ -13,7 +13,8 @@ import org.junit.runners.Suite.SuiteClasses;
     ParserTest.class,
     SubFormulaCheckerTest.class,
     VariableFinderTest.class,
-    DisjunctionQueueTests.class
+    DisjunctionQueueTests.class,
+    FormulaEvaluatorTest.class,
     })
 public class AllLogicTests {
 

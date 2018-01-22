@@ -19,7 +19,10 @@ public abstract class Formula implements Serializable {
      * Evaluates this formula, based on the values set for the {@link Variable} in this formula.
      * 
      * @return Whether this formula evaluates to <code>true</code> or <code>false</code>.
+     * 
+     * @deprecated Use {@link FormulaEvaluator} instead.
      */
+    @Deprecated
     public abstract boolean evaluate();
     
     /**

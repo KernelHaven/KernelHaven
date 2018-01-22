@@ -46,6 +46,7 @@ public final class Conjunction extends Formula {
         return right;
     }
     
+    @SuppressWarnings("deprecation")
     @Override
     public boolean evaluate() {
         return left.evaluate() && right.evaluate();

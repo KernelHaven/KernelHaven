@@ -33,6 +33,7 @@ public final class Negation extends Formula {
         return formula;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean evaluate() {
         return !formula.evaluate();
