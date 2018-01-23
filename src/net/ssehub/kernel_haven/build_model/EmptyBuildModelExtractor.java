@@ -5,6 +5,7 @@ import java.io.File;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.ExtractorException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A simple extractor that returns an empty build model.
@@ -14,16 +15,16 @@ import net.ssehub.kernel_haven.util.ExtractorException;
 public class EmptyBuildModelExtractor extends AbstractBuildModelExtractor {
 
     @Override
-    protected void init(Configuration config) throws SetUpException {
+    protected void init(@NonNull Configuration config) throws SetUpException {
     }
 
     @Override
-    protected BuildModel runOnFile(File target) throws ExtractorException {
+    protected @NonNull BuildModel runOnFile(@NonNull File target) throws ExtractorException {
         return new BuildModel();
     }
 
     @Override
-    protected String getName() {
+    protected @NonNull String getName() {
         return "EmptyBuildModelExtractor";
     }
 

@@ -12,6 +12,7 @@ import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * Abstract parent class for all extractors. This class speaks to the provider and handles stuff like multi-threading
@@ -58,7 +59,7 @@ public abstract class AbstractExtractor<ResultType> {
      *      
      * @throws ExtractorException If the extraction process failed.
      */
-    protected abstract ResultType runOnFile(@NonNull File target) throws ExtractorException;
+    protected abstract @Nullable ResultType runOnFile(@NonNull File target) throws ExtractorException;
     
     /**
      * The name of the extractor. Used for naming threads.

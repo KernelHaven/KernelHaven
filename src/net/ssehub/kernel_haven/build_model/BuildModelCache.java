@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.build_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,6 +23,8 @@ import net.ssehub.kernel_haven.util.logic.parser.CStyleBooleanGrammar;
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
 import net.ssehub.kernel_haven.util.logic.parser.VariableCache;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A cache for permanently saving (and reading) a build model to a (from a)
@@ -31,7 +35,7 @@ import net.ssehub.kernel_haven.util.logic.parser.VariableCache;
  */
 public class BuildModelCache extends AbstractCache<BuildModel> {
 
-    private File cacheFile;
+    private @NonNull File cacheFile;
 
     /**
      * Creates a new cache in the given cache directory.
@@ -40,7 +44,7 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
      *            The directory where to store the cache files. This must be a
      *            directory, and we must be able to read and write to it.
      */
-    public BuildModelCache(File cacheDir) {
+    public BuildModelCache(@NonNull File cacheDir) {
         cacheFile = new File(cacheDir, "bmCache");
     }
 
@@ -54,10 +58,10 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
      *             No ReadWrite Access File Already Exists
      */
     @Override
-    public void write(BuildModel bm) throws IOException {
+    public void write(@NonNull BuildModel bm) throws IOException {
         try (CsvWriter writer = new CsvWriter(new FileOutputStream(cacheFile))) {
             for (File file : bm) {
-                writer.writeRow(file.getPath(), bm.getPc(file).toString());
+                writer.writeRow(file.getPath(), notNull(bm.getPc(file)).toString());
             }
         }
     }
@@ -76,7 +80,7 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
      *             No ReadWrite Access File Already Exists
      */
     @Override
-    public BuildModel read(File target) throws FormatException, IOException {
+    public @Nullable BuildModel read(@NonNull File target) throws FormatException, IOException {
         CsvReader reader = null;
         BuildModel result = null;
 
@@ -86,9 +90,9 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
             result = new BuildModel();
 
             VariableCache cache = new VariableCache();
-            Parser<Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache));
+            Parser<@NonNull Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache));
 
-            String[] csvParts;
+            @NonNull String[] csvParts;
             while ((csvParts = reader.readNextRow()) != null) {
                 if (csvParts.length != 2) {
                     throw new FormatException("Invalid CSV");
@@ -96,7 +100,7 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
 
                 File file = new File(csvParts[0]);
 
-                Formula pc = null;
+                Formula pc;
                 try {
                     pc = parser.parse(csvParts[1]);
 
@@ -133,8 +137,8 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
      *            The formula to convert.
      * @return The converted formula.
      */
-    private Formula convertConstants(Formula formula) {
-        Formula result = null;
+    private @NonNull Formula convertConstants(@NonNull Formula formula) {
+        Formula result;
 
         if (formula instanceof Variable) {
             Variable var = (Variable) formula;

@@ -1,11 +1,15 @@
 package net.ssehub.kernel_haven.build_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import net.ssehub.kernel_haven.util.logic.Formula;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * Represents the build model. It represents file-level presence conditions.
@@ -15,7 +19,7 @@ import net.ssehub.kernel_haven.util.logic.Formula;
  */
 public class BuildModel implements Iterable<File> {
 
-    private Map<File, Formula> fileFormulaMapping;
+    private @NonNull Map<File, Formula> fileFormulaMapping;
 
     /**
      * Instantiates a new and empty BuildModel.
@@ -33,7 +37,7 @@ public class BuildModel implements Iterable<File> {
      * @param pc
      *            the presence condition. Must not be null.
      */
-    public void add(File file, Formula pc) {
+    public void add(@NonNull File file, @NonNull Formula pc) {
         fileFormulaMapping.put(file, pc);
     }
 
@@ -44,16 +48,17 @@ public class BuildModel implements Iterable<File> {
      *            given file. Must not be null.
      * @return the presence condition of the given file.
      */
-    public Formula getPc(File file) {
+    public @Nullable Formula getPc(@NonNull File file) {
         return fileFormulaMapping.get(file);
     }
 
     /**
      * Checks if the given file is contained.
+     * 
      * @param file the given file. Must not be null.
      * @return whether it is contained.
      */
-    public boolean contains(File file) {
+    public boolean contains(@NonNull File file) {
         return fileFormulaMapping.containsKey(file);
     }
     
@@ -61,7 +66,7 @@ public class BuildModel implements Iterable<File> {
      * Removes the given file.
      * @param file the given file. Must not be null.
      */
-    public void delete(File file) {
+    public void delete(@NonNull File file) {
         fileFormulaMapping.remove(file);
     }
     
@@ -75,14 +80,14 @@ public class BuildModel implements Iterable<File> {
     }
 
     @Override
-    public Iterator<File> iterator() {
-        return fileFormulaMapping.keySet().iterator();
+    public @NonNull Iterator<File> iterator() {
+        return notNull(fileFormulaMapping.keySet().iterator());
     }
     
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         // For debugging purpose only
-        return fileFormulaMapping.toString();
+        return notNull(fileFormulaMapping.toString());
     }
 
 }
