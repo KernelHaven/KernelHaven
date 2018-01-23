@@ -90,9 +90,17 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
             result = new BuildModel();
 
             VariableCache cache = new VariableCache();
-            Parser<@NonNull Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache));
+            Parser</*@NonNull*/ Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache));
 
-            @NonNull String[] csvParts;
+            /*
+             * The two commented out annotations (above and below this comment) trigger a bug in the javac compiler:
+             * https://bugs.openjdk.java.net/browse/JDK-8144185
+             * 
+             * This causes the instrumentation of jacoco (for test coverage) to fail:
+             * https://github.com/jacoco/jacoco/issues/585
+             */
+            
+            /*@NonNull*/ String[] csvParts;
             while ((csvParts = reader.readNextRow()) != null) {
                 if (csvParts.length != 2) {
                     throw new FormatException("Invalid CSV");
@@ -102,7 +110,7 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
 
                 Formula pc;
                 try {
-                    pc = parser.parse(csvParts[1]);
+                    pc = notNull(parser.parse(notNull(csvParts[1]))); // notNull() as a workaround, see above
 
                 } catch (ExpressionFormatException e) {
                     throw new FormatException(e);
