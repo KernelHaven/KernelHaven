@@ -27,6 +27,7 @@ import net.ssehub.kernel_haven.util.Util.OSType;
  * @author Adam
  * @author Manu
  */
+@SuppressWarnings("null")
 public class UtilTest {
 
     private static final String BASE_RES = "net/ssehub/kernel_haven/util/test_resources/";

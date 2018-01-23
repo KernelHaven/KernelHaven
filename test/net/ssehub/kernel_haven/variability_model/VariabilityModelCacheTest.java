@@ -33,6 +33,7 @@ import net.ssehub.kernel_haven.util.Util;
  * @author Adam
  * @author Marvin
  */
+@SuppressWarnings("null")
 public class VariabilityModelCacheTest {
 
     private File cacheDir;

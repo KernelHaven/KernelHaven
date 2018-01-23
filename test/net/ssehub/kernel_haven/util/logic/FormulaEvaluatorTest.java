@@ -14,6 +14,7 @@ import org.junit.Test;
  * 
  * @author Adam
  */
+@SuppressWarnings("null")
 public class FormulaEvaluatorTest {
 
     /**

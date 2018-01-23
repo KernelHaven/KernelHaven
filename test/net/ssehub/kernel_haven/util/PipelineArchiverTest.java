@@ -24,6 +24,7 @@ import net.ssehub.kernel_haven.test_utils.TestConfiguration;
  *
  * @author Adam
  */
+@SuppressWarnings("null")
 public class PipelineArchiverTest {
     
     private static final File BASE_TESTDATA = new File("testdata/archiver");

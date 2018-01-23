@@ -29,6 +29,7 @@ import net.ssehub.kernel_haven.util.Util;
  * @author Adam
  * @author Johannes
  */
+@SuppressWarnings("null")
 public class CodeModelProviderTest {
     
     private static final File SOURCE_TREE = new File("testdata/source_tree");

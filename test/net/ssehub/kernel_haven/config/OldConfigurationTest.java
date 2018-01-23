@@ -25,6 +25,7 @@ import net.ssehub.kernel_haven.variability_model.EmptyVariabilityModelExtractor;
  * @author Adam
  * @author Moritz
  */
+@SuppressWarnings("null")
 public class OldConfigurationTest {
 
     /**

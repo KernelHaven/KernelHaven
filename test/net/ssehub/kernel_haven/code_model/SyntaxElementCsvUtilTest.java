@@ -26,6 +26,7 @@ import net.ssehub.kernel_haven.util.logic.parser.VariableCache;
  * 
  * @author Adam
  */
+@SuppressWarnings("null")
 public class SyntaxElementCsvUtilTest {
     
     private static final VariableCache CACHE = new VariableCache();

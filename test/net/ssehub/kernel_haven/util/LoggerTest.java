@@ -28,6 +28,7 @@ import net.ssehub.kernel_haven.test_utils.TestConfiguration;
  * @author alice
  * @author adam
  */
+@SuppressWarnings("null")
 public class LoggerTest {
 
     /**

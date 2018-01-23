@@ -10,6 +10,7 @@ import net.ssehub.kernel_haven.util.logic.parser.SubFormulaChecker;
  * @author El-Sharkawy
  *
  */
+@SuppressWarnings("null")
 public class SubFormulaCheckerTest {
     
     private static final Formula VARIABLE_A = new Variable("A");

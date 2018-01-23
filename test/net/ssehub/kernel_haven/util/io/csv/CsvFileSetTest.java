@@ -19,6 +19,7 @@ import net.ssehub.kernel_haven.test_utils.FileContentsAssertion;
  * 
  * @author Adam
  */
+@SuppressWarnings("null")
 public class CsvFileSetTest {
 
     private static final File TESTDATA = new File("testdata/csv");

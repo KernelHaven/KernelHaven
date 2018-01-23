@@ -18,6 +18,7 @@ import net.ssehub.kernel_haven.util.io.TableRowMetadataTest.Simple;
  *
  * @author Adam
  */
+@SuppressWarnings("null")
 public class CsvReaderTest {
     
     /**

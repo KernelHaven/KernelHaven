@@ -29,6 +29,7 @@ import net.ssehub.kernel_haven.util.Util;
  * @author Manu
  * @author Kevin
  */
+@SuppressWarnings("null")
 public class VariabilityModelProviderTest {
     
     /**

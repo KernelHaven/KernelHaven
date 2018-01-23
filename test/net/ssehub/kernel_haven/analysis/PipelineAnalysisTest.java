@@ -53,6 +53,7 @@ import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
  *
  * @author Adam
  */
+@SuppressWarnings("null")
 public class PipelineAnalysisTest {
     
     private File tempOutputDir = new File("testdata/analysis_tmp");
@@ -493,7 +494,6 @@ public class PipelineAnalysisTest {
 
         @Override
         public @NonNull Set<@NonNull String> getTableNames() throws IOException {
-            @SuppressWarnings("null")
             @NonNull Set<@NonNull String> result = TABLES.keySet();
             return result;
         }

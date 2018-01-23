@@ -37,6 +37,7 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModel;
  * @author Moritz
  * @author Johannes
  */
+@SuppressWarnings("null")
 public class PipelineConfiguratiorTest {
 
     /**

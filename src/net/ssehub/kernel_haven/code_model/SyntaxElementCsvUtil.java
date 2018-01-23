@@ -94,10 +94,10 @@ public class SyntaxElementCsvUtil {
         ISyntaxElementType type;
         String typeText = csv[5];
         if (typeText.startsWith("Literal: ")) {
-            typeText = typeText.substring("Literal: ".length());
+            typeText = notNull(typeText.substring("Literal: ".length()));
             type = new LiteralSyntaxElement(typeText);
         } else if (typeText.startsWith("Error: ")) {
-            typeText = typeText.substring("Error: ".length());
+            typeText = notNull(typeText.substring("Error: ".length()));
             type = new ErrorSyntaxElement(typeText);
         } else {
             type = SyntaxElementTypes.getByName(typeText);

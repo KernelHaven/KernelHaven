@@ -13,6 +13,7 @@ import net.ssehub.kernel_haven.util.BlockingQueue;
  * 
  * @author Adam
  */
+@SuppressWarnings("null")
 public class TestAnalysisComponentProvider<T> extends AnalysisComponent<T> {
 
     private BlockingQueue<T> data;

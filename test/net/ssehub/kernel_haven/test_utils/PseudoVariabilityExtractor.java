@@ -16,6 +16,7 @@ import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
  * @author El-Sharkawy
  *
  */
+@SuppressWarnings("null")
 public class PseudoVariabilityExtractor extends AbstractVariabilityModelExtractor {
 
     private static VariabilityModel model;

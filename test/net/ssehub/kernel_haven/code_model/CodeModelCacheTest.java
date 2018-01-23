@@ -27,6 +27,7 @@ import net.ssehub.kernel_haven.util.logic.Variable;
  * @author Adam
  * @author Alice
  */
+@SuppressWarnings("null")
 public class CodeModelCacheTest {
 
     private File cacheDir;

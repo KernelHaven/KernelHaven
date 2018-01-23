@@ -22,6 +22,7 @@ import net.ssehub.kernel_haven.util.logic.Variable;
  * 
  * @author Adam
  */
+@SuppressWarnings("null")
 public class SyntaxElementTest {
 
     /**

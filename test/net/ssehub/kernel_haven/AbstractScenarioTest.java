@@ -19,6 +19,7 @@ import net.ssehub.kernel_haven.util.Util;
  *
  * @author Adam
  */
+@SuppressWarnings("null")
 public abstract class AbstractScenarioTest {
 
     private File resDir;

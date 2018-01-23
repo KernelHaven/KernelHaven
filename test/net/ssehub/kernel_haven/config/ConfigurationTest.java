@@ -31,6 +31,7 @@ import net.ssehub.kernel_haven.SetUpException;
  * @author Adam
  * @author El-Sharkawy
  */
+@SuppressWarnings("null")
 public class ConfigurationTest {
 
     /**

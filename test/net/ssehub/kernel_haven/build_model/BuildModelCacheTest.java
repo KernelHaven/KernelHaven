@@ -25,6 +25,7 @@ import net.ssehub.kernel_haven.util.logic.Variable;
  * @author Adam
  * @author Kevin
  */
+@SuppressWarnings("null")
 public class BuildModelCacheTest {
 
     private File cacheDir;

@@ -21,6 +21,7 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModel;
  * 
  * @author Adam
  */
+@SuppressWarnings("null")
 public class ConfiguredPipelineAnalysisTest {
     
     /**

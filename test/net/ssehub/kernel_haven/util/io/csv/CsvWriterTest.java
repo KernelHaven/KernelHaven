@@ -20,6 +20,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  *
  * @author Adam
  */
+@SuppressWarnings("null")
 public class CsvWriterTest {
 
     /**

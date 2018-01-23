@@ -27,6 +27,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * @author Adam
  * @author Kevin
  */
+@SuppressWarnings("null")
 public class AnalysisTest {
 
     /**

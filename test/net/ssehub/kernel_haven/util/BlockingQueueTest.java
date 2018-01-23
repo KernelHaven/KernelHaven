@@ -15,6 +15,7 @@ import org.junit.Test;
  * @author Adam
  * @author Alice
  */
+@SuppressWarnings("null")
 public class BlockingQueueTest {
     
     /**
