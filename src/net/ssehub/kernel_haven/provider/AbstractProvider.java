@@ -8,6 +8,8 @@ import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.ExtractorException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * Abstract parent class for all providers. This class handles basic functionality of the providers such as
@@ -26,9 +28,9 @@ public abstract class AbstractProvider<ResultType> {
     
     private AbstractExtractor<ResultType> extractor;
     
-    private BlockingQueue<ResultType> resultQueue;
+    private @NonNull BlockingQueue<ResultType> resultQueue;
     
-    private BlockingQueue<ExtractorException> exceptionQueue;
+    private @NonNull BlockingQueue<ExtractorException> exceptionQueue;
     
     private AbstractCache<ResultType> cache;
 
@@ -49,7 +51,7 @@ public abstract class AbstractProvider<ResultType> {
      * 
      * @throws SetUpException If generating the list of targets fails (e.g. due to configuration problems).
      */
-    protected abstract List<File> getTargets() throws SetUpException;
+    protected abstract @NonNull List<@NonNull File> getTargets() throws SetUpException;
     
     /**
      * Specifies the timeout in milliseconds until waiting for the result of the extractor is aborted and an exception
@@ -64,7 +66,7 @@ public abstract class AbstractProvider<ResultType> {
      * 
      * @return The cache to use to store and read results from / to.
      */
-    protected abstract AbstractCache<ResultType> createCache();
+    protected abstract @NonNull AbstractCache<ResultType> createCache();
     
     /**
      * Whether to try and read from the cache before running the extractor.
@@ -92,7 +94,7 @@ public abstract class AbstractProvider<ResultType> {
      * 
      * @param extractor The extractor to use.
      */
-    public void setExtractor(AbstractExtractor<ResultType> extractor) {
+    public void setExtractor(@NonNull AbstractExtractor<ResultType> extractor) {
         this.extractor = extractor;
         this.extractor.setProvider(this);
     }
@@ -106,7 +108,7 @@ public abstract class AbstractProvider<ResultType> {
      * @throws SetUpException If the extractor is currently running or initializing the extractor with this
      *      configuration failed.
      */
-    public void setConfig(Configuration config) throws SetUpException {
+    public void setConfig(@NonNull Configuration config) throws SetUpException {
         if (extractor.isRunning()) {
             throw new SetUpException("Can't change config while extractor is running");
         }
@@ -115,8 +117,6 @@ public abstract class AbstractProvider<ResultType> {
         extractor.init(config);
         
         this.cache = createCache();
-        
-        
     }
     
     /**
@@ -124,7 +124,11 @@ public abstract class AbstractProvider<ResultType> {
      * 
      * @return The cache to use.
      */
-    public AbstractCache<ResultType> getCache() {
+    public @NonNull AbstractCache<ResultType> getCache() {
+        AbstractCache<ResultType> cache = this.cache;
+        if (cache == null) {
+            throw new RuntimeException("setConfig() not called before getCache()");
+        }
         return cache;
     }
     
@@ -154,7 +158,7 @@ public abstract class AbstractProvider<ResultType> {
      * 
      * @param result The result of the extractor to add.
      */
-    public void addResult(ResultType result) {
+    public void addResult(@Nullable ResultType result) {
         if (result == null) {
             resultQueue.end();
             exceptionQueue.end();
@@ -168,7 +172,7 @@ public abstract class AbstractProvider<ResultType> {
      * 
      * @param exception The exception to add.
      */
-    public void addException(ExtractorException exception) {
+    public void addException(@NonNull ExtractorException exception) {
         exceptionQueue.add(exception);
     }
     
@@ -197,7 +201,7 @@ public abstract class AbstractProvider<ResultType> {
      * @return The result that the extractor created. <code>null</code> if there is no result left in the queue or
      *      the timeout for waiting has been reached.
      */
-    public ResultType getResult() {
+    public @Nullable ResultType getResult() {
         startExtractorIfNotRunning();
         
         ResultType result = null;
@@ -219,7 +223,7 @@ public abstract class AbstractProvider<ResultType> {
      * @return The result that the extractor created. <code>null</code> if there is no result left in the queue or
      *      the timeout for waiting has been reached.
      */
-    public ResultType getNextResult() {
+    public @Nullable ResultType getNextResult() {
         startExtractorIfNotRunning();
         
         ResultType result = null;
@@ -239,7 +243,7 @@ public abstract class AbstractProvider<ResultType> {
      * 
      * @return The result queue.
      */
-    public BlockingQueue<ResultType> getResultQueue() {
+    public @NonNull BlockingQueue<ResultType> getResultQueue() {
         startExtractorIfNotRunning();
         
         return resultQueue;
@@ -252,7 +256,7 @@ public abstract class AbstractProvider<ResultType> {
      * @return The exception that the extractor created. <code>null</code> if there is no exception left in the queue or
      *      the timeout for waiting has been reached.
      */
-    public ExtractorException getException() {
+    public @Nullable ExtractorException getException() {
         return exceptionQueue.peek();
     }
     
@@ -263,7 +267,7 @@ public abstract class AbstractProvider<ResultType> {
      * @return The exception that the extractor created. <code>null</code> if there is no exception left in the queue or
      *      the timeout for waiting has been reached.
      */
-    public ExtractorException getNextException() {
+    public @Nullable ExtractorException getNextException() {
         return exceptionQueue.get();
     }
     

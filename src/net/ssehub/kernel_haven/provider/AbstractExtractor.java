@@ -11,9 +11,10 @@ import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Logger;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * Abstract parent class for all extractors. This class speaks to the provider and handles stuff like multit-hreading
+ * Abstract parent class for all extractors. This class speaks to the provider and handles stuff like multi-threading
  * and caching. Extractors only need to worry about implementing the abstract methods.
  *
  * @param <ResultType> The type of the result the extractor produces.
@@ -26,7 +27,7 @@ public abstract class AbstractExtractor<ResultType> {
     
     private boolean isRunning;
     
-    private Object isRunningMutex;
+    private @NonNull Object isRunningMutex;
     
     private AbstractProvider<ResultType> provider;
     
@@ -45,7 +46,7 @@ public abstract class AbstractExtractor<ResultType> {
      * 
      * @throws SetUpException If configuring the extractor fails.
      */
-    protected abstract void init(Configuration config) throws SetUpException;
+    protected abstract void init(@NonNull Configuration config) throws SetUpException;
     
     /**
      * Runs the extractor on a single target. This may potentially be called in parallel from multiple threads; thus,
@@ -57,14 +58,14 @@ public abstract class AbstractExtractor<ResultType> {
      *      
      * @throws ExtractorException If the extraction process failed.
      */
-    protected abstract ResultType runOnFile(File target) throws ExtractorException;
+    protected abstract ResultType runOnFile(@NonNull File target) throws ExtractorException;
     
     /**
      * The name of the extractor. Used for naming threads.
      * 
      * @return The name of the extractor.
      */
-    protected abstract String getName();
+    protected abstract @NonNull String getName();
     
     /**
      * Checks if the extractor is currently running.
@@ -82,7 +83,7 @@ public abstract class AbstractExtractor<ResultType> {
      */
     private final class WorkerThread extends Thread {
         
-        private BlockingQueue<File> targets;
+        private @NonNull BlockingQueue<File> targets;
         
         /**
          * Creates a new worker thread.
@@ -91,7 +92,7 @@ public abstract class AbstractExtractor<ResultType> {
          * @param number The number of this thread.
          * @param targets The queue to get targets from.
          */
-        public WorkerThread(String name, int number, BlockingQueue<File> targets) {
+        public WorkerThread(@NonNull String name, int number, @NonNull BlockingQueue<File> targets) {
             super(name + "Thread-" + number);
             this.targets = targets;
         }
@@ -154,7 +155,7 @@ public abstract class AbstractExtractor<ResultType> {
      * 
      * @param targets The targets to run on.
      */
-    public final void run(List<File> targets) {
+    public final void run(@NonNull List<@NonNull File> targets) {
         synchronized (isRunningMutex) {
             this.isRunning = true;
         }
@@ -200,7 +201,7 @@ public abstract class AbstractExtractor<ResultType> {
      * 
      * @param provider The provider.
      */
-    public final void setProvider(AbstractProvider<ResultType> provider) {
+    public final void setProvider(@NonNull AbstractProvider<ResultType> provider) {
         this.provider = provider;
     }
     

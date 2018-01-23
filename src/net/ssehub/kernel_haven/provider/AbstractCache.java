@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A cache for the result of an extractor.
@@ -23,7 +25,7 @@ public abstract class AbstractCache<ResultType> {
      * @throws FormatException If the cache has an invalid format.
      * @throws IOException if reading the cache files fails.
      */
-    public abstract ResultType read(File target) throws FormatException, IOException;
+    public abstract @Nullable ResultType read(@NonNull File target) throws FormatException, IOException;
     
     /**
      * Writes the given result from the extractor to the cache.
@@ -32,6 +34,6 @@ public abstract class AbstractCache<ResultType> {
      * 
      * @throws IOException If writing the cache files fails.
      */
-    public abstract void write(ResultType result) throws IOException;
+    public abstract void write(@NonNull ResultType result) throws IOException;
     
 }

@@ -207,7 +207,7 @@ public class VariabilityModelCacheTest {
         cache.write(originalVm);
 
         // read
-        VariabilityModel readVm = cache.read(null);
+        VariabilityModel readVm = cache.read(new File(""));
 
         // check if constraint model is equal
         BufferedReader r1 = new BufferedReader(new FileReader(readVm.getConstraintModel()));
@@ -249,7 +249,7 @@ public class VariabilityModelCacheTest {
         assertThat(cacheLocation.getAbsolutePath() + " does not exist ", cacheLocation.exists(), is(true));
         assertThat(cacheLocation.getAbsolutePath() + " does is no directory", cacheLocation.isDirectory(), is(true));
         VariabilityModelCache cache = new VariabilityModelCache(cacheLocation);
-        VariabilityModel varmodel = cache.read(null);
+        VariabilityModel varmodel = cache.read(new File(""));
         assertThat(varmodel, notNullValue());
         Map<String, VariabilityVariable> varMap = varmodel.getVariableMap();
 
@@ -281,7 +281,7 @@ public class VariabilityModelCacheTest {
     @Test(expected = FormatException.class)
     public void testInvalidClassName() throws FormatException, IOException {
         VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache1"));
-        cache.read(null);
+        cache.read(new File(""));
     }
 
     /**
@@ -296,7 +296,7 @@ public class VariabilityModelCacheTest {
     @Test(expected = FormatException.class)
     public void testMalFormCSV() throws FormatException, IOException {
         VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache2"));
-        cache.read(null);
+        cache.read(new File(""));
     }
 
     /**
@@ -310,7 +310,7 @@ public class VariabilityModelCacheTest {
     @Test()
     public void testEmptyCache() throws FormatException, IOException {
         VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache3"));
-        VariabilityModel vm = cache.read(null);
+        VariabilityModel vm = cache.read(new File(""));
 
         assertThat(vm, nullValue());
     }
@@ -327,7 +327,7 @@ public class VariabilityModelCacheTest {
     @Test()
     public void testHalfEmptyCache1() throws FormatException, IOException {
         VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache4"));
-        VariabilityModel vm = cache.read(null);
+        VariabilityModel vm = cache.read(new File(""));
 
         assertThat(vm, nullValue());
     }
@@ -344,7 +344,7 @@ public class VariabilityModelCacheTest {
     @Test()
     public void testHalfEmptyCache2() throws FormatException, IOException {
         VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache5"));
-        VariabilityModel vm = cache.read(null);
+        VariabilityModel vm = cache.read(new File(""));
 
         assertThat(vm, nullValue());
     }
@@ -361,7 +361,7 @@ public class VariabilityModelCacheTest {
     public void testInvalidCodeLocation() throws FormatException, IOException {
         VariabilityModelCache cache = new VariabilityModelCache(
                 new File("testdata/vmCaching/cache_codelocation_invalid"));
-        VariabilityModel vm = cache.read(null);
+        VariabilityModel vm = cache.read(new File(""));
 
         assertThat(vm, nullValue());
     }

@@ -271,6 +271,18 @@ public class PipelineConfigurator {
     public void createProviders() throws SetUpException {
         LOGGER.logInfo("Creating providers...");
         
+        Configuration config = this.config;
+        if (config == null) {
+            throw new SetUpException("Configuration is not set");
+        }
+        
+        AbstractVariabilityModelExtractor vmExtractor = this.vmExtractor;
+        AbstractBuildModelExtractor bmExtractor = this.bmExtractor;
+        AbstractCodeModelExtractor cmExtractor = this.cmExtractor;
+        if (vmExtractor == null || bmExtractor == null || cmExtractor == null) {
+            throw new SetUpException("Extractors not created");
+        }
+        
         vmProvider = new VariabilityModelProvider();
         vmProvider.setExtractor(vmExtractor);
         vmProvider.setConfig(config);

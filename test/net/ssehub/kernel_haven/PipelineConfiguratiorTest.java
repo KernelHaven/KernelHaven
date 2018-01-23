@@ -101,7 +101,7 @@ public class PipelineConfiguratiorTest {
 
         @Override
         protected String getName() {
-            return null;
+            return "DummyVmExtractor";
         }
 
 
@@ -307,7 +307,7 @@ public class PipelineConfiguratiorTest {
 
         @Override
         protected String getName() {
-            return null;
+            return "DummyBmExtractor";
         }
 
 
