@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.code_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,6 +22,8 @@ import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.parser.CStyleBooleanGrammar;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
 import net.ssehub.kernel_haven.util.logic.parser.VariableCache;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A cache for permanently saving (and reading) a code model to a (from a)
@@ -30,7 +34,7 @@ import net.ssehub.kernel_haven.util.logic.parser.VariableCache;
  */
 public class CodeModelCache extends AbstractCache<SourceFile> {
     
-    private File cacheDir;
+    private @NonNull File cacheDir;
     
     private boolean compress;
     
@@ -41,7 +45,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      *            The directory where to store the cache files. This must be a
      *            directory, and we must be able to read and write to it.
      */
-    public CodeModelCache(File cacheDir) {
+    public CodeModelCache(@NonNull File cacheDir) {
         this.cacheDir = cacheDir;
     }
     
@@ -54,7 +58,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * @param compress Whether the cache files should be written compressed. Already existing compressed cache files
      *      are always read, even if compression is turned off.
      */
-    public CodeModelCache(File cacheDir, boolean compress) {
+    public CodeModelCache(@NonNull File cacheDir, boolean compress) {
         this.cacheDir = cacheDir;
         this.compress = compress;
     }
@@ -65,7 +69,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * @param path The path of the source file, relative to the source code tree.
      * @return The file where to cache.
      */
-    private File getCacheFile(File path) {
+    private @NonNull File getCacheFile(@NonNull File path) {
         String name = path.getPath().replace(File.separatorChar, '.') + ".cache";
         return new File(cacheDir, name);
     }
@@ -76,7 +80,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * @param path The path of the source file, relative to the source code tree.
      * @return The file where to cache.
      */
-    private File getCompressedCacheFile(File path) {
+    private @NonNull File getCompressedCacheFile(@NonNull File path) {
         String name = path.getPath().replace(File.separatorChar, '.') + ".cache.zip";
         return new File(cacheDir, name);
     }
@@ -88,7 +92,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * @throws IOException If writing the cache file fails.
      */
     @Override
-    public void write(SourceFile file) throws IOException {
+    public void write(@NonNull SourceFile file) throws IOException {
         File cacheFile;
         if (compress) {
             // delete the uncompressed version, since this method is supposed to overwrite any previous cache
@@ -138,10 +142,12 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * @param writer The writer to write to.
      * @throws IOException If writing fails.
      */
-    private void serializeElement(CodeElement element, int level, CsvWriter writer) throws IOException {
+    private void serializeElement(@NonNull CodeElement element, int level, @NonNull CsvWriter writer)
+            throws IOException {
+        
         List<String> serialized = element.serializeCsv();
         
-        Object[] csvParts = new String[serialized.size() + 2];
+        @Nullable Object[] csvParts = new @Nullable String[serialized.size() + 2];
         csvParts[0] = element.getClass().getName();
         csvParts[1] = Integer.toString(level);
         int i = 2;
@@ -166,7 +172,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * @throws FormatException If the cache content is invalid.
      */
     @Override
-    public SourceFile read(File path) throws IOException, FormatException {
+    public @Nullable SourceFile read(@NonNull File path) throws IOException, FormatException {
         // always try uncompressed first, since its faster
         boolean compressed = false;
         File cacheFile = getCacheFile(path);
@@ -200,7 +206,6 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
             String[] csvParts;
             while ((csvParts = reader.readNextRow()) != null) {
                 readLine(csvParts, nesting, result, parser);
-                
             }
 
         } catch (NumberFormatException e) {
@@ -242,7 +247,8 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * 
      * @throws ReflectiveOperationException If invoking the createFromCsv method fails on the fully qualified classname.
      */
-    private void readLine(String[] csvParts, Stack<CodeElement> nesting, SourceFile result, Parser<Formula> parser)
+    private void readLine(@NonNull String @NonNull [] csvParts, @NonNull Stack<@NonNull CodeElement> nesting,
+            @NonNull SourceFile result, @NonNull Parser<@NonNull Formula> parser)
             throws ReflectiveOperationException {
 
         String className = csvParts[0];
@@ -255,7 +261,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
             Method m = clazz.getMethod("createFromCsv", String[].class, Parser.class);
             String[] smallCsv = new String[csvParts.length - 2];
             System.arraycopy(csvParts, 2, smallCsv, 0, smallCsv.length);
-            created = (CodeElement) m.invoke(null, smallCsv, parser);
+            created = notNull((CodeElement) m.invoke(null, smallCsv, parser));
         } catch (IllegalArgumentException | ClassCastException e) {
             throw new ReflectiveOperationException(e);
         }
@@ -267,7 +273,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
         if (level == 0) {
             result.addElement(created);
         } else {
-            nesting.peek().addNestedElement(created);
+            notNull(nesting.peek()).addNestedElement(created);
         }
         
         nesting.push(created);

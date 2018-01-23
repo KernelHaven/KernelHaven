@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.code_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +13,8 @@ import net.ssehub.kernel_haven.util.FormulaCache;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * Utility functions for the CSV format of {@link SyntaxElement}s.
@@ -34,7 +38,8 @@ public class SyntaxElementCsvUtil {
      * 
      * @throws FormatException If the CSV is malformed.
      */
-    public static SyntaxElement csvToElement(String[] csv, Parser<Formula> parser) throws FormatException {
+    public static @NonNull SyntaxElement csvToElement(@NonNull String @NonNull [] csv,
+            @NonNull Parser<@NonNull Formula> parser) throws FormatException {
         return csvToElement(csv, parser, null, null);
     }
     
@@ -49,8 +54,10 @@ public class SyntaxElementCsvUtil {
      * 
      * @throws FormatException If the CSV is malformed.
      */
-    public static SyntaxElement csvToElement(String[] csv, Parser<Formula> parser,
-            Map<String, Formula> formulaCache, Map<String, File> filenameCache) throws FormatException {
+    public static @NonNull SyntaxElement csvToElement(@NonNull String @NonNull [] csv,
+            @NonNull Parser<@NonNull Formula> parser, @Nullable Map<String, Formula> formulaCache,
+            @Nullable Map<String, File> filenameCache) throws FormatException {
+        
         if (csv.length < 7) {
             throw new FormatException("Wrong number of CSV fields, expected at least 7 but got "
                     + csv.length + ": " + Arrays.toString(csv));
@@ -105,7 +112,7 @@ public class SyntaxElementCsvUtil {
         } catch (NumberFormatException e) {
             throw new FormatException(e);
         }
-        List<String> relation = new ArrayList<>(numRelations);
+        List<@NonNull String> relation = new ArrayList<>(numRelations);
         for (int i = 7; i < 7 + numRelations; i++) {
             relation.add(csv[i]);
         }
@@ -125,7 +132,7 @@ public class SyntaxElementCsvUtil {
      * @param element The element to convert.
      * @return The CSV.
      */
-    public static List<String> elementToCsv(SyntaxElement element) {
+    public static @NonNull List<@NonNull String> elementToCsv(@NonNull SyntaxElement element) {
         return elementToCsv(element, null);
     }
     
@@ -138,8 +145,10 @@ public class SyntaxElementCsvUtil {
      * 
      * @return The CSV.
      */
-    public static List<String> elementToCsv(SyntaxElement element, FormulaCache cache) {
-        List<String> result = new ArrayList<>(7);
+    public static @NonNull List<@NonNull String> elementToCsv(@NonNull SyntaxElement element,
+            @Nullable FormulaCache cache) {
+        
+        List<@NonNull String> result = new ArrayList<>(7);
         
         String typeText;
         ISyntaxElementType type = element.getType();
@@ -154,15 +163,16 @@ public class SyntaxElementCsvUtil {
             typeText = "Error: Unknown type found in AST";
         }
         
-        result.add(Integer.toString(element.getLineStart()));
-        result.add(Integer.toString(element.getLineEnd()));
-        result.add(element.getSourceFile().getPath());
+        result.add(notNull(Integer.toString(element.getLineStart())));
+        result.add(notNull(Integer.toString(element.getLineEnd())));
+        result.add(notNull(element.getSourceFile().getPath()));
         
 //      result.add(element.getCondition() == null ? "null" : element.getCondition().toString());
-        if (null != element.getCondition()) {
+        Formula condition = element.getCondition();
+        if (null != condition) {
             StringBuffer formula = new StringBuffer();
-            element.getCondition().toString(formula);
-            result.add(formula.toString());
+            condition.toString(formula);
+            result.add(notNull(formula.toString()));
         } else {
             result.add("null");
         }
@@ -173,13 +183,13 @@ public class SyntaxElementCsvUtil {
         } else {
             StringBuffer formula = new StringBuffer();
             element.getPresenceCondition().toString(formula);
-            result.add(formula.toString());
+            result.add(notNull(formula.toString()));
         }
         
         
         result.add(typeText);
         
-        result.add(Integer.toString(element.getNestedElementCount()));
+        result.add(notNull(Integer.toString(element.getNestedElementCount())));
         for (int i = 0; i < element.getNestedElementCount(); i++) {
             result.add(element.getRelation(i));
         }
@@ -197,8 +207,8 @@ public class SyntaxElementCsvUtil {
      * 
      * @throws FormatException If parsing the string fails.
      */
-    private static Formula readFormula(String text, Parser<Formula> parser, Map<String, Formula> cache)
-            throws FormatException {
+    private static @NonNull Formula readFormula(@NonNull String text, @NonNull Parser<@NonNull Formula> parser,
+            @Nullable Map<String, Formula> cache) throws FormatException {
         
         Formula f = null;
         if (cache != null) {

@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.code_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,6 +12,8 @@ import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A block of one or multiple lines of code. For example, this could be used to represent an #ifdef hierarchy.
@@ -18,24 +22,24 @@ import net.ssehub.kernel_haven.util.logic.parser.Parser;
  */
 public class CodeBlock implements CodeElement {
 
-    private List<CodeBlock> nested;
+    private @NonNull List<@NonNull CodeBlock> nested;
     
     private int lineStart;
     
     private int lineEnd;
     
-    private File sourceFile;
+    private @NonNull File sourceFile;
     
-    private Formula condition;
+    private @Nullable Formula condition;
     
-    private Formula presenceCondition;
+    private @NonNull Formula presenceCondition;
     
     /**
      * Creates a new code block.
      * 
      * @param presenceCondition The presence condition of this block.
      */
-    public CodeBlock(Formula presenceCondition) {
+    public CodeBlock(@NonNull Formula presenceCondition) {
         this.nested = new LinkedList<>();
         this.lineStart = -1;
         this.lineEnd = -1;
@@ -52,7 +56,9 @@ public class CodeBlock implements CodeElement {
      * @param condition The immediate condition of this block. May be <code>null</code>.
      * @param presenceCondition The presence condition of this block.
      */
-    public CodeBlock(int lineStart, int lineEnd, File sourceFile, Formula condition, Formula presenceCondition) {
+    public CodeBlock(int lineStart, int lineEnd, @NonNull File sourceFile, @Nullable Formula condition,
+            @NonNull Formula presenceCondition) {
+        
         this.nested = new LinkedList<>();
         this.lineStart = lineStart;
         this.lineEnd = lineEnd;
@@ -67,12 +73,12 @@ public class CodeBlock implements CodeElement {
     }
 
     @Override
-    public CodeBlock getNestedElement(int index) throws IndexOutOfBoundsException {
-        return nested.get(index);
+    public @NonNull CodeBlock getNestedElement(int index) throws IndexOutOfBoundsException {
+        return notNull(nested.get(index));
     }
     
     @Override
-    public void addNestedElement(CodeElement element) {
+    public void addNestedElement(@NonNull CodeElement element) {
         if (!(element instanceof CodeBlock)) {
             throw new IllegalArgumentException("Can only add CodeBlocks as child of CodeBlock");
         }
@@ -90,27 +96,28 @@ public class CodeBlock implements CodeElement {
     }
 
     @Override
-    public File getSourceFile() {
+    public @NonNull File getSourceFile() {
         return sourceFile;
     }
 
     @Override
-    public Formula getCondition() {
+    public @Nullable Formula getCondition() {
         return condition;
     }
 
     @Override
-    public Formula getPresenceCondition() {
+    public @NonNull Formula getPresenceCondition() {
         return presenceCondition;
     }
 
     @Override
-    public List<String> serializeCsv() {
-        List<String> result = new ArrayList<>(5);
+    public @NonNull List<@NonNull String> serializeCsv() {
+        List<@NonNull String> result = new ArrayList<>(5);
         
-        result.add(Integer.toString(lineStart));
-        result.add(Integer.toString(lineEnd));
-        result.add(sourceFile.getPath());
+        result.add(notNull(Integer.toString(lineStart)));
+        result.add(notNull(Integer.toString(lineEnd)));
+        result.add(notNull(sourceFile.getPath()));
+        Formula condition = this.condition;
         result.add(condition == null ? "null" : condition.toString());
         result.add(presenceCondition.toString());
         
@@ -126,7 +133,9 @@ public class CodeBlock implements CodeElement {
      * 
      * @throws FormatException If the CSV is malformed.
      */
-    public static CodeBlock createFromCsv(String[] csv, Parser<Formula> parser) throws FormatException {
+    public static @NonNull CodeBlock createFromCsv(@NonNull String @NonNull [] csv,
+            @NonNull Parser<@NonNull Formula> parser) throws FormatException {
+        
         if (csv.length != 5) {
             throw new FormatException("Invalid CSV");
         }
@@ -158,12 +167,12 @@ public class CodeBlock implements CodeElement {
      * 
      * @return An iterable over the nested blocks.
      */
-    public Iterable<CodeBlock> iterateNestedBlocks() {
-        return new Iterable<CodeBlock>() {
+    public @NonNull Iterable<@NonNull CodeBlock> iterateNestedBlocks() {
+        return new Iterable<@NonNull CodeBlock>() {
             
             @Override
-            public Iterator<CodeBlock> iterator() {
-                return new Iterator<CodeBlock>() {
+            public @NonNull Iterator<@NonNull CodeBlock> iterator() {
+                return new Iterator<@NonNull CodeBlock>() {
 
                     private int index = 0;
                     

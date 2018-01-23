@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.code_model;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * An element in the syntax tree that indicates an error.
  * 
@@ -7,14 +9,14 @@ package net.ssehub.kernel_haven.code_model;
  */
 public class ErrorSyntaxElement implements ISyntaxElementType {
 
-    private String message;
+    private @NonNull String message;
     
     /**
      * Creates a new error syntax element.
      * 
      * @param message The message to be displayed.
      */
-    public ErrorSyntaxElement(String message) {
+    public ErrorSyntaxElement(@NonNull String message) {
         this.message = message;
     }
     
@@ -23,12 +25,12 @@ public class ErrorSyntaxElement implements ISyntaxElementType {
      * 
      * @return This error message.
      */
-    public String getMessage() {
+    public @NonNull String getMessage() {
         return message;
     }
     
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return "Error: " + message;
     }
     

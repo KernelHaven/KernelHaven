@@ -10,6 +10,7 @@ import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.provider.AbstractCache;
 import net.ssehub.kernel_haven.provider.AbstractProvider;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * The provider for the code model. This class serves as an intermediate between the analysis and the code model
@@ -25,8 +26,8 @@ public class CodeModelProvider extends AbstractProvider<SourceFile> {
     }
     
     @Override
-    protected List<File> getTargets() throws SetUpException {
-        List<File> result = new LinkedList<>();
+    protected @NonNull List<@NonNull File> getTargets() throws SetUpException {
+        List<@NonNull File> result = new LinkedList<>();
         
         Pattern pattern = config.getValue(DefaultSettings.CODE_EXTRACTOR_FILE_REGEX);
 
@@ -76,7 +77,7 @@ public class CodeModelProvider extends AbstractProvider<SourceFile> {
     }
 
     @Override
-    protected AbstractCache<SourceFile> createCache() {
+    protected @NonNull AbstractCache<SourceFile> createCache() {
         return new CodeModelCache(config.getValue(DefaultSettings.CACHE_DIR),
                 config.getValue(DefaultSettings.CODE_PROVIDER_CACHE_COMPRESS));
     }

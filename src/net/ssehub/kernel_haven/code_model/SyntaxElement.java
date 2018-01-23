@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.code_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -9,6 +11,8 @@ import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.FormulaCache;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * An element of an AST representing the code.
@@ -17,21 +21,21 @@ import net.ssehub.kernel_haven.util.logic.parser.Parser;
  */
 public class SyntaxElement implements CodeElement {
 
-    private List<SyntaxElement> nested;
+    private @NonNull List<@NonNull SyntaxElement> nested;
     
-    private List<String> relations;
+    private @NonNull List<@NonNull String> relations;
     
     private int lineStart;
     
     private int lineEnd;
     
-    private File sourceFile;
+    private @NonNull File sourceFile;
     
-    private Formula condition;
+    private @Nullable Formula condition;
     
-    private Formula presenceCondition;
+    private @NonNull Formula presenceCondition;
     
-    private ISyntaxElementType type;
+    private @NonNull ISyntaxElementType type;
     
     /**
      * Creates a new syntax element.
@@ -40,7 +44,9 @@ public class SyntaxElement implements CodeElement {
      * @param condition The immediate condition of this syntax element.
      * @param presencCondition The presence condition of this node.
      */
-    public SyntaxElement(ISyntaxElementType type, Formula condition, Formula presencCondition) {
+    public SyntaxElement(@NonNull ISyntaxElementType type, @Nullable Formula condition,
+            @NonNull Formula presencCondition) {
+        
         this.nested = new LinkedList<>();
         this.relations = new LinkedList<>();
         this.lineStart = -1;
@@ -73,7 +79,7 @@ public class SyntaxElement implements CodeElement {
      * 
      * @param sourceFile The source file. Not null.
      */
-    public void setSourceFile(File sourceFile) {
+    public void setSourceFile(@NonNull File sourceFile) {
         this.sourceFile = sourceFile;
     }
     
@@ -83,8 +89,8 @@ public class SyntaxElement implements CodeElement {
     }
 
     @Override
-    public SyntaxElement getNestedElement(int index) throws IndexOutOfBoundsException {
-        return nested.get(index);
+    public @NonNull SyntaxElement getNestedElement(int index) throws IndexOutOfBoundsException {
+        return notNull(nested.get(index));
     }
     
     /**
@@ -93,10 +99,10 @@ public class SyntaxElement implements CodeElement {
      * @param relation The relation of the nested element to this node.
      * @return The first nested element with the given relation. <code>null</code> if none found.
      */
-    public SyntaxElement getNestedElement(String relation) {
+    public @Nullable SyntaxElement getNestedElement(@NonNull String relation) {
         int i;
         for (i = 0; i < nested.size(); i++) {
-            if (relations.get(i).equals(relation)) {
+            if (notNull(relations.get(i)).equals(relation)) {
                 break;
             }
         }
@@ -108,7 +114,7 @@ public class SyntaxElement implements CodeElement {
      * should be used instead.
      */
     @Override
-    public void addNestedElement(CodeElement element) {
+    public void addNestedElement(@NonNull CodeElement element) {
         if (!(element instanceof SyntaxElement)) {
             throw new IllegalArgumentException("Can only add SyntaxElements as child of SyntaxElement");
         }
@@ -127,7 +133,7 @@ public class SyntaxElement implements CodeElement {
      * @param element The element to nest inside of this.
      * @param relation The relation of the nested element.
      */
-    public void addNestedElement(SyntaxElement element, String relation) {
+    public void addNestedElement(@NonNull SyntaxElement element, @NonNull String relation) {
         this.nested.add(element);
         this.relations.add(relation);
     }
@@ -143,17 +149,17 @@ public class SyntaxElement implements CodeElement {
     }
 
     @Override
-    public File getSourceFile() {
+    public @NonNull File getSourceFile() {
         return sourceFile;
     }
 
     @Override
-    public Formula getCondition() {
+    public @Nullable Formula getCondition() {
         return condition;
     }
 
     @Override
-    public Formula getPresenceCondition() {
+    public @NonNull Formula getPresenceCondition() {
         return presenceCondition;
     }
     
@@ -162,7 +168,7 @@ public class SyntaxElement implements CodeElement {
      * 
      * @return The type of syntax element.
      */
-    public ISyntaxElementType getType() {
+    public @NonNull ISyntaxElementType getType() {
         return type;
     }
     
@@ -171,9 +177,11 @@ public class SyntaxElement implements CodeElement {
      * 
      * @param index The index of the nested element to get the relation for.
      * @return A string describing the relation of the nested element to this node.
+     * 
+     * @throws IndexOutOfBoundsException If the index is out of bounds.
      */
-    public String getRelation(int index) {
-        return relations.get(index);
+    public @NonNull String getRelation(int index) throws IndexOutOfBoundsException {
+        return notNull(relations.get(index));
     }
     
     /**
@@ -183,12 +191,12 @@ public class SyntaxElement implements CodeElement {
      * 
      * @param relation The relations of the children elements.
      */
-    void setDeserializedRelations(List<String> relation) {
+    void setDeserializedRelations(@NonNull List<@NonNull String> relation) {
         this.relations = relation;
     }
     
     @Override
-    public List<String> serializeCsv() {
+    public @NonNull List<@NonNull String> serializeCsv() {
         return SyntaxElementCsvUtil.elementToCsv(this);
     }
     
@@ -199,7 +207,7 @@ public class SyntaxElement implements CodeElement {
      * @param cache The formula cache to cache the serialized formulas.
      * @return The CSV parts representing this element.
      */
-    public List<String> serializeCsv(FormulaCache cache) {
+    public @NonNull List<@NonNull String> serializeCsv(@Nullable FormulaCache cache) {
         return SyntaxElementCsvUtil.elementToCsv(this, cache);
     }
     
@@ -212,7 +220,9 @@ public class SyntaxElement implements CodeElement {
      * 
      * @throws FormatException If the CSV is malformed.
      */
-    public static SyntaxElement createFromCsv(String[] csv, Parser<Formula> parser) throws FormatException {
+    public static @NonNull SyntaxElement createFromCsv(@NonNull String @NonNull [] csv,
+            @NonNull Parser<@NonNull Formula> parser) throws FormatException {
+        
         return SyntaxElementCsvUtil.csvToElement(csv, parser);
     }
 
@@ -221,12 +231,12 @@ public class SyntaxElement implements CodeElement {
      * 
      * @return An iterable over the nested elements
      */
-    public Iterable<SyntaxElement> iterateNestedSyntaxElements() {
-        return new Iterable<SyntaxElement>() {
+    public @NonNull Iterable<@NonNull SyntaxElement> iterateNestedSyntaxElements() {
+        return new Iterable<@NonNull SyntaxElement>() {
             
             @Override
-            public Iterator<SyntaxElement> iterator() {
-                return new Iterator<SyntaxElement>() {
+            public @NonNull Iterator<@NonNull SyntaxElement> iterator() {
+                return new Iterator<@NonNull SyntaxElement>() {
 
                     private int index = 0;
                     
@@ -245,7 +255,7 @@ public class SyntaxElement implements CodeElement {
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return toString("", "");
     }
     
@@ -258,9 +268,10 @@ public class SyntaxElement implements CodeElement {
      * 
      * @return This element as a string. Never null.
      */
-    private String toString(String relation, String indentation) {
+    private @NonNull String toString(@NonNull String relation, @NonNull String indentation) {
         StringBuilder result = new StringBuilder();
         
+        Formula condition = this.condition;
         String conditionStr = condition == null ? "<null>" : condition.toString();
         if (conditionStr.length() > 64) {
             conditionStr = "...";
@@ -275,10 +286,10 @@ public class SyntaxElement implements CodeElement {
         indentation += '\t';
         
         for (int i = 0; i < nested.size(); i++) {
-            result.append(nested.get(i).toString(relations.get(i), indentation));
+            result.append(notNull(nested.get(i)).toString(relations.get(i), indentation));
         }
         
-        return result.toString();
+        return notNull(result.toString());
     }
     
 }

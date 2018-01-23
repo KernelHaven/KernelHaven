@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.ssehub.kernel_haven.util.logic.Formula;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * Represents a code element inside a {@link SourceFile}.
@@ -19,12 +21,12 @@ public interface CodeElement {
      * 
      * @return An iterable over the nested elements.
      */
-    public default Iterable<CodeElement> iterateNestedElements() {
-        return new Iterable<CodeElement>() {
+    public default Iterable<@NonNull CodeElement> iterateNestedElements() {
+        return new Iterable<@NonNull CodeElement>() {
             
             @Override
-            public Iterator<CodeElement> iterator() {
-                return new Iterator<CodeElement>() {
+            public @NonNull Iterator<@NonNull CodeElement> iterator() {
+                return new Iterator<@NonNull CodeElement>() {
 
                     private int index = 0;
                     
@@ -58,14 +60,14 @@ public interface CodeElement {
      * 
      * @throws IndexOutOfBoundsException If index >= getNestedElementCount().
      */
-    public abstract CodeElement getNestedElement(int index) throws IndexOutOfBoundsException;
+    public abstract @NonNull CodeElement getNestedElement(int index) throws IndexOutOfBoundsException;
 
     /**
      * Adds a nested element to the end of the list.
      * 
      * @param element The element to add.
      */
-    public abstract void addNestedElement(CodeElement element);
+    public abstract void addNestedElement(@NonNull CodeElement element);
     
     /**
      * Returns the line where this element starts in the source file.
@@ -86,7 +88,7 @@ public interface CodeElement {
      * 
      * @return The source file location relative to the source tree.
      */
-    public abstract File getSourceFile();
+    public abstract @NonNull File getSourceFile();
 
     /**
      * Returns the immediate condition of this element. This condition is not
@@ -95,14 +97,14 @@ public interface CodeElement {
      * @return the condition. May be <code>null</code> if this concept dosen't
      *         apply for the concrete subclass.
      */
-    public abstract Formula getCondition();
+    public abstract @Nullable Formula getCondition();
 
     /**
      * Returns the presence condition of this element.
      * 
      * @return the presence condition. Must not be <code>null</code>.
      */
-    public abstract Formula getPresenceCondition();
+    public abstract @NonNull Formula getPresenceCondition();
     
     /**
      * Serializes this element as a CSV line. This does not consider nested elements.
@@ -111,6 +113,6 @@ public interface CodeElement {
      * 
      * @return The CSV parts representing this element.
      */
-    public abstract List<String> serializeCsv();
+    public abstract @NonNull List<@NonNull String> serializeCsv();
     
 }

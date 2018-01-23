@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.code_model;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * A syntax element that represents a literal value.
  * 
@@ -7,14 +9,14 @@ package net.ssehub.kernel_haven.code_model;
  */
 public class LiteralSyntaxElement implements ISyntaxElementType {
 
-    private String content;
+    private @NonNull String content;
     
     /**
      * Creates a new literal syntax element.
      * 
      * @param content The content of this literal.
      */
-    public LiteralSyntaxElement(String content) {
+    public LiteralSyntaxElement(@NonNull String content) {
         this.content = content;
     }
     
@@ -23,12 +25,12 @@ public class LiteralSyntaxElement implements ISyntaxElementType {
      * 
      * @return The content of this literal.
      */
-    public String getContent() {
+    public @NonNull String getContent() {
         return content;
     }
     
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return "Literal: " + content;
     }
 

@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.code_model;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * A type of an element in an AST.
  * 
@@ -8,6 +10,6 @@ package net.ssehub.kernel_haven.code_model;
 public interface ISyntaxElementType {
 
     @Override
-    public String toString();
+    public @NonNull String toString();
     
 }

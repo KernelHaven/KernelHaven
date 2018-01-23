@@ -5,23 +5,25 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * Represents a single file from the source tree.
  * 
  * @author Johannes
  * @author Adam
  */
-public class SourceFile implements Iterable<CodeElement> {
+public class SourceFile implements Iterable<@NonNull CodeElement> {
 
     /**
      * This path is relative to the source tree.
      */
-    private File path;
+    private @NonNull File path;
 
     /**
      * This are the toplevel elements which are not nested in other elements.
      */
-    private List<CodeElement> elements;
+    private @NonNull List<@NonNull CodeElement> elements;
 
     /**
      * Constructs a Sourcefile.
@@ -30,7 +32,7 @@ public class SourceFile implements Iterable<CodeElement> {
      *            The relative path to the source file in the source tree. Must
      *            not be <code>null</code>.
      */
-    public SourceFile(File path) {
+    public SourceFile(@NonNull File path) {
         this.path = path;
         elements = new LinkedList<>();
     }
@@ -40,7 +42,7 @@ public class SourceFile implements Iterable<CodeElement> {
      * 
      * @return The path.
      */
-    public File getPath() {
+    public @NonNull File getPath() {
         return path;
     }
 
@@ -50,7 +52,7 @@ public class SourceFile implements Iterable<CodeElement> {
      * @param element
      *            The element to add. Must not be <code>null</code>.
      */
-    public void addElement(CodeElement element) {
+    public void addElement(@NonNull CodeElement element) {
         this.elements.add(element);
     }
 
@@ -59,7 +61,7 @@ public class SourceFile implements Iterable<CodeElement> {
      * @return an iterator over top elements.
      */
     @Override
-    public Iterator<CodeElement> iterator() {
+    public Iterator<@NonNull CodeElement> iterator() {
         return elements.iterator();
     }
     

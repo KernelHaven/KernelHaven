@@ -3,6 +3,9 @@ package net.ssehub.kernel_haven.code_model;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * An enumeration of all syntax elements used in the AST.
  * 
@@ -108,17 +111,17 @@ public enum SyntaxElementTypes implements ISyntaxElementType {
      * A wrapper around the static attribute. This is needed, because static attributes cannot be accessed in the ctor.
      */
     private static class StaticHelper {
-        private static Map<String, SyntaxElementTypes> nameMapping = new HashMap<>();
+        private static @NonNull Map<String, SyntaxElementTypes> nameMapping = new HashMap<>();
     }
     
-    private String name;
+    private @NonNull String name;
     
     /**
      * Constructor for elements.
      * 
      * @param name A string representation of the name of this element.
      */
-    private SyntaxElementTypes(String name) {
+    private SyntaxElementTypes(@NonNull String name) {
         this.name = name;
         StaticHelper.nameMapping.put(name, this);
     }
@@ -128,7 +131,7 @@ public enum SyntaxElementTypes implements ISyntaxElementType {
      * 
      * @return The name; never null.
      */
-    public String getName() {
+    public @NonNull String getName() {
         return name;
     }
     
@@ -138,12 +141,12 @@ public enum SyntaxElementTypes implements ISyntaxElementType {
      * @param name The name of the syntax element to return.
      * @return The syntax element with the given name; or <code>null</code> if no such element exists.
      */
-    public static SyntaxElementTypes getByName(String name) {
+    public static @Nullable SyntaxElementTypes getByName(@NonNull String name) {
         return StaticHelper.nameMapping.get(name);
     }
     
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return name;
     }
 
