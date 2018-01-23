@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.config;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -299,7 +301,7 @@ public class Configuration {
      */
     @Deprecated
     public @NonNull String getProperty(@NonNull String key, @NonNull String defaultValue) {
-        return properties.getProperty(key, defaultValue);
+        return notNull(properties.getProperty(key, defaultValue)); // not null because defaultValue is not null
     }
     
     /**

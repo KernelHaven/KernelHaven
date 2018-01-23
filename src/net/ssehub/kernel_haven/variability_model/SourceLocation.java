@@ -2,6 +2,9 @@ package net.ssehub.kernel_haven.variability_model;
 
 import java.io.File;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * Storage class for the source location. Stores sourcefile as well as
  * linennumber. This is used for representing the location of fragments of code.
@@ -13,7 +16,7 @@ import java.io.File;
  */
 public class SourceLocation {
     
-    private File source;
+    private @NonNull File source;
     private int lineNumber;
 
     /**
@@ -24,8 +27,7 @@ public class SourceLocation {
      * @param lineNumber
      *            the line in the sourcefile
      */
-    public SourceLocation(File source, int lineNumber) {
-        super();
+    public SourceLocation(@NonNull File source, int lineNumber) {
         this.source = source;
         this.lineNumber = lineNumber;
     }
@@ -36,7 +38,7 @@ public class SourceLocation {
      * @return source the file source where the code is found. Relative to the source tree.
      */
 
-    public File getSource() {
+    public @NonNull File getSource() {
         return source;
     }
 
@@ -56,7 +58,7 @@ public class SourceLocation {
     }
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         boolean success = false;
 
         if (obj instanceof SourceLocation) {
@@ -68,7 +70,7 @@ public class SourceLocation {
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return source.getPath() + ":" + lineNumber;
     }
     

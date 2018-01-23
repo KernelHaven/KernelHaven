@@ -15,6 +15,8 @@ import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Util;
 import net.ssehub.kernel_haven.util.io.csv.CsvReader;
 import net.ssehub.kernel_haven.util.io.csv.CsvWriter;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A cache for permanently saving (and reading) a variability model to a (from
@@ -28,12 +30,12 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
     /**
      * The path where the CNF File should be stored.
      */
-    private File constraintCache;
+    private @NonNull File constraintCache;
 
     /**
      * The path where the VariableSet should be stored.
      */
-    private File variablesCacheFile;
+    private @NonNull File variablesCacheFile;
 
     /**
      * Creates a new cache in the given cache directory.
@@ -42,7 +44,7 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
      *            The directory where to store the cache files. This must be a
      *            directory, and we must be able to read and write to it.
      */
-    public VariabilityModelCache(File cacheDir) {
+    public VariabilityModelCache(@NonNull File cacheDir) {
         variablesCacheFile = new File(cacheDir, "vmCache.variables");
         constraintCache = new File(cacheDir, "vmCache.constraints");
     }
@@ -57,7 +59,7 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
      *             No ReadWrite Access File Already Exists
      */
     @Override
-    public void write(VariabilityModel vm) throws IOException {
+    public void write(@NonNull VariabilityModel vm) throws IOException {
         // Write ConstraintModel
         Util.copyFile(vm.getConstraintModel(), constraintCache);
         
@@ -84,14 +86,14 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
      * 
      * @return the variability model or <code>null</code> if the cache is not present.
      * @throws FormatException
-     *             if the file is not correctly formatted as csv or the data is
+     *             if the file is not correctly formatted as CSV or the data is
      *             invalid.
      * @throws IOException
      *             Signals that an I/O exception has occurred. Possible Reasons:
      *             No ReadWrite Access File Already Exists
      */
     @Override
-    public VariabilityModel read(File target) throws FormatException, IOException {
+    public @Nullable VariabilityModel read(@NonNull File target) throws FormatException, IOException {
         VariabilityModel vm = null;
         
         // Generate VariabilityVariables

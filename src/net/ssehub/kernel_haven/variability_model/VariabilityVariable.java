@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * Represents a single variable from the variability model.
@@ -38,12 +40,12 @@ public class VariabilityVariable {
     /**
      * The name of the variable. Never null.
      */
-    private String name;
+    private @NonNull String name;
 
     /**
      * The type of this variable. Never null.
      */
-    private String type;
+    private @NonNull String type;
 
     /**
      * The number, that this variable has in the DIMACS representation of the
@@ -55,7 +57,7 @@ public class VariabilityVariable {
      * Stores possible source-locations from which the variable might have been
      * derived. <code>null</code> until addLocation() is called.
      */
-    private List<SourceLocation> sourceLocations;
+    private @Nullable List<@NonNull SourceLocation> sourceLocations;
 
     /**
      * Creates a new variable.
@@ -65,7 +67,7 @@ public class VariabilityVariable {
      * @param type
      *            The type of the new variable. Must not be null.
      */
-    public VariabilityVariable(String name, String type) {
+    public VariabilityVariable(@NonNull String name, @NonNull String type) {
         this.name = name;
         this.type = type;
     }
@@ -81,7 +83,7 @@ public class VariabilityVariable {
      *            The number that this variable has in the DIMACS representation
      *            of the variability model.
      */
-    public VariabilityVariable(String name, String type, int dimacsNumber) {
+    public VariabilityVariable(@NonNull String name, @NonNull String type, int dimacsNumber) {
         this.name = name;
         this.type = type;
         this.dimacsNumber = dimacsNumber;
@@ -92,19 +94,21 @@ public class VariabilityVariable {
      * 
      * @return The name of the variable. Never null.
      */
-    public String getName() {
+    public @NonNull String getName() {
         return name;
     }
 
     /**
-     * Adds a source location for this variablity variable.
+     * Adds a source location for this variability variable.
      * 
      * @param location
      *            the location of the source linked to this variable
      */
-    public void addLocation(SourceLocation location) {
+    public void addLocation(@NonNull SourceLocation location) {
+        List<@NonNull SourceLocation> sourceLocations = this.sourceLocations;
         if (sourceLocations == null) {
-            sourceLocations = new ArrayList<SourceLocation>(1);
+            sourceLocations = new ArrayList<@NonNull SourceLocation>(1);
+            this.sourceLocations = sourceLocations;
         }
         sourceLocations.add(location);
     }
@@ -114,7 +118,7 @@ public class VariabilityVariable {
      * 
      * @return list of source locations. This is <code>null</code> if no source location was added.
      */
-    public List<SourceLocation> getSourceLocations() {
+    public @Nullable List<@NonNull SourceLocation> getSourceLocations() {
         return sourceLocations;
     }
 
@@ -123,7 +127,7 @@ public class VariabilityVariable {
      * 
      * @return The type. Never null.
      */
-    public String getType() {
+    public @NonNull String getType() {
         return type;
     }
 
@@ -147,7 +151,7 @@ public class VariabilityVariable {
      * @param mapping
      *            The mapping to add to.
      */
-    public void getDimacsMapping(Map<Integer, String> mapping) {
+    public void getDimacsMapping(@NonNull Map<Integer, String> mapping) {
         mapping.put(getDimacsNumber(), getName());
     }
 
@@ -168,8 +172,8 @@ public class VariabilityVariable {
      * 
      * @return The parts of the CSV line.
      */
-    public List<String> serializeCsv() {
-        List<String> result = new ArrayList<>(5);
+    public @NonNull List<@NonNull String> serializeCsv() {
+        List<@NonNull String> result = new ArrayList<>(5);
 
         result.add(name);
         result.add(type);
@@ -194,10 +198,11 @@ public class VariabilityVariable {
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
+        List<@NonNull SourceLocation> sourceLocations = this.sourceLocations;
         return "VariabilityVariable [name=" + name + ", type=" + type + ", dimacsNumber=" + dimacsNumber
                 + ", sourceLocations="
-                + (getSourceLocations() == null ? "null" : getSourceLocations().toString()) + "]";
+                + (sourceLocations == null ? "null" : sourceLocations.toString()) + "]";
     }
 
     @Override
@@ -206,19 +211,20 @@ public class VariabilityVariable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         boolean result = false;
         if (obj instanceof VariabilityVariable) {
             VariabilityVariable other = (VariabilityVariable) obj;
             result = other.name.equals(this.name) && other.type.equals(this.type)
                     && other.dimacsNumber == this.dimacsNumber;
             
-            if (this.sourceLocations == null) {
+            List<@NonNull SourceLocation> sourceLocations = this.sourceLocations;
+            if (sourceLocations == null) {
                 result &= other.sourceLocations == null;
             } else {
                 result &= other.sourceLocations != null;
                 if (result) {
-                    result &= this.sourceLocations.equals(other.sourceLocations);
+                    result &= sourceLocations.equals(other.sourceLocations);
                 }
             }
         }
@@ -235,7 +241,9 @@ public class VariabilityVariable {
      * @throws FormatException
      *             If the CSV cannot be read into a variable.
      */
-    public static VariabilityVariable createFromCsv(String[] csvParts) throws FormatException {
+    public static @NonNull VariabilityVariable createFromCsv(@NonNull String @NonNull [] csvParts)
+            throws FormatException {
+        
         if (csvParts.length < 4) {
             throw new FormatException("Invalid CSV");
         }

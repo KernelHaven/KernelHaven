@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.variability_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -7,6 +9,8 @@ import java.util.HashMap;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.ExtractorException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A simple variability model extractor which returns an empty variability model.
@@ -16,13 +20,13 @@ import net.ssehub.kernel_haven.util.ExtractorException;
 public class EmptyVariabilityModelExtractor extends AbstractVariabilityModelExtractor {
 
     @Override
-    protected void init(Configuration config) throws SetUpException {
+    protected void init(@NonNull Configuration config) throws SetUpException {
     }
 
     @Override
-    protected VariabilityModel runOnFile(File target) throws ExtractorException {
+    protected @Nullable VariabilityModel runOnFile(@NonNull File target) throws ExtractorException {
         try {
-            File constraintFile = File.createTempFile("empty_constraint_model", ".txt");
+            File constraintFile = notNull(File.createTempFile("empty_constraint_model", ".txt"));
             return new VariabilityModel(constraintFile, new HashMap<>());
         } catch (IOException e) {
             throw new ExtractorException(e);
@@ -30,7 +34,7 @@ public class EmptyVariabilityModelExtractor extends AbstractVariabilityModelExtr
     }
 
     @Override
-    protected String getName() {
+    protected @NonNull String getName() {
         return "EmptyVariabilityModelExtractor";
     }
 
