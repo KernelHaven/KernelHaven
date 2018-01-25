@@ -20,15 +20,9 @@ public final class True extends Formula {
     private static final long serialVersionUID = 2252789480365343658L;
     
     /**
-     * Should not longer used outside of this class, use {@link #INSTANCE} instead.
+     * Don't allow any instances except the singleton.
      */
-    @Deprecated
-    public True() {}
-
-    @Override
-    public boolean evaluate() {
-        return true;
-    }
+    private True() {}
 
     @Override
     public @NonNull String toString() {

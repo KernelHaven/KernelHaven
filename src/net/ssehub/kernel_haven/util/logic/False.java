@@ -20,16 +20,10 @@ public final class False extends Formula {
     private static final long serialVersionUID = 6422261057525028423L;
 
     /**
-     * Should not longer used outside of this class, use {@link #INSTANCE} instead.
+     * Don't allow any instances except the singleton.
      */
-    @Deprecated
-    public False() {}
+    private False() {}
     
-    @Override
-    public boolean evaluate() {
-        return false;
-    }
-
     @Override
     public @NonNull String toString() {
         return "0";

@@ -15,8 +15,6 @@ public final class Variable extends Formula {
 
     private @NonNull String name;
     
-    private boolean value;
-    
     /**
      * Creates a boolean variable.
      * 
@@ -35,23 +33,6 @@ public final class Variable extends Formula {
         return name;
     }
     
-    /**
-     * Changes the value of this variable. Used for the evaluate method.
-     * 
-     * @param value The value of this variable. Will be returned by {@link #evaluate()}.
-     * 
-     * @deprecated Use {@link FormulaEvaluator} instead.
-     */
-    @Deprecated
-    public void setValue(boolean value) {
-        this.value = value;
-    }
-
-    @Override
-    public boolean evaluate() {
-        return value;
-    }
-
     @Override
     public @NonNull String toString() {
         return name;

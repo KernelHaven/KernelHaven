@@ -33,12 +33,6 @@ public final class Negation extends Formula {
         return formula;
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean evaluate() {
-        return !formula.evaluate();
-    }
-
     @Override
     public @NonNull String toString() {
         String innerStr = formula.toString();

@@ -16,16 +16,6 @@ public abstract class Formula implements Serializable {
     private static final long serialVersionUID = -2811872324947850301L;
 
     /**
-     * Evaluates this formula, based on the values set for the {@link Variable} in this formula.
-     * 
-     * @return Whether this formula evaluates to <code>true</code> or <code>false</code>.
-     * 
-     * @deprecated Use {@link FormulaEvaluator} instead.
-     */
-    @Deprecated
-    public abstract boolean evaluate();
-    
-    /**
      * Returns the precedence of this boolean operation. Higher means that this operation is evaluated
      * before operations with lower precedence. This has no semantic meaning for execution, though, since we
      * are organized in a tree structure. This is only used for proper parenthesis placement in toString().
