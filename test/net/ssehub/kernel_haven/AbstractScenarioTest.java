@@ -3,7 +3,6 @@ package net.ssehub.kernel_haven;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -50,22 +49,25 @@ public abstract class AbstractScenarioTest {
      */
     @Before
     public void setUp() throws IOException {
-        resDir = new File("testdata/tmpRes");
+        resDir = new File("testdata", getClass().getSimpleName() + ".res");
+        cacheDir = new File("testdata", getClass().getSimpleName() + ".cache");
+        outputDir = new File("testdata", getClass().getSimpleName() + ".output");
+        logDir = new File("testdata", getClass().getSimpleName() + ".log");
+        pluginsDir = new File("testdata", getClass().getSimpleName() + ".plugins");
+        srcTree = new File("testdata", getClass().getSimpleName() + ".src");
+
+        Util.deleteFolder(resDir);
+        Util.deleteFolder(cacheDir);
+        Util.deleteFolder(outputDir);
+        Util.deleteFolder(logDir);
+        Util.deleteFolder(pluginsDir);
+        Util.deleteFolder(srcTree);
+        
         resDir.mkdir();
-        
-        cacheDir = new File("testdata/tmpCache");
         cacheDir.mkdir();
-        
-        outputDir = new File("testdata/tmpOutput");
         outputDir.mkdir();
-        
-        logDir = new File("testdata/tmpLog");
         logDir.mkdir();
-        
-        pluginsDir = new File("testdata/tmpPlugins");
         pluginsDir.mkdir();
-        
-        srcTree = new File("testdata/tmpSrc");
         copyFolder(getSourceTree(), srcTree);
     }
     
@@ -87,21 +89,6 @@ public abstract class AbstractScenarioTest {
         } else {
             Util.copyFile(src, dst);
         }
-    }
-    
-    /**
-     * Removes the temporary folders.
-     * 
-     * @throws IOException unwanted.
-     */
-    @After
-    public void tearDown() throws IOException {
-        Util.deleteFolder(resDir);
-        Util.deleteFolder(cacheDir);
-        Util.deleteFolder(outputDir);
-        Util.deleteFolder(logDir);
-        Util.deleteFolder(pluginsDir);
-        Util.deleteFolder(srcTree);
     }
     
     /**
