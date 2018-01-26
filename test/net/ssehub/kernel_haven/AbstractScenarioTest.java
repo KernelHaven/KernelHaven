@@ -56,12 +56,24 @@ public abstract class AbstractScenarioTest {
         pluginsDir = new File("testdata", getClass().getSimpleName() + ".plugins");
         srcTree = new File("testdata", getClass().getSimpleName() + ".src");
 
-        Util.deleteFolder(resDir);
-        Util.deleteFolder(cacheDir);
-        Util.deleteFolder(outputDir);
-        Util.deleteFolder(logDir);
-        Util.deleteFolder(pluginsDir);
-        Util.deleteFolder(srcTree);
+        if (resDir.exists()) {
+            Util.deleteFolder(resDir);
+        }
+        if (cacheDir.exists()) {
+            Util.deleteFolder(cacheDir);
+        }
+        if (outputDir.exists()) {
+            Util.deleteFolder(outputDir);
+        }
+        if (logDir.exists()) {
+            Util.deleteFolder(logDir);
+        }
+        if (pluginsDir.exists()) {
+            Util.deleteFolder(pluginsDir);
+        }
+        if (srcTree.exists()) {
+            Util.deleteFolder(srcTree);
+        }
         
         resDir.mkdir();
         cacheDir.mkdir();
