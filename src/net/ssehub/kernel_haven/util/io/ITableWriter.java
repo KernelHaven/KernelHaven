@@ -52,7 +52,8 @@ public interface ITableWriter extends Closeable {
      * 
      * @throws IOException If writing to the file fails.
      */
-    public void writeRow(@Nullable Object @NonNull ... columns) throws IOException;
+    public void writeRow(@Nullable Object /*@NonNull*/ ... columns) throws IOException;
+    // TODO: commented out @NonNull annotation because checkstyle can't parse it
 
     /**
      * Optional possibility how to handle a row, which is intended to be an header. Some specific writers may have
@@ -64,7 +65,8 @@ public interface ITableWriter extends Closeable {
      * 
      * @throws IOException If writing to the file fails.
      */
-    public default void writeHeader(@Nullable Object @NonNull ... fields) throws IOException {
+    public default void writeHeader(@Nullable Object /*@NonNull*/ ... fields) throws IOException {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
         writeRow(fields);
     }
 

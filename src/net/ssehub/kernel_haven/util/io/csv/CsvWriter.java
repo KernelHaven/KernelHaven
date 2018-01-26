@@ -98,7 +98,8 @@ public class CsvWriter extends AbstractTableWriter {
      * 
      * @throws IOException If writing to the output stream fails.
      */
-    private void writeLine(@Nullable Object @NonNull ... fields) throws IOException {
+    private void writeLine(@Nullable Object /*@NonNull*/ ... fields) throws IOException {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
         StringBuffer line = new StringBuffer();
         for (Object field : fields) {
             String str = field != null ? field.toString() : "";
@@ -117,7 +118,8 @@ public class CsvWriter extends AbstractTableWriter {
     }
     
     @Override
-    public void writeRow(@Nullable Object @NonNull ... columns) throws IOException {
+    public void writeRow(@Nullable Object /*@NonNull*/ ... columns) throws IOException {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
         writeLine(columns);
     }
 

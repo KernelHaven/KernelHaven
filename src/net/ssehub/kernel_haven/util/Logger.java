@@ -269,7 +269,8 @@ public class Logger {
      *            The lines that are written together as one log entry. Must not
      *            be null.
      */
-    private void log(@NonNull Level level, String @NonNull ... lines) {
+    private void log(@NonNull Level level, String /*@NonNull*/ ... lines) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
         if (!this.level.isLog(level)) {
             return;
         }
@@ -329,7 +330,8 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logInfo(String @NonNull ... lines) {
+    public void logInfo(String /*@NonNull*/ ... lines) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.INFO, lines);
     }
 
@@ -339,7 +341,8 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logDebug(String @NonNull ... lines) {
+    public void logDebug(String /*@NonNull*/ ... lines) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.DEBUG, lines);
     }
 
@@ -349,7 +352,8 @@ public class Logger {
      * @param lines
      *            The content of the log entry.
      */
-    public void logWarning(String @NonNull ... lines) {
+    public void logWarning(String /*@NonNull*/ ... lines) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.WARNING, lines);
     }
 
@@ -359,7 +363,8 @@ public class Logger {
      * @param lines
      *            The content of the log entry. Must not be null.
      */
-    public void logError(String @NonNull ... lines) {
+    public void logError(String /*@NonNull*/ ... lines) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.ERROR, lines);
     }
 

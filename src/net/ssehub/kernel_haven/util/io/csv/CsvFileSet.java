@@ -43,7 +43,8 @@ public class CsvFileSet implements ITableCollection {
      * 
      * @param files The files that are contained in this set.
      */
-    public CsvFileSet(@NonNull File @NonNull ... files) {
+    public CsvFileSet(@NonNull File /*@NonNull*/ ... files) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
         this.files = new HashMap<>();
         for (File file : files) {
             this.files.put(file.getAbsolutePath(), file);

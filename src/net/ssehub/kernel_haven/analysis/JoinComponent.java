@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.analysis;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
@@ -16,11 +18,12 @@ public class JoinComponent extends AnalysisComponent<Void> {
      * Creates a {@link JoinComponent} for the given input components.
      * 
      * @param config The global configuration.
-     * @param inputs The input components.
+     * @param inputs The input components. Not <code>null</code>.
      */
-    public JoinComponent(@NonNull Configuration config, @NonNull AnalysisComponent<?> @NonNull ... inputs) {
+    public JoinComponent(@NonNull Configuration config, @NonNull AnalysisComponent<?> /*@NonNull*/ ... inputs) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
         super(config);
-        this.inputs = inputs;
+        this.inputs = notNull(inputs);
     }
     
     /**
