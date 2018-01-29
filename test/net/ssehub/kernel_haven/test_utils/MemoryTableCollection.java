@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.ssehub.kernel_haven.analysis.PipelineAnalysis;
 import net.ssehub.kernel_haven.util.io.ITableCollection;
 import net.ssehub.kernel_haven.util.io.ITableReader;
 import net.ssehub.kernel_haven.util.io.ITableWriter;
@@ -18,6 +19,21 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  */
 public class MemoryTableCollection implements ITableCollection {
 
+    /**
+     * For manual use.
+     */
+    public MemoryTableCollection() {
+        // Nothing to do
+    }
+    
+    /**
+     * Required by {@link PipelineAnalysis} (create Result).
+     * @param ignored Will be ignored.
+     */
+    public MemoryTableCollection(File ignored) {
+        // Nothing to do
+    }
+    
     @Override
     public void close() {
         // nothing to do

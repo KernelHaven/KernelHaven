@@ -75,5 +75,12 @@ public class MemoryTableWriter implements ITableWriter {
     public static @NonNull Set<@NonNull String> getTableNames() {
         return notNull(tables.keySet());
     }
+    
+    /**
+     * Clears the table, should be called after each test execution.
+     */
+    public static void clear() {
+        tables.clear();
+    }
 
 }
