@@ -2,8 +2,6 @@ package net.ssehub.kernel_haven.code_model.ast;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
-import java.io.File;
-
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -23,10 +21,10 @@ public class CaseStatement extends SyntaxElementWithChildreen {
     
     private @NonNull CaseType type;
     
-    public CaseStatement(@NonNull Formula presenceCondition, @NonNull File sourceFile,
-            @Nullable SyntaxElement caseCondition, @NonNull CaseType type) {
+    public CaseStatement(@NonNull Formula presenceCondition, @Nullable SyntaxElement caseCondition,
+            @NonNull CaseType type) {
         
-        super(presenceCondition, sourceFile);
+        super(presenceCondition);
         this.caseCondition = caseCondition;
         this.type = type;
     }

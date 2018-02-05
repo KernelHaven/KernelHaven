@@ -1,7 +1,5 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
-import java.io.File;
-
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -21,9 +19,9 @@ public class CppBlock extends SyntaxElementWithChildreen {
     
     private @NonNull Type type;
     
-    public CppBlock(@NonNull Formula presenceCondition, @NonNull File sourceFile, @Nullable Formula condition,
+    public CppBlock(@NonNull Formula presenceCondition, @Nullable Formula condition,
             @NonNull Type type) {
-        super(presenceCondition, sourceFile);
+        super(presenceCondition);
         this.condition = condition;
         this.type = type;
     }

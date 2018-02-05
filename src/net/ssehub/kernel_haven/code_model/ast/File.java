@@ -5,8 +5,8 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 public class File extends SyntaxElementWithChildreen {
 
-    public File(@NonNull Formula presenceCondition, java.io.@NonNull File sourceFile) {
-        super(presenceCondition, sourceFile);
+    public File(@NonNull Formula presenceCondition) {
+        super(presenceCondition);
     }
 
     @Override

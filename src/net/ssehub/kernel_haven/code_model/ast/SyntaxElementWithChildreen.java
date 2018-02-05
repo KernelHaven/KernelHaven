@@ -2,7 +2,6 @@ package net.ssehub.kernel_haven.code_model.ast;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,8 +13,8 @@ public abstract class SyntaxElementWithChildreen extends SyntaxElement {
 
     private @NonNull List<@NonNull SyntaxElement> nested;
     
-    public SyntaxElementWithChildreen(@NonNull Formula presenceCondition, @NonNull File sourceFile) {
-        super(presenceCondition, sourceFile);
+    public SyntaxElementWithChildreen(@NonNull Formula presenceCondition) {
+        super(presenceCondition);
         this.nested = new LinkedList<>();
     }
     

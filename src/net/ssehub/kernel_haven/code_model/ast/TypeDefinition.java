@@ -1,7 +1,5 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
-import java.io.File;
-
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
@@ -24,10 +22,10 @@ public class TypeDefinition extends SyntaxElementWithChildreen {
     
     private @NonNull TypeDefType type;
     
-    public TypeDefinition(@NonNull Formula presenceCondition, @NonNull File sourceFile,
-            @NonNull SyntaxElement declaration, @NonNull TypeDefType type) {
+    public TypeDefinition(@NonNull Formula presenceCondition, @NonNull SyntaxElement declaration,
+            @NonNull TypeDefType type) {
         
-        super(presenceCondition, sourceFile);
+        super(presenceCondition);
         this.declaration = declaration;
         this.type = type;
     }

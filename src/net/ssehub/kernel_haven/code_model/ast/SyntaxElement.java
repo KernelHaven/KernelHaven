@@ -1,6 +1,5 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
-import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.maybeNull;
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
 import java.io.File;
@@ -15,11 +14,28 @@ public abstract class SyntaxElement implements CodeElement {
 
     private @NonNull Formula presenceCondition;
     
+    private @Nullable Formula condition;
+    
     private @NonNull File sourceFile;
     
-    public SyntaxElement(@NonNull Formula presenceCondition, @NonNull File sourceFile) {
+    public SyntaxElement(@NonNull Formula presenceCondition) {
+        this.presenceCondition = presenceCondition;
+        this.sourceFile = new File("<unkown>");
+        this.condition = null;
+    }
+    
+    public SyntaxElement(@NonNull Formula presenceCondition, @NonNull File sourceFile, @Nullable Formula condition) {
         this.presenceCondition = presenceCondition;
         this.sourceFile = sourceFile;
+        this.condition = condition;
+    }
+    
+    public void setSourceFile(@NonNull File sourceFile) {
+        this.sourceFile = sourceFile;
+    }
+    
+    public void setCondition(@NonNull Formula condition) {
+        this.condition = condition;
     }
     
     @Override
@@ -52,7 +68,7 @@ public abstract class SyntaxElement implements CodeElement {
     protected @NonNull String toString(@NonNull String indentation) {
         StringBuilder result = new StringBuilder();
         
-        Formula condition = maybeNull(getPresenceCondition()); // TODO
+        Formula condition = this.condition;
         String conditionStr = condition == null ? "<null>" : condition.toString();
         if (conditionStr.length() > 64) {
             conditionStr = "...";
@@ -97,8 +113,7 @@ public abstract class SyntaxElement implements CodeElement {
 
     @Override
     public @Nullable Formula getCondition() {
-        // TODO SE: @Adam please fix this
-        return null;
+        return condition;
     }
 
     @Override

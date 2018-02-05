@@ -1,7 +1,5 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
-import java.io.File;
-
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
@@ -20,10 +18,10 @@ public class Loop extends SyntaxElementWithChildreen {
     
     private @NonNull LoopType type;
     
-    public Loop(@NonNull Formula presenceCondition, @NonNull File sourceFile, @NonNull SyntaxElement condition,
+    public Loop(@NonNull Formula presenceCondition, @NonNull SyntaxElement condition,
             @NonNull LoopType type) {
         
-        super(presenceCondition, sourceFile);
+        super(presenceCondition);
         this.condition = condition;
         this.type = type;
     }

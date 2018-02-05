@@ -1,7 +1,5 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
-import java.io.File;
-
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
@@ -15,8 +13,8 @@ public class Label extends SyntaxElement {
 
     private @NonNull SyntaxElement code;
     
-    public Label(@NonNull Formula presenceCondition, @NonNull File sourceFile, @NonNull SyntaxElement code) {
-        super(presenceCondition, sourceFile);
+    public Label(@NonNull Formula presenceCondition, @NonNull SyntaxElement code) {
+        super(presenceCondition);
         this.code = code;
     }
     

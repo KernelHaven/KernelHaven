@@ -2,8 +2,6 @@ package net.ssehub.kernel_haven.code_model.ast;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
-import java.io.File;
-
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -32,10 +30,10 @@ public class ElseStatement extends SyntaxElementWithChildreen {
      *     <tt>else</tt> block (in this case {@link ElseType#ELSE} must be passed as <tt>type</tt>). 
      * @param type
      */
-    public ElseStatement(@NonNull Formula presenceCondition, @NonNull File sourceFile,
-            @Nullable SyntaxElement elseIfCondition, @NonNull ElseType type) {
+    public ElseStatement(@NonNull Formula presenceCondition, @Nullable SyntaxElement elseIfCondition,
+            @NonNull ElseType type) {
         
-        super(presenceCondition, sourceFile);
+        super(presenceCondition);
         this.elseIfCondition = elseIfCondition;
         this.type = type;
     }

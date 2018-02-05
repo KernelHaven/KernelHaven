@@ -1,7 +1,5 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
-import java.io.File;
-
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
@@ -9,8 +7,8 @@ public class Code extends SyntaxElement {
 
     private @NonNull String text;
     
-    public Code(@NonNull Formula presenceCondition, @NonNull File sourceFile, @NonNull String text) {
-        super(presenceCondition, sourceFile);
+    public Code(@NonNull Formula presenceCondition, @NonNull String text) {
+        super(presenceCondition);
         this.text = text;
     }
     
