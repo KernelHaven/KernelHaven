@@ -7,12 +7,12 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 public class CodeList extends SyntaxElementWithChildreen {
 
-    public CodeList(@NonNull Formula presenceCondition, File sourceFile) {
+    public CodeList(@NonNull Formula presenceCondition, @NonNull File sourceFile) {
         super(presenceCondition, sourceFile);
     }
 
     @Override
-    protected String elementToString() {
+    protected @NonNull String elementToString(@NonNull String indentation) {
         return "CodeList";
     }
 

@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,16 +12,16 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 public abstract class SyntaxElementWithChildreen extends SyntaxElement {
 
-    private List<SyntaxElement> nested;
+    private @NonNull List<@NonNull SyntaxElement> nested;
     
-    public SyntaxElementWithChildreen(@NonNull Formula presenceCondition, File sourceFile) {
+    public SyntaxElementWithChildreen(@NonNull Formula presenceCondition, @NonNull File sourceFile) {
         super(presenceCondition, sourceFile);
         this.nested = new LinkedList<>();
     }
     
     @Override
     public @NonNull SyntaxElement getNestedElement(int index) {
-        return nested.get(index);
+        return notNull(nested.get(index));
     }
     
     @Override
@@ -29,6 +31,10 @@ public abstract class SyntaxElementWithChildreen extends SyntaxElement {
     
     @Override
     public void addNestedElement(@NonNull CodeElement element) {
+        if (!(element instanceof SyntaxElement)) {
+            throw new IllegalArgumentException("Can only add SyntaxElements as child of SyntaxElement");
+        }
+        
         nested.add((SyntaxElement) element);
     }
 

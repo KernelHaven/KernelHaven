@@ -4,6 +4,7 @@ import java.io.File;
 
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 public class CppBlock extends SyntaxElementWithChildreen {
     
@@ -16,22 +17,35 @@ public class CppBlock extends SyntaxElementWithChildreen {
         IF, IFDEF, IFNDEF, ELSEIF, ELSE;
     }
 
-    private Formula condition;  
-    private Type type;
+    private @Nullable Formula condition;
     
-    public CppBlock(@NonNull Formula presenceCondition, File sourceFile, Formula condition, @NonNull Type type) {
+    private @NonNull Type type;
+    
+    public CppBlock(@NonNull Formula presenceCondition, @NonNull File sourceFile, @Nullable Formula condition,
+            @NonNull Type type) {
         super(presenceCondition, sourceFile);
         this.condition = condition;
         this.type = type;
     }
     
-    public Formula getCondition() {
+    @Override
+    public @Nullable Formula getCondition() {
         return condition;
+    }
+    
+    public @NonNull Type getType() {
+        return type;
     }
 
     @Override
-    protected String elementToString() {
-        return "#" + type.name() + " " + condition.toString();
+    protected @NonNull String elementToString(@NonNull String indentation) {
+        String result = "#" + type.name();
+        
+        Formula condition = this.condition;
+        if (condition != null) {
+            result += " " + condition.toString();
+        }
+        return result;
     }
 
     @Override

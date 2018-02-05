@@ -20,29 +20,29 @@ public class TypeDefinition extends SyntaxElementWithChildreen {
         STRUCT, ENUM, TYPEDEF, UNION;
     }
     
-    private SyntaxElement declaration;
-    private TypeDefType type;
+    private @NonNull SyntaxElement declaration;
     
-    public TypeDefinition(@NonNull Formula presenceCondition, File sourceFile, SyntaxElement declaration,
-        TypeDefType type) {
+    private @NonNull TypeDefType type;
+    
+    public TypeDefinition(@NonNull Formula presenceCondition, @NonNull File sourceFile,
+            @NonNull SyntaxElement declaration, @NonNull TypeDefType type) {
         
         super(presenceCondition, sourceFile);
         this.declaration = declaration;
         this.type = type;
     }
     
-    public SyntaxElement getDeclaration() {
+    public @NonNull SyntaxElement getDeclaration() {
         return declaration;
     }
 
     @Override
-    protected String elementToString() {
-        return type.name() + "-Definition\n"
-            + (declaration == null ? "\t\t\t\tnull" : declaration.toString("\t\t\t\t")); // TODO
+    protected @NonNull String elementToString(@NonNull String indentation) {
+        return type.name() + "-Definition\n" + declaration.toString(indentation + "\t");
     }
 
     @Override
-    public void accept(ISyntaxElementVisitor visitor) {
+    public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitTypeDefinition(this);
     }
 

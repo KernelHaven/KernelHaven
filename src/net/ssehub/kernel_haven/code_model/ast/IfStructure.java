@@ -7,20 +7,20 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 public class IfStructure extends SyntaxElementWithChildreen {
     
-    private SyntaxElement condition;
+    private @NonNull SyntaxElement condition;
     
-    public IfStructure(@NonNull Formula presenceCondition, File sourceFile, SyntaxElement condition) {
+    public IfStructure(@NonNull Formula presenceCondition, @NonNull File sourceFile, @NonNull SyntaxElement condition) {
         super(presenceCondition, sourceFile);
         this.condition = condition;
     }
     
-    public SyntaxElement getIfCondition() {
+    public @NonNull SyntaxElement getIfCondition() {
         return condition;
     }
 
     @Override
-    protected String elementToString() {
-        return "if\n" + (condition == null ? "\t\t\t\tnull" : condition.toString("\t\t\t\t")); // TODO
+    protected @NonNull String elementToString(@NonNull String indentation) {
+        return "if\n" + condition.toString(indentation + "\t");
     }
 
     @Override

@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.maybeNull;
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.util.List;
 
@@ -11,21 +14,25 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 public abstract class SyntaxElement implements CodeElement {
 
     private @NonNull Formula presenceCondition;
-    private File sourceFile;
     
-    public SyntaxElement(@NonNull Formula presenceCondition, File sourceFile) {
+    private @NonNull File sourceFile;
+    
+    public SyntaxElement(@NonNull Formula presenceCondition, @NonNull File sourceFile) {
         this.presenceCondition = presenceCondition;
         this.sourceFile = sourceFile;
     }
     
-    public Formula getPresenceCondition() {
+    @Override
+    public @NonNull Formula getPresenceCondition() {
         return presenceCondition;
     }
     
-    public @NonNull SyntaxElement getNestedElement(int index) {
+    @Override
+    public @NonNull SyntaxElement getNestedElement(int index) throws IndexOutOfBoundsException {
         throw new IndexOutOfBoundsException();
     }
     
+    @Override
     public int getNestedElementCount() {
         return 0;
     }
@@ -40,12 +47,12 @@ public abstract class SyntaxElement implements CodeElement {
         return toString("");
     }
     
-    protected abstract String elementToString();
+    protected abstract @NonNull String elementToString(@NonNull String indentation);
     
-    protected String toString(String indentation) {
+    protected @NonNull String toString(@NonNull String indentation) {
         StringBuilder result = new StringBuilder();
         
-        Formula condition = this.presenceCondition;
+        Formula condition = maybeNull(getPresenceCondition()); // TODO
         String conditionStr = condition == null ? "<null>" : condition.toString();
         if (conditionStr.length() > 64) {
             conditionStr = "...";
@@ -53,16 +60,16 @@ public abstract class SyntaxElement implements CodeElement {
         
         result.append(indentation).append("[").append(conditionStr).append("] ");
         
-        result.append(elementToString()).append('\n');
+        result.append(elementToString(indentation)).append('\n');
         
         indentation += '\t';
         
         for (int i = 0; i < getNestedElementCount(); i++) {
             SyntaxElement child = getNestedElement(i);
-            result.append(child != null ? child.toString(indentation) : indentation + "null\n");
+            result.append(child.toString(indentation));
         }
         
-        return result.toString();
+        return notNull(result.toString());
     }
     
     /**
@@ -97,7 +104,7 @@ public abstract class SyntaxElement implements CodeElement {
     @Override
     public @NonNull List<@NonNull String> serializeCsv() {
         // TODO SE: @Adam please fix this
-        return null;
+        throw new RuntimeException("Serialization of ast.SyntaxElement not implement yet");
     }
     
     public abstract void accept(@NonNull ISyntaxElementVisitor visitor);

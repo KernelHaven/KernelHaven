@@ -81,10 +81,7 @@ public interface ISyntaxElementVisitor {
     }
     
     public default void visitSwitchStatement(SwitchStatement switchStatement) {
-        SyntaxElement header = switchStatement.getHeader();
-        if (null != header) {
-            header.accept(this);
-        }
+        switchStatement.getHeader().accept(this);
         
         for (int i = 0; i < switchStatement.getNestedElementCount(); i++) {
             switchStatement.getNestedElement(i).accept(this);
@@ -103,10 +100,7 @@ public interface ISyntaxElementVisitor {
     }
     
     public default void visitLoop(Loop loop) {
-        SyntaxElement condition = loop.getLoopCondition();
-        if (null != condition) {
-            condition.accept(this);
-        }
+        loop.getLoopCondition().accept(this);
         
         for (int i = 0; i < loop.getNestedElementCount(); i++) {
             loop.getNestedElement(i).accept(this);

@@ -16,22 +16,25 @@ public class Loop extends SyntaxElementWithChildreen {
         WHILE, DO_WHILE, FOR;
     }
 
-    private SyntaxElement condition;
-    private LoopType type;
+    private @NonNull SyntaxElement condition;
     
-    public Loop(@NonNull Formula presenceCondition, File sourceFile, SyntaxElement condition, LoopType type) {
+    private @NonNull LoopType type;
+    
+    public Loop(@NonNull Formula presenceCondition, @NonNull File sourceFile, @NonNull SyntaxElement condition,
+            @NonNull LoopType type) {
+        
         super(presenceCondition, sourceFile);
         this.condition = condition;
         this.type = type;
     }
     
-    public SyntaxElement getLoopCondition() {
+    public @NonNull SyntaxElement getLoopCondition() {
         return condition;
     }
 
     @Override
-    protected String elementToString() {
-        return type.name() + "-loop\n" + (condition == null ? "\t\t\t\tnull" : condition.toString("\t\t\t\t")); // TODO
+    protected @NonNull String elementToString(@NonNull String indentation) {
+        return type.name() + "-loop\n" + condition.toString(indentation + "\t");
     }
 
     @Override

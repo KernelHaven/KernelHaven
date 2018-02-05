@@ -7,24 +7,24 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 public class SingleStatement extends SyntaxElement {
 
-    private SyntaxElement code;
+    private @NonNull SyntaxElement code;
     
-    public SingleStatement(@NonNull Formula presenceCondition, File sourceFile, SyntaxElement code) {
+    public SingleStatement(@NonNull Formula presenceCondition, @NonNull File sourceFile, @NonNull SyntaxElement code) {
         super(presenceCondition, sourceFile);
         this.code = code;
     }
     
-    public SyntaxElement getCode() {
+    public @NonNull SyntaxElement getCode() {
         return code;
     }
     
     @Override
-    protected String elementToString() {
-        return "Statement:\n" + code.toString("\t\t\t\t");
+    protected @NonNull String elementToString(@NonNull String indentation) {
+        return "Statement:\n" + code.toString(indentation + "\t");
     }
 
     @Override
-    public void accept(ISyntaxElementVisitor visitor) {
+    public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitSingleStatement(this);
     }
 

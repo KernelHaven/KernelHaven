@@ -7,24 +7,26 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 public class SwitchStatement extends SyntaxElementWithChildreen {
 
-    private SyntaxElement header;
+    private @NonNull SyntaxElement header;
     
-    public SwitchStatement(@NonNull Formula presenceCondition, File sourceFile, SyntaxElement header) {
+    public SwitchStatement(@NonNull Formula presenceCondition, @NonNull File sourceFile,
+            @NonNull SyntaxElement header) {
+        
         super(presenceCondition, sourceFile);
         this.header = header;
     }
     
-    public SyntaxElement getHeader() {
+    public @NonNull SyntaxElement getHeader() {
         return header;
     }
 
     @Override
-    protected String elementToString() {
-        return "Switch\n" + (header == null ? "\t\t\t\tnull" : header.toString("\t\t\t\t")); // TODO
+    protected @NonNull String elementToString(@NonNull String indentation) {
+        return "Switch\n" + header.toString(indentation + "\t");
     }
 
     @Override
-    public void accept(ISyntaxElementVisitor visitor) {
+    public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitSwitchStatement(this);
     }
 
