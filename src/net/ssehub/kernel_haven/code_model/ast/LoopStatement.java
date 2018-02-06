@@ -4,12 +4,15 @@ import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * Represents a loop.
+ * Represents a loop statement. The nested children inside this element are the loop body.
+ * 
  * @author El-Sharkawy
- *
  */
 public class LoopStatement extends AbstractSyntaxElementWithChildreen {
-    
+
+    /**
+     * The type of loop.
+     */
     public static enum LoopType {
         WHILE, DO_WHILE, FOR;
     }
@@ -18,6 +21,13 @@ public class LoopStatement extends AbstractSyntaxElementWithChildreen {
     
     private @NonNull LoopType type;
     
+    /**
+     * Creates a {@link LoopStatement}.
+     * 
+     * @param presenceCondition The presence condition of this element.
+     * @param condition The condition of this loop.
+     * @param type The type of loop that this is.
+     */
     public LoopStatement(@NonNull Formula presenceCondition, @NonNull ICode condition,
             @NonNull LoopType type) {
         
@@ -26,6 +36,11 @@ public class LoopStatement extends AbstractSyntaxElementWithChildreen {
         this.type = type;
     }
     
+    /**
+     * Returns which type of loop this is.
+     * 
+     * @return The {@link Type} of this loop.
+     */
     public @NonNull ICode getLoopCondition() {
         return condition;
     }
