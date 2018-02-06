@@ -58,6 +58,10 @@ public class BranchStatement extends SyntaxElementWithChildreen {
     public @Nullable SyntaxElement getIfCondition() {
         return ifCondition;
     }
+    
+    public @NonNull Type getType() {
+        return type;
+    }
 
     @Override
     protected @NonNull String elementToString(@NonNull String indentation) {
