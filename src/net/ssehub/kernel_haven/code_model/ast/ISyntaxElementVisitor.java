@@ -103,4 +103,12 @@ public interface ISyntaxElementVisitor {
     public default void visitComment(Comment comment) {
         comment.getComment().accept(this);
     }
+
+    public default void visitCppStatement(CppStatement cppStatement) {
+        SyntaxElement expression = cppStatement.getExpression();
+        if (expression != null) {
+            expression.accept(this);
+        }
+    }
+    
 }
