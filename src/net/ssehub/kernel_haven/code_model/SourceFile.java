@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.code_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -63,6 +65,18 @@ public class SourceFile implements Iterable<@NonNull CodeElement> {
     @Override
     public Iterator<@NonNull CodeElement> iterator() {
         return elements.iterator();
+    }
+    
+    /**
+     * Returns the top element at the given index.
+     * 
+     * @param index The index to get the top element for.
+     * @return The top element at the given index.
+     * 
+     * @throws IndexOutOfBoundsException If index is out of range.
+     */
+    public @NonNull CodeElement getElement(int index) throws IndexOutOfBoundsException {
+        return notNull(elements.get(index));
     }
     
     /**
