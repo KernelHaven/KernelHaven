@@ -3,21 +3,21 @@ package net.ssehub.kernel_haven.code_model.ast;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
-public class SingleStatement extends SyntaxElement {
+public class SingleStatement extends AbstractSyntaxElement {
 
-    private @NonNull SyntaxElement code;
+    private @NonNull ICode code;
     
-    public SingleStatement(@NonNull Formula presenceCondition, @NonNull SyntaxElement code) {
+    public SingleStatement(@NonNull Formula presenceCondition, @NonNull ICode code) {
         super(presenceCondition);
         this.code = code;
     }
     
-    public @NonNull SyntaxElement getCode() {
+    public @NonNull ICode getCode() {
         return code;
     }
     
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         return "Statement:\n" + code.toString(indentation + "\t");
     }
 

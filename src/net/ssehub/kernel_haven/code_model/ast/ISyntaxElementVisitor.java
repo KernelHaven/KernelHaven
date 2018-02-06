@@ -1,10 +1,10 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
 /**
- * A visitor for traversing an {@link SyntaxElement}-based AST. The default operation will visit all nested elements,
+ * A visitor for traversing an {@link ISyntaxElement}-based AST. The default operation will visit all nested elements,
  * but won't do any other operation.
+ * 
  * @author El-Sharkawy
- *
  */
 public interface ISyntaxElementVisitor {
     
@@ -63,7 +63,7 @@ public interface ISyntaxElementVisitor {
     // C Control structures
     
     public default void visitBranchStatement(BranchStatement branchStatement) {
-        SyntaxElement condition = branchStatement.getIfCondition();
+        ICode condition = branchStatement.getIfCondition();
         if (null != condition) {
             condition.accept(this);
         }
@@ -82,7 +82,7 @@ public interface ISyntaxElementVisitor {
     }
     
     public default void visitCaseStatement(CaseStatement caseStatement) {
-        SyntaxElement condition = caseStatement.getCaseCondition();
+        ICode condition = caseStatement.getCaseCondition();
         if (null != condition) {
             condition.accept(this);
         }
@@ -105,7 +105,7 @@ public interface ISyntaxElementVisitor {
     }
 
     public default void visitCppStatement(CppStatement cppStatement) {
-        SyntaxElement expression = cppStatement.getExpression();
+        ICode expression = cppStatement.getExpression();
         if (expression != null) {
             expression.accept(this);
         }

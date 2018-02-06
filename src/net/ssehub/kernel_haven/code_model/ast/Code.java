@@ -4,11 +4,11 @@ import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * Represents un-parsed string of code inside the AST. See class comment of {@link SyntaxElement}.
+ * Represents un-parsed string of code inside the AST. See class comment of {@link ISyntaxElement}.
  * 
  * @author Adam
  */
-public class Code extends SyntaxElement {
+public class Code extends AbstractSyntaxElement implements ICode {
 
     private @NonNull String text;
     
@@ -33,7 +33,7 @@ public class Code extends SyntaxElement {
     }
     
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         return text + "\n";
     }
 

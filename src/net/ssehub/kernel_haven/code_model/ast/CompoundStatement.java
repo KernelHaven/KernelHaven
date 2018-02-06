@@ -3,14 +3,14 @@ package net.ssehub.kernel_haven.code_model.ast;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
-public class CompoundStatement extends SyntaxElementWithChildreen {
+public class CompoundStatement extends AbstractSyntaxElementWithChildreen {
 
     public CompoundStatement(@NonNull Formula presenceCondition) {
         super(presenceCondition);
     }
 
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         return "CompoundStatement\n";
     }
 

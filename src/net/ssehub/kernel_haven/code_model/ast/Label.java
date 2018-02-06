@@ -9,21 +9,21 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * @author El-Sharkawy
  *
  */
-public class Label extends SyntaxElement {
+public class Label extends AbstractSyntaxElement {
 
-    private @NonNull SyntaxElement code;
+    private @NonNull ICode code;
     
-    public Label(@NonNull Formula presenceCondition, @NonNull SyntaxElement code) {
+    public Label(@NonNull Formula presenceCondition, @NonNull ICode code) {
         super(presenceCondition);
         this.code = code;
     }
     
-    public @NonNull SyntaxElement getCode() {
+    public @NonNull ICode getCode() {
         return code;
     }
     
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         return "Label:\n" + code.toString(indentation + "\t");
     }
 

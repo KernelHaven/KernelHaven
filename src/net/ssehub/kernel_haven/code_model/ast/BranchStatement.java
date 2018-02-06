@@ -14,7 +14,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * @author El-Sharkawy
  *
  */
-public class BranchStatement extends SyntaxElementWithChildreen {
+public class BranchStatement extends AbstractSyntaxElementWithChildreen {
     
     public static enum Type {
         IF, ELSE, ELSE_IF;
@@ -22,7 +22,7 @@ public class BranchStatement extends SyntaxElementWithChildreen {
 
     private @NonNull Type type;
     
-    private @Nullable SyntaxElement ifCondition;
+    private @Nullable ICode ifCondition;
     
     private @NonNull List<@NonNull BranchStatement> siblings;
     
@@ -35,7 +35,7 @@ public class BranchStatement extends SyntaxElementWithChildreen {
      * @param type
      */
     public BranchStatement(@NonNull Formula presenceCondition, @NonNull Type type,
-            @Nullable SyntaxElement ifCondition) {
+            @Nullable ICode ifCondition) {
         
         super(presenceCondition);
         this.ifCondition = ifCondition;
@@ -55,7 +55,7 @@ public class BranchStatement extends SyntaxElementWithChildreen {
         return notNull(siblings.get(index));
     }
     
-    public @Nullable SyntaxElement getIfCondition() {
+    public @Nullable ICode getIfCondition() {
         return ifCondition;
     }
     
@@ -64,7 +64,7 @@ public class BranchStatement extends SyntaxElementWithChildreen {
     }
 
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         String result = type.name() + " (" + getSiblingCount() + " siblings)\n";
         if (ifCondition != null) {
             result += ifCondition.toString(indentation + "\t");

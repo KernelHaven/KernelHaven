@@ -10,26 +10,26 @@ import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * A {@link SyntaxElement} that has children.
+ * A {@link AbstractSyntaxElement} that has children.
  * 
  * @author Adam
  */
-public abstract class SyntaxElementWithChildreen extends SyntaxElement {
+abstract class AbstractSyntaxElementWithChildreen extends AbstractSyntaxElement {
 
-    private @NonNull List<@NonNull SyntaxElement> nested;
+    private @NonNull List<@NonNull AbstractSyntaxElement> nested;
     
     /**
-     * Creates this {@link SyntaxElement} with the given presence condition.
+     * Creates this {@link AbstractSyntaxElement} with the given presence condition.
      * 
      * @param presenceCondition The presence condition of this element.
      */
-    public SyntaxElementWithChildreen(@NonNull Formula presenceCondition) {
+    public AbstractSyntaxElementWithChildreen(@NonNull Formula presenceCondition) {
         super(presenceCondition);
         this.nested = new LinkedList<>();
     }
     
     @Override
-    public @NonNull SyntaxElement getNestedElement(int index) {
+    public @NonNull AbstractSyntaxElement getNestedElement(int index) {
         return notNull(nested.get(index));
     }
     
@@ -40,11 +40,11 @@ public abstract class SyntaxElementWithChildreen extends SyntaxElement {
     
     @Override
     public void addNestedElement(@NonNull CodeElement element) {
-        if (!(element instanceof SyntaxElement)) {
+        if (!(element instanceof AbstractSyntaxElement)) {
             throw new IllegalArgumentException("Can only add SyntaxElements as child of SyntaxElement");
         }
         
-        nested.add((SyntaxElement) element);
+        nested.add((AbstractSyntaxElement) element);
     }
 
 }

@@ -3,19 +3,19 @@ package net.ssehub.kernel_haven.code_model.ast;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
-public class Function extends SyntaxElementWithChildreen {
+public class Function extends AbstractSyntaxElementWithChildreen {
 
     private @NonNull String name;
     
-    private @NonNull SyntaxElement header;
+    private @NonNull ICode header;
     
-    public Function(@NonNull Formula presenceCondition, @NonNull String name, @NonNull SyntaxElement header) {
+    public Function(@NonNull Formula presenceCondition, @NonNull String name, @NonNull ICode header) {
         super(presenceCondition);
         this.header = header;
         this.name = name;
     }
     
-    public @NonNull SyntaxElement getHeader() {
+    public @NonNull ICode getHeader() {
         return header;
     }
     
@@ -24,7 +24,7 @@ public class Function extends SyntaxElementWithChildreen {
     }
 
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         return "Function " + name + "\n" + header.toString(indentation + "\t");
     }
 

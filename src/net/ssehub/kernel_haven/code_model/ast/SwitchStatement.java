@@ -3,22 +3,22 @@ package net.ssehub.kernel_haven.code_model.ast;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
-public class SwitchStatement extends SyntaxElementWithChildreen {
+public class SwitchStatement extends AbstractSyntaxElementWithChildreen {
 
-    private @NonNull SyntaxElement header;
+    private @NonNull ICode header;
     
-    public SwitchStatement(@NonNull Formula presenceCondition, @NonNull SyntaxElement header) {
+    public SwitchStatement(@NonNull Formula presenceCondition, @NonNull ICode header) {
         
         super(presenceCondition);
         this.header = header;
     }
     
-    public @NonNull SyntaxElement getHeader() {
+    public @NonNull ICode getHeader() {
         return header;
     }
 
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         return "Switch\n" + header.toString(indentation + "\t");
     }
 

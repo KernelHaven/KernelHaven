@@ -9,17 +9,17 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * @author El-Sharkawy
  *
  */
-public class CaseStatement extends SyntaxElementWithChildreen {
+public class CaseStatement extends AbstractSyntaxElementWithChildreen {
     
     public static enum CaseType {
         CASE, DEFAULT;
     }
 
-    private @Nullable SyntaxElement caseCondition;
+    private @Nullable ICode caseCondition;
     
     private @NonNull CaseType type;
     
-    public CaseStatement(@NonNull Formula presenceCondition, @Nullable SyntaxElement caseCondition,
+    public CaseStatement(@NonNull Formula presenceCondition, @Nullable ICode caseCondition,
             @NonNull CaseType type) {
         
         super(presenceCondition);
@@ -27,7 +27,7 @@ public class CaseStatement extends SyntaxElementWithChildreen {
         this.type = type;
     }
     
-    public @Nullable SyntaxElement getCaseCondition() {
+    public @Nullable ICode getCaseCondition() {
         return caseCondition;
     }
     
@@ -36,8 +36,8 @@ public class CaseStatement extends SyntaxElementWithChildreen {
     }
 
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
-        SyntaxElement caseCondition = this.caseCondition;
+    public @NonNull String elementToString(@NonNull String indentation) {
+        ICode caseCondition = this.caseCondition;
         
         String result = type.name() + "\n";
         if (caseCondition != null) {

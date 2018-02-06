@@ -4,7 +4,7 @@ import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
-public class CppBlock extends SyntaxElementWithChildreen {
+public class CppBlock extends AbstractSyntaxElementWithChildreen implements ICode {
     
     /**
      * Denotes the exact kind of preprocessor element.
@@ -36,7 +36,7 @@ public class CppBlock extends SyntaxElementWithChildreen {
     }
 
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         String result = "#" + type.name();
         
         Formula condition = this.condition;

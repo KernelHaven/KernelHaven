@@ -8,17 +8,17 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * @author El-Sharkawy
  *
  */
-public class LoopStatement extends SyntaxElementWithChildreen {
+public class LoopStatement extends AbstractSyntaxElementWithChildreen {
     
     public static enum LoopType {
         WHILE, DO_WHILE, FOR;
     }
 
-    private @NonNull SyntaxElement condition;
+    private @NonNull ICode condition;
     
     private @NonNull LoopType type;
     
-    public LoopStatement(@NonNull Formula presenceCondition, @NonNull SyntaxElement condition,
+    public LoopStatement(@NonNull Formula presenceCondition, @NonNull ICode condition,
             @NonNull LoopType type) {
         
         super(presenceCondition);
@@ -26,12 +26,12 @@ public class LoopStatement extends SyntaxElementWithChildreen {
         this.type = type;
     }
     
-    public @NonNull SyntaxElement getLoopCondition() {
+    public @NonNull ICode getLoopCondition() {
         return condition;
     }
 
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         return type.name() + "-loop\n" + condition.toString(indentation + "\t");
     }
 

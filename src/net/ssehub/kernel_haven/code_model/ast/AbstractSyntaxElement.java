@@ -13,22 +13,16 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * <p>
- * A single element of an abstract syntax tree (AST). Other {@link SyntaxElement}s can be nested inside of this element.
+ * A single element of an AST.
  * </p>
  * <p>
- * The ASTs created by this class are not fully parsed. Some leaf-nodes are instances of {@link Code}, which contain
- * unparsed code strings. If unparsed code elements contain variability (e.g. ifdef), then {@link CodeList} is used,
- * which contains {@link Code} and {@link CppBlock} children (the {@link CppBlock}s contain {@link Code} or more
- * {@link CppBlock}s).
- * </p>
- * <p>
- * By default, this does not store a list of nested elements. Sub-classes that want children should subclass
- * {@link SyntaxElementWithChildreen} instead.
+ * This does not store a list of nested elements. Sub-classes that want children should subclass
+ * {@link AbstractSyntaxElementWithChildreen} instead.
  * </p>
  * 
  * @author Adam
  */
-public abstract class SyntaxElement implements CodeElement {
+abstract class AbstractSyntaxElement implements ISyntaxElement {
 
     private @NonNull Formula presenceCondition;
     
@@ -41,11 +35,11 @@ public abstract class SyntaxElement implements CodeElement {
     private int lineEnd;
     
     /**
-     * Creates this {@link SyntaxElement} with the given presence condition.
+     * Creates this {@link AbstractSyntaxElement} with the given presence condition.
      * 
      * @param presenceCondition The presence condition of this element.
      */
-    public SyntaxElement(@NonNull Formula presenceCondition) {
+    public AbstractSyntaxElement(@NonNull Formula presenceCondition) {
         this.presenceCondition = presenceCondition;
         this.sourceFile = new File("<unknown>");
         this.condition = null;
@@ -53,46 +47,22 @@ public abstract class SyntaxElement implements CodeElement {
         lineEnd = -1;
     }
     
-    /**
-     * Sets the source file that this element comes from.
-     * 
-     * @param sourceFile The source element that this element comes from.
-     * 
-     * @see #getSourceFile()
-     */
+    @Override
     public void setSourceFile(@NonNull File sourceFile) {
         this.sourceFile = sourceFile;
     }
     
-    /**
-     * Sets the immediate condition of this element.
-     * 
-     * @param condition The immediate condition of this element.
-     * 
-     * @see #getCondition()
-     */
+    @Override
     public void setCondition(@Nullable Formula condition) {
         this.condition = condition;
     }
     
-    /**
-     * Sets the starting line of this element.
-     * 
-     * @param lineStart The starting line.
-     * 
-     * @see #getLineStart()
-     */
+    @Override
     public void setLineStart(int lineStart) {
         this.lineStart = lineStart;
     }
     
-    /**
-     * Sets the end line of this element.
-     * 
-     * @param lineEnd The end line.
-     * 
-     * @see #getLineEnd()
-     */
+    @Override
     public void setLineEnd(int lineEnd) {
         this.lineEnd = lineEnd;
     }
@@ -103,7 +73,7 @@ public abstract class SyntaxElement implements CodeElement {
     }
     
     @Override
-    public @NonNull SyntaxElement getNestedElement(int index) throws IndexOutOfBoundsException {
+    public @NonNull AbstractSyntaxElement getNestedElement(int index) throws IndexOutOfBoundsException {
         throw new IndexOutOfBoundsException();
     }
     
@@ -122,24 +92,11 @@ public abstract class SyntaxElement implements CodeElement {
         return toString("");
     }
     
-    /**
-     * Converts this single element into a string. This should not consider nested elements. However, other attributes
-     * may be added in additional lines with the given indentation + "\t".
-     * 
-     * @param indentation The initial indentation to use for multiple lines.
-     * 
-     * @return A string representation of this single element.
-     */
-    protected abstract @NonNull String elementToString(@NonNull String indentation);
+    @Override
+    public abstract @NonNull String elementToString(@NonNull String indentation);
     
-    /**
-     * Converts this element and all its nested elements into a string.
-     * 
-     * @param indentation The initial indentation to use.
-     * 
-     * @return A string representation of the full hierarchy starting from this element.
-     */
-    protected @NonNull String toString(@NonNull String indentation) {
+    @Override
+    public @NonNull String toString(@NonNull String indentation) {
         StringBuilder result = new StringBuilder();
         
         Formula condition = this.condition;
@@ -155,7 +112,7 @@ public abstract class SyntaxElement implements CodeElement {
         indentation += '\t';
         
         for (int i = 0; i < getNestedElementCount(); i++) {
-            SyntaxElement child = getNestedElement(i);
+            AbstractSyntaxElement child = getNestedElement(i);
             result.append(child.toString(indentation));
         }
         
@@ -188,25 +145,16 @@ public abstract class SyntaxElement implements CodeElement {
         throw new RuntimeException("Serialization of ast.SyntaxElement not implement yet");
     }
     
-    /**
-     * Accept this visitor.
-     * 
-     * @param visitor The visitor to accept.
-     */
+    @Override
     public abstract void accept(@NonNull ISyntaxElementVisitor visitor);
     
-    
-    /**
-     * Iterates over the {@link SyntaxElement}s nested inside this element. Not recursively.
-     * 
-     * @return An iterable over the nested elements.
-     */
-    public Iterable<@NonNull SyntaxElement> iterateNestedSyntaxElements() {
-        return new Iterable<@NonNull SyntaxElement>() {
+    @Override
+    public Iterable<@NonNull ISyntaxElement> iterateNestedSyntaxElements() {
+        return new Iterable<@NonNull ISyntaxElement>() {
             
             @Override
-            public @NonNull Iterator<@NonNull SyntaxElement> iterator() {
-                return new Iterator<@NonNull SyntaxElement>() {
+            public @NonNull Iterator<@NonNull ISyntaxElement> iterator() {
+                return new Iterator<@NonNull ISyntaxElement>() {
 
                     private int index = 0;
                     
@@ -216,7 +164,7 @@ public abstract class SyntaxElement implements CodeElement {
                     }
 
                     @Override
-                    public SyntaxElement next() {
+                    public ISyntaxElement next() {
                         return getNestedElement(index++);
                     }
                 };

@@ -12,17 +12,17 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * @author El-Sharkawy
  *
  */
-public class TypeDefinition extends SyntaxElementWithChildreen {
+public class TypeDefinition extends AbstractSyntaxElementWithChildreen {
 
     public static enum TypeDefType {
         STRUCT, ENUM, TYPEDEF, UNION;
     }
     
-    private @NonNull SyntaxElement declaration;
+    private @NonNull ICode declaration;
     
     private @NonNull TypeDefType type;
     
-    public TypeDefinition(@NonNull Formula presenceCondition, @NonNull SyntaxElement declaration,
+    public TypeDefinition(@NonNull Formula presenceCondition, @NonNull ICode declaration,
             @NonNull TypeDefType type) {
         
         super(presenceCondition);
@@ -30,12 +30,12 @@ public class TypeDefinition extends SyntaxElementWithChildreen {
         this.type = type;
     }
     
-    public @NonNull SyntaxElement getDeclaration() {
+    public @NonNull ICode getDeclaration() {
         return declaration;
     }
 
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         return type.name() + "-Definition\n" + declaration.toString(indentation + "\t");
     }
 

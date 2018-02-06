@@ -8,9 +8,9 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * @author El-Sharkawy
  */
-public class Comment extends SyntaxElement {
+public class Comment extends AbstractSyntaxElement {
 
-    private @NonNull SyntaxElement comment;
+    private @NonNull ICode comment;
     
     /**
      * Sole constructor.
@@ -18,7 +18,7 @@ public class Comment extends SyntaxElement {
      * @param presenceCondition The presents condition of this comment.
      * @param comment The text content of the comment
      */
-    public Comment(@NonNull Formula presenceCondition, @NonNull SyntaxElement comment) {
+    public Comment(@NonNull Formula presenceCondition, @NonNull ICode comment) {
         super(presenceCondition);
         this.comment = comment;
     }
@@ -28,12 +28,12 @@ public class Comment extends SyntaxElement {
      * 
      * @return The text content of this comment.
      */
-    public @NonNull SyntaxElement getComment() {
+    public @NonNull ICode getComment() {
         return comment;
     }
     
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         return "Comment:\n" + comment.toString(indentation + "\t");
     }
 

@@ -4,7 +4,7 @@ import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
-public class CppStatement extends SyntaxElement {
+public class CppStatement extends AbstractSyntaxElement {
 
     public static enum Type {
         DEFINE, UNDEF, INCLUDE, PRAGMA, ERROR, WARNING, LINE, EMPTY
@@ -12,9 +12,9 @@ public class CppStatement extends SyntaxElement {
     
     private @NonNull Type type;
     
-    private @Nullable SyntaxElement expression;
+    private @Nullable ICode expression;
     
-    public CppStatement(@NonNull Formula presenceCondition, @NonNull Type type, @Nullable SyntaxElement expression) {
+    public CppStatement(@NonNull Formula presenceCondition, @NonNull Type type, @Nullable ICode expression) {
         super(presenceCondition);
         
         this.type = type;
@@ -22,10 +22,10 @@ public class CppStatement extends SyntaxElement {
     }
 
     @Override
-    protected @NonNull String elementToString(@NonNull String indentation) {
+    public @NonNull String elementToString(@NonNull String indentation) {
         String result = "#" + type + "\n";
         
-        SyntaxElement expression = this.expression;
+        ICode expression = this.expression;
         if (expression != null) {
             result += expression.toString(indentation + "\t");
         }
@@ -37,7 +37,7 @@ public class CppStatement extends SyntaxElement {
         return type;
     }
     
-    public @Nullable SyntaxElement getExpression() {
+    public @Nullable ICode getExpression() {
         return expression;
     }
 
