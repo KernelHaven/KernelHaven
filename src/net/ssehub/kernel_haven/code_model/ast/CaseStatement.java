@@ -1,7 +1,5 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
-import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
-
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -37,9 +35,9 @@ public class CaseStatement extends SyntaxElementWithChildreen {
     protected @NonNull String elementToString(@NonNull String indentation) {
         SyntaxElement caseCondition = this.caseCondition;
         
-        String result = notNull(type.name());
+        String result = type.name() + "\n";
         if (caseCondition != null) {
-            result += "\n" + caseCondition.toString(indentation + "\t");
+            result += caseCondition.toString(indentation + "\t");
         }
         
         return result;

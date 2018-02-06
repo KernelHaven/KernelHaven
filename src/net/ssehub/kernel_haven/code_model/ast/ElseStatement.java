@@ -1,7 +1,5 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
-import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
-
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -44,9 +42,9 @@ public class ElseStatement extends SyntaxElementWithChildreen {
 
     @Override
     protected @NonNull String elementToString(@NonNull String indentation) {
-        String result = notNull(type.name());
+        String result = type.name() + "\n";
         if (elseIfCondition != null) {
-            result += "\n" + elseIfCondition.toString(indentation + "\t");
+            result += elseIfCondition.toString(indentation + "\t");
         }
         return result;
     }

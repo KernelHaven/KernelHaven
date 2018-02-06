@@ -43,7 +43,7 @@ public class CppBlock extends SyntaxElementWithChildreen {
         if (condition != null) {
             result += " " + condition.toString();
         }
-        return result;
+        return result + "\n";
     }
 
     @Override

@@ -11,7 +11,7 @@ public class CodeList extends SyntaxElementWithChildreen {
 
     @Override
     protected @NonNull String elementToString(@NonNull String indentation) {
-        return "CodeList";
+        return "CodeList\n";
     }
 
     @Override

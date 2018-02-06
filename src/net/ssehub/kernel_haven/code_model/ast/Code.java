@@ -18,7 +18,7 @@ public class Code extends SyntaxElement {
     
     @Override
     protected @NonNull String elementToString(@NonNull String indentation) {
-        return text;
+        return text + "\n";
     }
 
     @Override

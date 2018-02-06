@@ -99,7 +99,7 @@ public interface ISyntaxElementVisitor {
         }
     }
     
-    public default void visitLoop(Loop loop) {
+    public default void visitLoopStatement(LoopStatement loop) {
         loop.getLoopCondition().accept(this);
         
         for (int i = 0; i < loop.getNestedElementCount(); i++) {

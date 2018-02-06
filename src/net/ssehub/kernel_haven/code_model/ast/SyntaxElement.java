@@ -76,7 +76,7 @@ public abstract class SyntaxElement implements CodeElement {
         
         result.append(indentation).append("[").append(conditionStr).append("] ");
         
-        result.append(elementToString(indentation)).append('\n');
+        result.append(elementToString(indentation));
         
         indentation += '\t';
         

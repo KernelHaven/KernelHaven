@@ -8,7 +8,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * @author El-Sharkawy
  *
  */
-public class Loop extends SyntaxElementWithChildreen {
+public class LoopStatement extends SyntaxElementWithChildreen {
     
     public static enum LoopType {
         WHILE, DO_WHILE, FOR;
@@ -18,7 +18,7 @@ public class Loop extends SyntaxElementWithChildreen {
     
     private @NonNull LoopType type;
     
-    public Loop(@NonNull Formula presenceCondition, @NonNull SyntaxElement condition,
+    public LoopStatement(@NonNull Formula presenceCondition, @NonNull SyntaxElement condition,
             @NonNull LoopType type) {
         
         super(presenceCondition);
@@ -37,7 +37,7 @@ public class Loop extends SyntaxElementWithChildreen {
 
     @Override
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
-        visitor.visitLoop(this);
+        visitor.visitLoopStatement(this);
     }
 
 }

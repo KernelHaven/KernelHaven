@@ -11,7 +11,7 @@ public class CompoundStatement extends SyntaxElementWithChildreen {
 
     @Override
     protected @NonNull String elementToString(@NonNull String indentation) {
-        return "CompoundStatement";
+        return "CompoundStatement\n";
     }
 
     @Override

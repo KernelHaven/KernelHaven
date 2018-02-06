@@ -11,7 +11,7 @@ public class File extends SyntaxElementWithChildreen {
 
     @Override
     protected @NonNull String elementToString(@NonNull String indentation) {
-        return "File";
+        return "File\n";
     }
 
     @Override
