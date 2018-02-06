@@ -9,10 +9,20 @@ import net.ssehub.kernel_haven.code_model.CodeElement;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
+/**
+ * A {@link SyntaxElement} that has children.
+ * 
+ * @author Adam
+ */
 public abstract class SyntaxElementWithChildreen extends SyntaxElement {
 
     private @NonNull List<@NonNull SyntaxElement> nested;
     
+    /**
+     * Creates this {@link SyntaxElement} with the given presence condition.
+     * 
+     * @param presenceCondition The presence condition of this element.
+     */
     public SyntaxElementWithChildreen(@NonNull Formula presenceCondition) {
         super(presenceCondition);
         this.nested = new LinkedList<>();

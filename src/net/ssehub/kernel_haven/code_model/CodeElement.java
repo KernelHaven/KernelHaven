@@ -66,27 +66,30 @@ public interface CodeElement {
      * Adds a nested element to the end of the list.
      * 
      * @param element The element to add.
+     * 
+     * @throws IndexOutOfBoundsException If the concrete class conceptually does not allow any more children.
      */
-    public abstract void addNestedElement(@NonNull CodeElement element);
+    public abstract void addNestedElement(@NonNull CodeElement element) throws IndexOutOfBoundsException;
     
     /**
      * Returns the line where this element starts in the source file.
      * 
-     * @return the start line number.
+     * @return The start line number. -1 if not available.
      */
     public abstract int getLineStart();
 
     /**
      * Returns the line where this element ends in the source file.
      * 
-     * @return the end line number.
+     * @return The end line number. -1 if not available.
      */
     public abstract int getLineEnd();
     
     /**
      * Returns the source file that this element originates from.
      * 
-     * @return The source file location relative to the source tree.
+     * @return The source file location relative to the source tree. <code>new File("&lt;unknown&gt;")</code> if not
+     *      available.
      */
     public abstract @NonNull File getSourceFile();
 

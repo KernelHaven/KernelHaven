@@ -5,8 +5,8 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Represents a comment.
+ * 
  * @author El-Sharkawy
- *
  */
 public class Comment extends SyntaxElement {
 
@@ -14,8 +14,9 @@ public class Comment extends SyntaxElement {
     
     /**
      * Sole constructor.
+     * 
      * @param presenceCondition The presents condition of this comment.
-     * @param comment The content of the comment
+     * @param comment The text content of the comment
      */
     public Comment(@NonNull Formula presenceCondition, @NonNull SyntaxElement comment) {
         super(presenceCondition);
@@ -24,7 +25,8 @@ public class Comment extends SyntaxElement {
     
     /**
      * Returns the text of the comment.
-     * @return The comment.
+     * 
+     * @return The text content of this comment.
      */
     public @NonNull SyntaxElement getComment() {
         return comment;
