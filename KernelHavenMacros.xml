@@ -93,7 +93,7 @@
 	</target>
 
 	<target name="jarwithsources">
-		<jar destfile="${jar.dir}/${jar.filename.withsource}">
+		<jar destfile="${jar.dir}/${jar.filename.withsource}" duplicate="preserve">
 			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
 			<fileset dir="${src.dir}" excludes="**/package-info.java" />
 
