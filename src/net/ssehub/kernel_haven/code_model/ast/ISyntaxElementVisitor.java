@@ -106,4 +106,8 @@ public interface ISyntaxElementVisitor {
             loop.getNestedElement(i).accept(this);
         }
     }
+    
+    public default void visitComment(Comment comment) {
+        comment.getComment().accept(this);
+    }
 }
