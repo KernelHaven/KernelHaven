@@ -61,22 +61,15 @@ public interface ISyntaxElementVisitor {
     }
     
     // C Control structures
-    public default void visitIfStructure(IfStructure ifStatement) {
-        ifStatement.getIfCondition().accept(this);
-        
-        for (int i = 0; i < ifStatement.getNestedElementCount(); i++) {
-            ifStatement.getNestedElement(i).accept(this);
-        }
-    }
     
-    public default void visitElseStatement(ElseStatement elseStatement) {
-        SyntaxElement condition = elseStatement.getElseIfCondition();
+    public default void visitBranchStatement(BranchStatement branchStatement) {
+        SyntaxElement condition = branchStatement.getIfCondition();
         if (null != condition) {
             condition.accept(this);
         }
         
-        for (int i = 0; i < elseStatement.getNestedElementCount(); i++) {
-            elseStatement.getNestedElement(i).accept(this);
+        for (int i = 0; i < branchStatement.getNestedElementCount(); i++) {
+            branchStatement.getNestedElement(i).accept(this);
         }
     }
     
