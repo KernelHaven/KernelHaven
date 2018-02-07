@@ -323,6 +323,7 @@ public class UtilTest {
         assertThat(Util.formatBytes(32134341), is("30.64 MiB"));
         assertThat(Util.formatBytes(3213434341L), is("2.99 GiB"));
         assertThat(Util.formatBytes(32134343345341L), is("29.22 TiB"));
+        assertThat(Util.formatBytes(1125899906842624L), is("1024 TiB"));
     }
     
     /**

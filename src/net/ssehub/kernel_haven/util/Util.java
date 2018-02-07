@@ -421,7 +421,7 @@ public class Util {
         String[] suffix = {"B", "KiB", "MiB", "GiB", "TiB"};
         amount *= 100; // this way we get two digits of precision after the comma
 
-        while (i < suffix.length && amount >= 102400) {
+        while (i + 1 < suffix.length && amount >= 102400) {
             i++;
             amount /= 1024;
         }
