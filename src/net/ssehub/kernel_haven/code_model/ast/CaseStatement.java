@@ -25,7 +25,7 @@ public class CaseStatement extends AbstractSyntaxElementWithChildreen {
     
     private @NonNull CaseType type;
     
-    // TODO: add reference to switch element
+    private @NonNull SwitchStatement switchStatement;
     
     /**
      * Creates a {@link CaseStatement}.
@@ -35,11 +35,12 @@ public class CaseStatement extends AbstractSyntaxElementWithChildreen {
      * @param type The {@link CaseType} of statement that this is.
      */
     public CaseStatement(@NonNull Formula presenceCondition, @Nullable ICode caseCondition,
-            @NonNull CaseType type) {
+            @NonNull CaseType type, @NonNull SwitchStatement switchStatement) {
         
         super(presenceCondition);
         this.caseCondition = caseCondition;
         this.type = type;
+        this.switchStatement = switchStatement;
     }
     
     /**
@@ -58,6 +59,15 @@ public class CaseStatement extends AbstractSyntaxElementWithChildreen {
      */
     public @NonNull CaseType getType() {
         return type;
+    }
+    
+    /**
+     * Returns the {@link SwitchStatement} that this case belongs to.
+     * 
+     * @return The {@link SwitchStatement} that this {@link CaseStatement} belongs to.
+     */
+    public @NonNull SwitchStatement getSwitchStatement() {
+        return switchStatement;
     }
 
     @Override

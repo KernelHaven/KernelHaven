@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.code_model.ast.CaseStatement.CaseType;
 import net.ssehub.kernel_haven.util.logic.Negation;
 import net.ssehub.kernel_haven.util.logic.Variable;
 
@@ -87,12 +88,18 @@ public class SyntaxElementVisitorTest implements ISyntaxElementVisitor {
     @Override
     public void visitFile(File file) {
         files++;
+        
+        assertThat(file.getNestedElementCount(), is(2));
+        
         ISyntaxElementVisitor.super.visitFile(file);
     }
     
     @Override
     public void visitFunction(Function function) {
         functions++;
+        
+        assertThat(function.getName(), is("simpleFunction"));
+        
         ISyntaxElementVisitor.super.visitFunction(function);
     }
 
@@ -153,6 +160,11 @@ public class SyntaxElementVisitorTest implements ISyntaxElementVisitor {
     @Override
     public void visitSwitchStatement(SwitchStatement switchStatement) {
         switchs++;
+        
+        assertThat(switchStatement.getCasesCount(), is(2));
+        assertThat(switchStatement.getCase(0).getType(), is(CaseType.CASE));
+        assertThat(switchStatement.getCase(1).getType(), is(CaseType.DEFAULT));
+        
         ISyntaxElementVisitor.super.visitSwitchStatement(switchStatement);
     }
 

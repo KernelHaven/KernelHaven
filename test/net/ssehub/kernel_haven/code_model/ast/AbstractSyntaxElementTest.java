@@ -52,7 +52,7 @@ public class AbstractSyntaxElementTest {
                 + "\t\t\t\t\t[1] ;\n"
                 + "\t\t[1] Label:\n"
                 + "\t\t\t[1] lbl:\n"
-                + "\t\t[1] Switch\n"
+                + "\t\t[1] Switch (2 cases)\n"
                 + "\t\t\t[1] switch ( 3 )\n"
                 + "\t\t\t[1] CASE\n"
                 + "\t\t\t\t[1] 1\n"

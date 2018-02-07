@@ -23,6 +23,8 @@ public class CppBlock extends AbstractSyntaxElementWithChildreen implements ICod
     
     private @NonNull Type type;
     
+    // TODO: add reference to siblings?
+    
     /**
      * Creates a {@link CppBlock}.
      * 

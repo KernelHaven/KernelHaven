@@ -120,7 +120,7 @@ public class AllAstTests {
         
         // case 1
         CaseStatement case1 = new CaseStatement(True.INSTANCE, makeCode("1", sourceFile, True.INSTANCE, True.INSTANCE),
-                CaseStatement.CaseType.CASE);
+                CaseStatement.CaseType.CASE, switchStmt);
         case1.setCondition(True.INSTANCE);
         case1.setSourceFile(sourceFile);
         
@@ -130,9 +130,10 @@ public class AllAstTests {
         caseBody.setCondition(True.INSTANCE);
         case1.addNestedElement(caseBody);
         switchStmt.addNestedElement(case1);
+        switchStmt.addCase(case1);
         
         // default
-        CaseStatement defaultStmt = new CaseStatement(True.INSTANCE, null,  CaseStatement.CaseType.DEFAULT);
+        CaseStatement defaultStmt = new CaseStatement(True.INSTANCE, null,  CaseStatement.CaseType.DEFAULT, switchStmt);
         defaultStmt.setCondition(True.INSTANCE);
         defaultStmt.setSourceFile(sourceFile);
         
@@ -142,6 +143,7 @@ public class AllAstTests {
         defaultBody.setCondition(True.INSTANCE);
         defaultStmt.addNestedElement(defaultBody);
         switchStmt.addNestedElement(defaultStmt);
+        switchStmt.addCase(defaultStmt);
         
         // assignment with CppBlock
         CodeList codeList = new CodeList(True.INSTANCE);
