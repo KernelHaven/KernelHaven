@@ -20,7 +20,7 @@ public class FormulaEvaluator implements IFormulaVisitor<@Nullable Boolean> {
      * 
      * @param variableValues The mapping variable name -&gt; boolean value.
      */
-    public FormulaEvaluator(@NonNull Map<String, @NonNull Boolean> variableValues) {
+    public FormulaEvaluator(@NonNull Map<String, Boolean> variableValues) {
         this.variableValues = variableValues;
     }
     
