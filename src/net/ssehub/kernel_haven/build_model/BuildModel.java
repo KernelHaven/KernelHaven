@@ -17,9 +17,9 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * @author Moritz
  * @author Adam
  */
-public class BuildModel implements Iterable<File> {
+public class BuildModel implements Iterable<@NonNull File> {
 
-    private @NonNull Map<File, Formula> fileFormulaMapping;
+    private @NonNull Map<@NonNull File, Formula> fileFormulaMapping;
 
     /**
      * Instantiates a new and empty BuildModel.
@@ -80,7 +80,7 @@ public class BuildModel implements Iterable<File> {
     }
 
     @Override
-    public @NonNull Iterator<File> iterator() {
+    public @NonNull Iterator<@NonNull File> iterator() {
         return notNull(fileFormulaMapping.keySet().iterator());
     }
     
