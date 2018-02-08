@@ -28,7 +28,7 @@ public class VariabilityModel {
      * The variables defined by this variability model. Never null.
      * The key is the name of the variable for easier access.
      */
-    private @NonNull Map<String, VariabilityVariable> variables;
+    private @NonNull Map<@NonNull String, VariabilityVariable> variables;
 
     /**
      * Creates a new variability model.
@@ -41,7 +41,9 @@ public class VariabilityModel {
      *            The variables that are defined in the variability model. Must
      *            not be null.
      */
-    public VariabilityModel(@NonNull File constraintModel, @NonNull Map<String, VariabilityVariable> variables) {
+    public VariabilityModel(@NonNull File constraintModel,
+            @NonNull Map<@NonNull String, VariabilityVariable> variables) {
+        
         this.constraintModel = constraintModel;
         this.variables = variables;
     }
@@ -78,15 +80,17 @@ public class VariabilityModel {
      * 
      * @return The variables defined by this variability model. Never null.
      */
-    public @NonNull Set<VariabilityVariable> getVariables() {
-        return new HashSet<>(variables.values());
+    public @NonNull Set<@NonNull VariabilityVariable> getVariables() {
+        @SuppressWarnings("null")
+        Set<@NonNull VariabilityVariable> result = new HashSet<>(variables.values());
+        return result;
     }
 
     /**
      * Returns the variables defined by this variability model, as a mapping name -> variable.
      * @return The variables defined by this variability model. Never null.
      */
-    public @NonNull Map<String, VariabilityVariable> getVariableMap() {
+    public @NonNull Map<@NonNull String, VariabilityVariable> getVariableMap() {
         return variables; 
     }
     

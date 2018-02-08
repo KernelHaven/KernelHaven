@@ -21,9 +21,9 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
 
     private @NonNull Configuration config;
     
-    private AnalysisComponent<T> inputComponent;
+    private @NonNull AnalysisComponent<T> inputComponent;
     
-    private List<OutputComponent> outputComponents;
+    private @NonNull List<@NonNull OutputComponent> outputComponents;
     
     private volatile boolean started;
     
@@ -46,7 +46,7 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
      * 
      * @return The output component.
      */
-    public AnalysisComponent<T> createOutputComponent() {
+    public @NonNull AnalysisComponent<T> createOutputComponent() {
         OutputComponent component = new OutputComponent(config);
         outputComponents.add(component);
         return component;
