@@ -10,6 +10,7 @@ package net.ssehub.kernel_haven.code_model.ast;
  *      <li>{@link Code} (representing the unparsed code string)</li>
  *      <li>{@link CodeList} (a list containing {@link Code}s and/or {@link CppBlock}s)</li>
  *      <li>{@link CppBlock} (only containing {@link Code}s and/or {@link CppBlock}s)</li>
+ *      <li>{@link Comment} (a comment inside the unparsed code)</li>
  * </ul>
  * </p>
  * 

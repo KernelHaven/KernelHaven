@@ -4,11 +4,11 @@ import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * Represents a comment.
+ * Represents a comment. This can also appear inside unparsed {@link Code}, thus it implements {@link ICode}.
  * 
  * @author El-Sharkawy
  */
-public class Comment extends AbstractSyntaxElement {
+public class Comment extends AbstractSyntaxElement implements ICode {
 
     private @NonNull ICode comment;
     
