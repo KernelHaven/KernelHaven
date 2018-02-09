@@ -33,6 +33,7 @@ public class CaseStatement extends AbstractSyntaxElementWithChildreen {
      * @param presenceCondition The presence condition of this element.
      * @param caseCondition The value of a case statement; <code>null</code> if this is a default statement.
      * @param type The {@link CaseType} of statement that this is.
+     * @param switchStatement The {@link SwitchStatement} to which this case belongs to.
      */
     public CaseStatement(@NonNull Formula presenceCondition, @Nullable ICode caseCondition,
             @NonNull CaseType type, @NonNull SwitchStatement switchStatement) {

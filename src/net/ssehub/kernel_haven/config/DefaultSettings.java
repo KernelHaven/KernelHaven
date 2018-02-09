@@ -72,6 +72,7 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull List<String>> ANALYSIS_COMPONENTS_LOG = new Setting<>("analysis.output.intermediate_results", STRING_LIST, true, "", "Specifies which analysis components (simple class name) of a PipelineAnalysis should output their intermediate results. These will be written in addition to the result of the main component.");
     public static final @NonNull Setting<@NonNull String> ANALYSIS_PIPELINE = new Setting<>("analysis.pipeline", STRING, true, "", "A string specifying a pipeline of analyis components. This only has an effect if " + ANALYSIS_CLASS.getKey() + " is set to " + ConfiguredPipelineAnalysis.class.getName() + "."); // TODO specify format
     public static final @NonNull Setting<@Nullable String> ANALYSIS_RESULT = new Setting<>("analysis.output_writer.class", STRING, false, null, "Specifies which kind of output writer shall be used. Must be the fully qualified name of a class that implements ITableCollection. A CSV writer will be used by default if this setting is not specified. IO-Utils offers: net.ssehub.kernel_haven.io.excel.ExcelBook");
+    public static final @NonNull Setting<@NonNull Boolean> ANALYSIS_USE_VARMODEL_VARIABLES_ONLY = new Setting<>("analysis.consider_vm_vars_only", Type.BOOLEAN, true, "false", "Defines whether the analysis should only consider variables that are present in the variability model.");
     
     /*
      * Common extractor parameters

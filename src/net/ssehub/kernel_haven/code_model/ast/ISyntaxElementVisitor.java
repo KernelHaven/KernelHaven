@@ -12,14 +12,54 @@ public interface ISyntaxElementVisitor {
     
     // C-Preprocessor
     
+    /**
+     * <b>CPP:</b> Visits a C-preprocessor block. This may be one of the following blocks:
+     * <ul>
+     *     <li>&#35;if</li>
+     *     <li>&#35;ifdef</li>
+     *     <li>&#35;ifndef</li>
+     *     <li>&#35;elif</li>
+     *     <li>&#35;else</li>
+     * </ul>
+     * Provides default Visitation: <b>true</b>
+     * @param block The block to visit.
+     */
     public default void visitCppBlock(@NonNull CppBlock block) {
         for (int i = 0; i < block.getNestedElementCount(); i++) {
             block.getNestedElement(i).accept(this);
         }
     }
     
+    /**
+     * <b>CPP:</b> Visits a C-preprocessor statement. This may be one of the following blocks:
+     * <ul>
+     *     <li>&#35;inclunde</li>
+     *     <li>&#35;define</li>
+     *     <li>&#35;undef</li>
+     *     <li>&#35;warning</li>
+     *     <li>&#35;error</li>
+     *     <li>&#35;line</li>
+     *     <li>&#35;empty</li>
+     *     <li>&#35;pragma</li>
+     * </ul>
+     * Provides default Visitation: <b>true</b>
+     * @param cppStatement The statement to visit.
+     */
+    public default void visitCppStatement(@NonNull CppStatement cppStatement) {
+        ICode expression = cppStatement.getExpression();
+        if (expression != null) {
+            expression.accept(this);
+        }
+    }
+    
     // C-Code
     
+    /**
+     * <b>C-Code:</b> Visits a C code file. This is usually the entry point for visitation as it is the top level
+     * element of all C code files.<br/>
+     * Provides default Visitation: <b>true</b>
+     * @param file The file to visit.
+     */
     public default void visitFile(@NonNull File file) {
         for (int i = 0; i < file.getNestedElementCount(); i++) {
             file.getNestedElement(i).accept(this);
@@ -49,6 +89,11 @@ public interface ISyntaxElementVisitor {
         }
     }
     
+    /**
+     * <b>C-Code/CPP:</b> Visits unparsed code. <br/>
+     * Provides default Visitation: <b>false</b>
+     * @param code The unparsed code element to visit.
+     */
     public void visitCode(@NonNull Code code);
     
     public default void visitTypeDefinition(@NonNull TypeDefinition typeDef) {
@@ -105,12 +150,4 @@ public interface ISyntaxElementVisitor {
     public default void visitComment(@NonNull Comment comment) {
         comment.getComment().accept(this);
     }
-
-    public default void visitCppStatement(@NonNull CppStatement cppStatement) {
-        ICode expression = cppStatement.getExpression();
-        if (expression != null) {
-            expression.accept(this);
-        }
-    }
-    
 }
