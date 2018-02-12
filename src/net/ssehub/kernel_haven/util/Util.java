@@ -382,6 +382,38 @@ public class Util {
             }
         }
     }
+    
+    /**
+     * Copies a folder recursively.
+     * 
+     * @param src The folder to copy. Must point to an existing folder.
+     * @param dst The destination to copy to. Must point to an existing folder. Should be empty
+     * 
+     * @throws IOException If copying the folder or any file in it fails.
+     */
+    public static void copyFolder(@NonNull File src, @NonNull File dst) throws IOException {
+        if (!src.isDirectory()) {
+            throw new IOException(src.getPath() + " is not a directory");
+        }
+        if (!dst.isDirectory()) {
+            throw new IOException(dst.getPath() + " is not a directory");
+        }
+        
+        for (File childSrc : src.listFiles()) {
+            File childDst = new File(dst, childSrc.getName());
+            
+            if (childSrc.isDirectory()) {
+                boolean created = childDst.mkdir();
+                if (!created) {
+                    throw new IOException("Could not create folder " + childDst.getPath());
+                }
+                copyFolder(childSrc, childDst);
+                
+            } else {
+                copyFile(childSrc, childDst);
+            }
+        }
+    }
 
     /**
      * Copies the complete content of InputStream in to OutputStream out. This reads from in until the end of stream is

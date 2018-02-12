@@ -14,10 +14,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.test_utils.FileContentsAssertion;
 import net.ssehub.kernel_haven.util.Util.OSType;
 
 
@@ -308,6 +312,105 @@ public class UtilTest {
         // postcondition
         dst.delete();
         assertThat(dst.exists(), is(false));
+    }
+    
+    /**
+     * Tests {@link Util#copyFolder(File, File)}.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testCopyFolder() throws IOException {
+        File src = new File("testdata/folderToCopy");
+        File dst = new File("testdata/tmp_folder_copy");
+        
+        try {
+            dst.mkdir();
+            
+            // precondition
+            assertThat(dst.listFiles().length, is(0));
+            
+            Util.copyFolder(src, dst);
+            
+            Map<String, File> files = new HashMap<>();
+            for (File f : dst.listFiles()) {
+                files.put(f.getName(), f);
+            }
+            HashSet<String> expectedNames = new HashSet<>();
+            expectedNames.add("subFolder");
+            expectedNames.add("a.txt");
+            assertThat(files.keySet(), is(expectedNames));
+            
+            FileContentsAssertion.assertContents(files.get("a.txt"), "Hello World!");
+            
+            File subFolder = files.get("subFolder");
+            files.clear();
+            for (File f : subFolder.listFiles()) {
+                files.put(f.getName(), f);
+            }
+            
+            expectedNames.clear();
+            expectedNames.add("b.txt");
+            assertThat(files.keySet(), is(expectedNames));
+            
+            FileContentsAssertion.assertContents(files.get("b.txt"), "Hello Again!");
+            
+        } finally {
+            Util.deleteFolder(dst);
+        }
+    }
+    
+    /**
+     * Tests that {@link Util#copyFolder(File, File)} correctly throws an exception if the target doesn't exist.
+     * 
+     * @throws IOException expected.
+     */
+    @Test(expected = IOException.class)
+    public void testCopyFolderNotExistingTarget() throws IOException {
+        File src = new File("testdata/folderToCopy");
+        File dst = new File("testdata/doesnt_exist");
+        
+        Util.copyFolder(src, dst);
+    }
+    
+    /**
+     * Tests that {@link Util#copyFolder(File, File)} correctly throws an exception if the source doesn't exist.
+     * 
+     * @throws IOException expected.
+     */
+    @Test(expected = IOException.class)
+    public void testCopyFolderNotExistingSource() throws IOException {
+        File src = new File("testdata/doesnt_exist");
+        File dst = new File("testdata/tmp_folder_copy");
+        
+        try {
+            dst.mkdir();
+            
+            Util.copyFolder(src, dst);
+            
+        } finally {
+            Util.deleteFolder(dst);
+        }
+    }
+    
+    /**
+     * Tests that {@link Util#copyFolder(File, File)} correctly throws an exception if the target already contains a
+     * file with a folder name.
+     * 
+     * @throws IOException expected.
+     */
+    @Test(expected = IOException.class)
+    public void testCopyFolderTargetNameCollision() throws IOException {
+        File src = new File("testdata/folderToCopy");
+        File dst = new File("testdata/notEmptyDirectory");
+        
+        try {
+            Util.copyFolder(src, dst);
+            
+        } finally {
+            new File("testdata/notEmptyDirectory/a.txt").delete(); // this gets copied before the exception
+        }
+        
     }
     
     /**
