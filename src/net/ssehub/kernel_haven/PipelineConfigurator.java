@@ -304,7 +304,7 @@ public class PipelineConfigurator {
      * 
      * @throws SetUpException If instantiating or executing the preparation class fails.
      */
-    private void runPreparation() throws SetUpException {
+    public void runPreparation() throws SetUpException {
         Configuration config = this.config;
         if (config == null) {
             throw new SetUpException("Configuration not set");
