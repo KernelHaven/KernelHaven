@@ -53,13 +53,6 @@ public abstract class AnalysisComponent<O> {
      */
     public final void setLogResults(boolean logResults) {
         this.logResults = logResults;
-        if (logResults) {
-            try {
-                out = PipelineAnalysis.getInstance().getResultCollection().getWriter(getResultName());
-            } catch (IOException e) {
-                LOGGER.logExceptionWarning("Can't create intermediate output file", e);
-            }
-        }
     }
     
     /**
@@ -67,6 +60,14 @@ public abstract class AnalysisComponent<O> {
      * Package visibility for {@link SplitComponent}.
      */
     synchronized void start() {
+        if (logResults) {
+            try {
+                out = PipelineAnalysis.getInstance().getResultCollection().getWriter(getResultName());
+            } catch (IOException e) {
+                LOGGER.logExceptionWarning("Can't create intermediate output file", e);
+            }
+        }
+        
         Thread th = new Thread(() -> {
             LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " starting");
             
