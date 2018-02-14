@@ -5,13 +5,12 @@
     This configuration file was written by the eclipse-cs plugin configuration editor
 -->
 <!--
-    Checkstyle-Configuration: SSE Checkstyle Configuration [ohne package-info]
+    Checkstyle-Configuration: Modified SSE Checkstyle
     Description: none
 -->
 <module name="Checker">
   <property name="severity" value="warning"/>
   <module name="TreeWalker">
-    <module name="FileContentsHolder"/>
     <module name="JavadocMethod">
       <property name="severity" value="error"/>
       <property name="allowUndeclaredRTE" value="true"/>
@@ -220,31 +219,7 @@
       <property name="max" value="5"/>
       <property name="ignoreOverriddenMethods" value="true"/>
     </module>
-  </module>
-  <module name="SuppressionCommentFilter">
-    <property name="offCommentFormat" value="checkstyle: stop parameter number check"/>
-    <property name="onCommentFormat" value="checkstyle: resume parameter number check"/>
-    <property name="checkFormat" value="ParameterNumberCheck"/>
-  </module>
-  <module name="SuppressionCommentFilter">
-    <property name="offCommentFormat" value="checkstyle: stop exception type check"/>
-    <property name="onCommentFormat" value="checkstyle: resume exception type check"/>
-    <property name="checkFormat" value="(IllegalThrows|IllegalCatch)"/>
-  </module>
-  <module name="SuppressionCommentFilter">
-    <property name="offCommentFormat" value="checkstyle: stop declaration order check"/>
-    <property name="onCommentFormat" value="checkstyle: resume declaration order check"/>
-    <property name="checkFormat" value="DeclarationOrder"/>
-  </module>
-  <module name="SuppressionCommentFilter">
-    <property name="offCommentFormat" value="checkstyle: stop visibility modifier check"/>
-    <property name="onCommentFormat" value="checkstyle: resume visibility modifier check"/>
-    <property name="checkFormat" value="VisibilityModifier"/>
-  </module>
-  <module name="SuppressionCommentFilter">
-    <property name="offCommentFormat" value="checkstyle: stop name check"/>
-    <property name="onCommentFormat" value="checkstyle: resume name check"/>
-    <property name="checkFormat" value="(MemberName|MethodName|TypeName|StaticVariableName)"/>
+    <module name="SuppressionCommentFilter"/>
   </module>
   <module name="FileLength">
     <property name="severity" value="error"/>
@@ -259,5 +234,4 @@
     <property name="allowLegacy" value="true"/>
     <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="error"/>
   </module>
-  <module name="SuppressionCommentFilter"/>
 </module>

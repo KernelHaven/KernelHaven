@@ -510,7 +510,8 @@ public class PipelineAnalysisTest {
         }
 
         @Override
-        public void writeRow(@Nullable Object @NonNull ... columns) throws IOException {
+        public void writeRow(@Nullable Object /*@NonNull*/ ... columns) throws IOException {
+            // TODO: commented out @NonNull annotation because checkstyle can't parse it
             TABLES.get(name).add(Arrays.toString(columns));
         }
         
