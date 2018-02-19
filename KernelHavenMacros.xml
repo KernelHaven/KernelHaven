@@ -180,9 +180,25 @@
 			</fileset>
 			<report format="frames" todir="${reports.html.dir}" />
 		</junitreport>
-
 	</target>
 
+	<!-- Clean-up after testing to reduce required diskapce for archiving results on Jenkins.
+	     Must be called after JAR creation, bevore creating Jacoco results (or at least before Jenkins will publish them. -->
+	<target name="cleanup">
+		<delete>
+		      <fileset dir="${classes.dir}">
+		        <include name="*.zip"/>
+		      </fileset>
+		      <fileset dir="${test.classes.dir}">
+		        <include name="*.zip"/>
+		      </fileset>
+		      <!-- Attentioon: Please do not commit (Jenkins won't commit anything) -->
+		      <fileset dir="${src.dir}">
+		        <include name="*.zip"/>
+		      </fileset>
+		    </delete>
+  </target>
+	
 	<target name="check">
 
 		<taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties" />
@@ -195,6 +211,7 @@
 	</target>
 
 	<target name="jacoco_report">
+		<antcall target="KH_Common.cleanup"/>
 		<jacoco:report>
 			<executiondata>
 				<file file="${reports.dir}/jacoco.exec" />
