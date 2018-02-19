@@ -151,7 +151,7 @@
 			</fileset>
 		</copy>
 
-		<jacoco:coverage destfile="${reports.dir}/jacoco.exec" includes="net.ssehub.kernel_haven.*">
+		<jacoco:coverage destfile="${reports.dir}/jacoco.exec">
 			<junit fork="yes" dir="${test.classes.dir}" failureProperty="test.failed">
 				<sysproperty key="KH.ANT.Test.Execution" value="true"/>
 				<!-- Note the classpath order: instrumented classes are before the original 
@@ -209,7 +209,7 @@
 				</sourcefiles>
 			</structure>
 
-			<html destdir="${reports.dir}/html" />
+			<!-- html destdir="${reports.dir}/html" /-->
 		</jacoco:report>
 	</target>
 
