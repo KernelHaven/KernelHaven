@@ -187,20 +187,20 @@
 	<target name="cleanup">
 		<delete>
 		      <fileset dir="${classes.dir}">
-		        <include name="*.zip"/>
-		        <include name="*.jar"/>
-		        <include name="*.c"/>
+		        <include name="**/*.zip"/>
+		        <include name="**/*.jar"/>
+		        <include name="**/*.c"/>
 		      </fileset>
 		      <fileset dir="${test.classes.dir}">
-		        <include name="*.zip"/>
-		      	<include name="*.jar"/>
-		      	<include name="*.c"/>
+		        <include name="**/*.zip"/>
+		      	<include name="**/*.jar"/>
+		      	<include name="**/*.c"/>
 		      </fileset>
 		      <!-- Attention: Please do not commit (Jenkins won't commit anything) -->
 		      <fileset dir="${src.dir}">
-		        <include name="*.zip"/>
-		      	<include name="*.jar"/>
-		      	<include name="*.c"/>
+		        <include name="**/*.zip"/>
+		      	<include name="**/*.jar"/>
+		      	<include name="**/*.c"/>
 		      </fileset>
 		    </delete>
   </target>
