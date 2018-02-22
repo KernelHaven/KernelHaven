@@ -193,7 +193,7 @@
 	<!-- Clean-up after testing to reduce required diskapce for archiving results on Jenkins.
 	     Must be called after JAR creation, bevore creating Jacoco results (or at least before Jenkins will publish them. -->
 	<target name="cleanup">
-		<delete>
+		<delete failonerror="false">
 		      <fileset dir="${classes.dir}">
 		        <include name="**/*.zip"/>
 		        <include name="**/*.jar"/>
@@ -213,7 +213,7 @@
 		      	<include name="**/*.c"/>
 		      	<include name="**/pilztaker"/>
 		      </fileset>
-		    </delete>
+	    </delete>
   </target>
 	
 	<target name="check">
