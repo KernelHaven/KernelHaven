@@ -151,6 +151,9 @@
 			<fileset dir="${src.dir}">
 				<exclude name="**/*.java" />
 			</fileset>
+			<fileset dir="${res.dir}" erroronmissingdir="false" >
+				<exclude name="**/*.java" />
+			</fileset>
 			<fileset dir="${test.dir}">
 				<exclude name="**/*.java" />
 			</fileset>
@@ -204,7 +207,7 @@
 		      	<include name="**/pilztaker"/>
 		      </fileset>
 		      <!-- Attention: Please do not commit (Jenkins won't commit anything) -->
-		      <fileset dir="${src.dir}">
+		      <fileset dir="${res.dir}">
 		        <include name="**/*.zip"/>
 		      	<include name="**/*.jar"/>
 		      	<include name="**/*.c"/>
