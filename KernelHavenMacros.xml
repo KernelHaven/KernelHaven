@@ -38,6 +38,7 @@
 	<!-- Modules that build -->
 	<property name="src.dir" value="${basedir}/src" />
 	<property name="test.dir" value="${basedir}/test" />
+	<property name="res.dir" value="${basedir}/res" />
 
 	<path id="classpath.project">
 		<fileset dir="${lib.dir}" />
@@ -86,7 +87,10 @@
 	</target>
 
 	<target name="jar">
-		<jar destfile="${jar.dir}/${jar.filename}" basedir="${classes.dir}" excludes="**/package-info.class">
+		<jar destfile="${jar.dir}/${jar.filename}" duplicate="preserve">
+			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
+			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
+				
 			<!-- Automatically inclued all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
 		</jar>
@@ -96,6 +100,7 @@
 		<jar destfile="${jar.dir}/${jar.filename.withsource}" duplicate="preserve">
 			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
 			<fileset dir="${src.dir}" excludes="**/package-info.java" />
+			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
 
 			<!-- Automatically inclued all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
