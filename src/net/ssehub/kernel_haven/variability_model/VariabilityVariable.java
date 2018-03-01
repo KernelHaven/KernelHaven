@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -58,6 +59,13 @@ public class VariabilityVariable {
      * derived. <code>null</code> until addLocation() is called.
      */
     private @Nullable List<@NonNull SourceLocation> sourceLocations;
+    
+    /**
+     * How many constraints this variable has. <code>null</code> if the extractor did not provide this information.
+     */
+    private @Nullable Integer numConstraints; // TODO: caching
+    
+    private @Nullable Set<@NonNull VariabilityVariable> variablesUsedInConstraints; // TODO: caching
 
     /**
      * Creates a new variable.
@@ -167,6 +175,45 @@ public class VariabilityVariable {
         this.dimacsNumber = dimacsNumber;
     }
 
+    /**
+     * Sets how many constraints this variable has. Should be called by the extractor that creates this variable.
+     *
+     * @param numConstraints The number of constraints that this variable defines.
+     */
+    public void setNumConstraints(@NonNull Integer numConstraints) {
+        this.numConstraints = numConstraints;
+    }
+    
+    /**
+     * Returns how many constraints this variable has. <code>null</code> if the extractor did not provide this
+     * information.
+     * 
+     * @return The number of constraints this variable defines.
+     */
+    public @Nullable Integer getNumConstraints() {
+        return numConstraints;
+    }
+    
+    /**
+     * Sets which other variability variables are used in the constraints of this variable. Should be called by the
+     * extractor that creates this variable.
+     * 
+     * @param variablesUsedInConstraints The other variables that are used.
+     */
+    public void setVariablesUsedInConstraints(@NonNull Set<@NonNull VariabilityVariable> variablesUsedInConstraints) {
+        this.variablesUsedInConstraints = variablesUsedInConstraints;
+    }
+    
+    /**
+     * Returns which other variables this variable uses in its constraints. <code>null</code> if the extractor did not
+     * provide this information.
+     * 
+     * @return The other variables used in the constraints.
+     */
+    public @Nullable Set<@NonNull VariabilityVariable> getVariablesUsedInConstraints() {
+        return variablesUsedInConstraints;
+    }
+    
     /**
      * Serializes this as a CSV line.
      * 
