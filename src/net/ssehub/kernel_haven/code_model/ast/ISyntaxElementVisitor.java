@@ -123,7 +123,9 @@ public interface ISyntaxElementVisitor {
      * Provides default Visitation: <b>false</b>
      * @param code The unparsed code element to visit.
      */
-    public void visitCode(@NonNull Code code);
+    public default void visitCode(@NonNull Code code) {
+        // nothing to do
+    }
     
     /**
      * <b>C-Code:</b> Visits a type definition.
