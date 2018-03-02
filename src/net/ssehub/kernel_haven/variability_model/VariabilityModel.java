@@ -18,6 +18,8 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  */
 public class VariabilityModel {
 
+    private @NonNull VariabilityModelDescriptor descriptor; // TODO: caching
+    
     /**
      * A representation of the constraints inside the variability model. Never
      * null.
@@ -46,6 +48,7 @@ public class VariabilityModel {
         
         this.constraintModel = constraintModel;
         this.variables = variables;
+        this.descriptor = new VariabilityModelDescriptor();
     }
     
     /**
@@ -62,6 +65,7 @@ public class VariabilityModel {
         for (VariabilityVariable var : variables) {
             this.variables.put(var.getName(), var);
         }
+        this.descriptor = new VariabilityModelDescriptor();
     }
 
     /**
@@ -92,6 +96,15 @@ public class VariabilityModel {
      */
     public @NonNull Map<@NonNull String, VariabilityVariable> getVariableMap() {
         return variables; 
+    }
+    
+    /**
+     * Returns the descriptor for this model.
+     * 
+     * @return The {@link VariabilityModelDescriptor} for this model.
+     */
+    public VariabilityModelDescriptor getDescriptor() {
+        return descriptor;
     }
     
 }
