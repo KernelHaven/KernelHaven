@@ -30,6 +30,7 @@ public class Logger {
      * Enum of the available log levels.
      */
     public static enum Level {
+        NONE("none", -1),
         ERROR("error", 0),
         WARNING("warning", 1),
         INFO("info", 2),
