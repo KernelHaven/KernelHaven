@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.test_utils.FileContentsAssertion;
@@ -35,15 +34,6 @@ import net.ssehub.kernel_haven.util.Util.OSType;
 public class UtilTest {
 
     private static final String BASE_RES = "net/ssehub/kernel_haven/util/test_resources/";
-    
-    /**
-     * Initializes the logger.
-     */
-    @BeforeClass
-    public static void beforeClass() {
-        Logger.init();
-    }
-    
     
     /**
      * Tests whether the extractJarResourceToTemporaryFile() method throws an exception, if the

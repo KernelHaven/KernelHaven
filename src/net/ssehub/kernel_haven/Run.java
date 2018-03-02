@@ -23,13 +23,8 @@ import net.ssehub.kernel_haven.util.Util;
  */
 public class Run {
 
-    private static final Logger LOGGER;
+    private static final Logger LOGGER = Logger.get();
 
-    static {
-        Logger.init();
-        LOGGER = Logger.get();
-    }
-    
     /**
      * Prints some information about the system to the log.
      */

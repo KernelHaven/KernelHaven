@@ -12,7 +12,6 @@ import java.util.Set;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
@@ -30,14 +29,6 @@ public class PipelineArchiverTest {
     private static final File BASE_TESTDATA = new File("testdata/archiver");
     
     private File result;
-    
-    /**
-     * Sets up the logger.
-     */
-    @BeforeClass
-    public static void beforeClass() {
-        Logger.init();
-    }
     
     /**
      * Removes the result after a test, if present.

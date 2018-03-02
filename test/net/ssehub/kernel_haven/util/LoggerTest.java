@@ -3,6 +3,7 @@ package net.ssehub.kernel_haven.util;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.core.StringEndsWith.endsWith;
@@ -12,10 +13,13 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Properties;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
@@ -31,14 +35,38 @@ import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 @SuppressWarnings("null")
 public class LoggerTest {
 
+    private static final Logger LOGGER = Logger.get();
+    
+    private List<OutputStream> previousTargets;
+    
+    /**
+     * Saves and clears the current targets before the test runs.
+     */
+    @Before
+    public void savePreviousTarget() {
+        previousTargets = LOGGER.getTargets();
+        LOGGER.clearAllTargets();
+    }
+    
+    /**
+     * Restores the previously saved targets.
+     */
+    @After
+    public void restoreTargets() {
+        LOGGER.clearAllTargets();
+        for (OutputStream out : previousTargets) {
+            LOGGER.addTarget(out);
+        }
+    }
+    
     /**
      * Test levels.
      */
     @Test
     public void testLevels() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Logger.init(out);
-        Logger l = Logger.get(); // just a shortcut
+        Logger l = LOGGER; // just a shortcut
+        l.addTarget(out);
         l.setLevel(Logger.Level.DEBUG);
 
         l.logError("a");
@@ -64,8 +92,8 @@ public class LoggerTest {
     @Test
     public void testContent() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Logger.init(out);
-        Logger l = Logger.get(); // just a shortcut
+        Logger l = LOGGER; // just a shortcut
+        l.addTarget(out);
 
         String content = "This is a test text";
         l.logInfo(content);
@@ -81,8 +109,8 @@ public class LoggerTest {
     @Test
     public void testMultipleLines() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Logger.init(out);
-        Logger l = Logger.get(); // just a shortcut
+        Logger l = LOGGER; // just a shortcut
+        l.addTarget(out);
 
         String line0 = "This is a test text";
         String line1 = "This is another test text";
@@ -102,8 +130,8 @@ public class LoggerTest {
     @Test
     public void testLogException() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Logger.init(out);
-        Logger l = Logger.get(); // just a shortcut
+        Logger l = LOGGER; // just a shortcut
+        l.addTarget(out);
 
         try {
             throw new LoggerTestException("This is a test");
@@ -126,8 +154,8 @@ public class LoggerTest {
     @Test
     public void testLogNullException() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Logger.init(out);
-        Logger l = Logger.get(); // just a shortcut
+        Logger l = LOGGER; // just a shortcut
+        l.addTarget(out);
         
         l.logException("This is the comment", null);
         
@@ -141,8 +169,8 @@ public class LoggerTest {
     @Test
     public void testLogExceptionWithCause() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Logger.init(out);
-        Logger l = Logger.get(); // just a shortcut
+        Logger l = LOGGER; // just a shortcut
+        l.addTarget(out);
 
         try {
             try {
@@ -180,8 +208,8 @@ public class LoggerTest {
     @Test
     public void testExceptionLevels() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Logger.init(out);
-        Logger l = Logger.get(); // just a shortcut
+        Logger l = LOGGER; // just a shortcut
+        l.addTarget(out);
 
         l.logException("one", new Exception());
         l.logExceptionWarning("two", new Exception());
@@ -207,8 +235,8 @@ public class LoggerTest {
     @Test
     public void testThreadNames() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Logger.init(out);
-        Logger l = Logger.get(); // just a shortcut
+        Logger l = LOGGER; // just a shortcut
+        l.addTarget(out);
 
         Thread.currentThread().setName("test1");
         l.logInfo("test");
@@ -234,7 +262,8 @@ public class LoggerTest {
     @Test
     public void testMultiThreading() throws InterruptedException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Logger.init(out);
+        Logger l = LOGGER; // just a shortcut
+        l.addTarget(out);
 
         Worker w1 = new Worker("worker 1", "message 1");
         Worker w2 = new Worker("worker 2", "message 2");
@@ -268,21 +297,16 @@ public class LoggerTest {
     public void testConfigurationInitOnlyConsole() throws SetUpException {
         Properties props = new Properties();
         TestConfiguration config = new TestConfiguration(props);
+
+        Logger l = LOGGER; // just a shortcut
+        l.setup(config);
         
-        Logger.init();
-        Logger logger = Logger.get();
-        logger.setup(config);
-        
-        List<Logger.Target> targets = logger.getTargets();
+        List<OutputStream> targets = l.getTargets();
         assertThat(targets.size(), is(1));
         
-        Logger.Target target = targets.get(0);
+        OutputStream target = targets.get(0);
         
-        assertThat(target.getOut(), is(System.out));
-        assertThat(target.getMaxLogLines(), is(0));
-        
-        // clean up
-        Logger.init();
+        assertThat(target, is(System.out));
     }
     
     /**
@@ -296,24 +320,21 @@ public class LoggerTest {
         props.setProperty("log.console", "false");
         props.setProperty("log.file", "true");
         TestConfiguration config = new TestConfiguration(props);
+
+        Logger l = LOGGER; // just a shortcut
+        l.setup(config);
         
-        Logger.init();
-        Logger logger = Logger.get();
-        logger.setup(config);
-        
-        List<Logger.Target> targets = logger.getTargets();
+        List<OutputStream> targets = l.getTargets();
         assertThat(targets.size(), is(1));
         
-        Logger.Target target = targets.get(0);
+        OutputStream target = targets.get(0);
         
-        assertThat(target.getOut(), instanceOf(FileOutputStream.class));
-        assertThat(target.getMaxLogLines(), is(0));
-        
+        assertThat(target, instanceOf(FileOutputStream.class));
+        assertThat(l.getLogFile(), notNullValue());
         
         // clean up
-        target.getOut().close();
-        logger.getLogFile().delete();
-        Logger.init();
+        target.close();
+        l.getLogFile().delete();
     }
     
     /**
@@ -326,61 +347,27 @@ public class LoggerTest {
         Properties props = new Properties();
         props.setProperty("log.file", "true");
         TestConfiguration config = new TestConfiguration(props);
+
+        Logger l = LOGGER; // just a shortcut
+        l.setup(config);
         
-        Logger.init();
-        Logger logger = Logger.get();
-        logger.setup(config);
-        
-        List<Logger.Target> targets = logger.getTargets();
+        List<OutputStream> targets = l.getTargets();
         assertThat(targets.size(), is(2));
         
-        Logger.Target target = targets.get(0);
+        OutputStream target = targets.get(0);
         
-        assertThat(target.getOut(), is(System.out));
-        assertThat(target.getMaxLogLines(), is(10));
+        assertThat(target, is(System.out));
         
         target = targets.get(1);
         
-        assertThat(target.getOut(), instanceOf(FileOutputStream.class));
-        assertThat(target.getMaxLogLines(), is(0));
+        assertThat(target, instanceOf(FileOutputStream.class));
+        assertThat(l.getLogFile(), notNullValue());
         
         // clean up
-        target.getOut().close();
-        logger.getLogFile().delete();
-        Logger.init();
+        target.close();
+        l.getLogFile().delete();
     }
 
-    /**
-     * Tests whether the logger correctly cuts of long messages.
-     * @throws IOException unwanted.
-     * @throws SetUpException unwanted.
-     */
-    @Test
-    public void testMaxLines() throws IOException, SetUpException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Logger.init(out);
-        Logger l = Logger.get(); // just a shortcut
-        
-        Properties props = new Properties();
-        props.setProperty("log.file", "true");
-        TestConfiguration config = new TestConfiguration(props);
-        l.setup(config);
-        
-        l.logInfo("This", "is", "a", "log", "message", "with", "a", "lot", "of", "lines", "in", "it"); // 12 lines
-        
-        String result = out.toString();
-        String[] lines = result.split("\n");
-        
-        // we expect 12 lines: 10 (maxLogLines) + 1 (the log shortened message)
-        assertThat(lines.length, is(l.getTargets().get(0).getMaxLogLines() + 1));
-        assertThat(lines[lines.length - 1].trim(), is("... (log shortened, see log file for full output)"));
-        
-        // clean up
-        l.getTargets().get(1).getOut().close();
-        l.getLogFile().delete();
-        Logger.init();
-    }
-    
     /**
      * The Class Worker. Helper Class for tests.
      */
@@ -423,7 +410,7 @@ public class LoggerTest {
             Thread.currentThread().setName(name);
 
             for (int i = 0; i < 1000; i++) {
-                Logger.get().logInfo(message);
+                LOGGER.logInfo(message);
 
                 try {
                     Thread.sleep(1);

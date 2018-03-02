@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.ssehub.kernel_haven.SetUpException;
@@ -20,20 +21,40 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 /**
  * A thread-safe singleton logger.
  * 
- * @author adam
+ * @author Adam
  * @author alice
  * @author moritz
  */
 public class Logger {
     
     /**
-     * Enum of the available log levels.
+     * The available log levels.
      */
     public static enum Level {
+        
+        /**
+         * No messages are logged.
+         */
         NONE("none", -1),
+        
+        /**
+         * Only error messages are logged.
+         */
         ERROR("error", 0),
+        
+        /**
+         * Error and warning messages are logged.
+         */
         WARNING("warning", 1),
+        
+        /**
+         * Error, warning and info messages are logged.
+         */
         INFO("info", 2),
+        
+        /**
+         * All messages (error, warning, info, debug) are logged.
+         */
         DEBUG("debug", 3);
         
         private @NonNull String str;
@@ -57,7 +78,7 @@ public class Logger {
          * @param other The other level to check.
          * @return Whether the other level will be logged if this level is set.
          */
-        public boolean isLog(@NonNull Level other) {
+        public boolean shouldLog(@NonNull Level other) {
             return this.level >= other.level;
         }
         
@@ -68,83 +89,54 @@ public class Logger {
         
     }
 
-    private static final int LOG_MESSAGE_SIZE_CONSOLE_LIMIT = 10;
-
     /**
-     * The singleton instance. <code>null</code> until one of the init Methods
-     * is called.
+     * The singleton instance.
      */
-    private static Logger instance;
-
-    private Level level;
-    
-    /** Activates file logging. */
-    private boolean fileLogging = false;
-
-    /** Activates console logging. */
-    private boolean consoleLogging = true;
-
-    /** The OutputStream for the logger to log to. */
-    private List<Target> targets;
-
-    /** The charset used by the logger. */
-    private Charset charset;
-
-    /** File used as target for logging. **/
-    private File logFile;
+    private static @NonNull Logger instance = new Logger();
     
     /**
-     * A single target of the logger.
+     * The level at which this logger should start logging.
      */
-    static final class Target {
-        
-        private OutputStream out;
-        
-        private int maxLogLines;
-     
-        /**
-         * Creates a new target.
-         * 
-         * @param out The target stream.
-         */
-        public Target(OutputStream out) {
-            this.out = out;
-        }
-        
-        /**
-         * The output stream for this target.
-         * 
-         * @return The output stream, never null.
-         */
-        public OutputStream getOut() {
-            return out;
-        }
-        
-        /**
-         * How many lines a single log entry may contain.
-         * 
-         * @return The maximum number of lines for a single log entry. 0 means no limit.
-         */
-        public int getMaxLogLines() {
-            return maxLogLines;
-        }
-        
-    }
+    private @NonNull Level level;
+    
+    /**
+     * The target to log to.
+     */
+    private @NonNull ArrayList<@NonNull OutputStream> targets;
+
+    /**
+     * The charset used by the logger. All targets have the same charset.
+     */
+    private @NonNull Charset charset;
+
+    /**
+     * File used as target for logging specified in the configuration.
+     */
+    private @Nullable File logFile;
+    
 
     /**
      * Instantiates a new logger.
-     *
-     * @param charset
-     *            Charset to use for logging. Must not be null.
      */
-    private Logger(Charset charset) {
+    private Logger() {
         this.targets = new ArrayList<>(2);
-        this.charset = charset;
+        this.targets.add(notNull(System.out));
+        
+        this.charset = notNull(Charset.forName("UTF-8"));
         this.level = Level.INFO;
+    }
+    
+    /**
+     * Gets the singleton instance of Logger.
+     *
+     * @return the logger
+     */
+    public static @NonNull Logger get() {
+        return instance;
     }
 
     /**
-     * The setup method sets the log level and log output to console or file.
+     * The setup method sets the log level and targets. Overrides any existing targets.
      * 
      * @param config The configuration for the logger; must not be <code>null</code>.
      * @throws SetUpException
@@ -153,85 +145,74 @@ public class Logger {
      */
 
     public void setup(@NonNull Configuration config) throws SetUpException {
-        this.fileLogging = config.getValue(DefaultSettings.LOG_FILE);
-        this.consoleLogging = config.getValue(DefaultSettings.LOG_CONSOLE);
-        this.level = config.getValue(DefaultSettings.LOG_LEVEL);
-
-        if (fileLogging) {
-            logFile = new File(config.getValue(DefaultSettings.LOG_DIR), 
-                    Timestamp.INSTANCE.getFilename("KernelHaven", "log"));
-        }
-
-        if (!consoleLogging) {
+        synchronized (targets) {
             targets.clear();
-        }
-        
-        if (fileLogging) {
-            // if console logging is still on, then we can shorten that one
-            if (!targets.isEmpty()) {
-                targets.get(0).maxLogLines = LOG_MESSAGE_SIZE_CONSOLE_LIMIT;
+            logFile = null;
+            level = config.getValue(DefaultSettings.LOG_LEVEL);
+            
+            if (config.getValue(DefaultSettings.LOG_CONSOLE)) {
+                targets.add(notNull(System.out));
             }
             
-            try {
-                targets.add(new Target(new FileOutputStream(logFile)));
-            } catch (FileNotFoundException e) {
-                throw new SetUpException(e);
+            if (config.getValue(DefaultSettings.LOG_FILE)) {
+                logFile = new File(config.getValue(DefaultSettings.LOG_DIR), 
+                        Timestamp.INSTANCE.getFilename("KernelHaven", "log"));
+                try {
+                    targets.add(new FileOutputStream(logFile));
+                } catch (FileNotFoundException e) {
+                    throw new SetUpException(e);
+                }
             }
         }
-        
     }
     
     /**
      * Returns the list of targets for this logger.
-     * Package visibility for test cases.
      * 
-     * @return The targets of this logger.
+     * @return An unmodifiable list of the targets of this logger.
      */
-    List<Target> getTargets() {
-        return targets;
-    }
-
-    /**
-     * Initializes the logger to log to stdout in UTF-8.
-     */
-    public static void init() {
-        init(notNull(System.out));
-    }
-
-    /**
-     * Initializes the logger to log in UTF-8. Target must not be null.
-     * 
-     * @param target
-     *            The output target of the logger. The logger will only write to
-     *            it if it obtains a lock on it. Must not be null.
-     */
-    public static void init(@NonNull OutputStream target) {
-        init(target, notNull(Charset.forName("UTF-8")));
-    }
-
-    /**
-     * Initializes the logger.
-     * 
-     * @param target
-     *            The output target of the logger. The logger will only write to
-     *            it if it obtains a lock on it. Must not be null.
-     * @param charset
-     *            The charset the logger writes in. Must not be null.
-     */
-    public static void init(@NonNull OutputStream target, @NonNull Charset charset) {
-        instance = new Logger(charset);
-        instance.targets.add(new Target(target));
-    }
-
-    /**
-     * Gets the singleton instance of Logger.
-     *
-     * @return the logger
-     */
-    public static @Nullable Logger get() {
-        return instance;
+    public @NonNull List<@NonNull OutputStream> getTargets() {
+        synchronized (targets) {
+            @SuppressWarnings("unchecked")
+            List<@NonNull OutputStream> clone = notNull((List<@NonNull OutputStream>) targets.clone());
+            return notNull(Collections.unmodifiableList(clone));
+        }
     }
     
+    /**
+     * Removes a target from the list of log targets.
+     * 
+     * @param index The index of the target to remove (see {@link #getTargets()} for indices).
+     * 
+     * @throws IndexOutOfBoundsException If the index is out of bounds.
+     */
+    public void removeTarget(int index) throws IndexOutOfBoundsException {
+        synchronized (targets) {
+            targets.remove(index);
+        }
+    }
+    
+    /**
+     * Removes all targets that this logger currently logs to.
+     */
+    public void clearAllTargets() {
+        synchronized (targets) {
+            targets.clear();
+        }
+    }
+    
+    /**
+     * Adds a target for this logger. This logger will always obtain a lock (via synchronized(target)) on this object
+     * before writing to it.
+     * 
+     * @param target The target to add to this logger.
+     */
+    public void addTarget(@NonNull OutputStream target) {
+        synchronized (targets) {
+            targets.add(target);
+        }
+    }
+
     /**
      * Overwrite the current log level.
      * 
@@ -249,13 +230,13 @@ public class Logger {
      *            The log level that will be used. Must not be null.
      * @return A string in the format "[level] [time] [threadName] "
      */
-    private String constructHeader(String level) {
+    private @NonNull String constructHeader(@NonNull String level) {
         StringBuffer hdr = new StringBuffer();
         String timestamp = new Timestamp().getTimestamp();
 
         hdr.append('[').append(level).append("] [").append(timestamp).append("] [")
                 .append(Thread.currentThread().getName()).append("] ");
-        return hdr.toString();
+        return notNull(hdr.toString());
     }
 
     /**
@@ -272,7 +253,8 @@ public class Logger {
      */
     private void log(@NonNull Level level, String /*@NonNull*/ ... lines) {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
-        if (!this.level.isLog(level)) {
+        
+        if (!this.level.shouldLog(level)) {
             return;
         }
         String header = constructHeader(level.toString());
@@ -291,35 +273,18 @@ public class Logger {
         }
         byte[] bytes = str.toString().getBytes(charset);
 
-        for (Target target : targets) {
+        List<@NonNull OutputStream> targets;
+        synchronized (this.targets) {
+            targets = this.targets;
+        }
+        for (OutputStream target : targets) {
 
-            if (target.maxLogLines > 0 && lines.length > target.maxLogLines) {
-                StringBuffer shortened = new StringBuffer(header);
-                for (int i = 0; i < lines.length && i < target.maxLogLines; i++) {
-                    if (i != 0) {
-                        shortened.append(indent);
-                    }
-                    shortened.append(lines[i]).append('\n');
-                }
-                shortened.append(indent).append("... (log shortened, see log file for full output)\n");
-                
-                synchronized (target.out) {
-                    try {
-                        target.out.write(shortened.toString().getBytes(charset));
-                        target.out.flush();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                
-            } else {
-                synchronized (target.out) {
-                    try {
-                        target.out.write(bytes);
-                        target.out.flush();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            synchronized (target) {
+                try {
+                    target.write(bytes);
+                    target.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -477,7 +442,7 @@ public class Logger {
     }
     
     /**
-     * Gets the target logging file.
+     * Gets the target logging file specified in the configuration..
      * 
      * @return the file used as logging target. May be null if not logging to a file.
      */

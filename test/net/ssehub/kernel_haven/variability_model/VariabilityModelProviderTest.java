@@ -11,14 +11,12 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.util.ExtractorException;
-import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Util;
 
 /**
@@ -32,14 +30,6 @@ import net.ssehub.kernel_haven.util.Util;
 @SuppressWarnings("null")
 public class VariabilityModelProviderTest {
     
-    /**
-     * Inits the logger.
-     */
-    @BeforeClass
-    public static void beforeClass() {
-        Logger.init();
-    }
-
     /**
      * Small class that implements {@link AbstractVariabilityModelExtractor} for
      * testing purposes. This waits 1/2 second after start() is called and

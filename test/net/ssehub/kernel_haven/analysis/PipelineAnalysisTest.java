@@ -22,7 +22,6 @@ import java.util.function.Function;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
@@ -35,7 +34,6 @@ import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.test_utils.FileContentsAssertion;
 import net.ssehub.kernel_haven.test_utils.PseudoVariabilityExtractor;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
-import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Util;
 import net.ssehub.kernel_haven.util.io.AbstractTableWriter;
 import net.ssehub.kernel_haven.util.io.ITableCollection;
@@ -57,14 +55,6 @@ import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
 public class PipelineAnalysisTest {
     
     private File tempOutputDir = new File("testdata/analysis_tmp");
-    
-    /**
-     * Inits the logger.
-     */
-    @BeforeClass
-    public static void initLogger() {
-        Logger.init();
-    }
     
     /**
      * Creates the empty {@link #tempOutputDir}.

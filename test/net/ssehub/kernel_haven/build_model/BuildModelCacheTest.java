@@ -9,11 +9,9 @@ import java.io.IOException;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.FormatException;
-import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.Util;
 import net.ssehub.kernel_haven.util.logic.Disjunction;
 import net.ssehub.kernel_haven.util.logic.True;
@@ -29,14 +27,6 @@ import net.ssehub.kernel_haven.util.logic.Variable;
 public class BuildModelCacheTest {
 
     private File cacheDir;
-
-    /**
-     * Inits the logger.
-     */
-    @BeforeClass
-    public static void beforeClass() {
-        Logger.init();
-    }
 
     /**
      * Creates the cache directory for each test.

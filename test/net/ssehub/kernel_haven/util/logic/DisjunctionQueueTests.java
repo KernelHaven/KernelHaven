@@ -94,7 +94,7 @@ public class DisjunctionQueueTests {
     @Test
     public void testNoErrorLogWhenSimplifyingTrue() {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        Logger.init(buffer);
+        Logger.get().addTarget(buffer);
         
         DisjunctionQueue queue = new DisjunctionQueue(true);
         queue.add(new Variable("X"));
@@ -103,5 +103,7 @@ public class DisjunctionQueueTests {
         
         String log = buffer.toString();
         Assert.assertTrue("Error log produced even if there was no error: " + log, log.isEmpty());
+        
+        Logger.get().removeTarget(Logger.get().getTargets().size() - 1); // remove the buffer target again.
     }
 }

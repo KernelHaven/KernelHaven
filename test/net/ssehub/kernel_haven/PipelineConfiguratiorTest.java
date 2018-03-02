@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.analysis.AbstractAnalysis;
@@ -24,7 +23,6 @@ import net.ssehub.kernel_haven.code_model.SourceFile;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.util.ExtractorException;
-import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
@@ -39,14 +37,6 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModel;
  */
 @SuppressWarnings("null")
 public class PipelineConfiguratiorTest {
-
-    /**
-     * Sets up the logger.
-     */
-    @BeforeClass
-    public static void beforeClass() {
-        Logger.init();
-    }
 
     /**
      * Tests whether instantiateExtractor correctly throws an exception if the

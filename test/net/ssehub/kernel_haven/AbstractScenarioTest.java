@@ -5,11 +5,8 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import net.ssehub.kernel_haven.util.Logger;
-import net.ssehub.kernel_haven.util.Logger.Level;
 import net.ssehub.kernel_haven.util.Util;
 
 /**
@@ -32,15 +29,6 @@ public abstract class AbstractScenarioTest {
     private File logDir;
     
     private File srcTree;
-    
-    /**
-     * We need to initialize the logger, since we use the Util class.
-     */
-    @BeforeClass
-    public static void initLogger() {
-        Logger.init();
-        Logger.get().setLevel(Level.DEBUG);
-    }
     
     /**
      * Creates the necessary temporary directories.
