@@ -60,12 +60,9 @@ public class VariabilityVariable {
      */
     private @Nullable List<@NonNull SourceLocation> sourceLocations;
     
-    /**
-     * How many constraints this variable has. <code>null</code> if the extractor did not provide this information.
-     */
-    private @Nullable Integer numConstraints; // TODO: caching
-    
     private @Nullable Set<@NonNull VariabilityVariable> variablesUsedInConstraints; // TODO: caching
+    
+    private @Nullable Set<@NonNull VariabilityVariable> usedInConstraintsOfOtherVariables; // TODO: caching
 
     /**
      * Creates a new variable.
@@ -176,25 +173,6 @@ public class VariabilityVariable {
     }
 
     /**
-     * Sets how many constraints this variable has. Should be called by the extractor that creates this variable.
-     *
-     * @param numConstraints The number of constraints that this variable defines.
-     */
-    public void setNumConstraints(@NonNull Integer numConstraints) {
-        this.numConstraints = numConstraints;
-    }
-    
-    /**
-     * Returns how many constraints this variable has. <code>null</code> if the extractor did not provide this
-     * information.
-     * 
-     * @return The number of constraints this variable defines.
-     */
-    public @Nullable Integer getNumConstraints() {
-        return numConstraints;
-    }
-    
-    /**
      * Sets which other variability variables are used in the constraints of this variable. Should be called by the
      * extractor that creates this variable.
      * 
@@ -212,6 +190,28 @@ public class VariabilityVariable {
      */
     public @Nullable Set<@NonNull VariabilityVariable> getVariablesUsedInConstraints() {
         return variablesUsedInConstraints;
+    }
+    
+    /**
+     * Sets which other variability variables have conditions that use this variable. Should be called by the
+     * extractor that creates this variable.
+     * 
+     * @param usedInConstraintsOfOtherVariables Other variables that have conditions that use this variable.
+     */
+    public void setUsedInConstraintsOfOtherVariables(
+            @NonNull Set<@NonNull VariabilityVariable> usedInConstraintsOfOtherVariables) {
+        
+        this.usedInConstraintsOfOtherVariables = usedInConstraintsOfOtherVariables;
+    }
+    
+    /**
+     * Returns which other variability variables have conditions that use this variable. <code>null</code> if the
+     * extractor did not provide this information.
+     * 
+     * @return Other variables that have conditions that use this variable.
+     */
+    public @Nullable Set<@NonNull VariabilityVariable> getUsedInConstraintsOfOtherVariables() {
+        return usedInConstraintsOfOtherVariables;
     }
     
     /**
