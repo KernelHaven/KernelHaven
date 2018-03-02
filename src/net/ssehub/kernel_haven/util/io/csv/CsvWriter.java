@@ -122,5 +122,10 @@ public class CsvWriter extends AbstractTableWriter {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
         writeLine(columns);
     }
+    
+    @Override
+    public void flush() throws IOException {
+        out.flush();
+    }
 
 }

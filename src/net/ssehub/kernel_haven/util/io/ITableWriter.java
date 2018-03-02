@@ -69,5 +69,13 @@ public interface ITableWriter extends Closeable {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
         writeRow(fields);
     }
+    
+    /**
+     * Flushes the underlying output stream. For writers writing to files, this should ensure that the content is
+     * persistently written to disk.
+     * 
+     * @throws IOException If flushing fails.
+     */
+    public void flush() throws IOException;
 
 }

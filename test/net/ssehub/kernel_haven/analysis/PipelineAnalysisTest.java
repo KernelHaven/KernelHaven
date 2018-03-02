@@ -515,6 +515,11 @@ public class PipelineAnalysisTest {
             TABLES.get(name).add(Arrays.toString(columns));
         }
         
+        @Override
+        public void flush() {
+            // do nothing
+        }
+        
     }
     
     /**

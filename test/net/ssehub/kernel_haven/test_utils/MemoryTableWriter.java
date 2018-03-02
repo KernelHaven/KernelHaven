@@ -2,6 +2,7 @@ package net.ssehub.kernel_haven.test_utils;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -81,6 +82,11 @@ public class MemoryTableWriter implements ITableWriter {
      */
     public static void clear() {
         tables.clear();
+    }
+    
+    @Override
+    public void flush() throws IOException {
+        // do nothing
     }
 
 }
