@@ -475,6 +475,7 @@ public class UtilTest {
                 System.setProperty("os.name", input[i][0]);
                 System.setProperty("os.arch", input[i][1]);
                 assertThat(Util.determineOS(), is(expected[i]));
+                Util.clearDetermineOs();
             }
             
         } finally {

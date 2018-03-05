@@ -79,11 +79,11 @@ public class LoggerTest {
 
         String[] lines = out.toString().split("\n");
 
-        Assert.assertThat(lines[0], startsWith("[error]"));
-        Assert.assertThat(lines[1], startsWith("[warning]"));
-        Assert.assertThat(lines[2], startsWith("[info]"));
-        Assert.assertThat(lines[3], startsWith("[debug]"));
-        Assert.assertThat(lines[4], startsWith("[error]"));
+        Assert.assertThat(lines[0], containsString("[error  ]"));
+        Assert.assertThat(lines[1], containsString("[warning]"));
+        Assert.assertThat(lines[2], containsString("[info   ]"));
+        Assert.assertThat(lines[3], containsString("[debug  ]"));
+        Assert.assertThat(lines[4], containsString("[error  ]"));
     }
 
     /**
@@ -219,11 +219,11 @@ public class LoggerTest {
         String[] lines = out.toString().split("\n");
         
         int i = 0;
-        String[] expectedPrefixes = {"[error]", "[warning]", "[info]", "[debug]" };
+        String[] expectedPrefixes = {"[error  ]", "[warning]", "[info   ]", "[debug  ]" };
 
         for (String line : lines) {
             if (!line.startsWith(" ")) {
-                assertThat(line, startsWith(expectedPrefixes[i]));
+                assertThat(line, containsString(expectedPrefixes[i]));
                 i++;
             }
         }
@@ -283,7 +283,7 @@ public class LoggerTest {
         Assert.assertEquals(4 * 1000, lines.length);
 
         for (int i = 0; i < lines.length; i++) {
-            Assert.assertThat(lines[i], startsWith("[info]"));
+            Assert.assertThat(lines[i], containsString("[info   ]"));
             int number = Integer.parseInt(lines[i].substring(lines[i].length() - 1));
             Assert.assertThat(lines[i], endsWith("[worker " + number + "] message " + number));
         }

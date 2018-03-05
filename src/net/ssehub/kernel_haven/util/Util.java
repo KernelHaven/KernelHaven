@@ -32,6 +32,11 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 public class Util {
 
     private static final Logger LOGGER = Logger.get();
+    
+    /**
+     * Cache for result of {@link #determineOS()}.
+     */
+    private static OSType osType;
 
     /**
      * Don't allow any instances of this class.
@@ -487,32 +492,40 @@ public class Util {
      * rules.
      */
     public static @Nullable OSType determineOS() {
-        OSType result = null;
-        String os = System.getProperty("os.name", "generic").toLowerCase();
-        // Checks only if the JRE is a 64 Bit version, but it's still possible to install 32 Bit Java on 64 Bit OS.
-        boolean is64JRE = (System.getProperty("os.arch").indexOf("64") != -1);
-        
-        if (null != os) {
-            if (os.startsWith("win")) {
-                if (is64JRE || (System.getenv("ProgramFiles(x86)") != null)) {
-                    result = OSType.WIN64;
-                } else {
-                    result = OSType.WIN32;
+        if (osType == null) {
+            String os = System.getProperty("os.name", "generic").toLowerCase();
+            // Checks only if the JRE is a 64 Bit version, but it's still possible to install 32 Bit Java on 64 Bit OS.
+            boolean is64JRE = (System.getProperty("os.arch").indexOf("64") != -1);
+            
+            if (null != os) {
+                if (os.startsWith("win")) {
+                    if (is64JRE || (System.getenv("ProgramFiles(x86)") != null)) {
+                        osType = OSType.WIN64;
+                    } else {
+                        osType = OSType.WIN32;
+                    }
+                } else if (os.indexOf("nux") >= 0) {
+                    if (is64JRE) {
+                        // TODO: This is not complete test, since you might install a 32 Bit JRE on 64 Bit Linux.
+                        osType = OSType.LINUX64;
+                    } else {
+                        osType = OSType.LINUX32;
+                    }
+                } else if ((os.indexOf("mac") >= 0) || (os.indexOf("darwin") >= 0)) {
+                    // As far as I know is 32 Bit MacOS now longer supported
+                    osType = OSType.MACOS64;
                 }
-            } else if (os.indexOf("nux") >= 0) {
-                if (is64JRE) {
-                    // TODO: This is not complete test, since you might install a 32 Bit JRE on 64 Bit Linux.
-                    result = OSType.LINUX64;
-                } else {
-                    result = OSType.LINUX32;
-                }
-            } else if ((os.indexOf("mac") >= 0) || (os.indexOf("darwin") >= 0)) {
-                // As far as I know is 32 Bit MacOS now longer supported
-                result = OSType.MACOS64;
             }
         }
         
-        return result;
+        return osType;
+    }
+    
+    /**
+     * Clears the internal cache for {@link #determineOS()}. Should only be used in test cases.
+     */
+    static void clearDetermineOs() {
+        osType = null;
     }
     
     /**
