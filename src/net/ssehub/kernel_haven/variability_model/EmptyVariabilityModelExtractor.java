@@ -27,6 +27,7 @@ public class EmptyVariabilityModelExtractor extends AbstractVariabilityModelExtr
     protected @Nullable VariabilityModel runOnFile(@NonNull File target) throws ExtractorException {
         try {
             File constraintFile = notNull(File.createTempFile("empty_constraint_model", ".txt"));
+            constraintFile.deleteOnExit();
             return new VariabilityModel(constraintFile, new HashMap<>());
         } catch (IOException e) {
             throw new ExtractorException(e);

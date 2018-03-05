@@ -71,7 +71,8 @@ public class Util {
     }
     
     /**
-     * Extracts a resource from this jar (this ClassLoader, to be precise) to a temporary file.
+     * Extracts a resource from this jar (this ClassLoader, to be precise) to a temporary file. This temporary file
+     * will be deleted on exit (see {@link File#deleteOnExit()}.
      * 
      * @param resource
      *            The resource to extract. Must contain at least one dot (".") in the filename. Must not be null.
@@ -86,6 +87,7 @@ public class Util {
         // split at dot, to find the file suffix
         int index = resource.lastIndexOf('.');
         File tempFile = notNull(File.createTempFile("resource", resource.substring(index)));
+        tempFile.deleteOnExit();
 
         extractJarResourceToFile(resource, tempFile);
         return tempFile;
