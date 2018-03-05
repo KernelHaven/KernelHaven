@@ -16,7 +16,6 @@ import java.util.List;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
-import net.ssehub.kernel_haven.util.Util.OSType;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -42,22 +41,22 @@ public final class Logger {
         /**
          * Only error messages are logged.
          */
-        ERROR("error  ", 0, ansiColor("1;31") + "error" + ansiColor("0") + "  "),
+        ERROR("error  ", 0, Util.ansiColor("1;31") + "error" + Util.ansiColor("0") + "  "),
         
         /**
          * Error and warning messages are logged.
          */
-        WARNING("warning", 1, ansiColor("1;33") + "warning" + ansiColor("0") + ""),
+        WARNING("warning", 1, Util.ansiColor("1;33") + "warning" + Util.ansiColor("0") + ""),
         
         /**
          * Error, warning and info messages are logged.
          */
-        INFO("info   ", 2, ansiColor("1;32") + "info" + ansiColor("0") + "   "),
+        INFO("info   ", 2, Util.ansiColor("1;32") + "info" + Util.ansiColor("0") + "   "),
         
         /**
          * All messages (error, warning, info, debug) are logged.
          */
-        DEBUG("debug  ", 3, ansiColor("1;36") + "debug" + ansiColor("0") + "  ");
+        DEBUG("debug  ", 3, Util.ansiColor("1;36") + "debug" + Util.ansiColor("0") + "  ");
         
         private @NonNull String str;
         
@@ -256,7 +255,7 @@ public final class Logger {
         
         String threadName = Thread.currentThread().getName();
         if (useColors) {
-            threadName = ansiColor("1;37") + threadName + ansiColor("0");
+            threadName = Util.ansiColor("1;37") + threadName + Util.ansiColor("0");
         }
         
         hdr
@@ -314,7 +313,7 @@ public final class Logger {
 
             synchronized (target) {
                 try {
-                    if (isTTY(target)) {
+                    if (Util.isTTY(target)) {
                         // no need to cache this header, since only one target will be System.out
                         target.write(constructHeader(level, true).getBytes(charset));
                     } else {
@@ -489,27 +488,4 @@ public final class Logger {
         return logFile;
     }
     
-    /**
-     * Returns an ANSI escape sequence with the given color code.
-     * 
-     * @param code The color code. (e.g. "1;32" for bright red, or "0" for "clear").
-     * @return An ANSI escape sequence for the given code.
-     */
-    private static final @NonNull String ansiColor(@NonNull String code) {
-        return "\033[" + code + "m";
-    }
-    
-    /**
-     * Checks whether the given output stream belongs to a TTY that supports ANSI color codes.
-     * 
-     * @param out The output stream to check.
-     * 
-     * @return Whether the given output stream belongs to a TTY that supports ANSI color codes.
-     */
-    private static boolean isTTY(OutputStream out) {
-        // idea taken from https://stackoverflow.com/questions/1403772/
-        return out == System.out && System.console() != null
-                && Util.determineOS() != OSType.WIN32 && Util.determineOS() != OSType.WIN64;
-    }
-
 }

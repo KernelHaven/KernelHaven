@@ -29,10 +29,8 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * @author Johannes
  * @author Moritz
  */
-public class Util {
+public final class Util {
 
-    private static final Logger LOGGER = Logger.get();
-    
     /**
      * Cache for result of {@link #determineOS()}.
      */
@@ -237,11 +235,11 @@ public class Util {
 
         String stdout = th1.content;
         if (stdout != null && !stdout.equals("")) {
-            LOGGER.logDebug(notNull(("Stdout:\n" + stdout).split("\n")));
+            Logger.get().logDebug(notNull(("Stdout:\n" + stdout).split("\n")));
         }
         String stderr = th2.content;
         if (stderr != null && !stderr.equals("")) {
-            LOGGER.logDebug(notNull(("Stderr:\n" + stderr).split("\n")));
+            Logger.get().logDebug(notNull(("Stderr:\n" + stderr).split("\n")));
         }
 
         return returnValue == 0;
@@ -336,7 +334,7 @@ public class Util {
                     out.close();
                 }
             } catch (IOException e) {
-                LOGGER.logException("Exception while reading process output", e);
+                Logger.get().logException("Exception while reading process output", e);
             }
         }
     }
@@ -560,6 +558,33 @@ public class Util {
         }
         
         return result;
+    }
+    
+    /**
+     * Returns an ANSI escape sequence with the given color code.
+     * 
+     * @param code The color code. (e.g. "1;32" for bright red, or "0" for "clear").
+     * @return An ANSI escape sequence for the given code.
+     * 
+     * @see #isTTY(OutputStream)
+     */
+    public static final @NonNull String ansiColor(@NonNull String code) {
+        return "\033[" + code + "m";
+    }
+    
+    /**
+     * Checks whether the given output stream belongs to a TTY that supports ANSI color codes.
+     * 
+     * @param out The output stream to check.
+     * 
+     * @return Whether the given output stream belongs to a TTY that supports ANSI color codes.
+     * 
+     * @see #ansiColor(String)
+     */
+    public static boolean isTTY(OutputStream out) {
+        // idea taken from https://stackoverflow.com/questions/1403772/
+        return out == System.out && System.console() != null
+                && Util.determineOS() != OSType.WIN32 && Util.determineOS() != OSType.WIN64;
     }
 
 }
