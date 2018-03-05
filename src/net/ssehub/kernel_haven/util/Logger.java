@@ -25,7 +25,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * @author alice
  * @author moritz
  */
-public class Logger {
+public final class Logger {
     
     /**
      * The available log levels.
