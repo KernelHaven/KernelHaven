@@ -208,11 +208,9 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
                 readLine(csvParts, nesting, result, parser);
             }
 
-        } catch (NumberFormatException e) {
-            throw new FormatException(e);
-            
         } catch (ReflectiveOperationException e) {
-            throw new FormatException(e);
+            throw (FormatException)
+                new FormatException("Couldn't read CSV at line " + reader.getLineNumber()).initCause(e);
             
         } catch (FileNotFoundException e) {
             // ignore, so that null is returned if cache is not present

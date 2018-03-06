@@ -126,13 +126,16 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             
             vm = new VariabilityModel(constraintCopy, variables);
         } catch (ReflectiveOperationException | ClassCastException | IllegalArgumentException e) {
-            throw new FormatException(e);
+            if (reader != null) {
+                throw (FormatException)
+                    new FormatException("Couldn't read CSV at line " + reader.getLineNumber()).initCause(e);
+            } else {
+                throw (FormatException) new FormatException("Couldn't read CSV").initCause(e);
+            }
             
         } catch (FileNotFoundException e) {
             // this means that the cache is not present, so we just return null
 
-
-            
         } finally {
             if (reader != null) {
                 try {

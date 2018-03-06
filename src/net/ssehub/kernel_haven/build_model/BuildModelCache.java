@@ -103,7 +103,7 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
             /*@NonNull*/ String[] csvParts;
             while ((csvParts = reader.readNextRow()) != null) {
                 if (csvParts.length != 2) {
-                    throw new FormatException("Invalid CSV");
+                    throw new FormatException("Invalid number of CSV parts in line " + reader.getLineNumber());
                 }
 
                 File file = new File(csvParts[0]);
@@ -113,7 +113,8 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
                     pc = notNull(parser.parse(notNull(csvParts[1]))); // notNull() as a workaround, see above
 
                 } catch (ExpressionFormatException e) {
-                    throw new FormatException(e);
+                    throw (FormatException) new FormatException("Couldn't parse expression in line "
+                            + reader.getLineNumber()).initCause(e);
                 }
 
                 cache.clear();
