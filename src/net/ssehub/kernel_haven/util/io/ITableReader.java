@@ -83,4 +83,13 @@ public interface ITableReader extends Closeable {
         return result;
     }
     
+    /**
+     * Returns the line number of the row that was read in the last read call, starting at one. This is not guaranteed
+     * to always be increased by one (e.g. a CSV file may contain escaped line breaks). This line number should help
+     * a user to find the relevant row, thus it is useful for error messages.
+     * 
+     * @return The line number of the last read column. 0, if no column was read yet.
+     */
+    public int getLineNumber();
+    
 }

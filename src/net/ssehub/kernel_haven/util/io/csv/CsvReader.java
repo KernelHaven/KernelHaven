@@ -5,6 +5,7 @@ import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,13 +36,15 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  */
 public class CsvReader implements ITableReader {
 
-    private @NonNull InputStreamReader in;
+    private @NonNull Reader in;
     
     private char separator;
     
     private Integer peeked;
     
     private boolean isEnd;
+    
+    private int currentLineNumber;
     
     /**
      * Creates a new {@link CsvReader} for the given input stream. Uses {@link CsvWriter#DEFAULT_SEPARATOR}.
@@ -59,8 +62,28 @@ public class CsvReader implements ITableReader {
      * @param separator The separator character to use.
      */
     public CsvReader(@NonNull InputStream in, char separator) {
-        this.in = new InputStreamReader(in, Charset.forName("UTF-8"));
+        this (new InputStreamReader(in, Charset.forName("UTF-8")), separator);
+    }
+    
+    /**
+     * Creates a new {@link CsvReader} for the given reader. Uses {@link CsvWriter#DEFAULT_SEPARATOR}.
+     * 
+     * @param in The reader to read the CSV data from.
+     */
+    public CsvReader(@NonNull Reader in) {
+        this(in, CsvWriter.DEFAULT_SEPARATOR);
+    }
+    
+    /**
+     * Creates a new {@link CsvReader} for the given reader.
+     * 
+     * @param in The reader to read the CSV data from.
+     * @param separator The separator character to use.
+     */
+    public CsvReader(@NonNull Reader in, char separator) {
+        this.in = in;
         this.separator = separator;
+        
     }
     
     @Override
@@ -163,6 +186,10 @@ public class CsvReader implements ITableReader {
         // used to detect the edge case that an escaped " is in front of a delimiter (e.g. "";  )
         boolean wasQuote = false;
         
+        // whether the last character was \r
+        // only used to detect \r\n in escaped text
+        boolean wasCarriageReturn = false;
+        
         // contains characters of the current field
         // new characters are added until a (unescaped) separator is found
         // when a (unescaped) separator is found, the contents of this contain the previous field
@@ -172,6 +199,7 @@ public class CsvReader implements ITableReader {
         while (true) {
             char c = (char) read();
             if (isEnd) {
+                currentLineNumber++; // increase for last line
                 break;
             }
             
@@ -179,6 +207,11 @@ public class CsvReader implements ITableReader {
                 // wasQuote is only relevant to detect double quotes ("")
                 wasQuote = false;
             }
+            
+            if ((c == '\n' && !wasCarriageReturn) || c == '\r') {
+                currentLineNumber++;
+            }
+            wasCarriageReturn = (c == '\r');
             
             if (c == separator && !inEscaped) {
                 // we found an unescaped separator
@@ -231,6 +264,7 @@ public class CsvReader implements ITableReader {
             //   (parts.empty() && currentElement.empty()) and the next char will be the end of stream
             result = null;
             isEnd = true;
+            currentLineNumber--;
             
         } else {
             // add the last field (which we didn't find a separator for, because it was ended with a \n)
@@ -253,6 +287,11 @@ public class CsvReader implements ITableReader {
         }
         
         return result;
+    }
+    
+    @Override
+    public int getLineNumber() {
+        return currentLineNumber;
     }
 
 }

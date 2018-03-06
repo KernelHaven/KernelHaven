@@ -31,9 +31,13 @@ public class CsvReaderTest {
         String csv = "1;2;3\na;b;c;d";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {"1", "2", "3"}));
+            assertThat(reader.getLineNumber(), is(1));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b", "c", "d"}));
+            assertThat(reader.getLineNumber(), is(2));
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(2));
         }
     }
     
@@ -47,10 +51,15 @@ public class CsvReaderTest {
         String csv = "1;;3\n\na;b;c;d";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {"1", "", "3"}));
+            assertThat(reader.getLineNumber(), is(1));
             assertThat(reader.readNextRow(), is(new String[] {""}));
+            assertThat(reader.getLineNumber(), is(2));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b", "c", "d"}));
+            assertThat(reader.getLineNumber(), is(3));
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(3));
         }
     }
     
@@ -64,12 +73,19 @@ public class CsvReaderTest {
         String csv = "1;\"2;3\";3\na;\"b\nc\";d\ne;f\"\"g;h\n\"9;8\"\"7\n6\"\n\"\"\"a\"\"\"";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {"1", "2;3", "3"}));
+            assertThat(reader.getLineNumber(), is(1));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b\nc", "d"}));
+            assertThat(reader.getLineNumber(), is(3)); // increased by 2, because escaped \n
             assertThat(reader.readNextRow(), is(new String[] {"e", "f\"\"g", "h"}));
+            assertThat(reader.getLineNumber(), is(4));
             assertThat(reader.readNextRow(), is(new String[] {"9;8\"7\n6"}));
+            assertThat(reader.getLineNumber(), is(6)); // increased by 2, because escaped \n
             assertThat(reader.readNextRow(), is(new String[] {"\"a\""}));
+            assertThat(reader.getLineNumber(), is(7));
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(7));
         }
     }
     
@@ -83,12 +99,19 @@ public class CsvReaderTest {
         String csv = "1\"2;3\n1\"\"2;3\na\"b;c\";d\n\"a\"b\"c\"\n\"xy\"z;a\n";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {"1\"2", "3"}));
+            assertThat(reader.getLineNumber(), is(1));
             assertThat(reader.readNextRow(), is(new String[] {"1\"\"2", "3"}));
+            assertThat(reader.getLineNumber(), is(2));
             assertThat(reader.readNextRow(), is(new String[] {"a\"b", "c\"", "d"}));
+            assertThat(reader.getLineNumber(), is(3));
             assertThat(reader.readNextRow(), is(new String[] {"a\"b\"c"}));
+            assertThat(reader.getLineNumber(), is(4));
             assertThat(reader.readNextRow(), is(new String[] {"xy\"z;a\n"}));
+            assertThat(reader.getLineNumber(), is(6)); // increased by 2, because escaped \n
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(6));
         }
     }
     
@@ -102,9 +125,13 @@ public class CsvReaderTest {
         String csv = "1,2,3\na,b;c,d";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()), ',')) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {"1", "2", "3"}));
+            assertThat(reader.getLineNumber(), is(1));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b;c", "d"}));
+            assertThat(reader.getLineNumber(), is(2));
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(2));
         }
     }
     
@@ -119,15 +146,20 @@ public class CsvReaderTest {
         String csv = "1;abc\n2;def";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
+            
             Simple obj = reader.readAsObject(new Simple.SimpleFactory());
             assertThat(obj.getInteger(), is(1));
             assertThat(obj.getStr(), is("abc"));
+            assertThat(reader.getLineNumber(), is(1));
             
             obj = reader.readAsObject(new Simple.SimpleFactory());
             assertThat(obj.getInteger(), is(2));
             assertThat(obj.getStr(), is("def"));
+            assertThat(reader.getLineNumber(), is(2));
             
             assertThat(reader.readAsObject(new Simple.SimpleFactory()), nullValue());
+            assertThat(reader.getLineNumber(), is(2));
         }
     }
     
@@ -142,9 +174,12 @@ public class CsvReaderTest {
         String csv = "1;abc\nnot_a_number;def";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
+            
             Simple obj = reader.readAsObject(new Simple.SimpleFactory());
             assertThat(obj.getInteger(), is(1));
             assertThat(obj.getStr(), is("abc"));
+            assertThat(reader.getLineNumber(), is(1));
             
             reader.readAsObject(new Simple.SimpleFactory());
         }
@@ -159,10 +194,12 @@ public class CsvReaderTest {
         String csv = "1;2;3\na;b;c;d";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readFull(), is(new String[][] {
                 new String[] {"1", "2", "3"},
                 new String[] {"a", "b", "c", "d"}
             }));
+            assertThat(reader.getLineNumber(), is(2));
         }
     }
     
@@ -176,10 +213,15 @@ public class CsvReaderTest {
         String csv = "1;2;3\ra;b;c\r\nx;y;z";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {"1", "2", "3"}));
+            assertThat(reader.getLineNumber(), is(1));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b", "c"}));
+            assertThat(reader.getLineNumber(), is(2));
             assertThat(reader.readNextRow(), is(new String[] {"x", "y", "z"}));
+            assertThat(reader.getLineNumber(), is(3));
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(3));
         }
     }
     
@@ -193,9 +235,13 @@ public class CsvReaderTest {
         String csv = "1;2;\"3\r\"\r\na;\"b\r\nb\";c\n";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {"1", "2", "3\r"}));
+            assertThat(reader.getLineNumber(), is(2)); // increased by 2, because of escaped \r
             assertThat(reader.readNextRow(), is(new String[] {"a", "b\r\nb", "c"}));
+            assertThat(reader.getLineNumber(), is(4)); // increased by 2, because of escaped \r\n
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(4));
         }
     }
     
@@ -210,8 +256,11 @@ public class CsvReaderTest {
         String csv = "a;\"b\"\";\";c";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b\";", "c"}));
+            assertThat(reader.getLineNumber(), is(1));
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(1));
         }
     }
     
@@ -226,8 +275,11 @@ public class CsvReaderTest {
         String csv = "a;\"b;\"\"b\";c";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b;\"b", "c"}));
+            assertThat(reader.getLineNumber(), is(1));
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(1));
         }
     }
     
@@ -242,8 +294,11 @@ public class CsvReaderTest {
         String csv = "a;\"b;\"\"\";c";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b;\"", "c"}));
+            assertThat(reader.getLineNumber(), is(1));
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(1));
         }
     }
     
@@ -258,8 +313,11 @@ public class CsvReaderTest {
         String csv = "a;\"b\"\";\"\"b\";c";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {"a", "b\";\"b", "c"}));
+            assertThat(reader.getLineNumber(), is(1));
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(1));
         }
     }
     
@@ -275,6 +333,7 @@ public class CsvReaderTest {
                 + "alternative.h;1;1;\"Literal: \"\";\"\"\";0\n";
         
         try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
             assertThat(reader.readNextRow(), is(new String[] {
                 "net.ssehub.kernel_haven.code_model.SyntaxElement",
                 "0",
@@ -287,6 +346,7 @@ public class CsvReaderTest {
                 "1",
                 "Value"
             }));
+            assertThat(reader.getLineNumber(), is(1));
             assertThat(reader.readNextRow(), is(new String[] {
                 "net.ssehub.kernel_haven.code_model.SyntaxElement",
                 "1",
@@ -298,7 +358,29 @@ public class CsvReaderTest {
                 "Literal: \";\"",
                 "0"
             }));
+            assertThat(reader.getLineNumber(), is(2));
             assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(2));
+        }
+    }
+    
+    /**
+     * Tests line numbers with a trailing \n.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testTrailingLineBreak() throws IOException {
+        String csv = "1;2;3\na;b;c;d\n";
+        
+        try (CsvReader reader = new CsvReader(new ByteArrayInputStream(csv.getBytes()))) {
+            assertThat(reader.getLineNumber(), is(0));
+            assertThat(reader.readNextRow(), is(new String[] {"1", "2", "3"}));
+            assertThat(reader.getLineNumber(), is(1));
+            assertThat(reader.readNextRow(), is(new String[] {"a", "b", "c", "d"}));
+            assertThat(reader.getLineNumber(), is(2));
+            assertThat(reader.readNextRow(), nullValue());
+            assertThat(reader.getLineNumber(), is(2));
         }
     }
 
