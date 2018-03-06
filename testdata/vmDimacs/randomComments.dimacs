@@ -1,0 +1,7 @@
+c
+c This is a DIMACS file.
+c Random comment
+c 
+c ^ This line intentionally ends with a space. 
+p cnf 2 1
+1 2 0

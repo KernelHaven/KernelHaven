@@ -134,6 +134,44 @@ public class DIMACSVariabilityModelExtractorTest {
         Assert.assertEquals(2, var.getDimacsNumber());
         Assert.assertEquals("SomethingSpecial", var.getType());
     }
+    
+    /**
+     * Tests a DIMACS file with "random" (i.e. normal text) comments.
+     */
+    @Test
+    public void testRandomComments() {
+        VariabilityModel varModel = parseDimacsFile(new File(TESTDATA, "randomComments.dimacs"));
+        
+        // Assert model
+        Set<VariabilityVariable> variables = varModel.getVariables();
+        Assert.assertEquals(0, variables.size());
+    }
+    
+    /**
+     * Tests a DIMACS file with variables mixed with normal text comments.
+     */
+    @Test
+    public void testMixedCommentsAndVariables() {
+        VariabilityModel varModel = parseDimacsFile(new File(TESTDATA, "mixedCommentsAndVariables.dimacs"));
+        
+        // Assert model
+        Set<VariabilityVariable> variables = varModel.getVariables();
+        Assert.assertEquals(2, variables.size());
+        
+        // Assert 1st variable
+        VariabilityVariable var = varModel.getVariableMap().get("VAR1");
+        Assert.assertNotNull("VAR1 was not translated.", var);
+        Assert.assertEquals("VAR1", var.getName());
+        Assert.assertEquals(1, var.getDimacsNumber());
+        Assert.assertEquals(DIMACSVariabilityModelExtractor.UNKNOWN_VARIABE_TYPE, var.getType());
+        
+        // Assert 2nd variable
+        var = varModel.getVariableMap().get("VAR2");
+        Assert.assertNotNull("VAR2 was not translated.", var);
+        Assert.assertEquals("VAR2", var.getName());
+        Assert.assertEquals(2, var.getDimacsNumber());
+        Assert.assertEquals("SomethingSpecial", var.getType());
+    }
 
     /**
      * Helper function to parse a DIMACS file to a {@link VariabilityModel} and to facilitate testing in a test method.
