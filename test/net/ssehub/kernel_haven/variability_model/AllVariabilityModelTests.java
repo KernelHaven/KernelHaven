@@ -11,6 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     VariabilityModelCacheTest.class,
     VariabilityModelProviderTest.class,
+    DIMACSVariabilityModelExtractorTest.class
     })
 public class AllVariabilityModelTests {
 

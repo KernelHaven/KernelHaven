@@ -1,0 +1,4 @@
+c 1 VAR1 
+c 2 VAR2 SomethingSpecial
+p cnf 2 1
+1 2 0

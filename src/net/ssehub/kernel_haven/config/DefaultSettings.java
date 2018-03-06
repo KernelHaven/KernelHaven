@@ -2,6 +2,7 @@ package net.ssehub.kernel_haven.config;
 
 import static net.ssehub.kernel_haven.config.Setting.Type.BOOLEAN;
 import static net.ssehub.kernel_haven.config.Setting.Type.DIRECTORY;
+import static net.ssehub.kernel_haven.config.Setting.Type.FILE;
 import static net.ssehub.kernel_haven.config.Setting.Type.INTEGER;
 import static net.ssehub.kernel_haven.config.Setting.Type.REGEX;
 import static net.ssehub.kernel_haven.config.Setting.Type.SETTING_LIST;
@@ -113,6 +114,7 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull Integer> VARIABILITY_PROVIDER_TIMEOUT = new Setting<>("variability.provider.timeout", INTEGER, true, "0", "The maximum time the provider waits for the results of the extractor until an exception is thrown. In milliseconds; 0 = no timeout used.");
     public static final @NonNull Setting<@NonNull Boolean> VARIABILITY_PROVIDER_CACHE_WRITE = new Setting<>("variability.provider.cache.write", BOOLEAN, true, "false", "Defines whether the variability model provider will write its results to the cache directory.");
     public static final @NonNull Setting<@NonNull Boolean> VARIABILITY_PROVIDER_CACHE_READ = new Setting<>("variability.provider.cache.read", BOOLEAN, true, "false", "Defines whether the variability model provider is allowed to read the cache instead of starting the extractor.");
+    public static final @NonNull Setting<@NonNull File> VARIABILITY_INPUT_FILE = new Setting<>("variability.input.file", FILE, false, null, "Path of a single file to be parsed by a variability model extractor.");
     
     /*
      * Other

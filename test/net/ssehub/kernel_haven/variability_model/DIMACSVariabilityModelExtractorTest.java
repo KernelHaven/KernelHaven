@@ -1,0 +1,191 @@
+package net.ssehub.kernel_haven.variability_model;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Properties;
+import java.util.Set;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import net.ssehub.kernel_haven.AllTests;
+import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.config.DefaultSettings;
+import net.ssehub.kernel_haven.test_utils.TestConfiguration;
+import net.ssehub.kernel_haven.util.ExtractorException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
+/**
+ * Tests the {@link DIMACSVariabilityModelExtractor}.
+ * @author El-Sharkawy
+ *
+ */
+public class DIMACSVariabilityModelExtractorTest {
+    
+    private static final File TESTDATA = new File(AllTests.TESTDATA, "vmDimacs");
+    
+    /**
+     * Tests correct error message if no input DIMACS file was specified.
+     */
+    @Test
+    public void testNoFileSpecified() {
+        DIMACSVariabilityModelExtractor extractor = new DIMACSVariabilityModelExtractor();
+        try {
+            extractor.init(new TestConfiguration(new Properties()));
+            Assert.fail("No error produced if no input file is specified.");
+        } catch (SetUpException e) {
+            Assert.assertEquals(DefaultSettings.VARIABILITY_INPUT_FILE.getKey() + " was not specifed, it must "
+                + "point to input DIMACS file.", e.getMessage());
+        }
+    }
+    
+    /**
+     * Tests correct error message if non existing input file was specified.
+     */
+    @Test
+    public void testNonExistingFileSpecified() {
+        DIMACSVariabilityModelExtractor extractor = new DIMACSVariabilityModelExtractor();
+        try {
+            Properties prop = new Properties();
+            prop.setProperty(DefaultSettings.VARIABILITY_INPUT_FILE.getKey(), "non_exisiting_file.dimacs");
+            extractor.init(new TestConfiguration(prop));
+            Assert.fail("No error produced if unexisiting input file is specified.");
+        } catch (SetUpException e) {
+            String errMsg = e.getMessage();
+            Assert.assertTrue(errMsg.startsWith(DefaultSettings.VARIABILITY_INPUT_FILE.getKey() + " = "));
+            Assert.assertTrue(errMsg.endsWith(" does not exist."));
+        }
+    }
+    
+    /**
+     * Tests parsing of a DIMACS file.
+     * With the following specification:
+     * <ul>
+     *   <li><b>Variables:</b>1 Variable, with no data type</li>
+     *   <li><b>Constraints:</b> 1 Constraint</li>
+     * </ul>
+     */
+    @Test
+    public void testOneVar() {
+        VariabilityModel varModel = parseDimacsFile(new File(TESTDATA, "oneVar.dimacs"));
+        
+        // Assert model
+        Set<VariabilityVariable> variables = varModel.getVariables();
+        Assert.assertEquals(1, variables.size());
+        
+        // Assert variable
+        VariabilityVariable var = variables.iterator().next();
+        Assert.assertEquals("Variable", var.getName());
+        Assert.assertEquals(1, var.getDimacsNumber());
+        Assert.assertEquals(DIMACSVariabilityModelExtractor.UNKNOWN_VARIABE_TYPE, var.getType());
+    }
+    
+    /**
+     * Tests parsing of a DIMACS file.
+     * With the following specification:
+     * <ul>
+     *   <li><b>Variables:</b>1 Variable, data type specification</li>
+     *   <li><b>Constraints:</b> 1 Constraint</li>
+     * </ul>
+     */
+    @Test
+    public void testOneVarWithDataType() {
+        VariabilityModel varModel = parseDimacsFile(new File(TESTDATA, "oneVarWithDataType.dimacs"));
+        
+        // Assert model
+        Set<VariabilityVariable> variables = varModel.getVariables();
+        Assert.assertEquals(1, variables.size());
+        
+        // Assert variable
+        VariabilityVariable var = variables.iterator().next();
+        Assert.assertEquals("Variable", var.getName());
+        Assert.assertEquals(1, var.getDimacsNumber());
+        Assert.assertEquals("SomethingSpecial", var.getType());
+    }
+    
+    /**
+     * Tests parsing of a DIMACS file.
+     * With the following specification:
+     * <ul>
+     *   <li><b>Variables:</b>1 Variable, data type specification</li>
+     *   <li><b>Constraints:</b> 1 Constraint</li>
+     * </ul>
+     */
+    @Test
+    public void testTwoVarsWithMixedDataType() {
+        VariabilityModel varModel = parseDimacsFile(new File(TESTDATA, "twoVarsWithMixedDataType.dimacs"));
+        
+        // Assert model
+        Set<VariabilityVariable> variables = varModel.getVariables();
+        Assert.assertEquals(2, variables.size());
+        
+        // Assert 1st variable
+        VariabilityVariable var = varModel.getVariableMap().get("VAR1");
+        Assert.assertNotNull("VAR1 was not translated.", var);
+        Assert.assertEquals("VAR1", var.getName());
+        Assert.assertEquals(1, var.getDimacsNumber());
+        Assert.assertEquals(DIMACSVariabilityModelExtractor.UNKNOWN_VARIABE_TYPE, var.getType());
+        
+        // Assert 2nd variable
+        var = varModel.getVariableMap().get("VAR2");
+        Assert.assertNotNull("VAR2 was not translated.", var);
+        Assert.assertEquals("VAR2", var.getName());
+        Assert.assertEquals(2, var.getDimacsNumber());
+        Assert.assertEquals("SomethingSpecial", var.getType());
+    }
+
+    /**
+     * Helper function to parse a DIMACS file to a {@link VariabilityModel} and to facilitate testing in a test method.
+     * @param dimcasFile The file (absolute path) to test.
+     * @return The converted variability model, won't be <tt>null</tt>.
+     */
+    @SuppressWarnings("null")
+    private @NonNull VariabilityModel parseDimacsFile(File dimcasFile) {
+        DIMACSVariabilityModelExtractor extractor = new DIMACSVariabilityModelExtractor();
+        Properties prop = new Properties();
+        prop.setProperty(DefaultSettings.VARIABILITY_INPUT_FILE.getKey(), dimcasFile.getAbsolutePath());
+        try {
+            extractor.init(new TestConfiguration(prop));
+        } catch (SetUpException e) {
+            e.printStackTrace();
+            Assert.fail("Could not initialize " + DIMACSVariabilityModelExtractor.class.getSimpleName() + " due to "
+                + e.getMessage());
+        }
+        
+        VariabilityModel varModel = null;
+        try {
+            varModel = extractor.runOnFile(null);
+        } catch (ExtractorException e) {
+            e.printStackTrace();
+            Assert.fail("Could not parse " + dimcasFile.getAbsolutePath() + " due to "
+                + e.getMessage());
+        }
+        
+        Assert.assertNotNull(dimcasFile.getAbsolutePath() + " was parsed to null", varModel);
+        Assert.assertEquals(readFile(dimcasFile), readFile(varModel.getConstraintModel()));
+
+        return varModel;
+    }
+    
+    /**
+     * Helper method to compare DIMACS files. Reads the specified file to a String.
+     * @param txtFile A text file to be read.
+     * @return The content of the specified file.
+     */
+    private static String readFile(File txtFile) {
+        Assert.assertNotNull(txtFile);
+        Assert.assertTrue(txtFile.getAbsolutePath() + " does not exist", txtFile.exists());
+        
+        StringBuffer result = new StringBuffer();
+        try {
+            Files.lines(txtFile.toPath()).forEachOrdered(l -> result.append(l));
+        } catch (IOException e) {
+            e.printStackTrace();
+            Assert.fail("Could not read " + txtFile.getAbsolutePath() + " due to " + e.getMessage());
+        }
+        
+        return result.toString();
+    }
+
+}
