@@ -26,7 +26,7 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.Vari
  */
 public class DIMACSVariabilityModelExtractor extends AbstractVariabilityModelExtractor {
 
-    static final @NonNull String UNKNOWN_VARIABE_TYPE = "unknown";
+    public static final @NonNull String UNKNOWN_VARIABE_TYPE = "unknown";
     
     private File dimacsfile;
     
@@ -35,7 +35,7 @@ public class DIMACSVariabilityModelExtractor extends AbstractVariabilityModelExt
     protected void init(@NonNull Configuration config) throws SetUpException {
         dimacsfile = config.getValue(DefaultSettings.VARIABILITY_INPUT_FILE);
         if (dimacsfile == null) {
-            throw new SetUpException(DefaultSettings.VARIABILITY_INPUT_FILE.getKey() + " was not specifed, it must "
+            throw new SetUpException(DefaultSettings.VARIABILITY_INPUT_FILE.getKey() + " was not specified, it must "
                 + "point to input DIMACS file.");
         }
         if (!dimacsfile.exists()) {
@@ -46,7 +46,7 @@ public class DIMACSVariabilityModelExtractor extends AbstractVariabilityModelExt
 
     @Override
     protected @Nullable VariabilityModel runOnFile(File target) throws ExtractorException {
-        @NonNull Map<@NonNull String, @NonNull VariabilityVariable> variables = new HashMap<>();
+        Map<String, VariabilityVariable> variables = new HashMap<>();
         try {
             Files.lines(dimacsfile.toPath())
                 .filter(l -> l != null && l.startsWith("c "))           // Only comment lines
@@ -58,6 +58,8 @@ public class DIMACSVariabilityModelExtractor extends AbstractVariabilityModelExt
             throw new ExtractorException("Could not parse " + dimacsfile.getAbsolutePath());
         }
         
+        // Unfortunately, the map cannot be annotate, otherwise Jacoco will crash.
+        @SuppressWarnings("null")
         VariabilityModel result = new VariabilityModel(NullHelpers.notNull(dimacsfile), variables);
         VariabilityModelDescriptor descriptor = result.getDescriptor();
         descriptor.setVariableType(VariableType.BOOLEAN);
@@ -96,7 +98,7 @@ public class DIMACSVariabilityModelExtractor extends AbstractVariabilityModelExt
                 parsedVariable = new VariabilityVariable(varName, UNKNOWN_VARIABE_TYPE, varID);
             }
         }
-        
+//        
         return parsedVariable;
     }
 

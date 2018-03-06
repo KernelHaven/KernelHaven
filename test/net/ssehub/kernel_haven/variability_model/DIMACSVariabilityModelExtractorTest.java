@@ -35,7 +35,7 @@ public class DIMACSVariabilityModelExtractorTest {
             extractor.init(new TestConfiguration(new Properties()));
             Assert.fail("No error produced if no input file is specified.");
         } catch (SetUpException e) {
-            Assert.assertEquals(DefaultSettings.VARIABILITY_INPUT_FILE.getKey() + " was not specifed, it must "
+            Assert.assertEquals(DefaultSettings.VARIABILITY_INPUT_FILE.getKey() + " was not specified, it must "
                 + "point to input DIMACS file.", e.getMessage());
         }
     }
