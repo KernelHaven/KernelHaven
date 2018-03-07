@@ -7,17 +7,17 @@ import java.util.function.Function;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * Static utility method for simplifying {@link Formula}s. By default, this does nothing. However, a simplifier can be
- * registered via {@link #setSimplifier(Function)}.
+ * Static utility method for simplifying {@link Formula}s. By default, this only does some simple simplifications.
+ * However, a more complex simplifier can be registered via {@link #setSimplifier(Function)} (e.g. LogicUtils in
+ * CnfUtils plugin does this).
  *
  * @author Adam
  */
 public class FormulaSimplifier {
 
-    private static @NonNull Function<@NonNull Formula, @NonNull Formula> simplifier = f -> f;
+    private static @NonNull Function<@NonNull Formula, @NonNull Formula> simplifier
+            = FormulaSimplifier::defaultSimplifier;
     
-    private static boolean deafultSimplifier = true;
-
     /**
      * Don't allow any instances.
      */
@@ -31,17 +31,6 @@ public class FormulaSimplifier {
      */
     public static void setSimplifier(@NonNull Function<@NonNull Formula, @NonNull Formula> simplifier) {
         FormulaSimplifier.simplifier = simplifier;
-        deafultSimplifier = false;
-    }
-    
-    /**
-     * Whether we still have the default simplifier that does nothing.
-     * 
-     * @return <code>true</code> if we still have the default simplifier; <code>false</code> if
-     *      {@link #setSimplifier(Function)} has been called.
-     */
-    public static boolean hasDefaultSimplifier() {
-        return deafultSimplifier;
     }
     
     /**
@@ -52,6 +41,104 @@ public class FormulaSimplifier {
      */
     public static @NonNull Formula simplify(@NonNull Formula formula) {
         return notNull(simplifier.apply(formula));
+    }
+    
+    /**
+     * The default simplifier. Simplifies boolean formulas a bit. The following simplification rules are done:
+     * <ul>
+     *      <li>NOT(NOT(a)) -> a</li>
+     *      <li>NOT(true) -> false</li>
+     *      <li>NOT(false) -> true</li>
+     *      
+     *      <li>true OR a -> true</li>
+     *      <li>a OR true -> true</li>
+     *      <li>false OR false -> false</li>
+     *      <li>a OR false -> a</li>
+     *      <li>false OR a -> a</li>
+     *      <li>a OR a -> a</li>
+     *      
+     *      <li>false AND a -> false</li>
+     *      <li>a AND false -> false</li>
+     *      <li>true AND true -> true</li>
+     *      <li>a AND true -> a</li>
+     *      <li>true AND a -> a</li>
+     *      <li>a AND a -> a</li>
+     * </ul>
+     * 
+     * This ensures that no constants are left after the simplification (except if the whole Formula becomes True or
+     * False).
+     * 
+     * @param formula The formula to simplify.
+     * @return A new formula equal to the original, but simplified.
+     */
+    public static @NonNull Formula defaultSimplifier(@NonNull Formula formula) {
+        Formula result;
+        if (formula instanceof Negation) {
+            Formula nested = simplify(((Negation) formula).getFormula());
+            
+            if (nested instanceof Negation) {
+                result = ((Negation) nested).getFormula();
+                
+            } else if (nested instanceof True) {
+                result = False.INSTANCE;
+                
+            } else if (nested instanceof False) {
+                result = True.INSTANCE;
+                
+            } else {
+                result = new Negation(nested);
+            }
+            
+        } else if (formula instanceof Disjunction) {
+            Formula left = simplify(((Disjunction) formula).getLeft());
+            Formula right = simplify(((Disjunction) formula).getRight());
+            
+            if (left instanceof True || right instanceof True) {
+                result = True.INSTANCE;
+                
+            } else if (left instanceof False && right instanceof False) {
+                result = False.INSTANCE;
+                
+            } else if (left instanceof False) {
+                result = right;
+                
+            } else if (right instanceof False) {
+                result = left;
+                
+            } else if (left.equals(right)) {
+                result = left;
+                
+            } else {
+                result = new Disjunction(left, right);
+            }
+            
+        } else if (formula instanceof Conjunction) {
+            Formula left = simplify(((Conjunction) formula).getLeft());
+            Formula right = simplify(((Conjunction) formula).getRight());
+            
+            if (left instanceof False || right instanceof False) {
+                result = False.INSTANCE;
+             
+            } else if (left instanceof True && right instanceof True) {
+                result = True.INSTANCE;
+                
+            } else if (left instanceof True) {
+                result = right;
+                
+            } else if (right instanceof True) {
+                result = left;
+                
+            } else if (left.equals(right)) {
+                result = left;
+                
+            } else {
+                result = new Conjunction(left, right);
+            }
+            
+        } else {
+            result = formula;
+        }
+        return result;
     }
     
 }

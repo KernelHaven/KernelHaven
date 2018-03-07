@@ -15,6 +15,7 @@ import org.junit.runners.Suite.SuiteClasses;
     VariableFinderTest.class,
     DisjunctionQueueTests.class,
     FormulaEvaluatorTest.class,
+    FormulaSimplifierTest.class,
     })
 public class AllLogicTests {
 
