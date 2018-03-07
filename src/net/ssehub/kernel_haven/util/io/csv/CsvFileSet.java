@@ -84,13 +84,9 @@ public class CsvFileSet implements ITableCollection {
         FileOutputStream out;
         if (file != null) {
             out = new FileOutputStream(file);
+            
         } else {
-            // TODO: should we really just create files with their sheet name here?
-            file = new File(name);
-            out = new FileOutputStream(file);
-            // do this after output stream is created, to ensure that we don't have filenames in files that are not
-            //  valid.
-            files.put(file.getAbsolutePath(), file);
+            throw new IOException("Can't create new sheets in CsvFileSet");
         }
         
         return new CsvWriter(out);

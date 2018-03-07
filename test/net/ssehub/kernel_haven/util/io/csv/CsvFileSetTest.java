@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,8 +12,6 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.junit.Test;
-
-import net.ssehub.kernel_haven.test_utils.FileContentsAssertion;
 
 /**
  * Tests the {@link CsvFileSet} class.
@@ -89,18 +88,17 @@ public class CsvFileSetTest {
             assertThat(collection.getFiles().size(), is(1));
             assertThat(tables, hasItems(FILE_1.getAbsolutePath()));
             
-            try (CsvWriter writer = collection.getWriter(NEW_FILE.getAbsolutePath())) {
-                writer.writeRow("a", "b",  "c");
+            try {
+                collection.getWriter(NEW_FILE.getAbsolutePath());
+                fail("Expected exception");
+            } catch (IOException e) {
+                // expected
             }
             
             tables = collection.getTableNames();
-            assertThat(tables.size(), is(2));
-            assertThat(collection.getFiles().size(), is(2));
-            assertThat(tables, hasItems(FILE_1.getAbsolutePath(), NEW_FILE.getAbsolutePath()));
-            assertThat(collection.getFiles(), hasItems(FILE_1, NEW_FILE.getCanonicalFile()));
-            
-            FileContentsAssertion.assertContents(NEW_FILE, "a;b;c\n");
-            NEW_FILE.delete();
+            assertThat(tables.size(), is(1));
+            assertThat(collection.getFiles().size(), is(1));
+            assertThat(tables, hasItems(FILE_1.getAbsolutePath()));
         }
     }
     
