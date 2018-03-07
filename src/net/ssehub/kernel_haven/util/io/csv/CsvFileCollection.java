@@ -33,6 +33,11 @@ public class CsvFileCollection implements ITableCollection {
      * @param baseName The location and base-name for all the CSV files.
      */
     public CsvFileCollection(@NonNull File baseName) {
+        // strip the .csv file suffix
+        if (baseName.getName().endsWith(".csv")) {
+            baseName = new File(baseName.getParentFile(),
+                    baseName.getName().substring(0, baseName.getName().length() - ".csv".length()));
+        }
         this.baseName = baseName;
     }
 
