@@ -17,6 +17,12 @@ public class FormulaSimplifier {
     private static @NonNull Function<@NonNull Formula, @NonNull Formula> simplifier = f -> f;
     
     private static boolean deafultSimplifier = true;
+
+    /**
+     * Don't allow any instances.
+     */
+    private FormulaSimplifier() {
+    }
     
     /**
      * Changes the simplifier to be used. Overrides the previous one.
