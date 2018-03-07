@@ -35,11 +35,18 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  */
 public class StaticClassLoader {
 
+    /**
+     * The file name that text files that specify classes to load must have.
+     */
+    public static final String LOAD_CLASSES_FILENAME = "loadClasses.txt";
+    
+    /**
+     * The method name that is called if it exists in the loaded classes. Must be public static void and take no
+     * parameters. 
+     */
+    public static final String INIT_METHOD_NAME = "initialize";
+    
     private static final Logger LOGGER = Logger.get();
-    
-    private static final String LOAD_CLASSES_FILENAME = "loadClasses.txt";
-    
-    private static final String INIT_METHOD_NAME = "initialize";
 
     /**
      * Don't allow any instances.
