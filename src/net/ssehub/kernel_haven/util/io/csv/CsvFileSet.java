@@ -51,6 +51,16 @@ public class CsvFileSet implements ITableCollection {
         }
     }
     
+    /**
+     * Creates a new set of CSV files.
+     * 
+     * @param file The initial file that is contained in this set.
+     */
+    public CsvFileSet(@NonNull File file) {
+        this.files = new HashMap<>();
+        this.files.put(file.getAbsolutePath(), file);
+    }
+    
     @Override
     public @NonNull CsvReader getReader(@NonNull String name) throws IOException {
         File file = files.get(name);
@@ -75,6 +85,7 @@ public class CsvFileSet implements ITableCollection {
         if (file != null) {
             out = new FileOutputStream(file);
         } else {
+            // TODO: should we really just create files with their sheet name here?
             file = new File(name);
             out = new FileOutputStream(file);
             // do this after output stream is created, to ensure that we don't have filenames in files that are not
