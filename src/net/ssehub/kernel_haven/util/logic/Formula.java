@@ -55,9 +55,10 @@ public abstract class Formula implements Serializable {
     /**
      * Returns the number of literals (the number of involved variables).
      * If a variable is multiple times involved, it will also counted multiple times.
+     * 
      * @return The number of used variables (&ge; 0).
      */
-    public abstract int getLiteralSize();
+    public abstract int getLiteralSize(); // TODO implement this as a visitor instead.
     
     /**
      * Visiting method for visitors.
@@ -68,12 +69,13 @@ public abstract class Formula implements Serializable {
      * 
      * @return The return value for the visitor.
      */
-    protected abstract <T> T accept(@NonNull IFormulaVisitor<T> visitor);
+    public abstract <T> T accept(@NonNull IFormulaVisitor<T> visitor);
     
     /**
      * Visiting method for void visitors.
      * 
      * @param visitor A visitor, which shall visit <tt>this</tt> formula.
      */
-    protected abstract void accept(@NonNull IVoidFormulaVisitor visitor);
+    public abstract void accept(@NonNull IVoidFormulaVisitor visitor);
+    
 }

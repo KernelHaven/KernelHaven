@@ -75,12 +75,12 @@ public final class Negation extends Formula {
     }
     
     @Override
-    protected <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
+    public <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
         return visitor.visitNegation(this);
     }
     
     @Override
-    protected void accept(@NonNull IVoidFormulaVisitor visitor) {
+    public void accept(@NonNull IVoidFormulaVisitor visitor) {
         visitor.visitNegation(this);
     }
     
