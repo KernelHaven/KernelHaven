@@ -15,6 +15,7 @@ import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.Timestamp;
 import net.ssehub.kernel_haven.util.io.ITableCollection;
 import net.ssehub.kernel_haven.util.io.ITableWriter;
+import net.ssehub.kernel_haven.util.io.TableCollectionWriterFactory;
 import net.ssehub.kernel_haven.util.io.csv.CsvFileCollection;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
@@ -99,21 +100,13 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * @throws SetUpException If creating the result collection fails.
      */
     private ITableCollection createResultCollection() throws SetUpException {
-        String className = config.getValue(DefaultSettings.ANALYSIS_RESULT);
-        if (className == null) {
-            throw new SetUpException();
-        }
+        String outputSuffix = config.getValue(DefaultSettings.ANALYSIS_RESULT);
+        File outputFile = new File(getOutputDir(), Timestamp.INSTANCE.getFilename("Analysis", outputSuffix));
         
         try {
-            @SuppressWarnings("unchecked")
-            Class<? extends ITableCollection> clazz = (Class<? extends ITableCollection>) Class.forName(className);
-            
-            // TODO: find a proper way to call the constructor; we currently always call it with one File parameter
-            return clazz.getConstructor(File.class).newInstance(new File(getOutputDir(),
-                    Timestamp.INSTANCE.getFilename("Analysis", "xlsx")));
-            
-        } catch (ReflectiveOperationException | IllegalArgumentException | ClassCastException e) {
-            throw new SetUpException(e);
+            return TableCollectionWriterFactory.INSTANCE.createCollection(outputFile);
+        } catch (IOException e) {
+            throw new SetUpException("Can't create output for suffix " + outputSuffix, e);
         }
     }
     
@@ -137,6 +130,9 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             try {
                 resultCollection = createResultCollection();
             } catch (SetUpException e) {
+                LOGGER.logException("Couldn't create output collection based on user configuration; "
+                        + "falling back to CSV", e);
+                
                 resultCollection = new CsvFileCollection(new File(getOutputDir(), 
                         "Analysis_" + Timestamp.INSTANCE.getFileTimestamp()));
             }

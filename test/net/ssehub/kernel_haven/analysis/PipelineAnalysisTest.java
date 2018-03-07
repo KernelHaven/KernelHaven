@@ -39,6 +39,7 @@ import net.ssehub.kernel_haven.util.io.AbstractTableWriter;
 import net.ssehub.kernel_haven.util.io.ITableCollection;
 import net.ssehub.kernel_haven.util.io.ITableReader;
 import net.ssehub.kernel_haven.util.io.ITableWriter;
+import net.ssehub.kernel_haven.util.io.TableCollectionWriterFactory;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
@@ -446,7 +447,7 @@ public class PipelineAnalysisTest {
     /**
      * An output writer that can be used for a {@link PipelineAnalysis} as a different output writer.
      */
-    private static class TestOutputWriter extends AbstractTableWriter implements ITableCollection {
+    public static class TestOutputWriter extends AbstractTableWriter implements ITableCollection {
 
         /**
          * Global mapping of tablename -> lines. This is used for all instances of {@link TestOutputWriter}.
@@ -461,7 +462,6 @@ public class PipelineAnalysisTest {
          * 
          * @param file Ignored.
          */
-        @SuppressWarnings("unused")
         public TestOutputWriter(@NonNull File file) {
         }
         
@@ -519,10 +519,12 @@ public class PipelineAnalysisTest {
      */
     @Test
     public void testDifferentOutputWriter() throws SetUpException {
+        TableCollectionWriterFactory.INSTANCE.registerHandler("test_suffix", TestOutputWriter.class);
+        
         Properties props = new Properties();
         props.put("output_dir", tempOutputDir.getPath());
         props.put("source_tree", tempOutputDir.getPath());
-        props.put("analysis.output_writer.class", TestOutputWriter.class.getName());
+        props.put("analysis.output.type", "test_suffix");
         TestConfiguration config = new TestConfiguration(props);
         
         PipelineAnalysis analysis = createAnalysis(config, (pipeline) ->
