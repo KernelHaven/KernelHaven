@@ -9,12 +9,12 @@ import net.ssehub.kernel_haven.util.io.csv.CsvFileSet;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * Static utility methods for opening {@link ITableCollection}s based on file suffix. Handlers can register themselves
- * via the {@link #registerHandler(String, Class)} method.
+ * Factory for creating {@link ITableCollection}s for single files based on filename suffix. Handlers can register
+ * themselves via the {@link #registerHandler(String, Class)} method.
  *  
  * @author Adam
  */
-public class TableCollectionUtils {
+public class TableCollectionFactory {
 
     private static final Map<String, Class<? extends ITableCollection>> HANDLERS;
     
@@ -34,7 +34,7 @@ public class TableCollectionUtils {
     /**
      * Don't allow any instances.
      */
-    private TableCollectionUtils() {
+    private TableCollectionFactory() {
     }
     
     /**

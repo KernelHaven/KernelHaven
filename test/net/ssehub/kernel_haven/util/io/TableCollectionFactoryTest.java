@@ -13,12 +13,12 @@ import net.ssehub.kernel_haven.util.io.csv.CsvFileSet;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * Tests the {@link TableCollectionUtils}.
+ * Tests the {@link TableCollectionFactory}.
  * 
  * @author Adam
  *
  */
-public class TableCollectionUtilsTest {
+public class TableCollectionFactoryTest {
 
     /**
      * A test handler that does nothing.
@@ -93,50 +93,50 @@ public class TableCollectionUtilsTest {
     }
     
     /**
-     * Tests whether the {@link TableCollectionUtils} factory correctly creates CSV collections.
+     * Tests whether the {@link TableCollectionFactory} factory correctly creates CSV collections.
      * 
      * @throws IOException unwanted.
      */
     @Test
     public void testCsv() throws IOException {
-        ITableCollection collection = TableCollectionUtils.openFile(new File("test.csv"));
+        ITableCollection collection = TableCollectionFactory.openFile(new File("test.csv"));
         assertThat(collection, CoreMatchers.instanceOf(CsvFileSet.class));
         collection.close();
     }
     
     /**
-     * Tests whether the {@link TableCollectionUtils} factory correctly creates a newly registereted handler.
+     * Tests whether the {@link TableCollectionFactory} factory correctly creates a newly registereted handler.
      * 
      * @throws IOException unwanted.
      */
     @Test
     public void testNewHandler() throws IOException {
-        TableCollectionUtils.registerHandler("something", TestHandler.class);
-        ITableCollection collection = TableCollectionUtils.openFile(new File("test.something"));
+        TableCollectionFactory.registerHandler("something", TestHandler.class);
+        ITableCollection collection = TableCollectionFactory.openFile(new File("test.something"));
         assertThat(collection, CoreMatchers.instanceOf(TestHandler.class));
         collection.close();
     }
     
     /**
-     * Tests whether the {@link TableCollectionUtils} factory correctly throws an exception if an invalid file suffix
+     * Tests whether the {@link TableCollectionFactory} factory correctly throws an exception if an invalid file suffix
      * is passed to it.
      * 
      * @throws IOException wanted.
      */
     @Test(expected = IOException.class)
     public void testInvalidTsv() throws IOException {
-        TableCollectionUtils.openFile(new File("test.tsv"));
+        TableCollectionFactory.openFile(new File("test.tsv"));
     }
     
     /**
-     * Tests whether the {@link TableCollectionUtils} factory correctly throws an exception if an invalid file suffix
+     * Tests whether the {@link TableCollectionFactory} factory correctly throws an exception if an invalid file suffix
      * is passed to it.
      * 
      * @throws IOException wanted.
      */
     @Test(expected = IOException.class)
     public void testInvalidTxt() throws IOException {
-        TableCollectionUtils.openFile(new File("test.txt"));
+        TableCollectionFactory.openFile(new File("test.txt"));
     }
     
     /**
@@ -146,7 +146,7 @@ public class TableCollectionUtilsTest {
      */
     @Test(expected = IOException.class)
     public void testNoSuffix() throws IOException {
-        TableCollectionUtils.openFile(new File("some_file_name"));
+        TableCollectionFactory.openFile(new File("some_file_name"));
     }
     
     /**
@@ -156,19 +156,19 @@ public class TableCollectionUtilsTest {
      */
     @Test(expected = IOException.class)
     public void testEmptySuffix() throws IOException {
-        TableCollectionUtils.openFile(new File("some_file_name."));
+        TableCollectionFactory.openFile(new File("some_file_name."));
     }
     
     /**
-     * Tests whether the {@link TableCollectionUtils} factory throws an exception if the handler does not have
+     * Tests whether the {@link TableCollectionFactory} factory throws an exception if the handler does not have
      * a proper constructor.
      * 
      * @throws IOException wanted.
      */
     @Test(expected = IOException.class)
     public void testInvalidHandler() throws IOException {
-        TableCollectionUtils.registerHandler("something", InvalidHandler.class);
-        TableCollectionUtils.openFile(new File("test.something"));
+        TableCollectionFactory.registerHandler("something", InvalidHandler.class);
+        TableCollectionFactory.openFile(new File("test.something"));
     }
     
 }

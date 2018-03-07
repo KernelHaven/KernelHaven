@@ -14,7 +14,7 @@ import net.ssehub.kernel_haven.util.io.csv.AllCsvTests;
     AllCsvTests.class,
     
     TableRowMetadataTest.class,
-    TableCollectionUtilsTest.class,
+    TableCollectionFactoryTest.class,
     })
 public class AllIoTests {
 
