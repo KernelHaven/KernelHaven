@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.Util;
 
@@ -96,7 +95,6 @@ public abstract class AbstractScenarioTest {
      * 
      * @throws Exception unwanted.
      */
-    @Test
     public void run()
         // CHECKSTYLE:OFF // we allow throws exception here
             throws Exception {
