@@ -1,4 +1,0 @@
-# This file specifies that the KernelHaven infrastructure should load the
-# following classes, so that their static blocks are executed.
-
-net.ssehub.kernel_haven.util.DoesntExist
