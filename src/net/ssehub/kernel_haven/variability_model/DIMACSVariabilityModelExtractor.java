@@ -46,6 +46,7 @@ public class DIMACSVariabilityModelExtractor extends AbstractVariabilityModelExt
         }
     }
 
+    @SuppressWarnings("null") // Unfortunately, the code in this method cannot be annotated, otherwise Jacoco will crash
     @Override
     protected @Nullable VariabilityModel runOnFile(File target) throws ExtractorException {
         Map<String, VariabilityVariable> variables = new HashMap<>();
@@ -53,7 +54,7 @@ public class DIMACSVariabilityModelExtractor extends AbstractVariabilityModelExt
             Files.lines(dimacsfile.toPath())
                 .filter(l -> l != null && l.startsWith("c "))           // Only comment lines
                 .map(l -> l.split("\\s"))                               // Create array, split whitespace characters
-                .map(a -> parseLine(notNull(a)))                        // Parse lines
+                .map(a -> parseLine(a))                                 // Parse lines
                 .filter(Objects::nonNull)                               // Only parsed variables
                 .map(NullHelpers::notNull)                              // turn @Nullable into @NonNull
                 .forEachOrdered(v -> variables.put(v.getName(), v));    // Store results
@@ -61,8 +62,6 @@ public class DIMACSVariabilityModelExtractor extends AbstractVariabilityModelExt
             throw new ExtractorException("Could not parse " + dimacsfile.getAbsolutePath());
         }
         
-        // Unfortunately, the map cannot be annotated, otherwise Jacoco will crash.
-        @SuppressWarnings("null")
         VariabilityModel result = new VariabilityModel(notNull(dimacsfile), variables);
         VariabilityModelDescriptor descriptor = result.getDescriptor();
         descriptor.setVariableType(VariableType.BOOLEAN);
@@ -78,7 +77,7 @@ public class DIMACSVariabilityModelExtractor extends AbstractVariabilityModelExt
      *     the comment character <tt>c</tt>.
      * @return The parsed variable.
      */
-    protected @Nullable VariabilityVariable parseLine(String @NonNull [] dimacsCommentLine) {
+    protected @Nullable VariabilityVariable parseLine(@NonNull String @NonNull [] dimacsCommentLine) {
         VariabilityVariable parsedVariable =  null;
         if (dimacsCommentLine.length > 2) {
             
