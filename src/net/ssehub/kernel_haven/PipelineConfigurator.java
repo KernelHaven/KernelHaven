@@ -19,6 +19,7 @@ import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.provider.AbstractExtractor;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.PipelineArchiver;
+import net.ssehub.kernel_haven.util.StaticClassLoader;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
@@ -437,8 +438,10 @@ public class PipelineConfigurator {
         LOGGER.logInfo("Loading jars from directory " + pluginsDir.getAbsolutePath());
         int num = loadJarsFromDirectory(pluginsDir);
         LOGGER.logInfo("Sucessfully loaded " + num + " jars");
+        
+        StaticClassLoader.loadClasses();
     }
-
+    
     /**
      * Getter for this singleton class.
      * 
