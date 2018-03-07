@@ -40,6 +40,12 @@ public class StaticClassLoader {
     private static final String LOAD_CLASSES_FILENAME = "loadClasses.txt";
     
     private static final String INIT_METHOD_NAME = "initialize";
+
+    /**
+     * Don't allow any instances.
+     */
+    private StaticClassLoader() {
+    }
     
     /**
      * Searches for all "loadClasses.txt" in all class loader URLs and loads the specified classes.
@@ -86,8 +92,12 @@ public class StaticClassLoader {
                 try {
                     clazz.getMethod(INIT_METHOD_NAME).invoke(null);
                     
+                } catch (NoSuchMethodException e) {
+                    // ignore that class has no initialize method; it maybe only want to execute the static block
+                    LOGGER.logDebug(clazz.getName() + " has no " + INIT_METHOD_NAME + " method");
+                    
                 } catch (ReflectiveOperationException | SecurityException e) {
-                    LOGGER.logExceptionDebug("Can't execute " + INIT_METHOD_NAME + " for class " + clazz.getName(), e);
+                    LOGGER.logException("Can't execute " + INIT_METHOD_NAME + " for class " + clazz.getName(), e);
                 }
                 
                 loaded++;
