@@ -552,7 +552,7 @@ public class PipelineAnalysisTest {
         Properties props = new Properties();
         props.put("output_dir", tempOutputDir.getPath());
         props.put("source_tree", tempOutputDir.getPath());
-        props.put("analysis.output_writer.class", "doesnt_exist");
+        props.put("analysis.output.type", "doesnt_exist");
         TestConfiguration config = new TestConfiguration(props);
         
         PipelineAnalysis analysis = createAnalysis(config, (pipeline) ->
