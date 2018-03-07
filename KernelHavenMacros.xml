@@ -34,6 +34,8 @@
 	<property name="KbuildMinerExtractor.location_src" value="${jenkins.location}/KernelHaven_KbuildMinerExtractor/lastSuccessfulBuild/artifact/build/jar/KbuildminerExtractor_withsource.jar" />
 	<property name="NonBooleanUtils.location" value="${jenkins.location}/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils.jar" />
 	<property name="NonBooleanUtils.location_src" value="${jenkins.location}/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils_withsource.jar" />
+	<property name="ConfigurationMismatchAnalysis.location" value="${jenkins.location}/KernelHaven_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis.jar" />
+	<property name="ConfigurationMismatchAnalysis.location_src" value="${jenkins.location}/KernelHaven_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis_withsource.jar" />
 
 	<!-- Modules that build -->
 	<property name="src.dir" value="${basedir}/src" />
