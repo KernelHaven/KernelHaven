@@ -99,7 +99,7 @@ public class TableCollectionFactoryTest {
      */
     @Test
     public void testCsv() throws IOException {
-        ITableCollection collection = TableCollectionFactory.openFile(new File("test.csv"));
+        ITableCollection collection = TableCollectionFactory.INSTANCE.openFile(new File("test.csv"));
         assertThat(collection, CoreMatchers.instanceOf(CsvFileSet.class));
         collection.close();
     }
@@ -111,8 +111,8 @@ public class TableCollectionFactoryTest {
      */
     @Test
     public void testNewHandler() throws IOException {
-        TableCollectionFactory.registerHandler("something", TestHandler.class);
-        ITableCollection collection = TableCollectionFactory.openFile(new File("test.something"));
+        TableCollectionFactory.INSTANCE.registerHandler("something", TestHandler.class);
+        ITableCollection collection = TableCollectionFactory.INSTANCE.openFile(new File("test.something"));
         assertThat(collection, CoreMatchers.instanceOf(TestHandler.class));
         collection.close();
     }
@@ -125,7 +125,7 @@ public class TableCollectionFactoryTest {
      */
     @Test(expected = IOException.class)
     public void testInvalidTsv() throws IOException {
-        TableCollectionFactory.openFile(new File("test.tsv"));
+        TableCollectionFactory.INSTANCE.openFile(new File("test.tsv"));
     }
     
     /**
@@ -136,7 +136,7 @@ public class TableCollectionFactoryTest {
      */
     @Test(expected = IOException.class)
     public void testInvalidTxt() throws IOException {
-        TableCollectionFactory.openFile(new File("test.txt"));
+        TableCollectionFactory.INSTANCE.openFile(new File("test.txt"));
     }
     
     /**
@@ -146,7 +146,7 @@ public class TableCollectionFactoryTest {
      */
     @Test(expected = IOException.class)
     public void testNoSuffix() throws IOException {
-        TableCollectionFactory.openFile(new File("some_file_name"));
+        TableCollectionFactory.INSTANCE.openFile(new File("some_file_name"));
     }
     
     /**
@@ -156,7 +156,7 @@ public class TableCollectionFactoryTest {
      */
     @Test(expected = IOException.class)
     public void testEmptySuffix() throws IOException {
-        TableCollectionFactory.openFile(new File("some_file_name."));
+        TableCollectionFactory.INSTANCE.openFile(new File("some_file_name."));
     }
     
     /**
@@ -167,8 +167,8 @@ public class TableCollectionFactoryTest {
      */
     @Test(expected = IOException.class)
     public void testInvalidHandler() throws IOException {
-        TableCollectionFactory.registerHandler("something", InvalidHandler.class);
-        TableCollectionFactory.openFile(new File("test.something"));
+        TableCollectionFactory.INSTANCE.registerHandler("something", InvalidHandler.class);
+        TableCollectionFactory.INSTANCE.openFile(new File("test.something"));
     }
     
 }

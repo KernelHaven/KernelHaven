@@ -1,12 +1,12 @@
 package net.ssehub.kernel_haven.util.io;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
+import net.ssehub.kernel_haven.util.AbstractHandlerRegistry;
 import net.ssehub.kernel_haven.util.io.csv.CsvFileSet;
-import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Factory for creating {@link ITableCollection}s for single files based on filename suffix. Handlers can register
@@ -14,38 +14,18 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  *  
  * @author Adam
  */
-public class TableCollectionFactory {
-
-    private static final Map<String, Class<? extends ITableCollection>> HANDLERS;
-    
-    static {
-        HANDLERS = new HashMap<>();
-        HANDLERS.put("csv", CsvFileSet.class);
-        
-        // invoke static blocks for known ITableCollections
-        // TODO: refactor this properly
-        try {
-            Class.forName("net.ssehub.kernel_haven.io.excel.ExcelBook");
-        } catch (ClassNotFoundException e) {
-            // ignore
-        }
-    }
+public class TableCollectionFactory extends AbstractHandlerRegistry<String, ITableCollection> {
 
     /**
-     * Don't allow any instances.
+     * The singleton instance for this factory.
+     */
+    public static final TableCollectionFactory INSTANCE = new TableCollectionFactory();
+    
+    /**
+     * Only used for singleton instance.
      */
     private TableCollectionFactory() {
-    }
-    
-    /**
-     * Registers a handler for a given file suffix. The handler class must have a constructor that takes a single
-     * {@link File} argument. If a handler with the same suffix already exists, this new one replaces it.
-     * 
-     * @param suffix The file suffix, without the "."; e.g. "csv" or "xlsx".
-     * @param handler The handler class.
-     */
-    public static void registerHandler(@NonNull String suffix, @NonNull Class<? extends ITableCollection> handler) {
-        HANDLERS.put(suffix, handler);
+        registerHandler("csv", CsvFileSet.class);
     }
     
     /**
@@ -56,15 +36,15 @@ public class TableCollectionFactory {
      * 
      * @throws IOException If no handler is available for the given file, or instantiating the handler fails.
      */
-    public static ITableCollection openFile(File file) throws IOException {
+    public ITableCollection openFile(File file) throws IOException {
         int dotIndex = file.getName().lastIndexOf('.');
         
         if (dotIndex == -1 || dotIndex == file.getName().length() - 1) {
             throw new IOException("Filename \"" + file.getName() + "\" has no suffix");
         }
         
-        String suffix = file.getName().substring(dotIndex + 1);
-        Class<? extends ITableCollection> handlerClass = HANDLERS.get(suffix);
+        String suffix = notNull(file.getName().substring(dotIndex + 1));
+        Class<? extends ITableCollection> handlerClass = getHandler(suffix);
         
         if (handlerClass == null) {
             throw new IOException("No handler for suffix " + suffix);
