@@ -187,23 +187,7 @@ public class Configuration {
                 break;
             }
             case FILE: {
-                File f = new File(value);
-                if (!f.isFile() && doChecks) {
-                    
-                    File base = getValue(DefaultSettings.SOURCE_TREE);
-                    if (!f.isAbsolute() && null != base) {
-                        File tmp = new File(base, value);
-                        if (tmp.isFile()) {
-                            f = tmp;
-                        }
-                    }
-                    
-                    if (!f.isFile()) {
-                        throw new SetUpException("Value for setting " + key + " = " + f.getAbsolutePath()
-                            + " is not an existing file");
-                    }
-                }
-                result = f;
+                result = readFile(key, value);
                 break;
             }
             case PATH:
@@ -231,6 +215,40 @@ public class Configuration {
                 throw new SetUpException("Unknown setting type " + setting.getType() + " for setting " + key);
             }
         }
+        return result;
+    }
+
+    /**
+     * Reads a {@link File} value from the properties, based on the key, type and value of the given setting.
+     * 
+     * @param key The setting to read the value for.
+     * @param value The string value to convert
+     * @return The value for the given setting.
+     * 
+     * @throws SetUpException If any constraints of the setting are violated.
+     */
+    private Object readFile(String key, String value) throws SetUpException {
+        Object result;
+        File f = new File(value);
+        if (!f.isFile() && doChecks) {
+            
+            File base = null;
+            if (values.containsKey(DefaultSettings.SOURCE_TREE)) {
+                base = getValue(DefaultSettings.SOURCE_TREE);
+            }
+            if (!f.isAbsolute() && null != base) {
+                File tmp = new File(base, value);
+                if (tmp.isFile()) {
+                    f = tmp;
+                }
+            }
+            
+            if (!f.isFile()) {
+                throw new SetUpException("Value for setting " + key + " = " + f.getAbsolutePath()
+                    + " is not an existing file");
+            }
+        }
+        result = f;
         return result;
     }
     
