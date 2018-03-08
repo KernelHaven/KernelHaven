@@ -189,7 +189,19 @@ public class Configuration {
             case FILE: {
                 File f = new File(value);
                 if (!f.isFile() && doChecks) {
-                    throw new SetUpException("Value for setting " + key + " is not an existing file"); 
+                    
+                    File base = getValue(DefaultSettings.SOURCE_TREE);
+                    if (!f.isAbsolute() && null != base) {
+                        File tmp = new File(base, value);
+                        if (tmp.isFile()) {
+                            f = tmp;
+                        }
+                    }
+                    
+                    if (!f.isFile()) {
+                        throw new SetUpException("Value for setting " + key + " = " + f.getAbsolutePath()
+                            + " is not an existing file");
+                    }
                 }
                 result = f;
                 break;
