@@ -2,7 +2,6 @@ package net.ssehub.kernel_haven.config;
 
 import static net.ssehub.kernel_haven.config.Setting.Type.BOOLEAN;
 import static net.ssehub.kernel_haven.config.Setting.Type.DIRECTORY;
-import static net.ssehub.kernel_haven.config.Setting.Type.FILE;
 import static net.ssehub.kernel_haven.config.Setting.Type.INTEGER;
 import static net.ssehub.kernel_haven.config.Setting.Type.REGEX;
 import static net.ssehub.kernel_haven.config.Setting.Type.SETTING_LIST;
