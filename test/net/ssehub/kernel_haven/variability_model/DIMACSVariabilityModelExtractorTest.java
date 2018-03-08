@@ -41,24 +41,6 @@ public class DIMACSVariabilityModelExtractorTest {
     }
     
     /**
-     * Tests correct error message if non existing input file was specified.
-     */
-    @Test
-    public void testNonExistingFileSpecified() {
-        DIMACSVariabilityModelExtractor extractor = new DIMACSVariabilityModelExtractor();
-        try {
-            Properties prop = new Properties();
-            prop.setProperty(DefaultSettings.VARIABILITY_INPUT_FILE.getKey(), "non_exisiting_file.dimacs");
-            extractor.init(new TestConfiguration(prop));
-            Assert.fail("No error produced if unexisiting input file is specified.");
-        } catch (SetUpException e) {
-            String errMsg = e.getMessage();
-            Assert.assertTrue(errMsg.startsWith(DefaultSettings.VARIABILITY_INPUT_FILE.getKey() + " = "));
-            Assert.assertTrue(errMsg.endsWith(" does not exist."));
-        }
-    }
-    
-    /**
      * Tests parsing of a DIMACS file.
      * With the following specification:
      * <ul>

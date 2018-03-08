@@ -2,6 +2,7 @@ package net.ssehub.kernel_haven.config;
 
 import static net.ssehub.kernel_haven.config.Setting.Type.BOOLEAN;
 import static net.ssehub.kernel_haven.config.Setting.Type.DIRECTORY;
+import static net.ssehub.kernel_haven.config.Setting.Type.FILE;
 import static net.ssehub.kernel_haven.config.Setting.Type.INTEGER;
 import static net.ssehub.kernel_haven.config.Setting.Type.REGEX;
 import static net.ssehub.kernel_haven.config.Setting.Type.SETTING_LIST;
@@ -21,7 +22,6 @@ import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.analysis.ConfiguredPipelineAnalysis;
 import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
 import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
-import net.ssehub.kernel_haven.config.Setting.Type;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -72,7 +72,7 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull List<String>> ANALYSIS_COMPONENTS_LOG = new Setting<>("analysis.output.intermediate_results", STRING_LIST, true, "", "Specifies which analysis components (simple class name) of a PipelineAnalysis should output their intermediate results. These will be written in addition to the result of the main component.");
     public static final @NonNull Setting<@NonNull String> ANALYSIS_PIPELINE = new Setting<>("analysis.pipeline", STRING, true, "", "A string specifying a pipeline of analyis components. This only has an effect if " + ANALYSIS_CLASS.getKey() + " is set to " + ConfiguredPipelineAnalysis.class.getName() + "."); // TODO specify format
     public static final @NonNull Setting<@NonNull String> ANALYSIS_RESULT = new Setting<>("analysis.output.type", STRING, false, "csv", "A file suffix that specifies which kind of output writer shall be used. If IOUtils is used, then xls or xlsx can be used here.");
-    public static final @NonNull Setting<@NonNull Boolean> ANALYSIS_USE_VARMODEL_VARIABLES_ONLY = new Setting<>("analysis.consider_vm_vars_only", Type.BOOLEAN, true, "false", "Defines whether the analysis should only consider variables that are present in the variability model.");
+    public static final @NonNull Setting<@NonNull Boolean> ANALYSIS_USE_VARMODEL_VARIABLES_ONLY = new Setting<>("analysis.consider_vm_vars_only", BOOLEAN, true, "false", "Defines whether the analysis should only consider variables that are present in the variability model.");
     
     /*
      * Common extractor parameters
@@ -90,11 +90,11 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull Boolean> CODE_PROVIDER_CACHE_WRITE = new Setting<>("code.provider.cache.write", BOOLEAN, true, "false", "Defines whether the code model provider will write its results to the cache directory.");
     public static final @NonNull Setting<@NonNull Boolean> CODE_PROVIDER_CACHE_READ = new Setting<>("code.provider.cache.read", BOOLEAN, true, "false", "Defines whether the code model provider is allowed to read the cache instead of starting the extractor.");
     public static final @NonNull Setting<@NonNull Boolean> CODE_PROVIDER_CACHE_COMPRESS = new Setting<>("code.provider.cache.compress", BOOLEAN, true, "false", "Whether the individual cache files for the code model should written as compressed Zip archives. Reading of compressed cache files is always supported.");
-    public static final @NonNull Setting<@NonNull List<String>> CODE_EXTRACTOR_FILES = new Setting<>("code.extractor.files", Type.STRING_LIST, true, "", "Defines which files the code extractor should run on. Comma separated list of paths relative to the source tree. If directories are listed, then they are searched recursively for files that match the regular expression specified in code.extractor.file_regex. Set to an empty string to specify the complete source tree.");
+    public static final @NonNull Setting<@NonNull List<String>> CODE_EXTRACTOR_FILES = new Setting<>("code.extractor.files", STRING_LIST, true, "", "Defines which files the code extractor should run on. Comma separated list of paths relative to the source tree. If directories are listed, then they are searched recursively for files that match the regular expression specified in code.extractor.file_regex. Set to an empty string to specify the complete source tree.");
     public static final @NonNull Setting<@NonNull Pattern> CODE_EXTRACTOR_FILE_REGEX = new Setting<>("code.extractor.file_regex", REGEX, true, ".*\\.c", "A Java regular expression defining which files are considered to be source files for parsing. See code.extractor.files for a description on which files this expression is tested on."); 
     public static final @NonNull Setting<@NonNull Integer> CODE_EXTRACTOR_THREADS = new Setting<>("code.extractor.threads", INTEGER, true, "1", "The number of threads the code extractor should use. This many files are parsed in parallel.");
     
-    public static final @NonNull Setting<@NonNull Boolean> FUZZY_PARSING = new Setting<>("code.extractor.fuzzy_parsing", Type.BOOLEAN, true, "false", "Defines whether non-boolean conditions that are encountered in the code should be (fuzzily) convereted into boolean conditions, instead of throwing an exception. For example, this replaces (A == 1) && B with A_eq_1 && B.");
+    public static final @NonNull Setting<@NonNull Boolean> FUZZY_PARSING = new Setting<>("code.extractor.fuzzy_parsing", BOOLEAN, true, "false", "Defines whether non-boolean conditions that are encountered in the code should be (fuzzily) convereted into boolean conditions, instead of throwing an exception. For example, this replaces (A == 1) && B with A_eq_1 && B.");
     
     /*
      * Build model parameters
@@ -113,7 +113,7 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull Integer> VARIABILITY_PROVIDER_TIMEOUT = new Setting<>("variability.provider.timeout", INTEGER, true, "0", "The maximum time the provider waits for the results of the extractor until an exception is thrown. In milliseconds; 0 = no timeout used.");
     public static final @NonNull Setting<@NonNull Boolean> VARIABILITY_PROVIDER_CACHE_WRITE = new Setting<>("variability.provider.cache.write", BOOLEAN, true, "false", "Defines whether the variability model provider will write its results to the cache directory.");
     public static final @NonNull Setting<@NonNull Boolean> VARIABILITY_PROVIDER_CACHE_READ = new Setting<>("variability.provider.cache.read", BOOLEAN, true, "false", "Defines whether the variability model provider is allowed to read the cache instead of starting the extractor.");
-    public static final @NonNull Setting<@Nullable File> VARIABILITY_INPUT_FILE = new Setting<>("variability.input.file", Type.PATH, false, null, "Path of a single file to be parsed by a variability model extractor.");
+    public static final @NonNull Setting<@Nullable File> VARIABILITY_INPUT_FILE = new Setting<>("variability.input.file", FILE, false, null, "Path of a single file to be parsed by a variability model extractor.");
     
     /*
      * Other

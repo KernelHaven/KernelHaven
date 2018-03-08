@@ -40,15 +40,6 @@ public class DIMACSVariabilityModelExtractor extends AbstractVariabilityModelExt
             throw new SetUpException(DefaultSettings.VARIABILITY_INPUT_FILE.getKey() + " was not specified, it must "
                 + "point to input DIMACS file.");
         }
-        if (!dimacsfile.exists()) {
-            File srcDir = config.getValue(DefaultSettings.SOURCE_TREE);
-            dimacsfile = new File(srcDir, dimacsfile.getPath());
-            
-            if (!dimacsfile.exists()) {
-                throw new SetUpException(DefaultSettings.VARIABILITY_INPUT_FILE.getKey() + " = "
-                    + dimacsfile.getAbsolutePath() + " does not exist.");
-            }
-        }
     }
 
     @SuppressWarnings("null") // Unfortunately, the code in this method cannot be annotated, otherwise Jacoco will crash
