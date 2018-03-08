@@ -41,7 +41,9 @@ public class Setting<T> {
         DIRECTORY,
         
         /**
-         * A {@link File} pointing to an existing file. Generic should be {@link File}.
+         * A {@link File} pointing to an existing file. Generic should be {@link File}. The path may be absolute,
+         * relative to current working directory, or relative to the source_tree setting (first match in this order is
+         * used).
          */
         FILE,
         

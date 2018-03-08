@@ -187,11 +187,7 @@ public class Configuration {
                 break;
             }
             case FILE: {
-                File f = new File(value);
-                if (!f.isFile() && doChecks) {
-                    throw new SetUpException("Value for setting " + key + " is not an existing file"); 
-                }
-                result = f;
+                result = readFileValue(key, value);
                 break;
             }
             case PATH:
@@ -220,6 +216,41 @@ public class Configuration {
             }
         }
         return result;
+    }
+
+    /**
+     * Reads a {@link Setting.Type#FILE} value. The value can either be an abosulte, working directory relative or
+     * source_tree relative path.
+     * 
+     * @param key The key of the setting (used for exception message).
+     * @param value The value of the setting.
+     * @return A {@link File} specified by the value.
+     * 
+     * @throws SetUpException If checks are enabled and no such file exists.
+     */
+    private @Nullable File readFileValue(@NonNull String key, @NonNull String value) throws SetUpException {
+        File f = new File(value);
+        if (!f.isFile()) {
+            
+            // if the value isn't absolute and we have a source_tree setting, then try to create the file
+            // relative to the source tree
+            if (!f.isAbsolute() && values.containsKey(DefaultSettings.SOURCE_TREE.getKey())) {
+                f = new File(getValue(DefaultSettings.SOURCE_TREE), f.getPath());
+            }
+            
+            // we still haven't found a valid file
+            if (!f.isFile()) {
+                if (doChecks) {
+                    // if checks are enable, throw an exception
+                    throw new SetUpException("Value for setting " + key + " is not an existing file"); 
+                } else {
+                    // else return to the original; we don't want to have files always relative to source_tree
+                    // if checks are disabled
+                    f = new File(value);
+                }
+            }
+        }
+        return f;
     }
     
     /**

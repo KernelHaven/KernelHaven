@@ -154,6 +154,9 @@ public class DefaultSettings {
      * @throws SetUpException If any setting restrictions are violated.
      */
     public static void registerAllSettings(@NonNull Configuration config) throws SetUpException {
+        // make sure that SOURCE_TREE is registered first, so that FILE types can be relative to this value
+        config.registerSetting(SOURCE_TREE);
+        
         for (Setting<?> setting : SETTINGS) {
             config.registerSetting(setting);
         }

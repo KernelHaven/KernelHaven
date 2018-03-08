@@ -13,6 +13,7 @@ import static net.ssehub.kernel_haven.config.Setting.Type.STRING_LIST;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.Arrays;
@@ -154,6 +155,45 @@ public class ConfigurationTest {
         assertThat(config.getValue(s1), nullValue());
         assertThat(config.getValue(s2), is(new File("testdata/configs/gigantic.properties")));
         assertThat(config.getValue(s3), is(new File("testdata/configs/minimal.properties")));
+    }
+    
+    /**
+     * Tests that file values are found relative to the source tree.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testFileValueRelativeToSourceTree() throws SetUpException {
+        Setting<File> s1 = new Setting<>("s1", FILE, true, null, "");
+        Setting<File> s2 = new Setting<>("s2", FILE, true, null, "");
+        Setting<File> s3 = new Setting<>("s3", FILE, true, null, "");
+        
+        Properties props = new Properties();
+        props.setProperty("source_tree", "testdata/configs/source_tree");
+        props.setProperty("s1", "file_in_source_tree.txt");
+        props.setProperty("s2", "doesnt_exist");
+        props.setProperty("s3", new File(File.listRoots()[0], "file_in_source_tree.txt").getAbsolutePath());
+        Configuration config = new Configuration(props);
+        config.registerSetting(DefaultSettings.SOURCE_TREE);
+        config.registerSetting(s1);
+        
+        assertThat(config.getValue(s1), is(new File("testdata/configs/source_tree/file_in_source_tree.txt")));
+        
+        try {
+            // this one exists neither as absolute, working directory relative nor source tree relative
+            config.registerSetting(s2);
+            fail("expected exception");
+        } catch (SetUpException e) {
+            // expected
+        }
+        
+        try {
+            // this one is given as absolute, so don't try to convert it to source_tree relative
+            config.registerSetting(s3);
+            fail("expected exception");
+        } catch (SetUpException e) {
+            // expected
+        }
     }
     
     /**
