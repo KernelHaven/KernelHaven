@@ -41,8 +41,13 @@ public class DIMACSVariabilityModelExtractor extends AbstractVariabilityModelExt
                 + "point to input DIMACS file.");
         }
         if (!dimacsfile.exists()) {
-            throw new SetUpException(DefaultSettings.VARIABILITY_INPUT_FILE.getKey() + " = "
-                + dimacsfile.getAbsolutePath() + " does not exist.");
+            File srcDir = config.getValue(DefaultSettings.SOURCE_TREE);
+            dimacsfile = new File(srcDir, dimacsfile.getPath());
+            
+            if (!dimacsfile.exists()) {
+                throw new SetUpException(DefaultSettings.VARIABILITY_INPUT_FILE.getKey() + " = "
+                    + dimacsfile.getAbsolutePath() + " does not exist.");
+            }
         }
     }
 
