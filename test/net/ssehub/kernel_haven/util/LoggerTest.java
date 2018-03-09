@@ -149,6 +149,33 @@ public class LoggerTest {
     }
     
     /**
+     * Test logging of exceptions with a message with multiple lines.
+     */
+    @Test
+    public void testLogMultilineException() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Logger l = LOGGER; // just a shortcut
+        l.addTarget(out);
+
+        try {
+            throw new LoggerTestException("This is a test\nanother line");
+        } catch (LoggerTestException e) {
+            l.logException("This is the comment", e);
+        }
+
+        String[] lines = out.toString().split("\n");
+        Assert.assertThat(lines[0], endsWith("This is the comment:"));
+        Assert.assertThat(lines[1].trim(),
+                equalTo("net.ssehub.kernel_haven.util.LoggerTest$LoggerTestException: This is a test"));
+        Assert.assertThat(lines[2].trim(),
+                equalTo("another line"));
+        Assert.assertThat(lines[2], startsWith(" "));
+        for (int i = 3; i < lines.length; i++) {
+            Assert.assertTrue(lines[i].trim().startsWith("at "));
+        }
+    }
+    
+    /**
      * Test logging of <code>null</code> exceptions.
      */
     @Test

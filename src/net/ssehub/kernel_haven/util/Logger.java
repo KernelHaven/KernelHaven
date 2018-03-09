@@ -385,7 +385,10 @@ public final class Logger {
      *            not be null.
      */
     private void exceptionToString(@NonNull Throwable exc, @NonNull List<String> lines) {
-        lines.add(exc.toString());
+        String[] headerLines = exc.toString().split("\n");
+        for (String headerLine : headerLines) {
+            lines.add(headerLine);
+        }
 
         StackTraceElement[] stack = exc.getStackTrace();
         for (int i = 0; i < stack.length; i++) {
