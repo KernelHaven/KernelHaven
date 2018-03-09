@@ -5,7 +5,7 @@ package net.ssehub.kernel_haven.util.logic.parser;
  * 
  * @author Adam (from KernelMiner project)
  */
-public final class Operator extends Token {
+public final class Operator {
 
     private String symbol;
     

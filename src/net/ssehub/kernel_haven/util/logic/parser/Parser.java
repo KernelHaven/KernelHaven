@@ -15,7 +15,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * @author Adam (from KernelMiner project)
  */
-public class Parser<T> {
+public final class Parser<T> {
     
     private @NonNull Grammar<T> grammar;
     
@@ -69,22 +69,22 @@ public class Parser<T> {
                 
             } else  if (grammar.isOpeningBracketChar(expr, i)) {
                 currentIdentifier = null;
-                result.add(new Bracket(false));
+                result.add(new Bracket(i, false));
                 i += 1;
                 
             } else if (grammar.isClosingBracketChar(expr, i)) {
                 currentIdentifier = null;
-                result.add(new Bracket(true));
+                result.add(new Bracket(i, true));
                 i += 1;
                 
             } else if (op != null) {
                 currentIdentifier = null;
-                result.add(op);
+                result.add(new OperatorToken(i, op));
                 i += op.getSymbol().length();
                 
             } else if (grammar.isIdentifierChar(expr, i)) {
                 if (currentIdentifier == null) {
-                    currentIdentifier = new Identifier("");
+                    currentIdentifier = new Identifier(i, "");
                     result.add(currentIdentifier);
                 }
                 currentIdentifier.setName(currentIdentifier.getName() + expr[i]);
@@ -130,19 +130,20 @@ public class Parser<T> {
 
         // if we have  no tokens left then something went wrong
         if (max - min < 0) {
-            throw makeException(expression, "Expected identifier", -1);
+            throw makeException(expression, "Expected identifier", getTokenPos(tokens, max, min));
         }
         
         // if we only have one token left, then it must be an identifier
         if (max - min == 0) {
             if (!(tokens[min] instanceof Identifier)) {
-                throw makeException(expression, "Expected identifier, got " + tokens[min], -1);
+                throw makeException(expression, "Expected identifier, got " + tokens[min], getTokenPos(tokens, min));
             }
             
             try {
                 return grammar.makeIdentifierFormula(((Identifier) tokens[min]).getName());
             } catch (ExpressionFormatException e) {
-                ExpressionFormatException newExc = makeException(expression, notNull(e.getMessage()), -1);
+                ExpressionFormatException newExc = makeException(expression, notNull(e.getMessage()),
+                        getTokenPos(tokens, min));
                 newExc.setStackTrace(e.getStackTrace());
                 throw newExc;
             }
@@ -164,11 +165,11 @@ public class Parser<T> {
                 }
                 
                 if (bracketDepth < 0) {
-                    throw makeException(expression, "Unbalanced brackets", -1);
+                    throw makeException(expression, "Unbalanced brackets", getTokenPos(tokens, i));
                 }
                 
-            } else if (e instanceof Operator) {
-                Operator op = (Operator) e;
+            } else if (e instanceof OperatorToken) {
+                Operator op = ((OperatorToken) e).getOperator();
                 
                 // if ...
                 if (
@@ -189,7 +190,7 @@ public class Parser<T> {
         }
         
         if (bracketDepth != 0) {
-            throw makeException(expression, "Unbalanced brackets", -1);
+            throw makeException(expression, "Unbalanced brackets", getTokenPos(tokens, min, max));
         }
         
         T result = null;
@@ -228,21 +229,23 @@ public class Parser<T> {
                 try {
                     result = grammar.makeBinaryFormula(ho.highestOp, leftTree, rightTree);
                 } catch (ExpressionFormatException e) {
-                    ExpressionFormatException newExc = makeException(expression, notNull(e.getMessage()), -1);
+                    ExpressionFormatException newExc = makeException(expression, notNull(e.getMessage()),
+                            ho.highestOpPos);
                     newExc.setStackTrace(e.getStackTrace());
                     throw newExc;
                 }
                 
             } else {
                 if (ho.highestOpPos != min) {
-                    throw makeException(expression, "Unary operator is not on the left", -1);
+                    throw makeException(expression, "Unary operator is not on the left", ho.highestOpPos);
                 }
                 
                 T childFormula = parse(tokens, min + 1, max, expression);
                 try {
                     result = grammar.makeUnaryFormula(ho.highestOp, childFormula);
                 } catch (ExpressionFormatException e) {
-                    ExpressionFormatException newExc = makeException(expression, notNull(e.getMessage()), -1);
+                    ExpressionFormatException newExc = makeException(expression, notNull(e.getMessage()),
+                            ho.highestOpPos);
                     newExc.setStackTrace(e.getStackTrace());
                     throw newExc;
                 }
@@ -252,14 +255,14 @@ public class Parser<T> {
             // unpack the brackets and recursively call parse()
             
             if (!(tokens[min] instanceof Bracket) || !(tokens[max] instanceof Bracket)) {
-                throw makeException(expression, "Couldn't find operator", -1);
+                throw makeException(expression, "Couldn't find operator", getTokenPos(tokens, min, max));
             }
             
             Bracket first = (Bracket) tokens[min];
             Bracket last = (Bracket) tokens[max];
             
             if (first.isClosing() || !last.isClosing()) {
-                throw makeException(expression, "Unbalanced brackets", -1);
+                throw makeException(expression, "Unbalanced brackets", getTokenPos(tokens, min, max));
             }
             
             result = parse(tokens, min + 1, max - 1, expression);
@@ -272,22 +275,84 @@ public class Parser<T> {
      * 
      * @param expression The formula that couldn't be parsed.
      * @param message The message describing the exception.
-     * @param index The index where in the formula the exception occurred. -1 means unknown.
+     * @param markers The indices for characters in the expression where markers should be displayed. Must be sorted
+     *      ascending.
      * 
      * @return The exception with the proper error message.
      */
     private @NonNull ExpressionFormatException makeException(@NonNull String expression, @NonNull String message,
-            int index) {
+            int ... markers) {
         
         StringBuilder fullMessage = new StringBuilder(message).append("\nIn formula: ").append(expression);
-        if (index >= 0) {
+        if (markers.length > 0) {
             fullMessage.append("\n            ");
-            for (int i = 0; i < index; i++) {
-                fullMessage.append(' ');
+            int markersIndex = 0;
+            for (int i = 0; markersIndex < markers.length; i++) {
+                if (i == markers[markersIndex]) {
+                    fullMessage.append('^');
+                    markersIndex++;
+                    
+                } else {
+                    fullMessage.append(' ');
+                }
             }
-            fullMessage.append('^');
         }
         return new ExpressionFormatException(fullMessage.toString());
+    }
+    
+    /**
+     * Returns the position of the token in the given array.
+     * 
+     * @param tokens The list of tokens to get the single token position from.
+     * @param index The index of the token in the array.
+     * 
+     * @return The position of the given token; empty array if index is out of bounds.
+     */
+    private int[] getTokenPos(Token[] tokens, int index) {
+        int pos = -1;
+        if (index >= 0 && index < tokens.length) {
+            pos = tokens[index].getPos();
+        }
+        if (index == tokens.length && tokens.length != 0) {
+            pos = tokens[index - 1].getPos() + tokens[index - 1].getLength();
+        }
+        
+        int[] result;
+        if (pos != -1) {
+            result = new int[] {pos};
+        } else {
+            result = new int[0];
+        }
+        return result;
+    }
+    
+    /**
+     * Returns the position of the two token in the given array.
+     * 
+     * @param tokens The list of tokens to get the single token position from.
+     * @param index1 The index of the first token in the array.
+     * @param index2 The index of the second token in the array.
+     * 
+     * @return The position of the given token; empty array if index is out of bounds.
+     */
+    private int[] getTokenPos(Token[] tokens, int index1, int index2) {
+        int[] pos1 = getTokenPos(tokens, index1);
+        int[] pos2 = getTokenPos(tokens, index2);
+        
+        int[] result;
+        if (pos1.length > 0 && pos2.length > 0) {
+            result = new int[] {pos1[0], pos2[0]};
+            
+        } else if (pos1.length > 0) {
+            result = new int[] {pos1[0]};
+            
+        } else if (pos2.length > 0) {
+            result = new int[] {pos1[0]};
+            
+        } else {
+            result = new int[0];
+        }
+        return result;
     }
     
 }

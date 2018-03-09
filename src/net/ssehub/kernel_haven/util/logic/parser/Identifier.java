@@ -12,9 +12,11 @@ public final class Identifier extends Token {
     /**
      * Creates an identifier token.
      * 
+     * @param pos The position in the expression where this token starts.
      * @param name The name of the identifier.
      */
-    public Identifier(String name) {
+    public Identifier(int pos, String name) {
+        super(pos);
         this.name = name;
     }
     
@@ -34,6 +36,11 @@ public final class Identifier extends Token {
      */
     public void setName(String name) {
         this.name = name;
+    }
+    
+    @Override
+    public int getLength() {
+        return name.length();
     }
     
     @Override

@@ -12,9 +12,11 @@ public final class Bracket extends Token {
     /**
      * Creates a bracket token.
      * 
+     * @param pos The position in the expression where this token starts.
      * @param closing Whether this is an opening or a closing bracket.
      */
-    public Bracket(boolean closing) {
+    public Bracket(int pos, boolean closing) {
+        super(pos);
         this.closing = closing;
     }
     
@@ -25,6 +27,11 @@ public final class Bracket extends Token {
      */
     public boolean isClosing() {
         return closing;
+    }
+    
+    @Override
+    public int getLength() {
+        return 1;
     }
     
     @Override
