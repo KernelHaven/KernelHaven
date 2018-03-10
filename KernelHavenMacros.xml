@@ -90,33 +90,77 @@
 	</target>
 
 	<target name="jar">
+		<!-- only one of these targets is executed, depending whether main.class is set or not -->
+		<antcall target="KH_Common.jar.nomainclass" />
+		<antcall target="KH_Common.jar.withmainclass" />
+	</target>
+
+	<target name="jar.nomainclass" unless="main.class">
 		<jar destfile="${jar.dir}/${jar.filename}" duplicate="preserve">
 			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
 			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
 
-			<!-- Automatically inclued all libraries from lib/include folder -->
+			<!-- Automatically include all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
 		</jar>
 	</target>
 
+	<target name="jar.withmainclass" if="main.class">
+		<jar destfile="${jar.dir}/${jar.filename}" duplicate="preserve">
+			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
+			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
+
+			<!-- Automatically include all libraries from lib/include folder -->
+			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
+
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+				<attribute name="Class-Path" value="" />
+			</manifest>
+		</jar>
+	</target>
+
 	<target name="jarwithsources">
+		<!-- only one of these targets is executed, depending whether main.class is set or not -->
+		<antcall target="KH_Common.jarwithsources.nomainclass" />
+		<antcall target="KH_Common.jarwithsources.withmainclass" />
+	</target>
+
+	<target name="jarwithsources.nomainclass" unless="main.class">
 		<jar destfile="${jar.dir}/${jar.filename.withsource}" duplicate="preserve">
 			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
 			<fileset dir="${src.dir}" excludes="**/package-info.java" />
 			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
 
-			<!-- Automatically inclued all libraries from lib/include folder -->
+			<!-- Automatically include all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
 		</jar>
 	</target>
 
+	<target name="jarwithsources.withmainclass" if="main.class">
+		<jar destfile="${jar.dir}/${jar.filename.withsource}" duplicate="preserve">
+			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
+			<fileset dir="${src.dir}" excludes="**/package-info.java" />
+			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
+
+			<!-- Automatically include all libraries from lib/include folder -->
+			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
+
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+				<attribute name="Class-Path" value="" />
+			</manifest>
+		</jar>
+	</target>
 
 	<target name="prepare.folders">
 		<delete dir="${build.dir}" />
 
 		<mkdir dir="${lib.dir}" />
 		<mkdir dir="${build.dir}" />
+		<mkdir dir="${jar.dir}" />
 		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${test.classes.dir}" />
 		<mkdir dir="${dependencies.dir}" />
 		<mkdir dir="${reports.xml.dir}" />
 		<mkdir dir="${reports.html.dir}" />
@@ -137,7 +181,6 @@
 	</target>
 
 	<target name="test">
-		<mkdir dir="${test.classes.dir}" />
 		<javac destdir="${test.classes.dir}" debug="yes" includeantruntime="false">
 			<src path="${src.dir}" />
 			<src path="${test.dir}" />
@@ -193,8 +236,8 @@
 		</junitreport>
 	</target>
 
-	<!-- Clean-up after testing to reduce required diskapce for archiving results on Jenkins.
-	     Must be called after JAR creation, bevore creating Jacoco results (or at least before Jenkins will publish them. -->
+	<!-- Clean-up after testing to reduce required diskspace for archiving results on Jenkins.
+	     Must be called after JAR creation, before creating Jacoco results (or at least before Jenkins will publish them. -->
 	<target name="cleanup">
 		<delete failonerror="false">
 			<fileset dir="${classes.dir}">
