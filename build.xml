@@ -3,7 +3,7 @@
 
 <!-- author: moritz, kevin -->
 <project name="KernelHaven" default="jenkins" basedir="." xmlns:jacoco="antlib:org.jacoco.ant" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle.ant">
-	<description>Builds, tests, and runs the project KernelHaven.</description>
+	<description>Infrastructure for performing analyses on software product lines</description>
 
 	<property name="lib.dir" value="${basedir}/lib" />
 	<property name="build.dir" value="${basedir}/build" />

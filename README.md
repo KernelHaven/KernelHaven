@@ -119,8 +119,8 @@ The following table lists commonly used plug-ins for KernelHaven. They mostly fo
     <td><b>Analysis:</b> Detection of dead code and unused variables of the variability model</td>
     <td><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
     <td><ul>
-      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/defaultanalyses.jar">JAR</a></li>
-      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/defaultanalyses_withsource.jar">JAR with sources</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/UnDeadAnalyzer.jar">JAR</a></li>
+      <li><a href="http://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/UnDeadAnalyzer_withsource.jar">JAR with sources</a></li>
     </ul></td>
     <td><img src="http://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_UnDeadAnalyzer" alt="Build Status of UnDeadAnalyzer"></td>
   </tr>
