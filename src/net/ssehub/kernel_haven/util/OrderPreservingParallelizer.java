@@ -101,7 +101,7 @@ public class OrderPreservingParallelizer<Input, Output> {
     
     private @NonNull BlockingQueue<WorkPackage> done;
     
-    private int numWorkersDone = 0;
+    private int numWorkersDone;
     
     private int wpIndex;
     
@@ -112,16 +112,25 @@ public class OrderPreservingParallelizer<Input, Output> {
      * 
      * @param function The function that turns inputs into outputs.
      * @param conusmer The consumer that will receive the outputs.
-     * @param numThreads The number of worker threads to spawn.
+     * @param numThreads The number of worker threads to spawn. Must be greater than 0. This class only makes sense if
+     *      this is greater than 1.
+     *      
+     * @throws IllegalArgumentException If numThreads is &lt;= 0.
      */
     public OrderPreservingParallelizer(@NonNull Function<Input, Output> function, @NonNull Consumer<Output> conusmer,
-            int numThreads) {
+            int numThreads) throws IllegalArgumentException {
+        
+        if (numThreads <= 0) {
+            throw new IllegalArgumentException("Can't spawn " + numThreads + " threads");
+        }
         
         this.function = function;
         this.conusmer = conusmer;
         
         todo = new BlockingQueue<>();
         done = new BlockingQueue<>();
+        
+        numWorkersDone = 0;
         
         start(numThreads);
     }
@@ -189,7 +198,7 @@ public class OrderPreservingParallelizer<Input, Output> {
      * 
      * @throws IllegalStateException If {@link #end()} was already called.
      */
-    public void add(Input input) {
+    public void add(Input input) throws IllegalStateException {
         synchronized (this) {
             todo.add(new WorkPackage(wpIndex, input));
             wpIndex++;
