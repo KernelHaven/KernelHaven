@@ -26,33 +26,33 @@
 		<pathelement location="${classes.dir}" />
 	</path>
 
-	<!-- 
-    Requires that the contents of http://projects.sse.uni-hildesheim.de/tools/ant-lib.zip
-    is copied and placed at <user_home>/.ant/lib
-    To execute this script from Eclipse, Eclipse requires that this folder is also specified at:
-    Window -> Preferences -> ANT -> Runtime -> Add External Folder
-  -->
-  <path id="classpath.testing">
-    <fileset dir="${lib.dir}" />
-    <!-- Loads Junit from ANT installation folder -->
-    <fileset dir="${user.home}/.ant/lib">
-      <include name="junit*.jar"/>
-      <include name="hamcrest*.jar"/>
-    </fileset>
-    <pathelement location="${test.classes.dir}" />
-  </path>
-	
-	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml"/>
+	<!--
+		Requires that the contents of http://projects.sse.uni-hildesheim.de/tools/ant-lib.zip
+		is copied and placed at <user_home>/.ant/lib
+		To execute this script from Eclipse, Eclipse requires that the jars in this folder are also added via:
+		Window -> Preferences -> Ant -> Runtime -> Global Entries -> Add External JARs...
+	-->
+	<path id="classpath.testing">
+		<fileset dir="${lib.dir}" />
+		<!-- Loads Junit from ANT installation folder -->
+		<fileset dir="${user.home}/.ant/lib">
+			<include name="junit*.jar" />
+			<include name="hamcrest*.jar" />
+		</fileset>
+		<pathelement location="${test.classes.dir}" />
+	</path>
 
-	
+	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" />
+
+
 	<target name="jenkins" depends="compile">
-    <antcall target="test" />
-    <antcall target="jar" />
-    <antcall target="jarwithsources" />
-    <antcall target="check" />
-    <antcall target="jacoco_report" />
-    <!-- antcall target="zip_workspace" / -->
-  </target>
+		<antcall target="test" />
+		<antcall target="jar" />
+		<antcall target="jarwithsources" />
+		<antcall target="check" />
+		<antcall target="jacoco_report" />
+		<!-- antcall target="zip_workspace" / -->
+	</target>
 
 	<target name="jar">
 		<jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}" excludes="**/*Test.class, **/*Tests.class, **/package-info.class">
@@ -62,22 +62,22 @@
 			</manifest>
 		</jar>
 	</target>
-	
-	
+
+
 	<target name="jarwithsources">
-    <jar destfile="${jar.dir}/${ant.project.name}_withsource.jar">
-      <manifest>
-        <attribute name="Main-Class" value="${main.class}" />
-        <attribute name="Class-Path" value="" />
-      </manifest>
-      <fileset dir = "${classes.dir}" excludes="**/*Test.class, **/*Tests.class, **/package-info.class" />
-      <fileset dir = "${src.dir}" excludes="**/*Test.java, **/*Tests.java, **/package-info.java"/>
-    </jar>
-  </target>
+		<jar destfile="${jar.dir}/${ant.project.name}_withsource.jar">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+				<attribute name="Class-Path" value="" />
+			</manifest>
+			<fileset dir="${classes.dir}" excludes="**/*Test.class, **/*Tests.class, **/package-info.class" />
+			<fileset dir="${src.dir}" excludes="**/*Test.java, **/*Tests.java, **/package-info.java" />
+		</jar>
+	</target>
 
 	<target name="init">
 		<delete dir="${build.dir}" />
-		
+
 		<mkdir dir="${checkstyle.dir}" />
 		<mkdir dir="${lib.dir}" />
 		<mkdir dir="${classes.dir}" />
@@ -101,69 +101,69 @@
 	</target>
 
 	<target name="test">
-    <mkdir dir="${test.classes.dir}" />
+		<mkdir dir="${test.classes.dir}" />
 		<!-- copy resources for test-classes -->
-    <copy todir="${test.classes.dir}">
-      <fileset dir="${test.dir}">
-        <exclude name="**/*.java" />
-      </fileset>
-    </copy>
+		<copy todir="${test.classes.dir}">
+			<fileset dir="${test.dir}">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
 		<javac destdir="${test.classes.dir}" debug="yes" includeantruntime="false">
-      <src path="${src.dir}"/>
-      <src path="${test.dir}"/>
-      <classpath refid="classpath.testing" />
-    </javac>
-    
-    <copy todir="${test.classes.dir}/testdata">
-      <fileset dir="testdata"/>
-    </copy>
-    
-    <jacoco:coverage destfile="${reports.dir}/jacoco.exec">
-      <junit fork="yes" dir="${test.classes.dir}" failureProperty="test.failed">
-        <!-- Note the classpath order: instrumented classes are before the original 
-                  (uninstrumented) classes. This is important. -->
-        <classpath refid="classpath.testing" />
+			<src path="${src.dir}" />
+			<src path="${test.dir}" />
+			<classpath refid="classpath.testing" />
+		</javac>
 
-        <formatter type="xml" />
-        <test name="${testcase}" todir="${reports.xml.dir}" if="testcase" />
-        <batchtest todir="${reports.xml.dir}" unless="testcase">
-          <!-- include all Tests -->
-          <fileset dir="${test.dir}">
-            <include name="**/AllTests.java" />
-          </fileset>
-          
-          <!-- include all resources from the src-package-folders -->
-          <fileset dir="${src.dir}">
-            <exclude name="**/*.java" />
-          </fileset>
-        </batchtest>
-      </junit>
-    </jacoco:coverage>
-    <!-- JUnit Report in HTML -->
-    <junitreport todir="${reports.xml.dir}">
-      <fileset dir="${reports.xml.dir}">
-        <include name="TEST-*.xml" />
-      </fileset>
-      <report format="frames" todir="${reports.html.dir}" />
-    </junitreport>
+		<copy todir="${test.classes.dir}/testdata">
+			<fileset dir="testdata" />
+		</copy>
+
+		<jacoco:coverage destfile="${reports.dir}/jacoco.exec">
+			<junit fork="yes" dir="${test.classes.dir}" failureProperty="test.failed">
+				<!-- Note the classpath order: instrumented classes are before the original 
+                  (uninstrumented) classes. This is important. -->
+				<classpath refid="classpath.testing" />
+
+				<formatter type="xml" />
+				<test name="${testcase}" todir="${reports.xml.dir}" if="testcase" />
+				<batchtest todir="${reports.xml.dir}" unless="testcase">
+					<!-- include all Tests -->
+					<fileset dir="${test.dir}">
+						<include name="**/AllTests.java" />
+					</fileset>
+
+					<!-- include all resources from the src-package-folders -->
+					<fileset dir="${src.dir}">
+						<exclude name="**/*.java" />
+					</fileset>
+				</batchtest>
+			</junit>
+		</jacoco:coverage>
+		<!-- JUnit Report in HTML -->
+		<junitreport todir="${reports.xml.dir}">
+			<fileset dir="${reports.xml.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${reports.html.dir}" />
+		</junitreport>
 
 		<jar destfile="${jar.dir}/${ant.project.name}_fortesting.jar">
-      <manifest>
-        <attribute name="Main-Class" value="${main.class}" />
-        <attribute name="Class-Path" value="" />
-      </manifest>
-      <fileset dir = "${test.classes.dir}">
-      	<exclude name="testdata/*" />
-      </fileset>
-    </jar>
-	
-  </target>
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+				<attribute name="Class-Path" value="" />
+			</manifest>
+			<fileset dir="${test.classes.dir}">
+				<exclude name="testdata/*" />
+			</fileset>
+		</jar>
+
+	</target>
 
 
 
 	<target name="check">
 
-		<taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties"/>
+		<taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties" />
 
 		<checkstyle config="${basedir}/checkstyle.xml" failOnViolation="false">
 			<fileset dir="src/" includes="**/*.java" />

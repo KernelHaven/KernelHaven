@@ -49,11 +49,11 @@
 		<pathelement location="${classes.dir}" />
 	</path>
 
-	<!-- 
-	  Requires that the contents of http://projects.sse.uni-hildesheim.de/tools/ant-lib.zip
-	  is copied and placed at <user_home>/.ant/lib
-	  To execute this script from Eclipse, Eclipse requires that this folder is also specified at:
-	  Window -> Preferences -> ANT -> Runtime -> Add External Folder
+	<!--
+		Requires that the contents of http://projects.sse.uni-hildesheim.de/tools/ant-lib.zip
+		is copied and placed at <user_home>/.ant/lib
+		To execute this script from Eclipse, is is required that the jars in this folder are also added via:
+		Window -> Preferences -> Ant -> Runtime -> Global Entries -> Add External JARs...
 	-->
 	<path id="classpath.testing">
 		<fileset dir="${lib.dir}" />
@@ -93,7 +93,7 @@
 		<jar destfile="${jar.dir}/${jar.filename}" duplicate="preserve">
 			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
 			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
-				
+
 			<!-- Automatically inclued all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
 		</jar>
@@ -154,7 +154,7 @@
 			<fileset dir="${src.dir}">
 				<exclude name="**/*.java" />
 			</fileset>
-			<fileset dir="${res.dir}" erroronmissingdir="false" >
+			<fileset dir="${res.dir}" erroronmissingdir="false">
 				<exclude name="**/*.java" />
 			</fileset>
 			<fileset dir="${test.dir}">
@@ -164,7 +164,7 @@
 
 		<jacoco:coverage destfile="${reports.dir}/jacoco.exec">
 			<junit fork="yes" dir="${test.classes.dir}" failureProperty="test.failed">
-				<sysproperty key="KH.ANT.Test.Execution" value="true"/>
+				<sysproperty key="KH.ANT.Test.Execution" value="true" />
 				<!-- Note the classpath order: instrumented classes are before the original 
                   (uninstrumented) classes. This is important. -->
 				<classpath refid="classpath.testing" />
@@ -197,28 +197,28 @@
 	     Must be called after JAR creation, bevore creating Jacoco results (or at least before Jenkins will publish them. -->
 	<target name="cleanup">
 		<delete failonerror="false">
-		      <fileset dir="${classes.dir}">
-		        <include name="**/*.zip"/>
-		        <include name="**/*.jar"/>
-		        <include name="**/*.c"/>
-		      	<include name="**/pilztaker"/>
-		      </fileset>
-		      <fileset dir="${test.classes.dir}">
-		        <include name="**/*.zip"/>
-		      	<include name="**/*.jar"/>
-		      	<include name="**/*.c"/>
-		      	<include name="**/pilztaker"/>
-		      </fileset>
-		      <!-- Attention: Please do not commit (Jenkins won't commit anything) -->
-		      <fileset dir="${res.dir}">
-		        <include name="**/*.zip"/>
-		      	<include name="**/*.jar"/>
-		      	<include name="**/*.c"/>
-		      	<include name="**/pilztaker"/>
-		      </fileset>
-	    </delete>
-  </target>
-	
+			<fileset dir="${classes.dir}">
+				<include name="**/*.zip" />
+				<include name="**/*.jar" />
+				<include name="**/*.c" />
+				<include name="**/pilztaker" />
+			</fileset>
+			<fileset dir="${test.classes.dir}">
+				<include name="**/*.zip" />
+				<include name="**/*.jar" />
+				<include name="**/*.c" />
+				<include name="**/pilztaker" />
+			</fileset>
+			<!-- Attention: Please do not commit (Jenkins won't commit anything) -->
+			<fileset dir="${res.dir}">
+				<include name="**/*.zip" />
+				<include name="**/*.jar" />
+				<include name="**/*.c" />
+				<include name="**/pilztaker" />
+			</fileset>
+		</delete>
+	</target>
+
 	<target name="check">
 
 		<taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties" />
@@ -231,7 +231,7 @@
 	</target>
 
 	<target name="jacoco_report">
-		<antcall target="KH_Common.cleanup"/>
+		<antcall target="KH_Common.cleanup" />
 		<jacoco:report>
 			<executiondata>
 				<file file="${reports.dir}/jacoco.exec" />
