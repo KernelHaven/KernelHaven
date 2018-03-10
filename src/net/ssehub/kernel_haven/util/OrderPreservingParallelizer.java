@@ -9,8 +9,8 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * <p>
- * An utility class executes a given function in multiple parallel threads. It also preserves the order of the result;
- * that means that outputs will appear in the same order as their inputs were given.
+ * A utility class that executes a given function in multiple parallel threads. It also preserves the order of the
+ * results; that means that outputs will appear in the same order as their inputs were given.
  * </p>
  * <p>
  * The constructor will get a function and a consumer. The function will turn inputs into outputs. The order in which
@@ -34,7 +34,6 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * // wait until all inputs are processed
  * parallelizer.join();
- * 
  * </pre></code>
  * </p>
  * 
@@ -109,7 +108,7 @@ public class OrderPreservingParallelizer<Input, Output> {
     private Thread collector;
     
     /**
-     * Creates an {@link OrderPreservingParallelizer}.
+     * Creates an {@link OrderPreservingParallelizer}. This already starts the internal worker threads.
      * 
      * @param function The function that turns inputs into outputs.
      * @param conusmer The consumer that will receive the outputs.
@@ -150,7 +149,7 @@ public class OrderPreservingParallelizer<Input, Output> {
                     }
                 }
                 
-            }, "ThreadedFeatureEffectFinder-Worker-" + (i + 1)).start();
+            }, "OrderPreservingParallelizer-Worker-" + (i + 1)).start();
         }
         
         // spawn collector thread
@@ -179,7 +178,7 @@ public class OrderPreservingParallelizer<Input, Output> {
                 
             }
             
-        }, "ThreadedFeatureEffectFinder-Collector");
+        }, "OrderPreservingParallelizer-Collector");
         collector.start();
     }
     
@@ -187,6 +186,8 @@ public class OrderPreservingParallelizer<Input, Output> {
      * Adds another input to be processed. Must not be called after {@link #end()}.
      * 
      * @param input The input to process.
+     * 
+     * @throws IllegalStateException If {@link #end()} was already called.
      */
     public void add(Input input) {
         synchronized (this) {
@@ -200,12 +201,14 @@ public class OrderPreservingParallelizer<Input, Output> {
      * done.
      */
     public void end() {
-        todo.end();
+        synchronized (this) {
+            todo.end();
+        }
     }
     
     /**
-     * Waits until the last output was passed to the consumer. Note that {@link #end()} must have been called so we now
-     * when we are done.
+     * Waits until the last output was passed to the consumer. Note that this will always block at least until
+     * {@link #end()} has been called.
      */
     public void join() {
         try {
