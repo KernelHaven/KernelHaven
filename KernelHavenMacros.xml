@@ -73,7 +73,7 @@
 	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" />
 
 	<tstamp>
-		<format property="TS_FOR_VERSION_FILE" pattern="HH:mm:ss dd.MM.yyyy" locale="en,US" />
+		<format property="TS_FOR_VERSION_FILE" pattern="yyyy-MM-dd HH:mm:ss" locale="en,US" />
 	</tstamp>
 
 	<!-- Target to create folder structure for releases, requires argument: base.kh.folder -->
@@ -86,7 +86,9 @@
 		<mkdir dir="${base.kh.folder}/log" />
 		<mkdir dir="${base.kh.folder}/cache" />
 
-		<echo file="${base.kh.folder}/version.txt" append="false">Release of ${TS_FOR_VERSION_FILE}</echo>
+		<echo file="${base.kh.folder}/version.txt" append="false">Release of ${TS_FOR_VERSION_FILE}
+</echo>
+		<!-- the empty newline is intentional -->
 	</target>
 
 	<target name="jar">
@@ -178,6 +180,11 @@
 				<exclude name="**/*.java" />
 			</fileset>
 		</copy>
+
+		<!-- generate version file -->
+		<echo file="${classes.dir}/version.txt" append="false">Built at ${TS_FOR_VERSION_FILE}
+</echo>
+		<!-- the empty newline is intentional -->
 	</target>
 
 	<target name="test">
