@@ -17,8 +17,8 @@ These archives contain the core infrastructure only. Additional [plugins](https:
 
 These archives contain the infrastructure as well as all public [plugins](https://github.com/KernelHaven/KernelHaven#plugins). These bundles contain more than needed to run most experiments.
 
-* [KernelHaven plus all plugins (GPLv3 and Apache 2.0 License)](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_GPLv3_withsource.zip)
-* [KernelHaven plus only plugins available under the Apache 2.0 License](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_Apache-2.0_withsource.zip)
+* [KernelHaven plus all plugins (GPLv3 and Apache License 2.0)](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_GPLv3_withsource.zip)
+* [KernelHaven plus only plugins available under the Apache License 2.0](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_Apache-2.0_withsource.zip)
 
 ## Plugins
 
@@ -57,7 +57,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
   <tr>
     <td><a href="https://github.com/KernelHaven/TypeChefExtractor">TypeChefExtractor</a></td>
     <td><b>CodeModel-Extractor:</b> <code>*.c, *.h</code></td>
-    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
     <td><ul>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor.jar">JAR</a></li>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor_withsource.jar">JAR with sources</a></li>
@@ -90,7 +90,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
   <tr>
     <td><a href="https://github.com/KernelHaven/CnfUtils">CnfUtils</a></td>
     <td><b>Utilities:</b> SAT-Solver, CNF-Converter, Formula simplifiers, ...</td>
-    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
     <td><ul>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_CnfUtils/lastSuccessfulBuild/artifact/build/jar/CnfUtils.jar">JAR</a></li>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_CnfUtils/lastSuccessfulBuild/artifact/build/jar/CnfUtils_withsource.jar">JAR with sources</a></li>
@@ -101,7 +101,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
   <tr>
     <td><a href="https://github.com/KernelHaven/IOUtils">IOUtils</a></td>
     <td><b>Utilities:</b> Excel-readers and writers for extractors and analysis plugins</td>
-    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
     <td><ul>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils.jar">JAR</a></li>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils_withsource.jar">JAR with sources</a></li>
@@ -112,7 +112,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
   <tr>
     <td><a href="https://github.com/KernelHaven/NonBooleanUtils">NonBooleanUtils</a></td>
     <td><b>Utilities:</b> Utilities to handle models, which are not pure Boolean (Pseudo-SAT)</td>
-    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
     <td><ul>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils.jar">JAR</a></li>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils_withsource.jar">JAR with sources</a></li>
@@ -123,7 +123,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
   <tr>
     <td><a href="https://github.com/KernelHaven/UnDeadAnalyzer">UnDeadAnalyzer</a></td>
     <td><b>Analysis:</b> Detection of dead code and unused variables of the variability model</td>
-    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
     <td><ul>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/UnDeadAnalyzer.jar">JAR</a></li>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/UnDeadAnalyzer_withsource.jar">JAR with sources</a></li>
@@ -134,7 +134,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
   <tr>
     <td><a href="https://github.com/KernelHaven/FeatureEffectAnalysis">FeatureEffectAnalyzer</a></td>
     <td><b>Analysis:</b> Detection of presence conditions and feature effects</td>
-    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
     <td><ul>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis.jar">JAR</a></li>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis_withsource.jar">JAR with sources</a></li>
@@ -145,7 +145,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
   <tr>
     <td><a href="https://github.com/KernelHaven/MetricHaven">MetricHaven</a></td>
     <td><b>Analysis:</b> Metric Infrastructure for SPL-Metrics</td>
-    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
     <td><ul>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven.jar">JAR</a></li>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven_withsource.jar">JAR with sources</a></li>
@@ -156,7 +156,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
   <tr>
     <td><a href="https://github.com/KernelHaven/ConfigurationMismatchAnalysis">Configuration Mismatches</a></td>
     <td><b>Analysis:</b> Detection of Configuration Mismatches</td>
-    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
+    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
     <td><ul>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis.jar">JAR</a></li>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis_withsource.jar">JAR with sources</a></li>
@@ -237,6 +237,10 @@ Further documentation can be found in the [wiki on GitHub](https://github.com/Ke
 ## Video Tutorial
 
 [![KernelHaven - ICSE 2018 Demonstration Video](https://img.youtube.com/vi/IbNc-H1NoZU/0.jpg)](https://www.youtube.com/watch?v=IbNc-H1NoZU)
+
+## License
+
+The main infrastructure (this project) is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.html). Plugins may have different licenses.
 
 ## Acknowledgments
 
