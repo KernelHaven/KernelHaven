@@ -7,14 +7,18 @@ KernelHaven offers a generic infrastructure for performing different analyses on
 ## Downloads
 
 ### Core Infrastructure
-These archives contain the core infrastructure only and require additional [plugins](https://github.com/KernelHaven/KernelHaven#plugins).
+
+These archives contain the core infrastructure only. Additional [plugins](https://github.com/KernelHaven/KernelHaven#plugins) are needed for a useful execution.
+
 * [KernelHaven infrastructure (without sources)](https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven.jar)
 * [KernelHaven infrastructure (sources included)](https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven_withsource.jar)
 
 ### Bundled Releases
-These archives contain the infrastructure as well as all public [plugins](https://github.com/KernelHaven/KernelHaven#plugins) sorted by license. These bundles contain everything needed to run most experiments. However, they probably contain more than actually needed.
-* [KernelHaven (with sources) Apache License v2](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_Apache-2.0_withsource.zip)
-* [KernelHaven (with sources) GPLv3](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_GPLv3_withsource.zip)
+
+These archives contain the infrastructure as well as all public [plugins](https://github.com/KernelHaven/KernelHaven#plugins). These bundles contain more than needed to run most experiments.
+
+* [KernelHaven plus all plugins (GPLv3 and Apache 2.0 License)](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_GPLv3_withsource.zip)
+* [KernelHaven plus only plugins available under the Apache 2.0 License](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_Apache-2.0_withsource.zip)
 
 ## Plugins
 
@@ -52,7 +56,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
   <!-- TypeChefExtractor -->
   <tr>
     <td><a href="https://github.com/KernelHaven/TypeChefExtractor">TypeChefExtractor</a></td>
-    <td><b>CodeModel-Extractor:</b> <code>*.c, *.h, *.S</code></td>
+    <td><b>CodeModel-Extractor:</b> <code>*.c, *.h</code></td>
     <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2</a></td>
     <td><ul>
       <li><a href="https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor.jar">JAR</a></li>
@@ -224,15 +228,14 @@ plugins_dir = plugins/
 resource_dir = res/
 ```
 
-See `config_template.properties` for a full list of configuration options for the infrastructure. Note that plugins
-also can have their own configuration options. 
+See [`config_template.properties`](https://github.com/KernelHaven/KernelHaven/blob/master/config_template.properties) for a full list of available configuration options for the infrastructure and common plugins.
 
 ## Further Documentation
 
-* [The user documentation](https://github.com/KernelHaven/Documentation/raw/master/UserDocumentation/KernelHaven%20User%20Documentation.pdf), for users who want to run analyzes with the infrastructure.
-* [The developer documentation](https://github.com/KernelHaven/Documentation/raw/master/DeveloperDocumentation/Arbeit.pdf), for developers who want to write new extractors and analyzes.
+Further documentation can be found in the [wiki on GitHub](https://github.com/KernelHaven/KernelHaven/wiki). A pdf version can be downloaded from [here](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Documentation/lastSuccessfulBuild/artifact/Manual.pdf).
 
-## Video Tutorial ##
+## Video Tutorial
+
 [![KernelHaven - ICSE 2018 Demonstration Video](https://img.youtube.com/vi/IbNc-H1NoZU/0.jpg)](https://www.youtube.com/watch?v=IbNc-H1NoZU)
 
 ## Acknowledgments
