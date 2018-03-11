@@ -12,7 +12,7 @@
 	<property name="reports.xml.dir" value="${reports.dir}/xml" />
 	<property name="reports.html.dir" value="${reports.dir}/html" />
 	<property name="workspace.snapshot.dir" value="${build.dir}/workspacesnapshot/" />
-	<property name="jenkins.location" value="http://jenkins.sse.uni-hildesheim.de/job" />
+	<property name="jenkins.location" value="https://jenkins.sse.uni-hildesheim.de/job" />
 
 	<!-- Public Plug-ins & Core -->
 	<property name="infrastructure.location" value="${jenkins.location}/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven_fortesting.jar" />
@@ -50,7 +50,7 @@
 	</path>
 
 	<!--
-		Requires that the contents of http://projects.sse.uni-hildesheim.de/tools/ant-lib.zip
+		Requires that the contents of https://projects.sse.uni-hildesheim.de/tools/ant-lib.zip
 		is copied and placed at <user_home>/.ant/lib
 		To execute this script from Eclipse, is is required that the jars in this folder are also added via:
 		Window -> Preferences -> Ant -> Runtime -> Global Entries -> Add External JARs...

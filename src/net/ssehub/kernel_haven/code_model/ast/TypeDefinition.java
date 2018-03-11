@@ -6,8 +6,8 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 /**
  * Represents a declaration (and initialization) of a new data structure, outside of a function. More precisely one of:
  * <ul>
- *     <li><a href="http://www.srcml.org/doc/c_srcML.html#struct-definition">Struct definition/declaration</a></li>
- *     <li><a href="http://www.srcml.org/doc/c_srcML.html#enum-definition">Enum definition/declaration</a></li>
+ *     <li><a href="https://www.srcml.org/doc/c_srcML.html#struct-definition">Struct definition/declaration</a></li>
+ *     <li><a href="https://www.srcml.org/doc/c_srcML.html#enum-definition">Enum definition/declaration</a></li>
  * </ul>
  * 
  * TODO SE: is this list complete? should we have a reference to srcML here?
