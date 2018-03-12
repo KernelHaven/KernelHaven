@@ -561,15 +561,63 @@ public final class Util {
     }
     
     /**
-     * Returns an ANSI escape sequence with the given color code.
+     * A list of colors for for output on a TTY. Use {@link #getAnsiCode()} to enable the coloring for the
+     * following characters. Only supported for TTY streams.
      * 
-     * @param code The color code. (e.g. "1;32" for bright red, or "0" for "clear").
-     * @return An ANSI escape sequence for the given code.
-     * 
-     * @see #isTTY(OutputStream)
+     * @see Util#isTTY(OutputStream)
      */
-    public static final @NonNull String ansiColor(@NonNull String code) {
-        return "\033[" + code + "m";
+    public static enum Color {
+        
+        /**
+         * Reset the color to normal.
+         */
+        RESET("\033[0m"),
+        
+        /**
+         * A more prominent (bold) white.
+         */
+        WHITE("\033[1;37m"),
+        
+        /**
+         * Red.
+         */
+        RED("\033[1;31m"),
+        
+        /**
+         * Green.
+         */
+        GREEN("\033[1;32m"),
+        
+        /**
+         * Cyan.
+         */
+        CYAN("\033[1;36m"),
+        
+        /**
+         * Yellow.
+         */
+        YELLOW("\033[1;33m");
+        
+        private @NonNull String ansiCode;
+        
+        /**
+         * Creates a color with the given color code.
+         * 
+         * @param ansiCode The ANSI escape sequence with the given color code.
+         */
+        private Color(@NonNull String ansiCode) {
+            this.ansiCode = ansiCode;
+        }
+        
+        /**
+         * Returns the ANSI escape sequence with the given color code.
+         * 
+         * @return A string that colors the following characters.
+         */
+        public @NonNull String getAnsiCode() {
+            return ansiCode;
+        }
+        
     }
     
     /**
@@ -579,7 +627,7 @@ public final class Util {
      * 
      * @return Whether the given output stream belongs to a TTY that supports ANSI color codes.
      * 
-     * @see #ansiColor(String)
+     * @see Color
      */
     public static boolean isTTY(OutputStream out) {
         // idea taken from https://stackoverflow.com/questions/1403772/

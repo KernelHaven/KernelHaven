@@ -16,6 +16,7 @@ import java.util.List;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
+import net.ssehub.kernel_haven.util.Util.Color;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -41,22 +42,22 @@ public final class Logger {
         /**
          * Only error messages are logged.
          */
-        ERROR("error  ", 0, Util.ansiColor("1;31") + "error" + Util.ansiColor("0") + "  "),
+        ERROR("error  ", 0, Color.RED.getAnsiCode() + "error" + Color.RESET.getAnsiCode() + "  "),
         
         /**
          * Error and warning messages are logged.
          */
-        WARNING("warning", 1, Util.ansiColor("1;33") + "warning" + Util.ansiColor("0") + ""),
+        WARNING("warning", 1, Color.YELLOW.getAnsiCode() + "warning" + Color.RESET.getAnsiCode() + ""),
         
         /**
          * Error, warning and info messages are logged.
          */
-        INFO("info   ", 2, Util.ansiColor("1;32") + "info" + Util.ansiColor("0") + "   "),
+        INFO("info   ", 2, Color.GREEN.getAnsiCode() + "info" + Color.RESET.getAnsiCode() + "   "),
         
         /**
          * All messages (error, warning, info, debug) are logged.
          */
-        DEBUG("debug  ", 3, Util.ansiColor("1;36") + "debug" + Util.ansiColor("0") + "  ");
+        DEBUG("debug  ", 3, Color.CYAN.getAnsiCode() + "debug" + Color.RESET.getAnsiCode() + "  ");
         
         private @NonNull String str;
         
@@ -255,7 +256,7 @@ public final class Logger {
         
         String threadName = Thread.currentThread().getName();
         if (useColors) {
-            threadName = Util.ansiColor("1;37") + threadName + Util.ansiColor("0");
+            threadName = Color.WHITE.getAnsiCode() + threadName + Color.RESET.getAnsiCode();
         }
         
         hdr
