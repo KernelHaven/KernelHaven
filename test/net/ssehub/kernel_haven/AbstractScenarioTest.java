@@ -114,24 +114,30 @@ public abstract class AbstractScenarioTest {
     /**
      * Defines which property file to use. This file should contain the following lines:
      * <code><pre>
-     * source_tree = testdata/tmpSrc
-     * resource_dir = testdata/tmpRes
-     * cache_dir = testdata/tmpCache
-     * output_dir = testdata/tmpOutput
-     * plugins_dir = testdata/tmpPlugins
-     * log.dir = testdata/tmpLog
+     * source_tree = testdata/CLASSNAME.src
+     * resource_dir = testdata/CLASSNAME.res
+     * cache_dir = testdata/CLASSNAME.cache
+     * output_dir = testdata/CLASSNAME.output
+     * plugins_dir = testdata//CLASSNAME.plugins
+     * log.dir = testdata//CLASSNAME.log
      * </pre></code>
      * 
-     * @return The property file to use.
+     * @return The property file to use. <b>Default:</b> testdata/CLASSNAME/config.properties
      */
-    protected abstract File getPropertiesFile();
+    protected File getPropertiesFile() {
+        return new File("testdata" + File.separatorChar + getClass().getSimpleName() + File.separatorChar
+                + "config.properties");
+    }
     
     /**
      * Returns the source tree to analyze. This will be copied for a test run, to avoid modifications to the original.
      * 
-     * @return The source tree to analyze.
+     * @return The source tree to analyze. <b>Default:</b> testdata/CLASSNAME/source_tree
      */
-    protected abstract File getSourceTree();
+    protected File getSourceTree() {
+        return new File("testdata" + File.separatorChar + getClass().getSimpleName() + File.separatorChar
+                + "source_tree");
+    }
     
     /**
      * Optionally does some post-checks on the resource directory.
