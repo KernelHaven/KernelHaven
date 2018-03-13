@@ -104,7 +104,7 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull Integer> BUILD_PROVIDER_TIMEOUT = new Setting<>("build.provider.timeout", INTEGER, true, "0", "The maximum time the provider waits for the results of the extractor until an exception is thrown. In milliseconds; 0 = no timeout used.");
     public static final @NonNull Setting<@NonNull Boolean> BUILD_PROVIDER_CACHE_WRITE = new Setting<>("build.provider.cache.write", BOOLEAN, true, "false", "Defines whether the build model provider will write its results to the cache directory.");
     public static final @NonNull Setting<@NonNull Boolean> BUILD_PROVIDER_CACHE_READ = new Setting<>("build.provider.cache.read", BOOLEAN, true, "false", "Defines whether the code model build is allowed to read the cache instead of starting the extractor.");
-	public static final @NonNull Setting<@NonNull String> BUILD_EXTRACTOR_FILE_REGEX = new Setting<>("variability.extractor.file_regex", REGEX, true, ".*(?i)(^|\\/|\\\\)(Makefile\\.?\\w*|Kbuild|Build)", "A Java regular expression defining which files are considered to be files relevant for parsing the build model.");
+	public static final @NonNull Setting<@NonNull String> BUILD_EXTRACTOR_FILE_REGEX = new Setting<>("build.extractor.file_regex", REGEX, true, ".*(?i)(^|\\/|\\\\)(Makefile\\.?\\w*|Kbuild|Build)", "A Java regular expression defining which files are considered to be files relevant for parsing the build model.");
     /*
      * Variability model parameters
      */
