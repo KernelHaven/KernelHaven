@@ -34,6 +34,16 @@ public class Timestamp {
      * Creates a time-stamp for the current time and date.
      */
     public Timestamp() {
+        timestamp = "will be initialized";
+        filestamp = "will be initialized";
+        setToNow();
+    }
+    
+    /**
+     * Updates this time-stamp to the current time and date. This is useful if the global {@link #INSTANCE} needs to be
+     * "reset".
+     */
+    public void setToNow() {
         DateTimeFormatter file = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         DateTimeFormatter normal = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
