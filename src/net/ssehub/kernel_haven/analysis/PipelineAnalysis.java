@@ -345,6 +345,11 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             return "StartingComponent";
         }
         
+        @Override
+        boolean isInternalHelperComponent() {
+            return true;
+        }
+        
     }
 
 }

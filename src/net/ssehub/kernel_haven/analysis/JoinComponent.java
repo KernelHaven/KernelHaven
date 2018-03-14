@@ -43,5 +43,10 @@ public class JoinComponent extends AnalysisComponent<Void> {
     public @NonNull String getResultName() {
         return "PseudoJoinComponent";
     }
+    
+    @Override
+    boolean isInternalHelperComponent() {
+        return true;
+    }
 
 }

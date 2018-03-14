@@ -80,6 +80,11 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
         return "PseudoSplitComponent";
     }
     
+    @Override
+    boolean isInternalHelperComponent() {
+        return true;
+    }
+    
     /**
      * The pseudo component that the next components will get as the input. 
      */
@@ -121,6 +126,11 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
         @Override
         public @NonNull String getResultName() {
             return "PseudoOutputComponent";
+        }
+        
+        @Override
+        boolean isInternalHelperComponent() {
+            return true;
         }
         
     }

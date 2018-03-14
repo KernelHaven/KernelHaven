@@ -69,7 +69,9 @@ public abstract class AnalysisComponent<O> {
         }
         
         Thread th = new Thread(() -> {
-            LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " starting");
+            if (!isInternalHelperComponent()) {
+                LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " starting");
+            }
             
             try {
                 execute();
@@ -123,7 +125,9 @@ public abstract class AnalysisComponent<O> {
      * Signal the next component that this component is done and will not produce any more results.
      */
     private final void done() {
-        LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " done");
+        if (!isInternalHelperComponent()) {
+            LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " done");
+        }
         
         results.end();
         if (out != null) {
@@ -147,5 +151,15 @@ public abstract class AnalysisComponent<O> {
      * @return The name describing the output of this component.
      */
     public abstract @NonNull String getResultName();
+    
+    /**
+     * Whether this component is a "helper" component. Helper components will not log when they are started or finished.
+     * Package visibility because only components in this package can be internal helper components.
+     * 
+     * @return Whether this is a helper component.
+     */
+    boolean isInternalHelperComponent() {
+        return false;
+    }
     
 }
