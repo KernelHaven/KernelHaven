@@ -25,8 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.build_model.AbstractBuildModelExtractor;
+import net.ssehub.kernel_haven.build_model.BuildModel;
 import net.ssehub.kernel_haven.build_model.BuildModelProvider;
-import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
 import net.ssehub.kernel_haven.code_model.CodeModelProvider;
 import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
 import net.ssehub.kernel_haven.config.Configuration;
@@ -34,6 +35,7 @@ import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.test_utils.FileContentsAssertion;
 import net.ssehub.kernel_haven.test_utils.PseudoVariabilityExtractor;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
+import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.Util;
 import net.ssehub.kernel_haven.util.io.AbstractTableWriter;
 import net.ssehub.kernel_haven.util.io.ITableCollection;
@@ -116,7 +118,7 @@ public class PipelineAnalysisTest {
         analysis.setVariabilityModelProvider(varProvider);
         
         BuildModelProvider buildProvider = new BuildModelProvider();
-        buildProvider.setExtractor(new EmptyBuildModelExtractor());
+        buildProvider.setExtractor(new DummyBuildModelExtractor());
         buildProvider.setConfig(config);
         analysis.setBuildModelProvider(buildProvider);
         
@@ -284,6 +286,39 @@ public class PipelineAnalysisTest {
     }
     
     /**
+     * A dummy {@link AbstractBuildModelExtractor} that sets a flag when it was executed.
+     * 
+     * @author Adam
+     */
+    private static class DummyBuildModelExtractor extends AbstractBuildModelExtractor {
+
+        private static boolean called;
+
+        /**
+         * Each new instance resets the called flag.
+         */
+        public DummyBuildModelExtractor() {
+            called = false;
+        }
+        
+        @Override
+        protected void init(@NonNull Configuration config) throws SetUpException {
+        }
+
+        @Override
+        protected @Nullable BuildModel runOnFile(@NonNull File target) throws ExtractorException {
+            called = true;
+            return new BuildModel();
+        }
+
+        @Override
+        protected @NonNull String getName() {
+            return "DummyBuildModelExtractor";
+        }
+        
+    }
+    
+    /**
      * Creates and runs a simple pipeline with a single analysis component. Tests whether the output file contains
      * the expected output.
      * 
@@ -384,6 +419,43 @@ public class PipelineAnalysisTest {
         assertThat(outputFiles[0].getName(), endsWith("_VariabilityResult.csv"));
         FileContentsAssertion.assertContents(outputFiles[0],
                 "Var_A\nVar_A_M2\nVar_B\nVar_B_M2\nVar_C\nVar_C_M2\n");
+        
+        assertThat(analysis.getOutputFiles().size(), is(1));
+        Set<File> files = new HashSet<>();
+        for (File f : outputFiles) {
+            files.add(f);
+        }
+        assertThat(analysis.getOutputFiles(), is(files));
+    }
+    
+    /**
+     * Tests that the extractors are only executed on-demand.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testExtractorNotCalledWhenNotNeeded() throws SetUpException {
+        Properties props = new Properties();
+        props.put("output_dir", tempOutputDir.getPath());
+        props.put("source_tree", tempOutputDir.getPath());
+        TestConfiguration config = new TestConfiguration(props);
+        
+        PipelineAnalysis analysis = createAnalysis(config, (pipeline) ->
+                new SimpleAnalysisComponent(config, "Result1", "Result2", "Result3"));
+        
+        // precondition
+        assertThat(DummyBuildModelExtractor.called, is(false));
+        
+        analysis.run();
+        
+        // postcondition
+        assertThat(DummyBuildModelExtractor.called, is(false));
+        
+        File[] outputFiles = tempOutputDir.listFiles();
+        assertThat(outputFiles.length, is(1));
+        assertThat(outputFiles[0].getName(), startsWith("Analysis_"));
+        assertThat(outputFiles[0].getName(), endsWith("_SimpleResult.csv"));
+        FileContentsAssertion.assertContents(outputFiles[0], "Result1\nResult2\nResult3\n");
         
         assertThat(analysis.getOutputFiles().size(), is(1));
         Set<File> files = new HashSet<>();

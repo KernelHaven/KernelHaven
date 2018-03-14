@@ -141,12 +141,6 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         
             AnalysisComponent<?> mainComponent = createPipeline();
             
-            LOGGER.logDebug("Starting extractor starting components...");
-            
-            vmStarter.start();
-            bmStarter.start();
-            cmStarter.start();
-            
             if (mainComponent instanceof JoinComponent) {
                 List<Thread> threads = new LinkedList<>();
                 
@@ -222,6 +216,8 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         
         private @NonNull List<@NonNull StartingComponent<T>> startingComponents;
         
+        private boolean started;
+        
         /**
          * Creates a new ExtractorDataDuplicator.
          * 
@@ -242,7 +238,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
          * @return The starting component that can be used as input data for other analysis components.
          */
         public @NonNull StartingComponent<T> createNewStartingComponent(@NonNull Configuration config) {
-            StartingComponent<T> component = new StartingComponent<>(config);
+            StartingComponent<T> component = new StartingComponent<>(config, this);
             startingComponents.add(component);
             return component;
         }
@@ -260,11 +256,17 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         
         /**
          * Starts a new thread that copies the extractor data to all stating components created up until now.
+         * This method ensures that this thread is only started once, no matter how often this method is called.
          */
         public void start() {
-            new Thread(this, "ExtractorDataDuplicator").start();
+            synchronized (this) {
+                if (!started) {
+                    new Thread(this, "ExtractorDataDuplicator").start();
+                    started = true;
+                }
+            }
         }
-
+        
         @Override
         public void run() {
             if (multiple) {
@@ -309,17 +311,24 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
 
         private boolean done = false;
         
+        private @NonNull ExtractorDataDuplicator<T> duplicator;
+        
         /**
          * Creates a new starting component.
          * 
          * @param config The global configuration.
+         * @param duplicator The {@link ExtractorDataDuplicator} to start when this component is started
+         *      (start on demand).
          */
-        public StartingComponent(@NonNull Configuration config) {
+        public StartingComponent(@NonNull Configuration config, @NonNull ExtractorDataDuplicator<T> duplicator) {
             super(config);
+            this.duplicator = duplicator;
         }
 
         @Override
         protected void execute() {
+            duplicator.start();
+            
             // wait until the duplicator tells us that we are done
             synchronized (this) {
                 while (!done) {
