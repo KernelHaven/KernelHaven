@@ -34,7 +34,7 @@ public class ObservableAnalysis<I> extends AnalysisComponent<I> {
 
     @Override
     protected void execute() {
-        List<I> previousResults = new ArrayList<>();
+        List<@NonNull I> previousResults = new ArrayList<>();
         
         @Nullable I input;
         while ((input = previousComponent.getNextResult()) != null) {

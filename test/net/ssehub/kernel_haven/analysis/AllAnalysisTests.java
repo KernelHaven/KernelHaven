@@ -12,6 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
     AnalysisTest.class,
     ConfiguredPipelineAnalysisTest.class,
     PipelineAnalysisTest.class,
+    ObservableAnalysisTest.class,
     })
 public class AllAnalysisTests {
 
