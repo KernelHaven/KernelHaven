@@ -213,7 +213,7 @@
 		</copy>
 
 		<jacoco:coverage destfile="${reports.dir}/jacoco.exec">
-			<junit fork="yes" dir="${test.classes.dir}" failureProperty="test.failed" maxmemory="512m">
+			<junit fork="yes" dir="${test.classes.dir}" failureProperty="test.failed">
 				<sysproperty key="KH.ANT.Test.Execution" value="true" />
 				<!-- Note the classpath order: instrumented classes are before the original 
                   (uninstrumented) classes. This is important. -->
