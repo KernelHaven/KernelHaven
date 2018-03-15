@@ -24,7 +24,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  */
 public abstract class AbstractExtractor<ResultType> {
 
-    private static final Logger LOGGER = Logger.get();
+    protected static final Logger LOGGER = Logger.get();
     
     private boolean isRunning;
     
