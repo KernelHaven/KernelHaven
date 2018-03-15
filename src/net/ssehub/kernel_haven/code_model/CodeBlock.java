@@ -190,4 +190,49 @@ public class CodeBlock implements CodeElement {
         };
     }
     
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(lineStart) + Integer.hashCode(lineEnd) + sourceFile.hashCode()
+            + (condition != null ? condition.hashCode() : 54234) + presenceCondition.hashCode()
+            + nested.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        if (obj instanceof CodeBlock) {
+            CodeBlock other = (CodeBlock) obj;
+            equal = true;
+            
+            equal = this.lineStart == other.lineStart && this.lineEnd == other.lineEnd;
+            if (equal) {
+                equal &= this.sourceFile.equals(other.sourceFile);
+            }
+            
+            if (equal) {
+                Formula condition = this.condition;
+                if (condition == null) {
+                    equal &= other.condition == null;
+                } else {
+                    equal &= condition.equals(other.condition);
+                }
+            }
+            
+            if (equal) {
+                equal &= this.presenceCondition.equals(other.presenceCondition);
+            }
+            
+            if (equal) {
+                equal &= this.nested.equals(other.nested);
+            }
+        }
+        return equal;
+    }
+    
+    @Override
+    public String toString() {
+        return "CodeBlock[start=" + lineStart + "; end=" + lineEnd + "; file=" + sourceFile + "; condition="
+                + condition + "; pc=" + presenceCondition + "; #children=" + nested.size() + "]";
+    }
+    
 }
