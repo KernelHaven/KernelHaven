@@ -277,7 +277,7 @@ public class CppParser {
         public @NonNull CppExpression visitExpressionList(@NonNull ExpressionList expressionList)
                 throws ExpressionFormatException {
             
-            @NonNull CppExpression result;
+            CppExpression result;
             
             if (expressionList.getExpressionSize() == 0) {
                 throw makeException(expression, "Expected variable");
