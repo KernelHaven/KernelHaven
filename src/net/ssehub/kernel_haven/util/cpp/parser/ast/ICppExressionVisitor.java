@@ -1,6 +1,7 @@
 package net.ssehub.kernel_haven.util.cpp.parser.ast;
 
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A visitor for the {@link CppExpression} AST.
@@ -20,7 +21,9 @@ public interface ICppExressionVisitor<T> {
      * 
      * @throws ExpressionFormatException If the expression is malformed.
      */
-    public T visitExpressionList(ExpressionList expressionList) throws ExpressionFormatException;
+    public default T visitExpressionList(@NonNull ExpressionList expressionList) throws ExpressionFormatException {
+        throw new AssertionError("There shouldn't be an ExpressionList left after parsing");
+    }
     
     /**
      * Visits a {@link FunctionCall}.
@@ -31,7 +34,7 @@ public interface ICppExressionVisitor<T> {
      * 
      * @throws ExpressionFormatException If the expression is malformed.
      */
-    public T visitFunctionCall(FunctionCall call) throws ExpressionFormatException;
+    public T visitFunctionCall(@NonNull FunctionCall call) throws ExpressionFormatException;
     
     /**
      * Visits a {@link Variable}.
@@ -42,7 +45,7 @@ public interface ICppExressionVisitor<T> {
      * 
      * @throws ExpressionFormatException If the expression is malformed.
      */
-    public T visitVariable(Variable variable) throws ExpressionFormatException;
+    public T visitVariable(@NonNull Variable variable) throws ExpressionFormatException;
     
     /**
      * Visits an {@link Operator}.
@@ -53,7 +56,7 @@ public interface ICppExressionVisitor<T> {
      * 
      * @throws ExpressionFormatException If the expression is malformed.
      */
-    public T visitOperator(Operator operator) throws ExpressionFormatException;
+    public T visitOperator(@NonNull Operator operator) throws ExpressionFormatException;
     
     /**
      * Visits an {@link IntegerLiteral}.
@@ -64,6 +67,6 @@ public interface ICppExressionVisitor<T> {
      * 
      * @throws ExpressionFormatException If the expression is malformed.
      */
-    public T visitLiteral(IntegerLiteral literal) throws ExpressionFormatException;
+    public T visitLiteral(@NonNull IntegerLiteral literal) throws ExpressionFormatException;
     
 }

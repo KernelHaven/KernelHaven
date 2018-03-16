@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util.cpp.parser;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * A token used by the {@link CppParser}.
  *
@@ -35,10 +38,10 @@ abstract class CppToken {
     public abstract int getLength();
     
     @Override
-    public abstract String toString();
+    public abstract @NonNull String toString();
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         boolean equal = false;
         if (obj instanceof CppToken) {
             equal = this.pos == ((CppToken) obj).pos;

@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util.cpp.parser;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+
 /**
  * Operators used inside C preprocessor (CPP) expressions.
  *
@@ -35,7 +37,7 @@ public enum CppOperator {
     BIN_SHL("<<", 8, false),
     BIN_INV("~", 11, true);
     
-    private String symbol;
+    private @NonNull String symbol;
     
     private int precedence;
     
@@ -48,7 +50,7 @@ public enum CppOperator {
      * @param precedence The precedence of this operator. Higher precedence means that this operator is evaluated first.
      * @param unary Whether this operator is unary (<code>true</code>) or binary (<code>false</code>).
      */
-    private CppOperator(String symbol, int precedence, boolean unary) {
+    private CppOperator(@NonNull String symbol, int precedence, boolean unary) {
         this.symbol = symbol;
         this.precedence = precedence;
         this.unary = unary;
@@ -59,7 +61,7 @@ public enum CppOperator {
      * 
      * @return The string representation of this operator.
      */
-    public String getSymbol() {
+    public @NonNull String getSymbol() {
         return symbol;
     }
     

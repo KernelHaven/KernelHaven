@@ -12,6 +12,7 @@ import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
  * 
  * @author Adam
  */
+@SuppressWarnings("null")
 public class CppLexerTest {
 
     /**

@@ -441,6 +441,7 @@ public class CppParserTest {
      * @param expression The expression that should be a {@link Variable}.
      * @param name The expected name of the variable.
      */
+    @SuppressWarnings("null")
     public static void assertVariable(CppExpression expression, String  name) {
         assertThat(expression, instanceOf(Variable.class));
         Variable var = (Variable) expression;
@@ -456,6 +457,7 @@ public class CppParserTest {
      * @return A 2-element array containing the parameters. For unary operators, the second element is
      *      <code>null</code>.
      */
+    @SuppressWarnings("null")
     public static CppExpression[] assertOperator(CppExpression expression, CppOperator operator) {
         assertThat(expression, instanceOf(Operator.class));
         Operator op = (Operator) expression;
@@ -477,6 +479,7 @@ public class CppParserTest {
      * 
      * @return The parameter of the function, may be <code>null</code>.
      */
+    @SuppressWarnings("null")
     public static CppExpression assertFunctionCall(CppExpression expression, String functionName) {
         assertThat(expression, instanceOf(FunctionCall.class));
         FunctionCall func = (FunctionCall) expression;

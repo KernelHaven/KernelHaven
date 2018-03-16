@@ -1,7 +1,12 @@
 package net.ssehub.kernel_haven.util.cpp.parser.ast;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.maybeNull;
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import net.ssehub.kernel_haven.util.cpp.parser.CppOperator;
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * An operator.
@@ -10,18 +15,19 @@ import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
  */
 public class Operator extends CppExpression {
 
-    private CppOperator operator;
+    private @NonNull CppOperator operator;
     
-    private CppExpression leftSide;
+    private @NonNull CppExpression leftSide;
     
-    private CppExpression rightSide;
+    private @Nullable CppExpression rightSide;
     
     /**
-     * Creates a new operator.
+     * Creates a new operator. Make sure to set a valid non-null leftSide; befor that, this operator is not complete.
      * 
      * @param operator The operator.
      */
-    public Operator(CppOperator operator) {
+    @SuppressWarnings("null") // leftSide may be null during AST construction
+    public Operator(@NonNull CppOperator operator) {
         this.operator = operator;
     }
     
@@ -30,7 +36,7 @@ public class Operator extends CppExpression {
      * 
      * @return The operator that this node represents.
      */
-    public CppOperator getOperator() {
+    public @NonNull CppOperator getOperator() {
         return operator;
     }
     
@@ -39,7 +45,7 @@ public class Operator extends CppExpression {
      * 
      * @param operator The new operator.
      */
-    public void setOperator(CppOperator operator) {
+    public void setOperator(@NonNull CppOperator operator) {
         this.operator = operator;
     }
     
@@ -48,7 +54,7 @@ public class Operator extends CppExpression {
      * 
      * @return The left side of this operator.
      */
-    public CppExpression getLeftSide() {
+    public @NonNull CppExpression getLeftSide() {
         return leftSide;
     }
     
@@ -57,7 +63,7 @@ public class Operator extends CppExpression {
      * 
      * @param leftSide The left side of the operator.
      */
-    public void setLeftSide(CppExpression leftSide) {
+    public void setLeftSide(@NonNull CppExpression leftSide) {
         this.leftSide = leftSide;
     }
     
@@ -66,7 +72,7 @@ public class Operator extends CppExpression {
      * 
      * @return The right side of this operator.
      */
-    public CppExpression getRightSide() {
+    public @Nullable CppExpression getRightSide() {
         return rightSide;
     }
 
@@ -75,28 +81,30 @@ public class Operator extends CppExpression {
      * 
      * @param rightSide the right side of this operator
      */
-    public void setRightSide(CppExpression rightSide) {
+    public void setRightSide(@Nullable CppExpression rightSide) {
         this.rightSide = rightSide;
     }
     
     @Override
-    public <T> T accept(ICppExressionVisitor<T> visitor) throws ExpressionFormatException {
+    public <T> T accept(@NonNull ICppExressionVisitor<T> visitor) throws ExpressionFormatException {
         return visitor.visitOperator(this);
     }
 
     @Override
-    protected String toString(String indentation) {
+    protected @NonNull String toString(@NonNull String indentation) {
         StringBuilder result = new StringBuilder(indentation).append("Operator ").append(operator.getSymbol());
         
         indentation += '\t';
+        CppExpression leftSide = maybeNull(this.leftSide); // may be null during ASt construction
         if (leftSide != null) {
             result.append('\n').append(leftSide.toString(indentation));
         }
+        CppExpression rightSide = this.rightSide;
         if (rightSide != null) {
             result.append('\n').append(rightSide.toString(indentation));
         }
         
-        return result.toString();
+        return notNull(result.toString());
     }
     
 }

@@ -1,6 +1,7 @@
 package net.ssehub.kernel_haven.util.cpp.parser.ast;
 
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Abstract superclass for CPP expression AST.
@@ -10,7 +11,7 @@ import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
 public abstract class CppExpression {
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return toString("");
     }
     
@@ -21,7 +22,7 @@ public abstract class CppExpression {
      * 
      * @return A string representation of this node with <code>indentation</code> at the start.
      */
-    protected abstract String toString(String indentation);
+    protected abstract @NonNull String toString(@NonNull String indentation);
     
     /**
      * Accepts the given visitor.
@@ -33,6 +34,6 @@ public abstract class CppExpression {
      * 
      * @throws ExpressionFormatException If the visitor throws an {@link ExpressionFormatException}.
      */
-    public abstract <T> T accept(ICppExressionVisitor<T> visitor) throws ExpressionFormatException;
+    public abstract <T> T accept(@NonNull ICppExressionVisitor<T> visitor) throws ExpressionFormatException;
     
 }

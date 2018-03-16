@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util.cpp.parser;
 
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
+
 /**
  * An identifier token.
  *
@@ -7,7 +10,7 @@ package net.ssehub.kernel_haven.util.cpp.parser;
  */
 class IdentifierToken extends CppToken {
 
-    private String name;
+    private @NonNull String name;
     
     /**
      * Creates a new identifier token.
@@ -15,7 +18,7 @@ class IdentifierToken extends CppToken {
      * @param pos The position inside the expression where this tokens starts.
      * @param name The name of the identifier.
      */
-    public IdentifierToken(int pos, String name) {
+    public IdentifierToken(int pos, @NonNull String name) {
         super(pos);
         this.name = name;
     }
@@ -25,7 +28,7 @@ class IdentifierToken extends CppToken {
      * 
      * @return The name of this identifier.
      */
-    public String getName() {
+    public @NonNull String getName() {
         return name;
     }
     
@@ -34,12 +37,12 @@ class IdentifierToken extends CppToken {
      * 
      * @param name The new name of this identifier.
      */
-    public void setName(String name) {
+    public void setName(@NonNull String name) {
         this.name = name;
     }
     
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return "Identifier('" + name + "' pos=" + getPos() + ")";
     }
 
@@ -49,7 +52,7 @@ class IdentifierToken extends CppToken {
     }
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         boolean equal = super.equals(obj);
         if (equal && obj instanceof IdentifierToken) {
             equal = ((IdentifierToken) obj).name.equals(this.name);

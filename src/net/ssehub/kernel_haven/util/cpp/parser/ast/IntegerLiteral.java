@@ -1,6 +1,7 @@
 package net.ssehub.kernel_haven.util.cpp.parser.ast;
 
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * An (integer) literal.
@@ -31,12 +32,12 @@ public class IntegerLiteral extends CppExpression {
     }
 
     @Override
-    public <T> T accept(ICppExressionVisitor<T> visitor) throws ExpressionFormatException {
+    public <T> T accept(@NonNull ICppExressionVisitor<T> visitor) throws ExpressionFormatException {
         return visitor.visitLiteral(this);
     }
     
     @Override
-    protected String toString(String indentation) {
+    protected @NonNull String toString(@NonNull String indentation) {
         return indentation + "Literal " + value;
     }
     
