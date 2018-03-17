@@ -255,7 +255,8 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
         CodeElement created;
         try {
             @SuppressWarnings("unchecked")
-            Class<? extends CodeElement> clazz = (Class<? extends CodeElement>) Class.forName(className);
+            Class<? extends CodeElement> clazz = (Class<? extends CodeElement>)
+                    ClassLoader.getSystemClassLoader().loadClass(className);
             Method m = clazz.getMethod("createFromCsv", String[].class, Parser.class);
             String[] smallCsv = new String[csvParts.length - 2];
             System.arraycopy(csvParts, 2, smallCsv, 0, smallCsv.length);

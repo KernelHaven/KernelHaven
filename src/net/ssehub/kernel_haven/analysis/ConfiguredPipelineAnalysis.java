@@ -85,7 +85,7 @@ public class ConfiguredPipelineAnalysis extends PipelineAnalysis {
             try {
                 @SuppressWarnings("unchecked")
                 Class<? extends AnalysisComponent<?>> componentClass =
-                        (Class<? extends AnalysisComponent<?>>) Class.forName(className);
+                        (Class<? extends AnalysisComponent<?>>) ClassLoader.getSystemClassLoader().loadClass(className);
                 
                 Object[] parameterValues = new Object[1 + parameters.size()];
                 Class<?>[] parameterTypes = new Class[1 + parameters.size()];

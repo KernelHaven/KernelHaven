@@ -17,6 +17,7 @@ import net.ssehub.kernel_haven.code_model.CodeModelProvider;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.provider.AbstractExtractor;
+import net.ssehub.kernel_haven.util.KernelHavenClassLoader;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.PipelineArchiver;
 import net.ssehub.kernel_haven.util.StaticClassLoader;
@@ -159,24 +160,47 @@ public class PipelineConfigurator {
      * @return Whether the loading was successful or not.
      */
     private boolean addJarToClasspath(@NonNull File jarFile) {
-        boolean status;
+        boolean success = false;
+        
         try {
             URL url = jarFile.toURI().toURL();
-            URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-
-            method.setAccessible(true);
-            method.invoke(classLoader, url);
-            LOGGER.logDebug("Successfully added jar to classpath: " + jarFile.getName());
-            status = true;
+            ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+            
+        
+            if (systemClassLoader instanceof KernelHavenClassLoader) {
+                // For Java >= 9, the class loader is manually set to KernelHavenClassLoader
+                @SuppressWarnings("resource")
+                KernelHavenClassLoader classLoader = (KernelHavenClassLoader) systemClassLoader;
+                classLoader.addURL(url);
+            
+                success = true;
+                
+            } else if (systemClassLoader instanceof URLClassLoader) {
+                // For Java 8, the default is an URLClassLoader
+                URLClassLoader classLoader = (URLClassLoader) systemClassLoader;
+                Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+                
+                method.setAccessible(true);
+                method.invoke(classLoader, url);
+                
+                success = true;
+                
+            } else {
+                LOGGER.logError("Can't add " + jarFile.getName() + " to classpath because the class loader is wrong",
+                        "Try running java with "
+                        + "-Djava.system.class.loader=net.ssehub.kernel_haven.util.KernelHavenClassLoader");
+            }
+            
             
         } catch (ReflectiveOperationException | MalformedURLException | IllegalArgumentException exc) {
             LOGGER.logException("Could not add jar to classpath: " + jarFile.getName(), exc);
-            
-            status = false;
         }
         
-        return status;
+        if (success) {
+            LOGGER.logDebug("Successfully added jar to classpath: " + jarFile.getName());
+        }
+        
+        return success;
     }
 
     /**
@@ -244,7 +268,7 @@ public class PipelineConfigurator {
             LOGGER.logWarning("Name of " + type + " extractor contains a space character");
         }
         try {
-            extractorClass = (Class<E>) Class.forName(extractorClassName);
+            extractorClass = (Class<E>) ClassLoader.getSystemClassLoader().loadClass(extractorClassName);
 
         } catch (ClassNotFoundException  e) {
             LOGGER.logException("Error while loading " + type + " extractor class", e);
@@ -314,7 +338,7 @@ public class PipelineConfigurator {
             try {
                 @SuppressWarnings("unchecked")
                 Class<? extends IPreparation> prepartionClass =
-                        (Class<? extends IPreparation>) Class.forName(className);
+                        (Class<? extends IPreparation>) ClassLoader.getSystemClassLoader().loadClass(className);
                 
                 LOGGER.logInfo("Running preparation " + prepartionClass.getCanonicalName());
                 
@@ -347,7 +371,8 @@ public class PipelineConfigurator {
         
         try {
             @SuppressWarnings("unchecked")
-            Class<? extends IAnalysis> analysisClass = (Class<? extends IAnalysis>) Class.forName(analysisName);
+            Class<? extends IAnalysis> analysisClass = (Class<? extends IAnalysis>)
+                    ClassLoader.getSystemClassLoader().loadClass(analysisName);
             analysis = analysisClass.getConstructor(Configuration.class).newInstance(config);
 
             analysis.setVariabilityModelProvider(notNull(vmProvider));

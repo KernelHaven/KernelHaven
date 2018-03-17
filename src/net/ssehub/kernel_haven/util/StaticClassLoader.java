@@ -93,7 +93,7 @@ public class StaticClassLoader {
         for (@NonNull String className : classesToLoad) {
             try {
                 // load the class
-                Class<?> clazz = Class.forName(className);
+                Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(className);
                 
                 // try to call the initialize() method
                 try {
