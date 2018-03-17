@@ -113,12 +113,12 @@ public class CppParserTest {
 
         CppExpression result = parser.parse("A - B + C");
         
-        CppExpression[] op1 = assertOperator(result, CppOperator.INT_SUB);
-        assertVariable(op1[0], "A");
+        CppExpression[] op1 = assertOperator(result, CppOperator.INT_ADD);
+        assertVariable(op1[1], "C");
         
-        CppExpression[] op2 = assertOperator(op1[1], CppOperator.INT_ADD);
-        assertVariable(op2[0], "B");
-        assertVariable(op2[1], "C");
+        CppExpression[] op2 = assertOperator(op1[0], CppOperator.INT_SUB);
+        assertVariable(op2[0], "A");
+        assertVariable(op2[1], "B");
     }
     
     /**

@@ -296,7 +296,9 @@ public class CppParser {
                     if (currentExpr instanceof Operator) {
                         CppOperator op = ((Operator) currentExpr).getOperator();
                         
-                        if (op.getPrecedence() < highestOpPrecedence) {
+                        // equal, because we want to find the right-most lowest precedence
+                        // this is needed for proper left-to-right evaluation of equal precedence operators
+                        if (op.getPrecedence() <= highestOpPrecedence) {
                             highestOpPos = i;
                             highestOpPrecedence = op.getPrecedence();
                             highestOpNode = (Operator) currentExpr;
