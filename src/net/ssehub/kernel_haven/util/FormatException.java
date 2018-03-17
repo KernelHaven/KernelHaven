@@ -38,4 +38,15 @@ public class FormatException extends Exception {
     public FormatException(@Nullable Throwable cause) {
         super(cause);
     }
+    
+    /**
+     * Creates a new FormatException.
+     * 
+     * @param message The message to display.
+     * @param cause The exception that caused this exception.
+     */
+    public FormatException(@Nullable String message, @Nullable Throwable cause) {
+        super(message, cause);
+    }
+    
 }
