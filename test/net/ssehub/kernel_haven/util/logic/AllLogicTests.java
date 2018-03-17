@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
     DisjunctionQueueTests.class,
     FormulaEvaluatorTest.class,
     FormulaSimplifierTest.class,
+    FormulaBuilderTest.class,
     })
 public class AllLogicTests {
 
