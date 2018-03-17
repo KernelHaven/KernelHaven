@@ -1,5 +1,9 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.and;
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.not;
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.or;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,7 +19,7 @@ public class SubFormulaCheckerTest {
     
     private static final Formula VARIABLE_A = new Variable("A");
     private static final Formula VARIABLE_B = new Variable("B");
-    private static final Formula SUB_FORMULA = new Conjunction(VARIABLE_A, VARIABLE_B);
+    private static final Formula SUB_FORMULA = and(VARIABLE_A, VARIABLE_B);
     
     
     /**
@@ -39,11 +43,7 @@ public class SubFormulaCheckerTest {
      */
     @Test
     public void testContainedDetection() {
-        Formula formula = new Disjunction(new Variable("C"), new Negation(SUB_FORMULA));
-        Formula secondFormula = new Conjunction(new Variable("E"), new Variable("F"));
-        formula = new Conjunction(secondFormula, formula);
-        
-        assertContainment(formula, true);
+        assertContainment(and(and("E", "F"), or("C", not(SUB_FORMULA))), true);
     }
     
     /**
@@ -51,9 +51,7 @@ public class SubFormulaCheckerTest {
      */
     @Test
     public void testSameVariablesWithDifferentSemanticsDoesNotContain() {
-        Formula formula = new Conjunction(VARIABLE_A, new Negation(VARIABLE_B));
-        
-        assertContainment(formula, false);
+        assertContainment(and("A", not("B")), false);
     }
     
 

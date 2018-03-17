@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.and;
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.not;
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.or;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -39,8 +42,7 @@ public class VariableFinderTest {
         Variable b = new Variable("B");
         Variable c = new Variable("C");
         
-        Formula f = new Conjunction(new Disjunction(a, new Negation(new Conjunction(b, False.INSTANCE))),
-                new Conjunction(new Negation(True.INSTANCE), new Conjunction(a, c)));
+        Formula f = and(or("A", not(and("B", False.INSTANCE))), and(not(True.INSTANCE), and("A", "C")));
         
         VariableFinder finder = new VariableFinder();
         finder.visit(f);

@@ -1,16 +1,15 @@
 package net.ssehub.kernel_haven.util;
 
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.and;
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.not;
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.or;
 import static org.junit.Assert.assertThat;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
-import net.ssehub.kernel_haven.util.logic.Conjunction;
-import net.ssehub.kernel_haven.util.logic.Disjunction;
 import net.ssehub.kernel_haven.util.logic.False;
 import net.ssehub.kernel_haven.util.logic.Formula;
-import net.ssehub.kernel_haven.util.logic.Negation;
-import net.ssehub.kernel_haven.util.logic.Variable;
 
 /**
  * Tests the {@link FormulaCache}.
@@ -24,10 +23,7 @@ public class FormulaCacheTest {
      */
     @Test
     public void testGetSerializedFormulaSingle() {
-        Variable a = new Variable("a");
-        Variable b = new Variable("b");
-        
-        Formula f = new Conjunction(new Disjunction(a, b), new Disjunction(new Negation(a), False.INSTANCE));
+        Formula f = and(or("A", "B"), or(not("A"), False.INSTANCE));
         
         FormulaCache cache = new FormulaCache();
         
@@ -39,10 +35,7 @@ public class FormulaCacheTest {
      */
     @Test
     public void testGetSerializedFormulaSameFormula() {
-        Variable a = new Variable("a");
-        Variable b = new Variable("b");
-        
-        Formula f = new Conjunction(new Disjunction(a, b), new Disjunction(new Negation(a), False.INSTANCE));
+        Formula f = and(or("A", "B"), or(not("A"), False.INSTANCE));
         
         FormulaCache cache = new FormulaCache();
         
@@ -56,11 +49,8 @@ public class FormulaCacheTest {
      */
     @Test
     public void testGetSerializedFormulaEqualFormula() {
-        Variable a = new Variable("a");
-        Variable b = new Variable("b");
-        
-        Formula f1 = new Conjunction(new Disjunction(a, b), new Disjunction(new Negation(a), False.INSTANCE));
-        Formula f2 = new Conjunction(new Disjunction(a, b), new Disjunction(new Negation(a), False.INSTANCE));
+        Formula f1 = and(or("A", "B"), or(not("A"), False.INSTANCE));
+        Formula f2 = and(or("A", "B"), or(not("A"), False.INSTANCE));
         
         FormulaCache cache = new FormulaCache();
         

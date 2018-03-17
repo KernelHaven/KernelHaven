@@ -1,5 +1,6 @@
 package net.ssehub.kernel_haven.build_model;
 
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.or;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -13,9 +14,7 @@ import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Util;
-import net.ssehub.kernel_haven.util.logic.Disjunction;
 import net.ssehub.kernel_haven.util.logic.True;
-import net.ssehub.kernel_haven.util.logic.Variable;
 
 /**
  * Tests the build model cache.
@@ -60,8 +59,7 @@ public class BuildModelCacheTest {
     @Test
     public void testCaching() throws IOException, FormatException {
         BuildModel originalBm = new BuildModel();
-        originalBm.add(new File("dir/file.c"), new Disjunction(new Variable("CONFIG_A"),
-                new Variable("CONFIG_A_MODULE")));
+        originalBm.add(new File("dir/file.c"), or("CONFIG_A", "CONFIG_A_MODULE"));
         originalBm.add(new File("dir/file2.c"), True.INSTANCE);
         
 

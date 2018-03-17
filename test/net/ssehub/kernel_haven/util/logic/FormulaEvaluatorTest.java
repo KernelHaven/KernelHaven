@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.and;
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.not;
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.or;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -57,8 +60,7 @@ public class FormulaEvaluatorTest {
     public void testEvaluateSimpleNegation() {
         Map<String, Boolean> values = new HashMap<>();
         
-        Variable a = new Variable("A");
-        Formula f = new Negation(a);
+        Formula f = not("A");
         
         assertNull(new FormulaEvaluator(values).visit(f));
         
@@ -76,9 +78,7 @@ public class FormulaEvaluatorTest {
     public void testEvaluateSimpleConjunction() {
         Map<String, Boolean> values = new HashMap<>();
         
-        Variable a = new Variable("A");
-        Variable b = new Variable("B");
-        Formula f = new Conjunction(a, b);
+        Formula f = and("A", "B");
         
         assertNull(new FormulaEvaluator(values).visit(f));
         
@@ -126,9 +126,7 @@ public class FormulaEvaluatorTest {
     public void testEvaluateSimpleDisjunction() {
         Map<String, Boolean> values = new HashMap<>();
         
-        Variable a = new Variable("A");
-        Variable b = new Variable("B");
-        Formula f = new Disjunction(a, b);
+        Formula f = or("A", "B");
         
         assertNull(new FormulaEvaluator(values).visit(f));
         
@@ -176,12 +174,7 @@ public class FormulaEvaluatorTest {
     public void testEvaluateComplex() {
         Map<String, Boolean> values = new HashMap<>();
         
-        Variable a = new Variable("A");
-        Variable b = new Variable("B");
-        Formula f = new Conjunction(
-                new Disjunction(a, new Negation(True.INSTANCE)),
-                new Negation(b)
-        );
+        Formula f = and(or("A", not(True.INSTANCE)), not("B"));
         
         values.put("A", true);
         values.put("B", true);

@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.not;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -7,7 +9,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import net.ssehub.kernel_haven.code_model.ast.BranchStatement.Type;
 import net.ssehub.kernel_haven.code_model.ast.TypeDefinition.TypeDefType;
 import net.ssehub.kernel_haven.util.logic.Formula;
-import net.ssehub.kernel_haven.util.logic.Negation;
 import net.ssehub.kernel_haven.util.logic.True;
 import net.ssehub.kernel_haven.util.logic.Variable;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -156,12 +157,11 @@ public class AllAstTests {
         
         ifdef.addNestedElement(makeCode("1", sourceFile, new Variable("A"), new Variable("A")));
         
-        Formula notA = new Negation(new Variable("A"));
-        CppBlock elsedef = new CppBlock(notA, notA, CppBlock.Type.ELSE);
-        elsedef.setCondition(notA);
+        CppBlock elsedef = new CppBlock(not("A"), not("A"), CppBlock.Type.ELSE);
+        elsedef.setCondition(not("A"));
         elsedef.setSourceFile(sourceFile);
         
-        elsedef.addNestedElement(makeCode("2", sourceFile, notA, notA));
+        elsedef.addNestedElement(makeCode("2", sourceFile, not("A"), not("A")));
         
         codeList.addNestedElement(makeCode("int a = ", sourceFile, True.INSTANCE, True.INSTANCE));
         codeList.addNestedElement(ifdef);

@@ -1,12 +1,12 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
+import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.not;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.code_model.ast.CaseStatement.CaseType;
-import net.ssehub.kernel_haven.util.logic.Negation;
 import net.ssehub.kernel_haven.util.logic.Variable;
 
 /**
@@ -70,6 +70,7 @@ public class SyntaxElementVisitorTest implements ISyntaxElementVisitor {
         assertThat(codes, is(19));
     }
 
+    @SuppressWarnings("null")
     @Override
     public void visitCppBlock(CppBlock block) {
         cppBlocks++;
@@ -79,7 +80,7 @@ public class SyntaxElementVisitorTest implements ISyntaxElementVisitor {
             assertThat(block.getCondition(), is(new Variable("A")));
         } else if (cppBlocks == 2) {
             assertThat(block.getType(), is(CppBlock.Type.ELSE));
-            assertThat(block.getCondition(), is(new Negation(new Variable("A"))));
+            assertThat(block.getCondition(), is(not("A")));
         }
         
         ISyntaxElementVisitor.super.visitCppBlock(block);
