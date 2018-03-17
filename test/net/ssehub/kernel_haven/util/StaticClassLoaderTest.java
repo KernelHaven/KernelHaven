@@ -86,7 +86,7 @@ public class StaticClassLoaderTest {
      * @throws ReflectiveOperationException unwanted. 
      */
     @Test
-    public void testClassWithoutStaticBlock()
+    public void testClassWithOnlyStaticBlock()
             throws MalformedURLException, ReflectiveOperationException, SecurityException {
         
         // precondition: clear any previously registered classes
