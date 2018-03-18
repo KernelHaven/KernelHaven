@@ -51,10 +51,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  *      <li>Lex the string; this produces {@link CppToken}s (see {@link #lex(String)})</li>
  *      <li>Parse the bracket hierarchy; this produces {@link CppExpression}s with {@link ExpressionList}s for each
  *      bracket hierarchy (see {@link #parse(String)})</li>
- *      <li>Detect integer literals that were only available as {@link Variable} and turn them into
- *      {@link IntegerLiteral}s (see {@link LiteralFinder}).</li>
  *      <li>Detect {@link FunctionCall}s (variables in front of brackets) (see {@link FunctionCallTranslator})</li>
- *      <li>Detect whether + and - are unary or binary (see {@link UnaryOperatorFinder})</li>
  *      <li>Resolve the flat {@link ExpressionList}s into operator hierarchies with the correct precedence;
  *      after this, there are no more {@link ExpressionList}s left (see {@link OperatorResolver})</li>
  * </ol>
