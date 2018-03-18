@@ -56,8 +56,8 @@ public class CppLexerTest {
     public void testSingleOperators() throws ExpressionFormatException {
         CppParser parser = new CppParser();
         
-        assertThat(parser.lex("+"), is(new CppToken[] {new OperatorToken(0, CppOperator.INT_ADD)}));
-        assertThat(parser.lex("-"), is(new CppToken[] {new OperatorToken(0, CppOperator.INT_SUB)}));
+        assertThat(parser.lex("+"), is(new CppToken[] {new OperatorToken(0, CppOperator.INT_ADD_UNARY)}));
+        assertThat(parser.lex("-"), is(new CppToken[] {new OperatorToken(0, CppOperator.INT_SUB_UNARY)}));
         assertThat(parser.lex("*"), is(new CppToken[] {new OperatorToken(0, CppOperator.INT_MUL)}));
         assertThat(parser.lex("/"), is(new CppToken[] {new OperatorToken(0, CppOperator.INT_DIV)}));
         assertThat(parser.lex("%"), is(new CppToken[] {new OperatorToken(0, CppOperator.INT_MOD)}));
@@ -84,6 +84,56 @@ public class CppLexerTest {
     }
     
     /**
+     * Tests whether + and - are correctly detected to be binary or unary.
+     * 
+     * @throws ExpressionFormatException unwanted.
+     */
+    @Test
+    public void testUnaryDetection() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+        
+        // Variable to the left
+        assertThat(parser.lex("A +"), is(new CppToken[] {
+            new IdentifierToken(0, "A"),
+            new OperatorToken(2, CppOperator.INT_ADD)
+        }));
+        assertThat(parser.lex("A -"), is(new CppToken[] {
+            new IdentifierToken(0, "A"),
+            new OperatorToken(2, CppOperator.INT_SUB)
+        }));
+        
+        // Operator to the left
+        assertThat(parser.lex("* +"), is(new CppToken[] {
+            new OperatorToken(0, CppOperator.INT_MUL),
+            new OperatorToken(2, CppOperator.INT_ADD_UNARY)
+        }));
+        assertThat(parser.lex("* -"), is(new CppToken[] {
+            new OperatorToken(0, CppOperator.INT_MUL),
+            new OperatorToken(2, CppOperator.INT_SUB_UNARY)
+        }));
+        
+        // opening bracket to the left
+        assertThat(parser.lex("( +"), is(new CppToken[] {
+            new Bracket(0, false),
+            new OperatorToken(2, CppOperator.INT_ADD_UNARY)
+        }));
+        assertThat(parser.lex("( -"), is(new CppToken[] {
+            new Bracket(0, false),
+            new OperatorToken(2, CppOperator.INT_SUB_UNARY)
+        }));
+        
+        // closing bracket to the left
+        assertThat(parser.lex(") +"), is(new CppToken[] {
+            new Bracket(0, true),
+            new OperatorToken(2, CppOperator.INT_ADD)
+        }));
+        assertThat(parser.lex(") -"), is(new CppToken[] {
+            new Bracket(0, true),
+            new OperatorToken(2, CppOperator.INT_SUB)
+        }));
+    }
+    
+    /**
      * Tests that whitespaces are ignored correctly.
      * 
      * @throws ExpressionFormatException unwanted.
@@ -95,7 +145,7 @@ public class CppLexerTest {
         assertThat(parser.lex("A + (VAR_2 * -3)"), is(new CppToken[] {
             new IdentifierToken(0, "A"), new OperatorToken(2, CppOperator.INT_ADD), new Bracket(4, false),
             new IdentifierToken(5, "VAR_2"), new OperatorToken(11, CppOperator.INT_MUL),
-            new OperatorToken(13, CppOperator.INT_SUB), new IdentifierToken(14, "3"), new Bracket(15, true)}));
+            new OperatorToken(13, CppOperator.INT_SUB_UNARY), new IdentifierToken(14, "3"), new Bracket(15, true)}));
     }
     
     /**

@@ -41,6 +41,7 @@ import net.ssehub.kernel_haven.util.cpp.parser.ast.Operator;
 import net.ssehub.kernel_haven.util.cpp.parser.ast.Variable;
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * A parser for expressions in #if, #elif, etc. of the C preprocessor (CPP).
@@ -62,69 +63,6 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * @author Adam
  */
 public class CppParser {
-    
-    /**
-     * Finds unary versions of {@link CppOperator#INT_ADD} and {@link CppOperator#INT_SUB}.
-     *
-     * @author Adam
-     */
-    private static class UnaryOperatorFinder implements ICppExressionVisitor<@NonNull CppExpression> {
-
-        @Override
-        public @NonNull CppExpression visitExpressionList(@NonNull ExpressionList expressionList)
-                throws ExpressionFormatException {
-            
-            for (int i = 0; i < expressionList.getExpressionSize(); i++) {
-                CppExpression currentExpr = expressionList.getExpression(i);
-                
-                if (currentExpr instanceof Operator) {
-                    CppOperator currentOp = ((Operator) currentExpr).getOperator();
-                    if (currentOp == INT_ADD || currentOp == INT_SUB) {
-                        
-                        // if we are at the very left, or there is another operator to our left, then this is unary
-                        if (i == 0 || expressionList.getExpression(i - 1) instanceof Operator) {
-                            CppOperator newOp;
-                            if (currentOp == INT_ADD) {
-                                newOp = INT_ADD_UNARY;
-                            } else {
-                                newOp = INT_SUB_UNARY;
-                            }
-                            ((Operator) currentExpr).setOperator(newOp);
-                        }
-                    }
-                }
-                
-                expressionList.setExpression(i, currentExpr.accept(this));
-            }
-            return expressionList;
-        }
-
-        @Override
-        public @NonNull CppExpression visitFunctionCall(@NonNull FunctionCall call) throws ExpressionFormatException {
-            CppExpression arg = call.getArgument();
-            if (arg != null) {
-                arg = arg.accept(this);
-            }
-            call.setArgument(arg);
-            return call;
-        }
-
-        @Override
-        public @NonNull CppExpression visitVariable(@NonNull Variable variable) throws ExpressionFormatException {
-            return variable;
-        }
-
-        @Override
-        public @NonNull CppExpression visitOperator(@NonNull Operator operator) throws ExpressionFormatException {
-            return operator;
-        }
-
-        @Override
-        public @NonNull CppExpression visitLiteral(@NonNull IntegerLiteral literal) throws ExpressionFormatException {
-            return literal;
-        }
-        
-    }
     
     /**
      * Finds "variable" which are actually integer literals.
@@ -400,7 +338,6 @@ public class CppParser {
     
     private @NonNull LiteralFinder literalFinder = new LiteralFinder();
     private @NonNull FunctionCallTranslator functionCallTranslator = new FunctionCallTranslator();
-    private @NonNull UnaryOperatorFinder unaryOperatorFinder = new UnaryOperatorFinder();
     private @NonNull OperatorResolver operatorResolver = new OperatorResolver();
     
     /**
@@ -467,7 +404,6 @@ public class CppParser {
         literalFinder.expression = expression;
         result = result.accept(literalFinder);
         result = result.accept(functionCallTranslator);
-        result = result.accept(unaryOperatorFinder);
         operatorResolver.expression = expression;
         result = result.accept(operatorResolver);
         
@@ -484,6 +420,7 @@ public class CppParser {
      */
     @NonNull CppToken @NonNull [] lex(@NonNull String expression) throws ExpressionFormatException {
         List<@NonNull CppToken> tokens = new ArrayList<>(50);
+        int tokenIndex = 0;
         
         IdentifierToken currentIdentifier = null;
         
@@ -491,7 +428,7 @@ public class CppParser {
         // iterate over the string; i is incremented based on which token was identified
         for (int exprPos = 0; exprPos < expr.length;) {
             
-            CppOperator op = getOperator(expr, exprPos);
+            CppOperator op = getOperator(expr, exprPos, tokenIndex == 0 ? null : tokens.get(tokenIndex - 1));
             
             if (isWhitespace(expr, exprPos)) {
                 currentIdentifier = null;
@@ -500,22 +437,26 @@ public class CppParser {
             } else if (isOpeningBracket(expr, exprPos)) {
                 currentIdentifier = null;
                 tokens.add(new Bracket(exprPos, false));
+                tokenIndex++;
                 exprPos++;
                 
             } else if (isClosingBracket(expr, exprPos)) {
                 currentIdentifier = null;
                 tokens.add(new Bracket(exprPos, true));
+                tokenIndex++;
                 exprPos++;
                 
             } else if (op != null) {
                 currentIdentifier = null;
                 tokens.add(new OperatorToken(exprPos, op));
+                tokenIndex++;
                 exprPos += op.getSymbol().length();
                 
             } else if (isIdentifierChar(expr, exprPos)) {
                 if (currentIdentifier == null) {
                     currentIdentifier = new IdentifierToken(exprPos, "");
                     tokens.add(currentIdentifier);
+                    tokenIndex++;
                 }
                 currentIdentifier.setName(currentIdentifier.getName() + expr[exprPos]);
                 exprPos++;
@@ -569,10 +510,12 @@ public class CppParser {
      * 
      * @param expr The expression that the operator is searched in.
      * @param exprPos The position in the expression where the operator is at.
+     * @param previousToken The previous token that is to the left of this potential operator. <code>null</code> if this
+     *      would be the first token for the expression. This is used to determine if + and - are binary or unary.
      * 
      * @return The operator at the given position, or <code>null</code> if there is no operator.
      */
-    private CppOperator getOperator(char[] expr, int exprPos) {
+    private CppOperator getOperator(char[] expr, int exprPos, @Nullable CppToken previousToken) {
         CppOperator result = null;
         
         /*
@@ -609,9 +552,9 @@ public class CppParser {
             result = BOOL_NOT;
             
         } else if (safeCheckChar(expr, exprPos, '+')) {
-            result = INT_ADD;
+            result = isUnary(previousToken) ? INT_ADD_UNARY : INT_ADD;
         } else if (safeCheckChar(expr, exprPos, '-')) {
-            result = INT_SUB;
+            result = isUnary(previousToken) ? INT_SUB_UNARY : INT_SUB;
         } else if (safeCheckChar(expr, exprPos, '*')) {
             result = INT_MUL;
         } else if (safeCheckChar(expr, exprPos, '/')) {
@@ -635,6 +578,21 @@ public class CppParser {
         }
         
         return result;
+    }
+    
+    /**
+     * Checks if a + or - operator is unary given the token to the left. The operator is unary, if there is no token
+     * to the left (i.e. the expression starts with it), there is an opening bracket to the left, or there is another
+     * operator to the left.
+     * 
+     * @param previousToken The token to the left of the operator token.
+     * 
+     * @return Whether the operator should be unary.
+     */
+    private boolean isUnary(@Nullable CppToken previousToken) {
+        return previousToken == null
+                || previousToken instanceof OperatorToken
+                || (previousToken instanceof Bracket && ((Bracket) previousToken).isOpening());
     }
     
     /**
