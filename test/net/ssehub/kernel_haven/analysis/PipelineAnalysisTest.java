@@ -307,7 +307,10 @@ public class PipelineAnalysisTest {
 
         @Override
         protected @Nullable BuildModel runOnFile(@NonNull File target) throws ExtractorException {
-            called = true;
+            synchronized (DummyBuildModelExtractor.class) {
+                called = true;
+                DummyBuildModelExtractor.class.notifyAll();
+            }
             return new BuildModel();
         }
 
@@ -429,12 +432,12 @@ public class PipelineAnalysisTest {
     }
     
     /**
-     * Tests that the extractors are only executed on-demand.
+     * Tests that the extractors (the BM extractor in this test case) are started preemptively.
      * 
      * @throws SetUpException unwanted.
      */
     @Test
-    public void testExtractorNotCalledWhenNotNeeded() throws SetUpException {
+    public void testExtractorCalledEvenWhenNotNeeded() throws SetUpException {
         Properties props = new Properties();
         props.put("output_dir", tempOutputDir.getPath());
         props.put("source_tree", tempOutputDir.getPath());
@@ -444,12 +447,24 @@ public class PipelineAnalysisTest {
                 new SimpleAnalysisComponent(config, "Result1", "Result2", "Result3"));
         
         // precondition
-        assertThat(DummyBuildModelExtractor.called, is(false));
+        synchronized (DummyBuildModelExtractor.class) {
+            assertThat(DummyBuildModelExtractor.called, is(false));
+        }
         
         analysis.run();
         
         // postcondition
-        assertThat(DummyBuildModelExtractor.called, is(false));
+        synchronized (DummyBuildModelExtractor.class) {
+            // if called is not (yet) true
+            if (!DummyBuildModelExtractor.called) {
+                // wait up to a second; this is needed because the extractor is started in another thread
+                try {
+                    DummyBuildModelExtractor.class.wait(1000);
+                } catch (InterruptedException e) {
+                }
+            }
+            assertThat(DummyBuildModelExtractor.called, is(true));
+        }
         
         File[] outputFiles = tempOutputDir.listFiles();
         assertThat(outputFiles.length, is(1));
