@@ -8,7 +8,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  *
  * @author Adam
  */
-class IdentifierToken extends CppToken {
+final class IdentifierToken extends CppToken {
 
     private @NonNull String name;
     

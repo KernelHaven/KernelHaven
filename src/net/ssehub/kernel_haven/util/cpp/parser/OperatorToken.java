@@ -8,7 +8,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  *
  * @author Adam
  */
-class OperatorToken extends CppToken {
+final class OperatorToken extends CppToken {
 
     private @NonNull CppOperator operator;
     

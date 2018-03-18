@@ -8,7 +8,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  *
  * @author Adam
  */
-class Bracket extends CppToken {
+final class Bracket extends CppToken {
 
     private boolean closing;
     

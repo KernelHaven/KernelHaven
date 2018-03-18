@@ -160,4 +160,55 @@ public class CppLexerTest {
         parser.lex("A && Ü");
     }
     
+    /**
+     * Tests that simple literal values are detected.
+     * 
+     * @throws ExpressionFormatException unwanted.
+     */
+    @Test
+    public void testSimpleLiteralDetection() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+
+        assertThat(parser.lex("14"), is(new CppToken[] {new LiteralToken(0, 2, 14)}));
+        assertThat(parser.lex("0x14"), is(new CppToken[] {new LiteralToken(0, 4, 20)}));
+    }
+    
+    /**
+     * Tests that literals with "l" or "ul" suffixes are detected.
+     * 
+     * @throws ExpressionFormatException unwanted.
+     */
+    @Test
+    public void testLiteralWithSuffix() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+        
+        assertThat(parser.lex("14L"), is(new CppToken[] {new LiteralToken(0, 3, 14)}));
+        assertThat(parser.lex("1434UL"), is(new CppToken[] {new LiteralToken(0, 6, 1434)}));
+        assertThat(parser.lex("543ULL"), is(new CppToken[] {new LiteralToken(0, 6, 543)}));
+    }
+    
+    /**
+     * Tests that a literal with decimals correctly throws an exception.
+     * 
+     * @throws ExpressionFormatException wanted.
+     */
+    @Test(expected = ExpressionFormatException.class)
+    public void testLiteralDecimal() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+        
+        parser.lex("14.4");
+    }
+    
+    /**
+     * Tests that an invalid literal correctly throws an exception.
+     * 
+     * @throws ExpressionFormatException wanted.
+     */
+    @Test(expected = ExpressionFormatException.class)
+    public void testInvalidLiteral() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+        
+        parser.lex("123notaliteral");
+    }
+    
 }

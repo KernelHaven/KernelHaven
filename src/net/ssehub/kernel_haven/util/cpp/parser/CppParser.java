@@ -65,70 +65,6 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 public class CppParser {
     
     /**
-     * Finds "variable" which are actually integer literals.
-     */
-    private static class LiteralFinder implements ICppExressionVisitor<@NonNull CppExpression> {
-
-        private @NonNull String expression = ""; // will be set before this visitor is called
-        
-        @Override
-        public @NonNull CppExpression visitExpressionList(@NonNull ExpressionList expressionList)
-                throws ExpressionFormatException {
-            
-            for (int i = 0; i < expressionList.getExpressionSize(); i++) {
-                expressionList.setExpression(i, expressionList.getExpression(i).accept(this));
-            }
-            return expressionList;
-        }
-
-        @Override
-        public @NonNull CppExpression visitFunctionCall(@NonNull FunctionCall call) throws ExpressionFormatException {
-            CppExpression arg = call.getArgument();
-            if (arg != null) {
-                arg = arg.accept(this);
-            }
-            call.setArgument(arg);
-            return call;
-        }
-
-        @Override
-        public @NonNull CppExpression visitVariable(@NonNull Variable variable) throws ExpressionFormatException {
-            CppExpression result = variable;
-            if (Character.isDigit(variable.getName().charAt(0))) {
-                String literal = notNull(variable.getName().toLowerCase());
-                if (literal.endsWith("ul")) {
-                    literal = notNull(literal.substring(0, literal.length() - 2));
-                } else if (literal.endsWith("ull")) {
-                    literal = notNull(literal.substring(0, literal.length() - 3));
-                } else if (literal.endsWith("l")) {
-                    literal = notNull(literal.substring(0, literal.length() - 1));
-                }
-                try {
-                    Number value = NumberUtils.convertToNumber(literal);
-                    if (value == null || !(value instanceof Long)) {
-                        throw new NumberFormatException();
-                    }
-                    result = new IntegerLiteral((Long) value);
-                } catch (NumberFormatException e) {
-                    throw makeException(expression, "Cannot parse literal " + variable.getName());
-                }
-            }
-            return result;
-        }
-
-        @Override
-        public @NonNull CppExpression visitOperator(@NonNull Operator operator) throws ExpressionFormatException {
-            return operator;
-        }
-
-        @Override
-        public @NonNull CppExpression visitLiteral(@NonNull IntegerLiteral literal) throws ExpressionFormatException {
-            return literal;
-        }
-        
-    }
-    
-    /**
      * A visitor that finds functions calls (variables followed by expression list (brackets)).
      */
     private static class FunctionCallTranslator implements ICppExressionVisitor<@NonNull CppExpression> {
@@ -336,7 +272,6 @@ public class CppParser {
         
     }
     
-    private @NonNull LiteralFinder literalFinder = new LiteralFinder();
     private @NonNull FunctionCallTranslator functionCallTranslator = new FunctionCallTranslator();
     private @NonNull OperatorResolver operatorResolver = new OperatorResolver();
     
@@ -381,6 +316,9 @@ public class CppParser {
             } else if (currentToken instanceof OperatorToken) {
                 expressionListStack.peek().addExpression(new Operator(((OperatorToken) currentToken).getOperator()));
                 
+            } else if (currentToken instanceof LiteralToken) {
+                expressionListStack.peek().addExpression(new IntegerLiteral(((LiteralToken) currentToken).getValue()));
+                
             } else {
                 throw makeException(expression, "Unexpected token: " + currentToken, currentToken.getPos());
             }
@@ -401,8 +339,6 @@ public class CppParser {
         }
         
         
-        literalFinder.expression = expression;
-        result = result.accept(literalFinder);
         result = result.accept(functionCallTranslator);
         operatorResolver.expression = expression;
         result = result.accept(operatorResolver);
@@ -431,23 +367,31 @@ public class CppParser {
             CppOperator op = getOperator(expr, exprPos, tokenIndex == 0 ? null : tokens.get(tokenIndex - 1));
             
             if (isWhitespace(expr, exprPos)) {
+                identifierFinished(currentIdentifier, tokens, tokenIndex - 1, expression);
                 currentIdentifier = null;
+                
                 exprPos++;
                 
             } else if (isOpeningBracket(expr, exprPos)) {
+                identifierFinished(currentIdentifier, tokens, tokenIndex - 1, expression);
                 currentIdentifier = null;
+                
                 tokens.add(new Bracket(exprPos, false));
                 tokenIndex++;
                 exprPos++;
                 
             } else if (isClosingBracket(expr, exprPos)) {
+                identifierFinished(currentIdentifier, tokens, tokenIndex - 1, expression);
                 currentIdentifier = null;
+                
                 tokens.add(new Bracket(exprPos, true));
                 tokenIndex++;
                 exprPos++;
                 
             } else if (op != null) {
+                identifierFinished(currentIdentifier, tokens, tokenIndex - 1, expression);
                 currentIdentifier = null;
+                
                 tokens.add(new OperatorToken(exprPos, op));
                 tokenIndex++;
                 exprPos += op.getSymbol().length();
@@ -465,8 +409,55 @@ public class CppParser {
                 throw makeException(expression, "Invalid character in expression: '" + expr[exprPos] + "'", exprPos);
             }
         }
+
+        identifierFinished(currentIdentifier, tokens, tokenIndex - 1, expression);
         
         return notNull(tokens.toArray(new @NonNull CppToken[0]));
+    }
+    
+    /**
+     * Called when an identifier is finished. This method detects whether the identifier was a literal.
+     *  
+     * @param identifier The identifier that was finished. May be <code>null</code>, in which case this method does
+     *      nothing.
+     * @param tokens The list of tokens to replace the identifier in.
+     * @param tokenIndex The index of the identifier in the token list.
+     * @param expression The currently parsed expression. Used for exception messages.
+     * 
+     * @throws ExpressionFormatException If the identifier is supposed to be a literal, but not parseable as one.
+     */
+    private void identifierFinished(@Nullable IdentifierToken identifier, @NonNull List<@NonNull CppToken> tokens,
+            int tokenIndex, @NonNull  String expression) throws ExpressionFormatException {
+        
+        if (identifier != null && Character.isDigit(identifier.getName().charAt(0))) {
+            
+            StringBuilder literal = new StringBuilder(identifier.getName().toLowerCase());
+            
+            // remove any trailing 'l's
+            while (literal.charAt(literal.length() - 1) == 'l') {
+                literal.replace(literal.length() - 1, literal.length(), "");
+            }
+            // remove one trailing 'u'
+            if (literal.charAt(literal.length() - 1) == 'u') {
+                literal.replace(literal.length() - 1, literal.length(), "");
+            }
+            
+            try {
+                // parse number
+                Number numberValue = NumberUtils.convertToNumber(notNull(literal.toString()));
+                if (numberValue == null || !(numberValue instanceof Long)) {
+                    throw new NumberFormatException();
+                }
+                
+                // replace IdentifierToken with LiteralToken
+                tokens.set(tokenIndex,
+                        new LiteralToken(identifier.getPos(), identifier.getLength(), (long) numberValue));
+                
+            } catch (NumberFormatException e) {
+                throw makeException(expression, "Cannot parse literal " + identifier.getName(), identifier.getPos());
+            }
+        }
+        
     }
     
     /**

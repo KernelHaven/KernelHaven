@@ -384,58 +384,6 @@ public class CppParserTest {
     }
     
     /**
-     * Tests that simple literal values are detected.
-     * 
-     * @throws ExpressionFormatException unwanted.
-     */
-    @Test
-    public void testSimpleLiteralDetection() throws ExpressionFormatException {
-        CppParser parser = new CppParser();
-
-        CppExpression result = parser.parse("14");
-        
-        assertLiteral(result, 14);
-    }
-    
-    /**
-     * Tests that literals with "l" or "ul" suffixes are detected.
-     * 
-     * @throws ExpressionFormatException unwanted.
-     */
-    @Test
-    public void testLiteralWithSuffix() throws ExpressionFormatException {
-        CppParser parser = new CppParser();
-        
-        assertLiteral(parser.parse("14L"), 14);
-        assertLiteral(parser.parse("1434UL"), 1434);
-        assertLiteral(parser.parse("543ULL"), 543);
-    }
-    
-    /**
-     * Tests that a literal with decimals correctly throws an exception.
-     * 
-     * @throws ExpressionFormatException wanted.
-     */
-    @Test(expected = ExpressionFormatException.class)
-    public void testLiteralDecimal() throws ExpressionFormatException {
-        CppParser parser = new CppParser();
-        
-        parser.parse("14.4");
-    }
-    
-    /**
-     * Tests that an invalid literal correctly throws an exception.
-     * 
-     * @throws ExpressionFormatException wanted.
-     */
-    @Test(expected = ExpressionFormatException.class)
-    public void testInvalidLiteral() throws ExpressionFormatException {
-        CppParser parser = new CppParser();
-        
-        parser.parse("123notaliteral");
-    }
-    
-    /**
      * Asserts that the given expression is a {@link Variable}.
      * 
      * @param expression The expression that should be a {@link Variable}.
