@@ -25,8 +25,6 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
     
     private @NonNull List<@NonNull OutputComponent> outputComponents;
     
-    private volatile boolean started;
-    
     /**
      * Creates this double analysis component with the given input component.
      * 
@@ -52,12 +50,6 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
         return component;
     }
 
-    @Override
-    synchronized void start() {
-        started = true;
-        super.start();
-    }
-    
     @Override
     protected void execute() {
         T data;
@@ -102,17 +94,10 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
         }
 
         @Override
-        synchronized void start() {
-            synchronized (SplitComponent.this) {
-                if (!SplitComponent.this.started) {
-                    SplitComponent.this.start();
-                }
-            }
-            super.start();
-        }
-        
-        @Override
         protected void execute() {
+            // make sure that SplitComponent is started; multiple calls to start() will do no harm
+            SplitComponent.this.start();
+            
             while (!done) {
                 synchronized (this) {
                     try {

@@ -56,33 +56,37 @@ public abstract class AnalysisComponent<O> {
     }
     
     /**
-     * Starts a new thread that executes this analysis component.
-     * Package visibility for {@link SplitComponent}.
+     * Starts a new thread that executes this analysis component. Only the first call to this method will start this
+     * component. Subsequent calls do nothing.
      */
-    synchronized void start() {
-        if (logResults) {
-            try {
-                out = PipelineAnalysis.getInstance().getResultCollection().getWriter(getResultName());
-            } catch (IOException e) {
-                LOGGER.logExceptionWarning("Can't create intermediate output file", e);
-            }
-        }
-        
-        Thread th = new Thread(() -> {
-            if (!isInternalHelperComponent()) {
-                LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " starting");
+    protected final synchronized void start() {
+        if (!started) {
+            if (logResults) {
+                try {
+                    out = PipelineAnalysis.getInstance().getResultCollection().getWriter(getResultName());
+                } catch (IOException e) {
+                    LOGGER.logExceptionWarning("Can't create intermediate output file", e);
+                }
             }
             
-            try {
-                execute();
-            } finally {
-                done();
-            }
-        }, getClass().getSimpleName());
-        th.setDaemon(true); //don't cause a deadlock with accidentally created AnalysisComponents that will never finish
-        th.start();
-        
-        started = true;
+            Thread th = new Thread(() -> {
+                if (!isInternalHelperComponent()) {
+                    LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " starting");
+                }
+                
+                try {
+                    execute();
+                } finally {
+                    done();
+                }
+            }, getClass().getSimpleName());
+            
+            //don't cause a deadlock with accidentally created AnalysisComponents that will never finish
+            th.setDaemon(true);
+            th.start();
+            
+            started = true;
+        }
     }
     
     /**
@@ -92,11 +96,7 @@ public abstract class AnalysisComponent<O> {
      * @return The next result. <code>null</code> if this analysis is done and does not produce any results anymore.
      */
     public final @Nullable O getNextResult() {
-        synchronized (this) {
-            if (!started) {
-                start();
-            }
-        }
+        start(); // make sure we are started
         return results.get();
     }
     
