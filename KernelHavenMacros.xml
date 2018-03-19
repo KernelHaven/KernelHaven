@@ -36,6 +36,8 @@
 	<property name="NonBooleanUtils.location_src" value="${jenkins.location}/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils_withsource.jar" />
 	<property name="ConfigurationMismatchAnalysis.location" value="${jenkins.location}/KernelHaven_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis.jar" />
 	<property name="ConfigurationMismatchAnalysis.location_src" value="${jenkins.location}/KernelHaven_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis_withsource.jar" />
+	<property name="CodeBlockExtractor.location_src" value="${jenkins.location}/KernelHaven_CodeBlockExtractor/lastSuccessfulBuild/artifact/build/jar/CodeBlockExtractor_withsource.jar" />
+	<property name="CodeBlockExtractor.location" value="${jenkins.location}/KernelHaven_CodeBlockExtractor/lastSuccessfulBuild/artifact/build/jar/CodeBlockExtractor.jar" />
 	<property name="KH.Manual" value="${jenkins.location}/KernelHaven_Documentation/lastSuccessfulBuild/artifact/Manual.pdf" />
 
 	<!-- Modules that build -->
