@@ -199,15 +199,39 @@ public class CppParserTest {
     }
     
     /**
-     * Tests that a binary operator without expressions on both sides correctly throws an exception.
+     * Tests that an unary ++ throws an exception if it has variables on the left and right.
      * 
      * @throws ExpressionFormatException wanted.
      */
     @Test(expected = ExpressionFormatException.class)
-    public void testBinaryWithNotBothSides() throws ExpressionFormatException {
+    public void testUnaryInTheMiddle() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+        
+        parser.parse("A ++ B");
+    }
+    
+    /**
+     * Tests that a binary operator without expressions on the right side correctly throws an exception.
+     * 
+     * @throws ExpressionFormatException wanted.
+     */
+    @Test(expected = ExpressionFormatException.class)
+    public void testBinaryWithNoVariableOnRight() throws ExpressionFormatException {
         CppParser parser = new CppParser();
         
         parser.parse("B *");
+    }
+    
+    /**
+     * Tests that a binary operator without expressions on the left side correctly throws an exception.
+     * 
+     * @throws ExpressionFormatException wanted.
+     */
+    @Test(expected = ExpressionFormatException.class)
+    public void testBinaryWithNoVariableOnLeft() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+        
+        parser.parse("* A");
     }
     
     /**
@@ -265,6 +289,24 @@ public class CppParserTest {
         CppParser parser = new CppParser();
 
         parser.parse("defined ! A");
+    }
+    
+    /**
+     * Tests that a function can take a whole expression as parameter.
+     * 
+     * @throws ExpressionFormatException unwanted.
+     */
+    @Test
+    public void testFunctionWithExpressionAsParameter() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+
+        CppExpression resutlt = parser.parse("func(A + B)");
+        
+        CppExpression arg = assertFunctionCall(resutlt, "func");
+        
+        CppExpression[] op1 = assertOperator(arg, CppOperator.INT_ADD);
+        assertVariable(op1[0], "A");
+        assertVariable(op1[1], "B");
     }
     
     /**

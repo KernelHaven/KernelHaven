@@ -211,4 +211,29 @@ public class CppLexerTest {
         parser.lex("123notaliteral");
     }
     
+    /**
+     * Tests that an = instead of an == throws an exception.
+     * 
+     * @throws ExpressionFormatException wanted.
+     */
+    @Test(expected = ExpressionFormatException.class)
+    public void testAssignment() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+        
+        parser.lex("=");
+    }
+    
+    /**
+     * Tests that a double character operator (like &&) does not crash if there is only the first character at the
+     * end of the string.
+     * 
+     * @throws ExpressionFormatException unwanted.
+     */
+    @Test
+    public void testDoubleCharAtEnd() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+        
+        assertThat(parser.lex("&"), is(new CppToken[] {new OperatorToken(0, CppOperator.BIN_AND)}));
+    }
+    
 }
