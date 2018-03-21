@@ -4,6 +4,8 @@ import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 
 import net.ssehub.kernel_haven.util.io.AbstractTableWriter;
@@ -21,7 +23,7 @@ public class CsvWriter extends AbstractTableWriter {
     
     public static final char DEFAULT_SEPARATOR = ';';
 
-    private @NonNull OutputStream out;
+    private @NonNull Writer out;
     
     private char separator;
     
@@ -41,6 +43,26 @@ public class CsvWriter extends AbstractTableWriter {
      * @param separator The separator character to use.
      */
     public CsvWriter(@NonNull OutputStream out, char separator) {
+        this.out = new OutputStreamWriter(out, Charset.forName("UTF-8"));
+        this.separator = separator;
+    }
+    
+    /**
+     * Creates a {@link CsvWriter} for the given output writer. Uses the {@link #DEFAULT_SEPARATOR}.
+     * 
+     * @param out The output writer to write the CSV to. This object will close this stream once it is closed.
+     */
+    public CsvWriter(@NonNull Writer out) {
+        this(out, DEFAULT_SEPARATOR);
+    }
+    
+    /**
+     * Creates a {@link CsvWriter} for the given output writer.
+     * 
+     * @param out The output writer to write the CSV to. This object will close this stream once it is closed.
+     * @param separator The separator character to use.
+     */
+    public CsvWriter(@NonNull Writer out, char separator) {
         this.out = out;
         this.separator = separator;
     }
@@ -114,7 +136,7 @@ public class CsvWriter extends AbstractTableWriter {
         }
         line.append('\n');
         
-        out.write(line.toString().getBytes(Charset.forName("UTF-8")));
+        out.write(line.toString());
     }
     
     @Override
