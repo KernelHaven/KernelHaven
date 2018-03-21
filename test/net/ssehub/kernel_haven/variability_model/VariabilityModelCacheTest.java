@@ -17,10 +17,12 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Util;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Tests the variability model cache.
@@ -36,6 +38,15 @@ public class VariabilityModelCacheTest {
 
     private File cacheDir;
 
+    /**
+     * Registers the {@link TristateVariableSerializer}.
+     */
+    @BeforeClass
+    public static void registerSerializer() {
+        VariabilityVariableSerializerFactory.INSTANCE.registerSerializer(TristateVariable.class.getName(),
+                new TristateVariableSerializer());
+    }
+    
     /**
      * Creates the cache directory for each test.
      */
@@ -98,20 +109,11 @@ public class VariabilityModelCacheTest {
                 }
             }
         }
-
+        
         @Override
         public void getDimacsMapping(Map<Integer, String> mapping) {
             mapping.put(getDimacsNumber(), getName());
             mapping.put(moduleNumber, getName() + "_MODULE");
-        }
-
-        @Override
-        public List<String> serializeCsv() {
-            List<String> result = super.serializeCsv();
-
-            result.add("" + moduleNumber);
-
-            return result;
         }
 
         @Override
@@ -141,34 +143,41 @@ public class VariabilityModelCacheTest {
             return result;
         }
 
-        /**
-         * Creates a {@link TristateVariable} from the given CSV.
-         * 
-         * @param csvParts
-         *            The CSV that is converted into a {@link TristateVariable}.
-         * @return The {@link TristateVariable} created by the CSV.
-         * 
-         * @throws FormatException
-         *             If the CSV cannot be read into a variable.
-         */
-        public static TristateVariable createFromCsv(String[] csvParts) throws FormatException {
-            if (csvParts.length < 5) {
-                throw new FormatException("Invalid CSV");
-            }
+    }
+    
+    /**
+     * A serializer for {@link TristateVariable}s.
+     */
+    private static class TristateVariableSerializer extends VariabilityVariableSerializer {
 
-            try {
-                VariabilityVariable var = VariabilityVariable.createFromCsv(csvParts);
-
-                return new TristateVariable(var, Integer.parseInt(csvParts[4]));
-
-            } catch (NumberFormatException e) {
-                throw new FormatException(e);
+        @Override
+        protected @NonNull List<@NonNull String> serializeImpl(@NonNull VariabilityVariable variable) {
+            TristateVariable triVar = (TristateVariable) variable;
+            
+            List<@NonNull String> result = super.serializeImpl(variable);
+            result.add(String.valueOf(triVar.moduleNumber));
+            
+            return result;
+        }
+        
+        @Override
+        protected @NonNull VariabilityVariable deserializeImpl(@NonNull String @NonNull [] csv) throws FormatException {
+            VariabilityVariable variable = super.deserializeImpl(csv);
+            TristateVariable result = new TristateVariable(variable, Integer.parseInt(csv[DEFAULT_SIZE]));
+            return result;
+        }
+        
+        @Override
+        protected void checkLength(@NonNull String @NonNull [] csv) throws FormatException {
+            if (csv.length != DEFAULT_SIZE + 1) {
+                throw new FormatException("Expected " + (DEFAULT_SIZE + 1) + " fields");
             }
         }
+        
     }
 
     /**
-     * Caching test. Is Caching a VM Object and comparing it to the cached one
+     * Test serializing, and deserializing the result.
      * 
      * @throws IOException
      *             unwanted.
@@ -301,40 +310,6 @@ public class VariabilityModelCacheTest {
     @Test()
     public void testEmptyCache() throws FormatException, IOException {
         VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache3"));
-        VariabilityModel vm = cache.read(new File(""));
-
-        assertThat(vm, nullValue());
-    }
-
-    /**
-     * Tests if the cache correctly returns <code>null</code> on half empty
-     * cache (only one of the two files present).
-     * 
-     * @throws IOException
-     *             unwanted.
-     * @throws FormatException
-     *             unwanted.
-     */
-    @Test()
-    public void testHalfEmptyCache1() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache4"));
-        VariabilityModel vm = cache.read(new File(""));
-
-        assertThat(vm, nullValue());
-    }
-
-    /**
-     * Tests if the cache correctly returns <code>null</code> on half empty
-     * cache (only one of the two files present).
-     * 
-     * @throws IOException
-     *             unwanted.
-     * @throws FormatException
-     *             unwanted.
-     */
-    @Test()
-    public void testHalfEmptyCache2() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache5"));
         VariabilityModel vm = cache.read(new File(""));
 
         assertThat(vm, nullValue());

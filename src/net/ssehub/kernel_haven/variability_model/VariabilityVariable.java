@@ -1,12 +1,10 @@
 package net.ssehub.kernel_haven.variability_model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -21,9 +19,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * <p>
  * If some data types require additional data (e.g. compound types), then the
  * extractor can create a new type that inherits from this class. The analysis
- * can then cast this generic class into the specific sub-type, if needed. Any sub-type
- * also has to override {@link #serializeCsv()} and have a static {@link #createFromCsv(String[])}
- * method for serialization.
+ * can then cast this generic class into the specific sub-type, if needed.
  * </p>
  * <p>
  * If this variable is linked to a specific DIMACS representation, then the
@@ -214,36 +210,6 @@ public class VariabilityVariable {
         return usedInConstraintsOfOtherVariables;
     }
     
-    /**
-     * Serializes this as a CSV line.
-     * 
-     * @return The parts of the CSV line.
-     */
-    public @NonNull List<@NonNull String> serializeCsv() {
-        List<@NonNull String> result = new ArrayList<>(5);
-
-        result.add(name);
-        result.add(type);
-        result.add("" + dimacsNumber);
-
-        String sourceLocations = "";
-        List<SourceLocation> sourceLocationsList = this.getSourceLocations();
-
-        if (sourceLocationsList != null) {
-            for (int i = 0; i < sourceLocationsList.size(); i++) {
-                sourceLocations += sourceLocationsList.get(i).getSource() + ">"
-                        + sourceLocationsList.get(i).getLineNumber();
-                if (i < sourceLocationsList.size() - 1) {
-                    sourceLocations += "|";
-                }
-            }
-        } else {
-            sourceLocations = "null";
-        }
-        result.add(sourceLocations);
-        return result;
-    }
-
     @Override
     public @NonNull String toString() {
         List<@NonNull SourceLocation> sourceLocations = this.sourceLocations;
@@ -276,45 +242,6 @@ public class VariabilityVariable {
             }
         }
         return result;
-    }
-
-    /**
-     * Creates a {@link VariabilityVariable} from the given CSV.
-     * 
-     * @param csvParts
-     *            The CSV that is converted into a {@link VariabilityVariable}.
-     * @return The {@link VariabilityVariable} created by the CSV.
-     * 
-     * @throws FormatException
-     *             If the CSV cannot be read into a variable.
-     */
-    public static @NonNull VariabilityVariable createFromCsv(@NonNull String @NonNull [] csvParts)
-            throws FormatException {
-        
-        if (csvParts.length < 4) {
-            throw new FormatException("Invalid CSV");
-        }
-
-        try {
-            VariabilityVariable varVariable = new VariabilityVariable(csvParts[0], csvParts[1],
-                    Integer.parseInt(csvParts[2]));
-            String sourceLocationsString = csvParts[3];
-
-            if (!sourceLocationsString.equals("null")) {
-                String[] sourceLocationsArray = sourceLocationsString.split("\\|");
-                for (String sourceLocation : sourceLocationsArray) {
-                    String[] parts = sourceLocation.split(">");
-                    if (parts.length != 2) {
-                        throw new FormatException("Invalid SourceLocation: " + sourceLocation);
-                    }
-                    varVariable.addLocation(new SourceLocation(new File(parts[0]), Integer.parseInt(parts[1])));
-                }
-            }
-
-            return varVariable;
-        } catch (NumberFormatException e) {
-            throw new FormatException(e);
-        }
     }
 
 }

@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -432,10 +434,33 @@ public final class Util {
      * @throws IOException
      *             If reading or writing throws an exception.
      */
-    private static void copyStream(@NonNull InputStream in, @NonNull OutputStream out) throws IOException {
+    public static void copyStream(@NonNull InputStream in, @NonNull OutputStream out) throws IOException {
         final int bufferSize = 1024;
 
         byte[] buffer = new byte[bufferSize];
+
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+    }
+    
+    /**
+     * Copies the complete content of InputStream in to OutputStream out. This reads from in until the end of stream is
+     * reached. This does not close the streams.
+     * 
+     * @param in
+     *            The stream to read from. Must not be null.
+     * @param out
+     *            The stream to write to. Must not be null.
+     * 
+     * @throws IOException
+     *             If reading or writing throws an exception.
+     */
+    public static void copyStream(@NonNull Reader in, @NonNull Writer out) throws IOException {
+        final int bufferSize = 1024;
+
+        char[] buffer = new char[bufferSize];
 
         int read;
         while ((read = in.read(buffer)) != -1) {

@@ -1,0 +1,28 @@
+KernelHaven Variability Model Cache
+Version: 2
+---Model Descriptor---
+BOOLEAN
+UNSPECIFIED
+false
+false
+---Variables---
+net.ssehub.kernel_haven.variability_model.VariabilityVariable
+This is an invalid CSV line
+net.ssehub.kernel_haven.variability_model.VariabilityModelCacheTest$TristateVariable
+ALPHA;tristate;1;foxtrot\unicorn\charlie\kilo.kconfig>12|fruchtkernhafen.kconfig>42;2
+net.ssehub.kernel_haven.variability_model.VariabilityModelCacheTest$TristateVariable
+BETA;tristate;5;null;4
+---Constraint File---
+c 1 ALPHA
+c 4 BETA_MODULE
+c 2 ALPHA_MODULE
+c 5 BETA
+c 3 GAMMA
+p cnf 5 7
+-1 2 0
+-3 -1 0
+-4 -5 -4 -2 -1 0
+-3 5 0
+-2 -4 -5 -4 -2 0
+-3 1 0
+-4 5 0

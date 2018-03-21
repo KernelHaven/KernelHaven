@@ -229,7 +229,7 @@ public class VariabilityModelProviderTest {
         }
         
         // test if cache is now not empty
-        assertThat(cacheDir.listFiles().length, is(2));
+        assertThat(cacheDir.listFiles().length, is(1));
         
         // cleanup
         Util.deleteFolder(cacheDir);
