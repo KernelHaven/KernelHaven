@@ -86,7 +86,7 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             out.write(VARIABLE_SEPARATOR + "\n");
             @SuppressWarnings("resource") // out is closed by the try-with-resource block
             CsvWriter csvOut = new CsvWriter(out);
-            for (@NonNull VariabilityVariable vv : vm.getVariables()) {
+            for (VariabilityVariable vv : vm.getVariables()) {
                 try {
                     String className = notNull(vv.getClass().getName());
                     
@@ -125,14 +125,12 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
         VariabilityModel result = null;
         try (LineNumberReader in = new LineNumberReader(new FileReader(cacheFile))) {
             String line;
-            
             // read meta information
             line = readOrThrow(in, "header");
             if (!HEADER.equals(line)) {
                 throw new FormatException("Found invalid header in line " + in.getLineNumber() + "; expected: "
                         + HEADER);
             }
-            
             line = readOrThrow(in, "version");
             if (!line.startsWith("Version: ") || line.length() <= "Version: ".length()) {
                 throw new FormatException("Expected \"Version: <version>\" in line " + in.getLineNumber());
@@ -172,7 +170,8 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             line = readOrThrow(in, "descriptor constraint usage");
             boolean hasConstraintUsage = Boolean.parseBoolean(line);
             
-            Map<@NonNull String, VariabilityVariable> variables = readVariables(in);
+            // TODO: removed null annotation because jacoco report fails with it
+            Map</*@NonNull*/ String, VariabilityVariable> variables = readVariables(in);
             
             File constraintCopy = File.createTempFile("constraintModel", "");
             constraintCopy.deleteOnExit();
@@ -180,14 +179,15 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
                 Util.copyStream(in, out);
             }
             
-            result = new VariabilityModel(constraintCopy, variables);
+            @SuppressWarnings("null") // TODO: null annotation missing, see above
+            VariabilityModel r = new VariabilityModel(constraintCopy, variables);
+            result = r;
             result.getDescriptor().setVariableType(variableType);
             result.getDescriptor().setConstraintFileType(constraintFileType);
             result.getDescriptor().setHasSourceLoactions(hasSourceLocations);
             result.getDescriptor().setHasConstraintUsage(hasConstraintUsage);
             
-        } catch (FileNotFoundException e) {
-            // ignore, just return null
+        } catch (FileNotFoundException e) { // ignore, just return null
         }
         return result;
     }
