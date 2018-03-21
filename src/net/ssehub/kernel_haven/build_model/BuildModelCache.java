@@ -93,6 +93,7 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
             Parser</*@NonNull*/ Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache));
 
             /*
+             * TODO: commented out annotations
              * The two commented out annotations (above and below this comment) trigger a bug in the javac compiler:
              * https://bugs.openjdk.java.net/browse/JDK-8144185
              * 
