@@ -270,6 +270,24 @@ public final class Logger {
     }
     
     /**
+     * Checks first whether to log the message and only iff the message shall be logged, it will concatenate
+     * the single parts and log the complete message into a single line.
+     * @param level The log level to be written. Must not be null.
+     * @param messageParts The message to be logged, for all elements {@link Object#toString()} is called to concatenate
+     *     the message.
+     */
+    private void log(@NonNull Level level, Object /*@NonNull*/ ... messageParts) {
+        if (this.level.shouldLog(level) && null != messageParts) {
+            StringBuffer messageLine = new StringBuffer();
+            for (Object object : messageParts) {
+                messageLine.append(object.toString());
+            }
+            
+            log(level, messageLine.toString());
+        }
+    }
+    
+    /**
      * Writes a single log entry consisting of the specified lines with the
      * specified log level to the target. Internally, a lock on {@link #target}
      * is acquired to ensure that messages are not splitted in a multi-threaded
@@ -339,6 +357,16 @@ public final class Logger {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.INFO, lines);
     }
+    
+    /**
+     * Logs a log entry with the log level "info".
+     * 
+     * @param messageParts The content of the log entry.
+     */
+    public void logInfo2(Object /*@NonNull*/ ... messageParts) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
+        log(Level.INFO, messageParts);
+    }
 
     /**
      * Logs a log entry with the log level "debug".
@@ -349,6 +377,16 @@ public final class Logger {
     public void logDebug(String /*@NonNull*/ ... lines) {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.DEBUG, lines);
+    }
+    
+    /**
+     * Logs a log entry with the log level "debug".
+     * 
+     * @param messageParts The content of the log entry.
+     */
+    public void logDebug2(Object /*@NonNull*/ ... messageParts) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
+        log(Level.DEBUG, messageParts);
     }
 
     /**
@@ -361,6 +399,16 @@ public final class Logger {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.WARNING, lines);
     }
+    
+    /**
+     * Logs a log entry with the log level "warning".
+     * 
+     * @param messageParts The content of the log entry.
+     */
+    public void logWarning2(Object /*@NonNull*/ ... messageParts) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
+        log(Level.WARNING, messageParts);
+    }
 
     /**
      * Logs a log entry with the log level "error".
@@ -371,6 +419,16 @@ public final class Logger {
     public void logError(String /*@NonNull*/ ... lines) {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.ERROR, lines);
+    }
+    
+    /**
+     * Logs a log entry with the log level "error".
+     * 
+     * @param messageParts The content of the log entry.
+     */
+    public void logError2(Object /*@NonNull*/ ... messageParts) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
+        log(Level.ERROR, messageParts);
     }
 
     /**
