@@ -34,7 +34,7 @@ public class AllAstTests {
         java.io.File sourceFile = new java.io.File("dummy_test.c");
         
         // File
-        File file = new File(True.INSTANCE);
+        File file = new File(True.INSTANCE, sourceFile);
         file.setSourceFile(sourceFile);
         file.setCondition(True.INSTANCE);
         

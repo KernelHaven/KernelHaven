@@ -11,19 +11,33 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  */
 public class File extends AbstractSyntaxElementWithChildreen {
 
+    private java.io.@NonNull File path;
+    
     /**
      * Creates a {@link File}.
      * 
      * @param presenceCondition The presence condition of this element.
+     * @param path The location that this parsed file comes from.
      */
-    public File(@NonNull Formula presenceCondition) {
+    public File(@NonNull Formula presenceCondition, java.io.@NonNull File path) {
         super(presenceCondition);
+        this.path = path;
     }
 
+    /**
+     * Returns the location that this parsed file comes from.
+     * 
+     * @return The location of this file.
+     */
+    public java.io.@NonNull File getPath() {
+        return path;
+    }
+    
     @Override
     public @NonNull String elementToString(@NonNull String indentation) {
-        return "File\n";
+        return "File " + path + "\n";
     }
+    
 
     @Override
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
