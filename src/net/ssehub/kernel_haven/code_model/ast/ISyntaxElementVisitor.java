@@ -132,7 +132,7 @@ public interface ISyntaxElementVisitor {
      * <br/>
      * Provides default Visitation: <b>true</b>
      * 
-     * @param typeDef The type definiton to visit.
+     * @param typeDef The type definition to visit.
      */
     public default void visitTypeDefinition(@NonNull TypeDefinition typeDef) {
         typeDef.getDeclaration().accept(this);

@@ -39,6 +39,7 @@
 	<property name="CodeBlockExtractor.location_src" value="${jenkins.location}/KernelHaven_CodeBlockExtractor/lastSuccessfulBuild/artifact/build/jar/CodeBlockExtractor_withsource.jar" />
 	<property name="CodeBlockExtractor.location" value="${jenkins.location}/KernelHaven_CodeBlockExtractor/lastSuccessfulBuild/artifact/build/jar/CodeBlockExtractor.jar" />
 	<property name="KH.Manual" value="${jenkins.location}/KernelHaven_Documentation/lastSuccessfulBuild/artifact/Manual.pdf" />
+	<property name="KH.PropertyTemplate" value="${jenkins.location}/KernelHaven_PropertiesTemplate/lastSuccessfulBuild/artifact/build/generated/config_template.properties" />
 
 	<!-- Modules that build -->
 	<property name="src.dir" value="${basedir}/src" />
