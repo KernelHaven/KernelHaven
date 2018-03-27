@@ -1,6 +1,7 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
 import java.io.File;
+import java.util.NoSuchElementException;
 
 import net.ssehub.kernel_haven.code_model.CodeElement;
 import net.ssehub.kernel_haven.util.logic.Formula;
@@ -24,7 +25,19 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 public interface ISyntaxElement extends CodeElement {
 
     @Override
-    public abstract @NonNull ISyntaxElement getNestedElement(int index) throws IndexOutOfBoundsException;
+    public @NonNull ISyntaxElement getNestedElement(int index) throws IndexOutOfBoundsException;
+    
+    /**
+     * Replaces the given nested element with the given new element. This method should only be called by the extractor
+     * that creates the AST.
+     * 
+     * @param oldElement The old element to replace.
+     * @param newElement The new element to replace with.
+     * 
+     * @throws NoSuchElementException If oldElement is not nested inside this one.
+     */
+    public void replaceNestedElement(@NonNull ISyntaxElement oldElement, @NonNull ISyntaxElement newElement)
+            throws NoSuchElementException;
     
     /**
      * Sets the source file that this element comes from.

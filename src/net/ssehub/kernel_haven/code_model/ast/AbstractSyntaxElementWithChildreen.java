@@ -4,6 +4,7 @@ import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import net.ssehub.kernel_haven.code_model.CodeElement;
 import net.ssehub.kernel_haven.util.logic.Formula;
@@ -47,4 +48,20 @@ abstract class AbstractSyntaxElementWithChildreen extends AbstractSyntaxElement 
         nested.add((AbstractSyntaxElement) element);
     }
 
+    @Override
+    public void replaceNestedElement(@NonNull ISyntaxElement oldElement, @NonNull ISyntaxElement newElement)
+            throws NoSuchElementException {
+        
+        if (!(newElement instanceof AbstractSyntaxElement)) {
+            throw new IllegalArgumentException("Can only add SyntaxElements as child of SyntaxElement");
+        }
+        
+        int index = nested.indexOf(oldElement);
+        if (index < 0) {
+            throw new NoSuchElementException();
+        }
+        
+        nested.set(index, (AbstractSyntaxElement) newElement);
+    }
+    
 }

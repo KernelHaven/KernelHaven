@@ -5,6 +5,7 @@ import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import net.ssehub.kernel_haven.code_model.CodeElement;
 import net.ssehub.kernel_haven.util.logic.Formula;
@@ -85,6 +86,12 @@ abstract class AbstractSyntaxElement implements ISyntaxElement {
     @Override
     public void addNestedElement(@NonNull CodeElement element) throws IndexOutOfBoundsException {
         throw new IndexOutOfBoundsException();
+    }
+    
+    @Override
+    public void replaceNestedElement(@NonNull ISyntaxElement oldElement, @NonNull ISyntaxElement newElement)
+            throws NoSuchElementException {
+        throw new NoSuchElementException();
     }
     
     @Override
