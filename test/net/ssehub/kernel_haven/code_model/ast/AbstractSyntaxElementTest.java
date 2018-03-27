@@ -33,7 +33,7 @@ public class AbstractSyntaxElementTest {
     public void testToString() {
         String s = AllAstTests.createFullAst().toString();
 
-        assertEquals("[1] File\n"
+        assertEquals("[1] File dummy_test.c\n"
                 + "\t[1] #INCLUDE\n"
                 + "\t\t[1] < stdio.h >\n"
                 + "\t[1] Function simpleFunction\n"
