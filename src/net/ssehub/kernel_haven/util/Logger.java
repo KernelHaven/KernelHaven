@@ -119,7 +119,7 @@ public final class Logger {
     /**
      * The target to log to.
      */
-    private @NonNull ArrayList<@NonNull OutputStream> targets;
+    private @NonNull ArrayList<@NonNull Target> targets;
 
     /**
      * The charset used by the logger. All targets have the same charset.
@@ -132,14 +132,35 @@ public final class Logger {
     private @Nullable File logFile;
     
     private @Nullable Boolean forceColor;
-    
+
+    /**
+     * A single target of this logger.
+     */
+    private static final class Target {
+        
+        private @NonNull OutputStream out;
+        
+        private boolean useColor;
+
+        /**
+         * Creates a new target.
+         * 
+         * @param out The output stream of this target.
+         * @param useColor Whether to use ANSI color codes on this target.
+         */
+        public Target(@NonNull OutputStream out, boolean useColor) {
+            this.out = out;
+            this.useColor = useColor;
+        }
+        
+    }
 
     /**
      * Instantiates a new logger.
      */
     private Logger() {
         this.targets = new ArrayList<>(2);
-        this.targets.add(notNull(System.out));
+        addTarget(notNull(System.out));
         
         this.charset = notNull(Charset.forName("UTF-8"));
         this.level = Level.INFO;
@@ -171,14 +192,14 @@ public final class Logger {
             forceColor = config.getValue(DefaultSettings.LOG_FORCE_COLOR);
             
             if (config.getValue(DefaultSettings.LOG_CONSOLE)) {
-                targets.add(notNull(System.out));
+                addTarget(notNull(System.out));
             }
             
             if (config.getValue(DefaultSettings.LOG_FILE)) {
                 logFile = new File(config.getValue(DefaultSettings.LOG_DIR), 
                         Timestamp.INSTANCE.getFilename("KernelHaven", "log"));
                 try {
-                    targets.add(new FileOutputStream(logFile));
+                    addTarget(new FileOutputStream(logFile));
                 } catch (FileNotFoundException e) {
                     throw new SetUpException(e);
                 }
@@ -193,9 +214,11 @@ public final class Logger {
      */
     public @NonNull List<@NonNull OutputStream> getTargets() {
         synchronized (targets) {
-            @SuppressWarnings("unchecked")
-            List<@NonNull OutputStream> clone = notNull((List<@NonNull OutputStream>) targets.clone());
-            return notNull(Collections.unmodifiableList(clone));
+            List<@NonNull OutputStream> result = new ArrayList<>(targets.size());
+            for (Target target : targets) {
+                result.add(target.out);
+            }
+            return notNull(Collections.unmodifiableList(result));
         }
     }
     
@@ -229,7 +252,7 @@ public final class Logger {
      */
     public void addTarget(@NonNull OutputStream target) {
         synchronized (targets) {
-            targets.add(target);
+            targets.add(new Target(target, useColor(target)));
         }
     }
 
@@ -327,24 +350,22 @@ public final class Logger {
         
         byte[] bytes = str.toString().getBytes(charset);
 
-        List<@NonNull OutputStream> targets;
         synchronized (this.targets) {
-            targets = this.targets;
-        }
-        for (OutputStream target : targets) {
-
-            synchronized (target) {
-                try {
-                    if (useColor(target)) {
-                        // no need to cache this header, since only one target will be System.out
-                        target.write(constructHeader(level, true).getBytes(charset));
-                    } else {
-                        target.write(headerBytes);
+            for (Target target : this.targets) {
+    
+                synchronized (target.out) {
+                    try {
+                        if (target.useColor) {
+                            // no need to cache this header, since only one target will be System.out
+                            target.out.write(constructHeader(level, true).getBytes(charset));
+                        } else {
+                            target.out.write(headerBytes);
+                        }
+                        target.out.write(bytes);
+                        target.out.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    target.write(bytes);
-                    target.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
         }
