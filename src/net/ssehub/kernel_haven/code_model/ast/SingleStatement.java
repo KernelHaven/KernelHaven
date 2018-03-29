@@ -76,7 +76,7 @@ public class SingleStatement extends AbstractSyntaxElement {
      * 
      * @return The type of statement that this is.
      */
-    public Type getType() {
+    public @NonNull Type getType() {
         return type;
     }
     
