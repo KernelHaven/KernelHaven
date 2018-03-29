@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -67,10 +68,14 @@ public class StaticClassLoader {
         
         for (URL url : classLoader.getURLs()) {
             if (url.getProtocol().equals("file")) {
-                File file = new File(url.getPath());
-                
-                if (!file.getAbsolutePath().startsWith(javaHome)) {
-                    files.add(file);
+                try {
+                    File file = new File(url.toURI());
+                    
+                    if (!file.getAbsolutePath().startsWith(javaHome)) {
+                        files.add(file);
+                    }
+                } catch (IllegalArgumentException | URISyntaxException e) {
+                    LOGGER.logExceptionWarning("Can't convert classpath URL to file", e);
                 }
                 
             } else {
@@ -92,6 +97,8 @@ public class StaticClassLoader {
         int loaded = 0;
         for (@NonNull String className : classesToLoad) {
             try {
+                LOGGER.logDebug("Loading class " + className + "...");
+                
                 // load the class
                 // don't use ClassLoader.loadClass(), because it doesn't initialize
                 Class<?> clazz = Class.forName(className, true, ClassLoader.getSystemClassLoader());
