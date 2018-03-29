@@ -58,7 +58,7 @@ public class AllAstTests {
         ifStmt.setCondition(True.INSTANCE);
         
         SingleStatement insideIf = new SingleStatement(True.INSTANCE,
-                makeCode("return 1 ;", sourceFile, True.INSTANCE, True.INSTANCE));
+                makeCode("return 1 ;", sourceFile, True.INSTANCE, True.INSTANCE), SingleStatement.Type.INSTRUCTION);
         insideIf.setSourceFile(sourceFile);
         insideIf.setCondition(True.INSTANCE);
         
@@ -75,7 +75,7 @@ public class AllAstTests {
         elif.setCondition(True.INSTANCE);
         
         SingleStatement elifBody = new SingleStatement(True.INSTANCE, 
-                makeCode(";", sourceFile, True.INSTANCE, True.INSTANCE));
+                makeCode(";", sourceFile, True.INSTANCE, True.INSTANCE), SingleStatement.Type.INSTRUCTION);
         elifBody.setSourceFile(sourceFile);
         elifBody.setCondition(True.INSTANCE);
         elif.addNestedElement(elifBody);
@@ -87,7 +87,7 @@ public class AllAstTests {
         elseStmt.setSourceFile(sourceFile);
         elseStmt.setCondition(True.INSTANCE);
         SingleStatement elseBody = new SingleStatement(True.INSTANCE, 
-                makeCode(";", sourceFile, True.INSTANCE, True.INSTANCE));
+                makeCode(";", sourceFile, True.INSTANCE, True.INSTANCE), SingleStatement.Type.INSTRUCTION);
         elseBody.setSourceFile(sourceFile);
         elseBody.setCondition(True.INSTANCE);
         elseStmt.addNestedElement(elseBody);
@@ -126,7 +126,7 @@ public class AllAstTests {
         case1.setSourceFile(sourceFile);
         
         SingleStatement caseBody = new SingleStatement(True.INSTANCE, 
-                makeCode(";", sourceFile, True.INSTANCE, True.INSTANCE));
+                makeCode(";", sourceFile, True.INSTANCE, True.INSTANCE), SingleStatement.Type.INSTRUCTION);
         caseBody.setSourceFile(sourceFile);
         caseBody.setCondition(True.INSTANCE);
         case1.addNestedElement(caseBody);
@@ -139,7 +139,7 @@ public class AllAstTests {
         defaultStmt.setSourceFile(sourceFile);
         
         SingleStatement defaultBody = new SingleStatement(True.INSTANCE, 
-                makeCode(";", sourceFile, True.INSTANCE, True.INSTANCE));
+                makeCode(";", sourceFile, True.INSTANCE, True.INSTANCE), SingleStatement.Type.INSTRUCTION);
         defaultBody.setSourceFile(sourceFile);
         defaultBody.setCondition(True.INSTANCE);
         defaultStmt.addNestedElement(defaultBody);
@@ -168,7 +168,7 @@ public class AllAstTests {
         codeList.addNestedElement(elsedef);
         codeList.addNestedElement(makeCode(";", sourceFile, True.INSTANCE, True.INSTANCE));
         
-        SingleStatement assignment = new SingleStatement(True.INSTANCE, codeList);
+        SingleStatement assignment = new SingleStatement(True.INSTANCE, codeList, SingleStatement.Type.INSTRUCTION);
         assignment.setCondition(True.INSTANCE);
         assignment.setSourceFile(sourceFile);
         f1.addNestedElement(assignment);
