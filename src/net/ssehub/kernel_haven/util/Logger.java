@@ -131,6 +131,8 @@ public final class Logger {
      */
     private @Nullable File logFile;
     
+    private @Nullable Boolean forceColor;
+    
 
     /**
      * Instantiates a new logger.
@@ -166,6 +168,7 @@ public final class Logger {
             targets.clear();
             logFile = null;
             level = config.getValue(DefaultSettings.LOG_LEVEL);
+            forceColor = config.getValue(DefaultSettings.LOG_FORCE_COLOR);
             
             if (config.getValue(DefaultSettings.LOG_CONSOLE)) {
                 targets.add(notNull(System.out));
@@ -276,11 +279,11 @@ public final class Logger {
      * @param messageParts The message to be logged, for all elements {@link Object#toString()} is called to concatenate
      *     the message.
      */
-    private void log(@NonNull Level level, Object /*@NonNull*/ ... messageParts) {
+    private void log(@NonNull Level level, @Nullable Object /*@NonNull*/ ... messageParts) {
         if (this.level.shouldLog(level) && null != messageParts) {
             StringBuffer messageLine = new StringBuffer();
             for (Object object : messageParts) {
-                messageLine.append(object.toString());
+                messageLine.append(object != null ? object.toString() : "null");
             }
             
             log(level, messageLine.toString());
@@ -332,7 +335,7 @@ public final class Logger {
 
             synchronized (target) {
                 try {
-                    if (Util.isTTY(target)) {
+                    if (useColor(target)) {
                         // no need to cache this header, since only one target will be System.out
                         target.write(constructHeader(level, true).getBytes(charset));
                     } else {
@@ -345,6 +348,27 @@ public final class Logger {
                 }
             }
         }
+    }
+    
+    /**
+     * Determines whether ANSI color codes should be used for the given target stream.
+     * 
+     * @param target The stream to log to.
+     * 
+     * @return Whether ANSI color codes should be used.
+     */
+    private boolean useColor(OutputStream target) {
+        boolean result;
+        
+        Boolean forceColor = this.forceColor;
+        if (forceColor != null) {
+            result = forceColor && target == System.out;
+            
+        } else {
+            result = Util.isTTY(target);
+        }
+        
+        return result;
     }
 
     /**
@@ -363,7 +387,7 @@ public final class Logger {
      * 
      * @param messageParts The content of the log entry.
      */
-    public void logInfo2(Object /*@NonNull*/ ... messageParts) {
+    public void logInfo2(@Nullable Object /*@NonNull*/ ... messageParts) {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.INFO, messageParts);
     }
@@ -384,7 +408,7 @@ public final class Logger {
      * 
      * @param messageParts The content of the log entry.
      */
-    public void logDebug2(Object /*@NonNull*/ ... messageParts) {
+    public void logDebug2(@Nullable Object /*@NonNull*/ ... messageParts) {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.DEBUG, messageParts);
     }
@@ -405,7 +429,7 @@ public final class Logger {
      * 
      * @param messageParts The content of the log entry.
      */
-    public void logWarning2(Object /*@NonNull*/ ... messageParts) {
+    public void logWarning2(@Nullable Object /*@NonNull*/ ... messageParts) {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.WARNING, messageParts);
     }
@@ -426,7 +450,7 @@ public final class Logger {
      * 
      * @param messageParts The content of the log entry.
      */
-    public void logError2(Object /*@NonNull*/ ... messageParts) {
+    public void logError2(@Nullable Object /*@NonNull*/ ... messageParts) {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.ERROR, messageParts);
     }
