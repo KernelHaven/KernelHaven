@@ -59,6 +59,11 @@ abstract class AbstractSyntaxElement implements ISyntaxElement {
     }
     
     @Override
+    public void setPresenceCondition(@NonNull Formula presenceCondition) {
+        this.presenceCondition = presenceCondition;
+    }
+    
+    @Override
     public void setLineStart(int lineStart) {
         this.lineStart = lineStart;
     }

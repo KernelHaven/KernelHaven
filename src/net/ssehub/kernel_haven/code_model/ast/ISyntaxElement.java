@@ -49,13 +49,24 @@ public interface ISyntaxElement extends CodeElement {
     public void setSourceFile(@NonNull File sourceFile);
     
     /**
-     * Sets the immediate condition of this element.
+     * Sets the immediate condition of this element. This method should only be called by the extractor
+     * that creates the AST.
      * 
      * @param condition The immediate condition of this element.
      * 
      * @see #getCondition()
      */
     public void setCondition(@Nullable Formula condition);
+    
+    /**
+     * Sets the presence condition of this element. This method should only be called by the extractor
+     * that creates the AST.
+     * 
+     * @param presenceCondition The presence condition of this element.
+     * 
+     * @see #getPresenceCondition()
+     */
+    public void setPresenceCondition(@NonNull Formula presenceCondition);
     
     /**
      * Sets the starting line of this element.
