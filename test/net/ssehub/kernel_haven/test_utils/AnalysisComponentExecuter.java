@@ -9,6 +9,7 @@ import java.util.Properties;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.analysis.AnalysisComponent;
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Contains a helper method to execute analysis components.
@@ -71,7 +72,8 @@ public class AnalysisComponentExecuter {
      *      
      * @return The list of results that the component created.
      */
-    public static <T> List<T> executeComponent(Class<?> componentClass, Configuration config, Object[]... inputs) {
+    public static <T> @NonNull List<T> executeComponent(Class<?> componentClass, Configuration config,
+            Object[]... inputs) {
         
         // create an empty configuration is none is passed to us
         if (config == null) {
