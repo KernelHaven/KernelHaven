@@ -25,10 +25,21 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  */
 public class DisjunctionQueue {
     
-    private static final Logger LOGGER = Logger.get();
+    /**
+     * The global singleton {@link Logger}.
+     */
+    protected static final Logger LOGGER = Logger.get();
     
-    private Queue<@NonNull Formula> queue = new ArrayDeque<>();
-    private boolean isTrue = false;
+    /**
+     * Whether a {@link True} element was {@link #add(Formula)}ed.
+     */
+    protected boolean isTrue = false;
+    
+    /**
+     * The queue containing the {@link #add(Formula)}ed formulas.
+     */
+    protected Queue<@NonNull Formula> queue = new ArrayDeque<>();
+    
     private Set<Formula> conditions = new HashSet<>();
     private boolean simplify;
     private Function<@NonNull Formula, @NonNull Formula> simplifier;
@@ -93,6 +104,7 @@ public class DisjunctionQueue {
     /**
      * Creates one disjunction term based on the elements passed to the queue. This will also clear all contents from
      * this queue.
+     * 
      * @return The disjunction, maybe {@link True} if one of the passed elements was {@link True},
      *     never be <tt>null</tt>.
      * @see #getDisjunction(String)
@@ -104,13 +116,14 @@ public class DisjunctionQueue {
     /**
      * Creates one disjunction term based on the elements passed to the queue. This will also clear all contents from
      * this queue.
+     * 
      * @param varName Optional: The name of the variable for which the disjunction is currently be created, this is only
      *     used to create an error log in case of an error.
      * @return The disjunction, maybe {@link True} if one of the passed elements was {@link True},
      *     never be <tt>null</tt>.
      */
     public @NonNull Formula getDisjunction(@Nullable String varName) {
-        @NonNull Formula result;
+        Formula result;
         
         // Create disjunction of all elements
         if (isTrue || queue.isEmpty()) {
@@ -138,10 +151,18 @@ public class DisjunctionQueue {
         }
         
         // Reset
-        queue.clear();
-        conditions.clear();
-        isTrue = false;
+        reset();
         
         return result;
     }
+    
+    /**
+     * Resets this {@link DisjunctionQueue}. After this, the queue is in the same state as if it was newly created.
+     */
+    public void reset() {
+        queue.clear();
+        conditions.clear();
+        isTrue = false;
+    }
+    
 }
