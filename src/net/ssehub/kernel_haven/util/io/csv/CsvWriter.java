@@ -137,6 +137,7 @@ public class CsvWriter extends AbstractTableWriter {
         line.append('\n');
         
         out.write(line.toString());
+        out.flush();
     }
     
     @Override
