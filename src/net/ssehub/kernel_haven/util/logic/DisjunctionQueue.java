@@ -86,7 +86,7 @@ public class DisjunctionQueue {
         if (null != condition) {
             if (simplify) {
                 // Default case: Avoid doubled formulas and handle TRUE/FALSE literals
-                if (!isTrue && !conditions.contains(condition) && !(condition instanceof False)) {
+                if (!isTrue && !conditions.contains(condition)) {
                     if (condition instanceof True) {
                         isTrue = true;
                     } else {

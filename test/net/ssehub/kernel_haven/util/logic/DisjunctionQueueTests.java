@@ -56,6 +56,20 @@ public class DisjunctionQueueTests {
     }
     
     /**
+     * Tests if can simplify constantly true parts.
+     */
+    @Test
+    public void  testFlaseConstraint() {
+        DisjunctionQueue queue = new DisjunctionQueue(true);
+        
+        // 1st test: Add false first
+        queue.add(False.INSTANCE);
+        queue.add(False.INSTANCE);
+        Formula f = queue.getDisjunction();
+        Assert.assertEquals(False.INSTANCE, f);
+    }
+    
+    /**
      * Test that it avoids insertion of the same element twice.
      */
     @Test
