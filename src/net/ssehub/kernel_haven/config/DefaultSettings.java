@@ -74,6 +74,7 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull String> ANALYSIS_PIPELINE = new Setting<>("analysis.pipeline", STRING, true, "", "A string specifying a pipeline of analyis components. This only has an effect if " + ANALYSIS_CLASS.getKey() + " is set to " + ConfiguredPipelineAnalysis.class.getName() + "."); // TODO specify format
     public static final @NonNull Setting<@NonNull String> ANALYSIS_RESULT = new Setting<>("analysis.output.type", STRING, false, "csv", "A file suffix that specifies which kind of output writer shall be used. If IOUtils is used, then xls or xlsx can be used here.");
     public static final @NonNull Setting<@NonNull Boolean> ANALYSIS_USE_VARMODEL_VARIABLES_ONLY = new Setting<>("analysis.consider_vm_vars_only", BOOLEAN, true, "false", "Defines whether the analysis should only consider variables that are present in the variability model.");
+    public static final @NonNull Setting<@NonNull Boolean> ANALYSIS_PIPELINE_START_EXTRACTORS = new Setting<>("analysis.pipeline.preemptively_start_extractors", BOOLEAN, true, "true", "Whether the analysis pipeline should preemptively start all three extractors. This has the advantage that the extractors will always run in parallel, even if the analysis compoenents only poll them in order. If this is set to false, then the extractors only start on demand when the analysis components poll them.");
     
     /*
      * Common extractor parameters

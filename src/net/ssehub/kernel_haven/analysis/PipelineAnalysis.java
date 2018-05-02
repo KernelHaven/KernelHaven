@@ -141,11 +141,13 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         
             AnalysisComponent<?> mainComponent = createPipeline();
             
-            // start all extractors; this is needed here because the analysis components will most likely poll them
-            // in order, which means that the extractors would not run in parallel
-            vmStarter.start();
-            bmStarter.start();
-            cmStarter.start();
+            if (config.getValue(DefaultSettings.ANALYSIS_PIPELINE_START_EXTRACTORS)) {
+                // start all extractors; this is needed here because the analysis components will most likely poll them
+                // in order, which means that the extractors would not run in parallel
+                vmStarter.start();
+                bmStarter.start();
+                cmStarter.start();
+            }
             
             if (mainComponent instanceof JoinComponent) {
                 List<Thread> threads = new LinkedList<>();
