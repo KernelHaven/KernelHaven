@@ -102,7 +102,7 @@ public class TableRowMetadata {
      * @return Whether the instance is an instance of this class.
      */
     public boolean isSameClass(@NonNull Object instance) {
-        return instance.getClass() == rowClass;
+        return rowClass.isAssignableFrom(instance.getClass());
     }
     
     /**
