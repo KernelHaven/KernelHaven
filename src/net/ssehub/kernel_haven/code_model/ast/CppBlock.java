@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -23,7 +26,7 @@ public class CppBlock extends AbstractSyntaxElementWithChildreen implements ICod
     
     private @NonNull Type type;
     
-    // TODO: add reference to siblings?
+    private List<CppBlock> siblings;
     
     /**
      * Creates a {@link CppBlock}.
@@ -36,6 +39,15 @@ public class CppBlock extends AbstractSyntaxElementWithChildreen implements ICod
         super(presenceCondition);
         this.condition = condition;
         this.type = type;
+        siblings = new ArrayList<>();
+    }
+    
+    /**
+     * Adds another if, elif, else block, which belongs to the same block.
+     * @param sibling Another if, elif, else block, which belongs to the this block structure.
+     */
+    public void addSibling(CppBlock sibling) {
+        siblings.add(sibling);
     }
     
     @Override
