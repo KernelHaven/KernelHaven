@@ -1,7 +1,9 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -48,6 +50,38 @@ public class CppBlock extends AbstractSyntaxElementWithChildreen implements ICod
      */
     public void addSibling(CppBlock sibling) {
         siblings.add(sibling);
+    }
+    
+    /**
+     * Returns an unmodifiable iterator for iterating through all the siblings starting at the opening <tt>if</tt>.
+     * @return An unmodifiable iterator for iterating through all the siblings.
+     */
+    public Iterator<CppBlock> getSiblingsIterator() {
+        // Copied from: java.util.Collections.UnmodifiableCollection<E>
+        return new Iterator<CppBlock>() {
+            private final Iterator<CppBlock> itr = siblings.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return itr.hasNext();
+            }
+            
+            @Override
+            public CppBlock next() {
+                return itr.next();
+            }
+            
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+            
+            @Override
+            public void forEachRemaining(Consumer<? super CppBlock> action) {
+                // Use backing collection version
+                itr.forEachRemaining(action);
+            }
+        };
     }
     
     @Override
