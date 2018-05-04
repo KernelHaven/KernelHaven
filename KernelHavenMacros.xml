@@ -38,6 +38,10 @@
 	<property name="ConfigurationMismatchAnalysis.location_src" value="${jenkins.location}/KernelHaven_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis_withsource.jar" />
 	<property name="CodeBlockExtractor.location_src" value="${jenkins.location}/KernelHaven_CodeBlockExtractor/lastSuccessfulBuild/artifact/build/jar/CodeBlockExtractor_withsource.jar" />
 	<property name="CodeBlockExtractor.location" value="${jenkins.location}/KernelHaven_CodeBlockExtractor/lastSuccessfulBuild/artifact/build/jar/CodeBlockExtractor.jar" />
+	<property name="BusybootPreparation.location_src" value="${jenkins.location}/KernelHaven_BusybootPreparation/lastSuccessfulBuild/artifact/build/jar/BusybootPreparation_withsource.jar" />
+	<property name="BusybootPreparation.location" value="${jenkins.location}/KernelHaven_BusybootPreparation/lastSuccessfulBuild/artifact/build/jar/BusybootPreparation.jar" />
+	
+	<!-- Other Artifacts -->
 	<property name="KH.Manual" value="${jenkins.location}/KernelHaven_Documentation/lastSuccessfulBuild/artifact/Manual.pdf" />
 	<property name="KH.PropertyTemplate" value="${jenkins.location}/KernelHaven_PropertiesTemplate/lastSuccessfulBuild/artifact/build/generated/config_template.properties" />
 
