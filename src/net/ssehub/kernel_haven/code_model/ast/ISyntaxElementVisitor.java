@@ -33,7 +33,7 @@ public interface ISyntaxElementVisitor {
     /**
      * <b>CPP:</b> Visits a C-preprocessor statement. This may be one of the following blocks:
      * <ul>
-     *     <li>&#35;inclunde</li>
+     *     <li>&#35;include</li>
      *     <li>&#35;define</li>
      *     <li>&#35;undef</li>
      *     <li>&#35;warning</li>
