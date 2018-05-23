@@ -38,7 +38,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * </p>
  * 
  * @param <Input> The input data type.
- * @param <Output>> The input data type.
+ * @param <Output> The input data type.
  * 
  * @author Adam
  */
