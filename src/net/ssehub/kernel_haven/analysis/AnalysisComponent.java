@@ -33,6 +33,8 @@ public abstract class AnalysisComponent<O> {
     
     private boolean started;
     
+    private long tStart;
+    
     /**
      * Creates a new analysis component.
      * 
@@ -84,6 +86,7 @@ public abstract class AnalysisComponent<O> {
             //don't cause a deadlock with accidentally created AnalysisComponents that will never finish
             th.setDaemon(true);
             th.start();
+            tStart = System.currentTimeMillis();
             
             started = true;
         }
@@ -126,7 +129,9 @@ public abstract class AnalysisComponent<O> {
      */
     private final void done() {
         if (!isInternalHelperComponent()) {
-            LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " done");
+            long duration = System.currentTimeMillis() - tStart;
+            LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " done",
+                    "Execution took " + duration + "ms");
         }
         
         results.end();
