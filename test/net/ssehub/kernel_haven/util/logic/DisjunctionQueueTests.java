@@ -1,5 +1,8 @@
 package net.ssehub.kernel_haven.util.logic;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.ByteArrayOutputStream;
 
 import org.junit.Assert;
@@ -120,4 +123,31 @@ public class DisjunctionQueueTests {
         
         Logger.get().removeTarget(Logger.get().getTargets().size() - 1); // remove the buffer target again.
     }
+    
+    /**
+     * Tests that an empty queue returns false.
+     */
+    @Test
+    public void testEmptyIsFalse() {
+        DisjunctionQueue queue = new DisjunctionQueue(true);
+        assertThat(queue.getDisjunction(), is(False.INSTANCE));
+        
+        queue = new DisjunctionQueue(false);
+        assertThat(queue.getDisjunction(), is(False.INSTANCE));
+    }
+    
+    /**
+     * Test that adding null is ignored.
+     */
+    @Test
+    public void  testAddNull() {
+        DisjunctionQueue queue = new DisjunctionQueue(false);
+        
+        Variable varA = new Variable("A");
+        queue.add(varA);
+        queue.add(null);
+        Formula f = queue.getDisjunction();
+        Assert.assertEquals(varA, f);
+    }
+    
 }

@@ -126,8 +126,10 @@ public class DisjunctionQueue {
         Formula result;
         
         // Create disjunction of all elements
-        if (isTrue || queue.isEmpty()) {
+        if (isTrue) {
             result = True.INSTANCE;
+        } else if (queue.isEmpty()) {
+            result = False.INSTANCE;
         } else {
             // Try to create a balanced, flat tree
             while (queue.size() > 1) {
@@ -138,15 +140,6 @@ public class DisjunctionQueue {
             // Simplification if wished and if possible
             if (null != simplifier) {
                 result = notNull(simplifier.apply(result));
-            }
-            
-            // Check if all elements have been processed
-            if (!queue.isEmpty()) {
-                if (null != varName) {
-                    LOGGER.logError("Error while creating disjunction for conditions of " + varName);
-                } else {
-                    LOGGER.logError("Error while creating disjunction.");
-                }
             }
         }
         
