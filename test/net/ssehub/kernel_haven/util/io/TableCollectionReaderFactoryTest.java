@@ -9,6 +9,7 @@ import java.util.Set;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.util.io.csv.CsvArchive;
 import net.ssehub.kernel_haven.util.io.csv.CsvFileSet;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
@@ -101,6 +102,18 @@ public class TableCollectionReaderFactoryTest {
     public void testCsv() throws IOException {
         ITableCollection collection = TableCollectionReaderFactory.INSTANCE.openFile(new File("test.csv"));
         assertThat(collection, CoreMatchers.instanceOf(CsvFileSet.class));
+        collection.close();
+    }
+    
+    /**
+     * Tests whether the {@link TableCollectionReaderFactory} factory correctly creates CSV archives.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testCsvArchive() throws IOException {
+        ITableCollection collection = TableCollectionReaderFactory.INSTANCE.openFile(new File("test.csv.zip"));
+        assertThat(collection, CoreMatchers.instanceOf(CsvArchive.class));
         collection.close();
     }
     

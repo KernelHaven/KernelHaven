@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.io.TableCollectionReaderFactoryTest.InvalidHandler;
 import net.ssehub.kernel_haven.util.io.TableCollectionReaderFactoryTest.TestHandler;
+import net.ssehub.kernel_haven.util.io.csv.CsvArchive;
 import net.ssehub.kernel_haven.util.io.csv.CsvFileCollection;
 
 /**
@@ -29,6 +30,18 @@ public class TableCollectionWriterFactoryTest {
     public void testCsv() throws IOException {
         ITableCollection collection = TableCollectionWriterFactory.INSTANCE.createCollection(new File("test.csv"));
         assertThat(collection, CoreMatchers.instanceOf(CsvFileCollection.class));
+        collection.close();
+    }
+    
+    /**
+     * Tests whether the {@link TableCollectionWriterFactory} factory correctly creates CSV archives.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testCsvArchive() throws IOException {
+        ITableCollection collection = TableCollectionWriterFactory.INSTANCE.createCollection(new File("test.csv.zip"));
+        assertThat(collection, CoreMatchers.instanceOf(CsvArchive.class));
         collection.close();
     }
     

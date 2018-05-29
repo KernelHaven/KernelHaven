@@ -4,8 +4,10 @@ import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import net.ssehub.kernel_haven.util.AbstractHandlerRegistry;
+import net.ssehub.kernel_haven.util.io.csv.CsvArchive;
 import net.ssehub.kernel_haven.util.io.csv.CsvFileCollection;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
@@ -37,6 +39,7 @@ public class TableCollectionWriterFactory extends AbstractHandlerRegistry<String
      */
     private TableCollectionWriterFactory() {
         registerHandler("csv", CsvFileCollection.class);
+        registerHandler("csv.zip", CsvArchive.class);
     }
     
     /**
@@ -48,12 +51,15 @@ public class TableCollectionWriterFactory extends AbstractHandlerRegistry<String
      * @throws IOException If no handler is registered for the given suffix or if creating the collection fails.
      */
     public @NonNull ITableCollection createCollection(@NonNull File baseName) throws IOException {
-        String suffix = TableCollectionReaderFactory.getSuffix(baseName);
+        List<@NonNull String> suffixes = TableCollectionReaderFactory.getSuffix(baseName);
+        Class<? extends ITableCollection> handlerClass = null;
         
-        Class<? extends ITableCollection> handlerClass = getHandler(suffix);
+        for (String suffix : suffixes) {
+            handlerClass = getHandler(suffix);
+        }
         
         if (handlerClass == null) {
-            throw new IOException("No handler for suffix " + suffix);
+            throw new IOException("No handler for suffix " + suffixes.get(0));
         }
         
         try {
