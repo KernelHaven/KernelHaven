@@ -73,7 +73,7 @@ public abstract class AnalysisComponent<O> {
             
             Thread th = new Thread(() -> {
                 if (!isInternalHelperComponent()) {
-                    LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " starting");
+                    LOGGER.logInfo("Analysis component " + getClass().getSimpleName() + " starting");
                 }
                 
                 try {
@@ -130,7 +130,7 @@ public abstract class AnalysisComponent<O> {
     private final void done() {
         if (!isInternalHelperComponent()) {
             long duration = System.currentTimeMillis() - tStart;
-            LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " done",
+            LOGGER.logInfo("Analysis component " + getClass().getSimpleName() + " done",
                     "Execution took " + duration + "ms");
         }
         
