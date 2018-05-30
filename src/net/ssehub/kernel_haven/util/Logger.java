@@ -306,7 +306,14 @@ public final class Logger {
         if (this.level.shouldLog(level) && null != messageParts) {
             StringBuffer messageLine = new StringBuffer();
             for (Object object : messageParts) {
-                messageLine.append(object != null ? object.toString() : "null");
+                if (object instanceof Object[]) {
+                    Object[] innerArray = (Object[]) object;
+                    for (Object innerObject : innerArray) {
+                        messageLine.append(innerObject != null ? innerObject.toString() : "null");
+                    }
+                } else {
+                    messageLine.append(object != null ? object.toString() : "null");
+                }
             }
             
             log(level, messageLine.toString());
