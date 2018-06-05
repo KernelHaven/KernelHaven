@@ -9,10 +9,18 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 /**
  * A {@link VariabilityVariable} that has additional information about the hierarchy of variables.
  * 
+ * TODO: serialization
+ * 
  * @author Adam
  */
 public class HierarchicalVariable extends VariabilityVariable {
 
+    private @Nullable HierarchicalVariable parent;
+    
+    private @NonNull Set<@NonNull HierarchicalVariable> children;
+    
+    private int nestingDepth;
+    
     /**
      * Creates a {@link HierarchicalVariable}.
      * 
@@ -21,6 +29,7 @@ public class HierarchicalVariable extends VariabilityVariable {
      */
     public HierarchicalVariable(@NonNull String name, @NonNull String type) {
         super(name, type);
+        children = new HashSet<>();
     }
 
     /**
@@ -32,6 +41,7 @@ public class HierarchicalVariable extends VariabilityVariable {
      */
     public HierarchicalVariable(@NonNull String name, @NonNull String type, int dimacsNumer) {
         super(name, type, dimacsNumer);
+        children = new HashSet<>();
     }
     
     /**
@@ -40,7 +50,19 @@ public class HierarchicalVariable extends VariabilityVariable {
      * @return The parent variable. <code>null</code> if this variable has no parent.
      */
     public @Nullable HierarchicalVariable getParent() {
-        return null;
+        return parent;
+    }
+    
+    /**
+     * Sets the parent for this variable, add this variable as a child to the parent variable and set the nesting depth
+     * of this to parent+1. This method should only be called by the extractor that creates the variability model.
+     * 
+     * @param parent The new parent for this variable.
+     */
+    public void setParent(@Nullable HierarchicalVariable parent) {
+        this.parent = parent;
+        parent.children.add(this);
+        this.nestingDepth = parent.nestingDepth + 1;
     }
     
     /**
@@ -49,7 +71,7 @@ public class HierarchicalVariable extends VariabilityVariable {
      * @return The children of this variable.
      */
     public @NonNull Set<@NonNull HierarchicalVariable> getChildren() {
-        return new HashSet<>();
+        return children;
     }
     
     /**
@@ -58,7 +80,7 @@ public class HierarchicalVariable extends VariabilityVariable {
      * @return The nesting depth of this variable.
      */
     public int getNestingDepth() {
-        return 0;
+        return nestingDepth;
     }
     
 }
