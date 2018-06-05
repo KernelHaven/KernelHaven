@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
@@ -23,6 +24,9 @@ import org.junit.Test;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Util;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.Attribute;
+import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.ConstraintFileType;
+import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.VariableType;
 
 /**
  * Tests the variability model cache.
@@ -330,6 +334,47 @@ public class VariabilityModelCacheTest {
         VariabilityModel vm = cache.read(new File(""));
 
         assertThat(vm, nullValue());
+    }
+    
+    /**
+     * Tests that the {@link VariabilityModelDescriptor} is (de-)serialized correctly.
+     * 
+     * @throws FormatException unwanted.
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testDescriptor() throws FormatException, IOException {
+        File dimacsFile = new File("testdata/vmCaching/testmodel.dimacs");
+        
+        Set<VariabilityVariable> set = new HashSet<VariabilityVariable>();
+        set.add(new VariabilityVariable("A", "bool"));
+        
+        VariabilityModel originalVm = new VariabilityModel(dimacsFile, set);
+        originalVm.getDescriptor().setConstraintFileType(ConstraintFileType.DIMACS);
+        originalVm.getDescriptor().setVariableType(VariableType.FINITE_INTEGER);
+        originalVm.getDescriptor().addAttribute(Attribute.CONSTRAINT_USAGE);
+        originalVm.getDescriptor().addAttribute(Attribute.SOURCE_LOCATIONS);
+        
+        VariabilityModelCache cache = new VariabilityModelCache(cacheDir);
+
+        // write
+        cache.write(originalVm);
+        
+        System.out.println(Util.readStream(new FileInputStream(cacheDir.listFiles()[0])));
+        
+        // read
+        VariabilityModel readVm = cache.read(new File(""));
+        
+        assertThat(readVm.getDescriptor().getConstraintFileType(), is(ConstraintFileType.DIMACS));
+        assertThat(readVm.getDescriptor().getVariableType(), is(VariableType.FINITE_INTEGER));
+        assertThat(readVm.getDescriptor().hasAttribute(Attribute.CONSTRAINT_USAGE), is(true));
+        assertThat(readVm.getDescriptor().hasAttribute(Attribute.SOURCE_LOCATIONS), is(true));
+        assertThat(readVm.getDescriptor().hasAttribute(Attribute.HIERARCHICAL), is(false));
+        
+        Set<Attribute> expectedAttrs = new HashSet<>();
+        expectedAttrs.add(Attribute.CONSTRAINT_USAGE);
+        expectedAttrs.add(Attribute.SOURCE_LOCATIONS);
+        assertThat(readVm.getDescriptor().getAttributes(), is(expectedAttrs));
     }
 
 }

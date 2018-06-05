@@ -19,6 +19,7 @@ import net.ssehub.kernel_haven.util.io.csv.CsvReader;
 import net.ssehub.kernel_haven.util.io.csv.CsvWriter;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
+import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.Attribute;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.ConstraintFileType;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.VariableType;
 
@@ -33,7 +34,7 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
     
     private static final @NonNull String HEADER = "KernelHaven Variability Model Cache";
     
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
     
     private static final @NonNull String DESCRIPTOR_SEPARATOR = "---Model Descriptor---";
     
@@ -79,8 +80,12 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             VariabilityModelDescriptor descriptor = vm.getDescriptor();
             out.write(descriptor.getVariableType().toString() + "\n");
             out.write(descriptor.getConstraintFileType().toString() + "\n");
-            out.write((descriptor.hasSourceLoactions() ? "true" : "false") + "\n");
-            out.write((descriptor.hasConstraintUsage() ? "true" : "false") + "\n");
+            
+            StringBuilder attributeStr = new StringBuilder();
+            for (Attribute attr : descriptor.getAttributes()) {
+                attributeStr.append(attr.name()).append(",");
+            }
+            out.write(attributeStr.toString() + "\n");
             
             // serialize variables
             out.write(VARIABLE_SEPARATOR + "\n");
@@ -141,34 +146,13 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             } catch (NumberFormatException e) {
                 throw new FormatException("Can't parse version number: " + line.substring("Version: ".length()));
             }
-            if (version != VERSION) {
-                throw new FormatException("Invalid cache version: " + version + "; we only support " + VERSION);
+            if (version != 2 && version != VERSION) {
+                throw new FormatException("Invalid cache version: " + version + "; we only support " + VERSION
+                        + " and 2");
             }
             
             // deserialize model descriptor
-            if (!readOrThrow(in, "descriptor header").equals(DESCRIPTOR_SEPARATOR)) {
-                throw new FormatException("Expected model descriptor header (\"" + DESCRIPTOR_SEPARATOR + "\") in line"
-                        + in.getLineNumber());
-            }
-            line = readOrThrow(in, "descriptor variable type");
-            VariableType variableType;
-            try {
-                variableType = VariableType.valueOf(line);
-            } catch (IllegalArgumentException e) {
-                throw new FormatException("Can't read descriptor variable type in line" + in.getLineNumber(), e);
-            }
-            line = readOrThrow(in, "descritpro constraint file type");
-            ConstraintFileType constraintFileType;
-            try {
-                constraintFileType = ConstraintFileType.valueOf(line);
-            } catch (IllegalArgumentException e) {
-                throw new FormatException("Can't read descriptor constraint file type in line "
-                        + in.getLineNumber(), e);
-            }
-            line = readOrThrow(in, "descriptor source locations");
-            boolean hasSourceLocations = Boolean.parseBoolean(line);
-            line = readOrThrow(in, "descriptor constraint usage");
-            boolean hasConstraintUsage = Boolean.parseBoolean(line);
+            VariabilityModelDescriptor descriptor = readDescriptor(in, version);
             
             // TODO: removed null annotation because jacoco report fails with it
             Map</*@NonNull*/ String, VariabilityVariable> variables = readVariables(in);
@@ -181,14 +165,80 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             
             @SuppressWarnings("null") // TODO: null annotation missing, see above
             VariabilityModel r = new VariabilityModel(constraintCopy, variables);
+            r.setDescriptor(descriptor);
             result = r;
-            result.getDescriptor().setVariableType(variableType);
-            result.getDescriptor().setConstraintFileType(constraintFileType);
-            result.getDescriptor().setHasSourceLoactions(hasSourceLocations);
-            result.getDescriptor().setHasConstraintUsage(hasConstraintUsage);
             
         } catch (FileNotFoundException e) { // ignore, just return null
         }
+        return result;
+    }
+    
+    /**
+     * Reads the {@link VariabilityModelDescriptor} from the given stream.
+     * 
+     * @param in The stream to read from.
+     * @param version The version of the cache file.
+     * 
+     * @return The read {@link VariabilityModelDescriptor}.
+     * 
+     * @throws FormatException If the format is wrong.
+     * @throws IOException If reading the stream fails.
+     */
+    private @NonNull VariabilityModelDescriptor readDescriptor(@NonNull LineNumberReader in, int version)
+            throws FormatException, IOException {
+        
+        String line;
+        VariabilityModelDescriptor result = new VariabilityModelDescriptor();
+        
+        if (!readOrThrow(in, "descriptor header").equals(DESCRIPTOR_SEPARATOR)) {
+            throw new FormatException("Expected model descriptor header (\"" + DESCRIPTOR_SEPARATOR + "\") in line"
+                    + in.getLineNumber());
+        }
+        
+        line = readOrThrow(in, "descriptor variable type");
+        VariableType variableType;
+        try {
+            variableType = VariableType.valueOf(line);
+        } catch (IllegalArgumentException e) {
+            throw new FormatException("Can't read descriptor variable type in line" + in.getLineNumber(), e);
+        }
+        result.setVariableType(variableType);
+        
+        line = readOrThrow(in, "descriptor constraint file type");
+        ConstraintFileType constraintFileType;
+        try {
+            constraintFileType = ConstraintFileType.valueOf(line);
+        } catch (IllegalArgumentException e) {
+            throw new FormatException("Can't read descriptor constraint file type in line "
+                    + in.getLineNumber(), e);
+        }
+        result.setConstraintFileType(constraintFileType);
+        
+        if (version == 2) {
+            // version 2 only had two booleans
+            line = readOrThrow(in, "descriptor source locations");
+            boolean hasSourceLocations = Boolean.parseBoolean(line);
+            if (hasSourceLocations) {
+                result.addAttribute(Attribute.SOURCE_LOCATIONS);
+            }
+            
+            line = readOrThrow(in, "descriptor constraint usage");
+            boolean hasConstraintUsage = Boolean.parseBoolean(line);
+            if (hasConstraintUsage) {
+                result.addAttribute(Attribute.CONSTRAINT_USAGE);
+            }
+            
+        } else {
+            line = readOrThrow(in, "descriptor attributes");
+            
+            if (!line.isEmpty()) {
+                String[] parts = line.split(",");
+                for (String part : parts) {
+                    result.addAttribute(Attribute.valueOf(part));
+                }
+            }
+        }
+        
         return result;
     }
     

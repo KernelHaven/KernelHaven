@@ -18,7 +18,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  */
 public class VariabilityModel {
 
-    private @NonNull VariabilityModelDescriptor descriptor; // TODO: caching
+    private @NonNull VariabilityModelDescriptor descriptor;
     
     /**
      * A representation of the constraints inside the variability model. Never
@@ -105,6 +105,15 @@ public class VariabilityModel {
      */
     public VariabilityModelDescriptor getDescriptor() {
         return descriptor;
+    }
+    
+    /**
+     * Overrides the descriptor of this model. This should only be called by the deserializer.
+     *  
+     * @param descriptor The new descriptor.
+     */
+    void setDescriptor(@NonNull VariabilityModelDescriptor descriptor) {
+        this.descriptor = descriptor;
     }
     
 }

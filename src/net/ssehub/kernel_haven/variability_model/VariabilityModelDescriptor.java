@@ -1,5 +1,11 @@
 package net.ssehub.kernel_haven.variability_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
@@ -42,13 +48,38 @@ public class VariabilityModelDescriptor {
         
     }
     
+    /**
+     * Other attributes that define the capabilities of the {@link VariabilityModel}.
+     */
+    public static enum Attribute {
+        
+        /**
+         * {@link VariabilityVariable}s have {@link SourceLocation}s attached to them.
+         * 
+         * @see VariabilityVariable#getSourceLocations()
+         */
+        SOURCE_LOCATIONS,
+        
+        /**
+         * {@link VariabilityVariable}s have information about variables used in their conditions attached to them.
+         * 
+         * @see VariabilityVariable#getVariablesUsedInConstraints()
+         * @see VariabilityVariable#getUsedInConstraintsOfOtherVariables()
+         */
+        CONSTRAINT_USAGE,
+        
+        /**
+         * {@link VariabilityVariable}s are instances of {@link HierarchicalVariable}.
+         */
+        HIERARCHICAL,
+        
+    }
+    
     private @NonNull VariableType variableType;
     
     private @NonNull ConstraintFileType constraintFileType;
     
-    private boolean hasSourceLoactions;
-    
-    private boolean hasConstraintUsage;
+    private @NonNull Set<@NonNull Attribute> attributes;
     
     /**
      * Creates a descriptor with default values.
@@ -56,7 +87,7 @@ public class VariabilityModelDescriptor {
     VariabilityModelDescriptor() {
         variableType = VariableType.BOOLEAN;
         constraintFileType = ConstraintFileType.UNSPECIFIED;
-        hasSourceLoactions = false;
+        attributes = new HashSet<>();
     }
     
     /**
@@ -98,46 +129,43 @@ public class VariabilityModelDescriptor {
     }
     
     /**
-     * Returns whether the {@link VariabilityVariable}s have {@link SourceLocation}s attached to them or not.
+     * Checks whether the {@link VariabilityModel} has the given attribute.
      * 
-     * @return Whether the model provides {@link SourceLocation}s.
+     * @param attribute The attribute to be checked.
      * 
-     * @see VariabilityVariable#getSourceLocations()
+     * @return Whether the {@link VariabilityModel} has the given attribute.
      */
-    public boolean hasSourceLoactions() {
-        return hasSourceLoactions;
+    public boolean hasAttribute(@NonNull Attribute attribute) {
+        return attributes.contains(attribute);
     }
     
     /**
-     * Sets whether the {@link VariabilityVariable}s have {@link SourceLocation}s attached to them or not. This should
-     * only be called by the creator of the {@link VariabilityModel}.
+     * Sets that the {@link VariabilityModel} has the given attribute. This should only be called by the creator of the
+     * {@link VariabilityModel}.
      * 
-     * @param hasSourceLoactions Whether the model provides {@link SourceLocation}s.
+     * @param attribute The attribute to be set for the {@link VariabilityModel}.
      */
-    public void setHasSourceLoactions(boolean hasSourceLoactions) {
-        this.hasSourceLoactions = hasSourceLoactions;
+    public void addAttribute(@NonNull Attribute attribute) {
+        this.attributes.add(attribute);
     }
     
     /**
-     * Returns whether usage of {@link VariabilityVariable}s in their constraints is provided. 
+     * Removes the given attribute from the {@link VariabilityModel}. This should only be called by the creator of the
+     * {@link VariabilityModel}.
      * 
-     * @return Whether variable usage in constraints are provided.
-     * 
-     * @see VariabilityVariable#getVariablesUsedInConstraints()
-     * @see VariabilityVariable#getUsedInConstraintsOfOtherVariables()
+     * @param attribute The attribute to be set for the {@link VariabilityModel}.
      */
-    public boolean hasConstraintUsage() {
-        return hasConstraintUsage;
+    public void removeAttribute(@NonNull Attribute attribute) {
+        this.attributes.remove(attribute);
     }
     
     /**
-     * Sets whether usage of {@link VariabilityVariable}s in their constraints is provided. This should
-     * only be called by the creator of the {@link VariabilityModel}.
+     * Returns the set of all {@link Attribute}s.
      * 
-     * @param hasConstraintUsage Whether variable usage in constraints are provided.
+     * @return All {@link Attribute}s of the {@link VariabilityModel}.
      */
-    public void setHasConstraintUsage(boolean hasConstraintUsage) {
-        this.hasConstraintUsage = hasConstraintUsage;
+    public @NonNull Set<@NonNull Attribute> getAttributes() {
+        return notNull(Collections.unmodifiableSet(attributes));
     }
-
+    
 }
