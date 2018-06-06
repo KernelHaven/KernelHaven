@@ -61,8 +61,10 @@ public class HierarchicalVariable extends VariabilityVariable {
      */
     public void setParent(@Nullable HierarchicalVariable parent) {
         this.parent = parent;
-        parent.children.add(this);
-        this.nestingDepth = parent.nestingDepth + 1;
+        if (null != parent) {
+            parent.children.add(this);
+            this.nestingDepth = parent.nestingDepth + 1;
+        }
     }
     
     /**
