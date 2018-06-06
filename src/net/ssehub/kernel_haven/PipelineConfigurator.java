@@ -462,7 +462,7 @@ public class PipelineConfigurator {
         File pluginsDir = config.getValue(DefaultSettings.PLUGINS_DIR);
         LOGGER.logInfo("Loading jars from directory " + pluginsDir.getAbsolutePath());
         int num = loadJarsFromDirectory(pluginsDir);
-        LOGGER.logInfo("Sucessfully loaded " + num + " jars");
+        LOGGER.logInfo("Successfully loaded " + num + " jars");
         
         StaticClassLoader.loadClasses();
     }
