@@ -124,8 +124,9 @@ public final class Parser<T> {
      * 
      * @throws ExpressionFormatException If the expression denoted by tokens is malformed.
      */
-    // CHECKSTYLE:OFF
+    // CHECKSTYLE:OFF // TODO: method is too long
     private T parse(Token[] tokens, int min, int max, @NonNull String expression) throws ExpressionFormatException {
+    // CHECKSTYLE:ON
         // this method calls itself recursively
 
         // if we have  no tokens left then something went wrong
@@ -199,7 +200,6 @@ public final class Parser<T> {
         
         return result;
     }
-    // CHECKSTYLE:ON
 
     /**
      * Turns the given highest operator into a result. The grammar handles the conversion.
@@ -347,7 +347,7 @@ public final class Parser<T> {
             result = new int[] {pos1[0]};
             
         } else if (pos2.length > 0) {
-            result = new int[] {pos1[0]};
+            result = new int[] {pos2[0]};
             
         } else {
             result = new int[0];

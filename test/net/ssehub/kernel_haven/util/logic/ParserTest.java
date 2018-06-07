@@ -10,8 +10,11 @@ import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.logic.parser.CStyleBooleanGrammar;
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
+import net.ssehub.kernel_haven.util.logic.parser.Grammar;
+import net.ssehub.kernel_haven.util.logic.parser.Operator;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
 import net.ssehub.kernel_haven.util.logic.parser.VariableCache;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Tests the parser with the {@link CStyleBooleanGrammar}.
@@ -331,6 +334,72 @@ public class ParserTest {
         assertVariable(assertNegation(t3[0]), "A");
         assertVariable(t3[1], "B");
         Assert.assertEquals(2, cache.getNumVariables());
+    }
+    
+    /**
+     * Tests that the grammar throwing an exception in {@link Grammar#makeIdentifierFormula(String)} is handled
+     * correctly.
+     * 
+     * @throws ExpressionFormatException wanted.
+     */
+    @Test(expected = ExpressionFormatException.class)
+    public void testThrowsInMakeIdentifierFormula() throws ExpressionFormatException {
+        VariableCache cache = new VariableCache();
+        Parser<Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache) {
+            
+            @Override
+            public @NonNull Formula makeIdentifierFormula(String identifier) throws ExpressionFormatException {
+                throw new ExpressionFormatException("Test");
+            }
+            
+        });
+        
+        parser.parse("A");
+    }
+    
+    /**
+     * Tests that the grammar throwing an exception in {@link Grammar#makeBinaryFormula(Operator, Object, Object)} is
+     * handled correctly.
+     * 
+     * @throws ExpressionFormatException wanted.
+     */
+    @Test(expected = ExpressionFormatException.class)
+    public void testThrowsInMakeBinaryFormula() throws ExpressionFormatException {
+        VariableCache cache = new VariableCache();
+        Parser<Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache) {
+            
+            @Override
+            public @NonNull Formula makeBinaryFormula(Operator operator, @NonNull Formula left, @NonNull Formula right)
+                    throws ExpressionFormatException {
+                throw new ExpressionFormatException("Test");
+            }
+            
+            
+        });
+        
+        parser.parse("A && B");
+    }
+    
+    /**
+     * Tests that the grammar throwing an exception in {@link Grammar#makeUnaryFormula(Operator, Object)} is
+     * handled correctly.
+     * 
+     * @throws ExpressionFormatException wanted.
+     */
+    @Test(expected = ExpressionFormatException.class)
+    public void testThrowsInMakeUnaryFormula() throws ExpressionFormatException {
+        VariableCache cache = new VariableCache();
+        Parser<Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache) {
+            
+            @Override
+            public @NonNull Formula makeUnaryFormula(Operator operator, @NonNull Formula child)
+                    throws ExpressionFormatException {
+                throw new ExpressionFormatException("Test");
+            }
+            
+        });
+        
+        parser.parse("!A");
     }
     
     /**
