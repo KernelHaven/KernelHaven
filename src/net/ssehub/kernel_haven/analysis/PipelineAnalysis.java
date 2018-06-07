@@ -4,10 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.build_model.BuildModel;
@@ -184,70 +180,48 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      */
     private void joinSpliComponent(JoinComponent mainComponent) {
         int maxThreads = config.getValue(DefaultSettings.ANALYSIS_SPLITCOMPONENT_MAX_THREADS);
-        ThreadRenamer thReanmer = new ThreadRenamer(mainComponent.getResultName());
-        ThreadPoolExecutor thPool = (ThreadPoolExecutor)
-            ((maxThreads > 0) ? Executors.newFixedThreadPool(maxThreads) : Executors.newCachedThreadPool());
-        int totalNoOfThreads = 0;
         
-        AtomicInteger nThreadsProcessed = new AtomicInteger(0);
-        for (AnalysisComponent<?> component : ((JoinComponent) mainComponent).getInputs()) {
-            totalNoOfThreads++;
-            NamedRunnable run = new NamedRunnable() {
+        /**
+         * Used to limit the number of threads.
+         */
+        class ThreadCounter {
+            private int runningThreads;
+        }
+        
+        ThreadCounter threadCounter = new ThreadCounter();
+        
+        List<Thread> threads = new LinkedList<>();
+        
+        for (AnalysisComponent<?> component : (mainComponent).getInputs()) {
+            Thread th = new Thread(() -> {
+                synchronized (threadCounter) {
+                    while (maxThreads > 0 && threadCounter.runningThreads >= maxThreads) {
+                        try {
+                            threadCounter.wait();
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                    threadCounter.runningThreads++;
+                }
                 
-                @Override
-                public void run() {
-                    thReanmer.rename();
-                    pollAndWriteOutput(component);
-                    nThreadsProcessed.incrementAndGet();
+                pollAndWriteOutput(component);
+                
+                synchronized (threadCounter) {
+                    threadCounter.runningThreads--;
+                    threadCounter.notify();
                 }
-   
-                @Override
-                public String getName() {
-                    return component.getResultName();
-                }
-            };
-            
-            if (totalNoOfThreads == 1) {
-                // Start first thread alone in order to provide all threads / cpu core to previous analysis components
-                Thread th = new Thread(run);
-                th.start();
-                try {
-                    th.join();
-                } catch (InterruptedException e) {
-                    LOGGER.logException("Could not start first thread", e);
-                }
-            } else {
-                thPool.execute(run);
-            }
+                
+            }, "AnalysisPipelineControllerOutputThread");
+            threads.add(th);
+            th.start();
         }
         
-        LOGGER.logInfo2("Joining ", totalNoOfThreads, " analysis components; ", (thPool.getActiveCount() + 1),
-            " components already started");
-            
-        thPool.shutdown();
-        final int submittedThreads = totalNoOfThreads;
-        Runnable monitor = () -> {
-            while (!thPool.isTerminated()) {
-                LOGGER.logInfo("Joining components:",
-                    "Total: " + submittedThreads, 
-                    "Finished: " + nThreadsProcessed.get(),
-                    "Processing: " + thPool.getActiveCount());
-                try {
-                    Thread.sleep(3 * 60 * 1000);
-                } catch (InterruptedException exc) {
-                    LOGGER.logException("", exc);
-                }
+        for (Thread th : threads) {
+            try {
+                th.join();
+            } catch (InterruptedException e) {
             }
-        };
-        Thread th = new Thread(monitor, getClass().getSimpleName());
-        th.start();
-        try {
-            thPool.awaitTermination(96L, TimeUnit.HOURS);
-        } catch (InterruptedException e) {
-            LOGGER.logException("", e);
         }
-        
-        LOGGER.logInfo2("All analysis components joined.");
     }
     
     /**
