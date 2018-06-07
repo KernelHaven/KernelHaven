@@ -20,8 +20,10 @@ import java.util.regex.Pattern;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.analysis.ConfiguredPipelineAnalysis;
+import net.ssehub.kernel_haven.analysis.SplitComponent;
 import net.ssehub.kernel_haven.build_model.EmptyBuildModelExtractor;
 import net.ssehub.kernel_haven.code_model.EmptyCodeModelExtractor;
+import net.ssehub.kernel_haven.config.Setting.Type;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -75,6 +77,7 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull String> ANALYSIS_RESULT = new Setting<>("analysis.output.type", STRING, false, "csv", "A file suffix that specifies which kind of output writer shall be used. By deafult, the main infrastructure supports \"csv\" and \"csv.zip\". If IOUtils is used, then \"xls\" or \"xlsx\" can be used here.");
     public static final @NonNull Setting<@NonNull Boolean> ANALYSIS_USE_VARMODEL_VARIABLES_ONLY = new Setting<>("analysis.consider_vm_vars_only", BOOLEAN, true, "false", "Defines whether the analysis should only consider variables that are present in the variability model.");
     public static final @NonNull Setting<@NonNull Boolean> ANALYSIS_PIPELINE_START_EXTRACTORS = new Setting<>("analysis.pipeline.preemptively_start_extractors", BOOLEAN, true, "true", "Whether the analysis pipeline should preemptively start all three extractors. This has the advantage that the extractors will always run in parallel, even if the analysis compoenents only poll them in order. If this is set to false, then the extractors only start on demand when the analysis components poll them.");
+    public static final @NonNull Setting<@NonNull Integer> ANALYSIS_SPLITCOMPONENT_MAX_THREADS = new Setting<>("analysis.splitcomponent.max_parallel_threads", Type.INTEGER, true, "0", "If greater than 0, a thread pool is used to limit the maximum number of threads executed in parallel when joining the results via the " + SplitComponent.class.getCanonicalName() + ".");
     
     /*
      * Common extractor parameters

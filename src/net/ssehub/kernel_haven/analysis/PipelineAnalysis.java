@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.build_model.BuildModel;
@@ -150,22 +153,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             }
             
             if (mainComponent instanceof JoinComponent) {
-                List<Thread> threads = new LinkedList<>();
-                
-                for (AnalysisComponent<?> component : ((JoinComponent) mainComponent).getInputs()) {
-                    Thread th = new Thread(() -> {
-                        pollAndWriteOutput(component);
-                    }, "AnalysisPipelineControllerOutputThread");
-                    threads.add(th);
-                    th.start();
-                }
-                
-                for (Thread th : threads) {
-                    try {
-                        th.join();
-                    } catch (InterruptedException e) {
-                    }
-                }
+                joinSpliComponent((JoinComponent) mainComponent);
                 
             } else {
                 pollAndWriteOutput(mainComponent);
@@ -187,6 +175,76 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         } catch (SetUpException e) {
             LOGGER.logException("Exception while setting up", e);
         }
+    }
+
+    /**
+     * Part of {@link #run()} to handle {@link JoinComponent}s.
+     * @param mainComponent The an analysis, which is joining results of multiple other components.
+     */
+    private void joinSpliComponent(JoinComponent mainComponent) {
+        int maxThreads = config.getValue(DefaultSettings.ANALYSIS_SPLITCOMPONENT_MAX_THREADS);
+        ThreadRenamer thReanmer = new ThreadRenamer(mainComponent.getResultName());
+//                List<Thread> threads = new LinkedList<>();
+        ThreadPoolExecutor thPool = (ThreadPoolExecutor)
+            ((maxThreads > 0) ? Executors.newFixedThreadPool(maxThreads) : Executors.newCachedThreadPool());
+        int totalNoOfThreads = 0;
+        
+        for (AnalysisComponent<?> component : ((JoinComponent) mainComponent).getInputs()) {
+            totalNoOfThreads++;
+            NamedRunnable run = new NamedRunnable() {
+                
+                @Override
+                public void run() {
+                    thReanmer.rename();
+                    pollAndWriteOutput(component);
+                }
+   
+                @Override
+                public String getName() {
+                    return component.getResultName();
+                }
+            };
+            
+            thPool.execute(run); 
+        }
+        
+        LOGGER.logInfo2("Joining ", totalNoOfThreads, " analysis components; ", thPool.getActiveCount(),
+            " components already started");
+            
+        thPool.shutdown();
+        Runnable monitor = () -> {
+            while (!thPool.isTerminated()) {
+                LOGGER.logInfo2("Currently there are ", thPool.getActiveCount(), " components in execution.");
+                try {
+                    Thread.sleep(3 * 60 * 1000);
+                } catch (InterruptedException exc) {
+                    LOGGER.logException("", exc);
+                }
+            }
+        };
+        Thread th = new Thread(monitor, getClass().getSimpleName());
+        th.start();
+        try {
+            thPool.awaitTermination(96L, TimeUnit.HOURS);
+        } catch (InterruptedException e) {
+            LOGGER.logException("", e);
+        }
+        
+        LOGGER.logInfo2("All analysis components joined.");
+//                for (AnalysisComponent<?> component : ((JoinComponent) mainComponent).getInputs()) {
+//                    Thread th = new Thread(() -> {
+//                        pollAndWriteOutput(component);
+//                    }, "AnalysisPipelineControllerOutputThread");
+//                    threads.add(th);
+//                    th.start();
+//                }
+//                
+//                for (Thread th : threads) {
+//                    try {
+//                        th.join();
+//                    } catch (InterruptedException e) {
+//                    }
+//                }
     }
     
     /**
