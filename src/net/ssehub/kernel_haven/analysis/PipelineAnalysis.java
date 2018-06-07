@@ -269,7 +269,6 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
                 
                 writer.writeObject(result);
             }
-            writer.flush();
         } catch (IOException e) {
             LOGGER.logException("Exception while writing output file", e);
         }
