@@ -20,14 +20,14 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * inside the archive.
  * </p>
  * <p>
- * Only table names that match [ A-Za-z0-9_'\\-\\+\\.]+ are allowed.
+ * Only table names that match [ A-Za-z0-9_'\\-\\+\\.\\(\\)]+ are allowed.
  * </p>
  * 
  * @author Adam
  */
 public class CsvArchive implements ITableCollection {
 
-    private static final Pattern ALLOWED_NAMES = Pattern.compile("[ A-Za-z0-9_'\\-\\+\\.]+"); 
+    private static final Pattern ALLOWED_NAMES = Pattern.compile("[ A-Za-z0-9_'\\-\\+\\.\\(\\)]+"); 
     
     private @NonNull File archiveFile;
     
