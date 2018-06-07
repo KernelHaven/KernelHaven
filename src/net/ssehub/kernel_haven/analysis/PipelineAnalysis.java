@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.build_model.BuildModel;
@@ -189,6 +190,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             ((maxThreads > 0) ? Executors.newFixedThreadPool(maxThreads) : Executors.newCachedThreadPool());
         int totalNoOfThreads = 0;
         
+        AtomicInteger nThreadsProcessed = new AtomicInteger(0);
         for (AnalysisComponent<?> component : ((JoinComponent) mainComponent).getInputs()) {
             totalNoOfThreads++;
             NamedRunnable run = new NamedRunnable() {
@@ -197,6 +199,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
                 public void run() {
                     thReanmer.rename();
                     pollAndWriteOutput(component);
+                    nThreadsProcessed.incrementAndGet();
                 }
    
                 @Override
@@ -212,9 +215,13 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             " components already started");
             
         thPool.shutdown();
+        final int submittedThreads = totalNoOfThreads;
         Runnable monitor = () -> {
             while (!thPool.isTerminated()) {
-                LOGGER.logInfo2("Currently there are ", thPool.getActiveCount(), " components in execution.");
+                LOGGER.logInfo("Joining components:",
+                    "Total: " + submittedThreads, 
+                    "Finished: " + nThreadsProcessed.get(),
+                    "Processing: " + thPool.getActiveCount());
                 try {
                     Thread.sleep(3 * 60 * 1000);
                 } catch (InterruptedException exc) {
@@ -238,7 +245,6 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
 //                    threads.add(th);
 //                    th.start();
 //                }
-//                
 //                for (Thread th : threads) {
 //                    try {
 //                        th.join();
