@@ -89,7 +89,8 @@ public class CsvArchive implements ITableCollection {
      */
     private @NonNull String tableNameToFileName(@NonNull String tableName) throws IOException {
         if (!ALLOWED_NAMES.matcher(tableName).matches()) {
-            throw new IOException("Can only access tables with names that match " + ALLOWED_NAMES.pattern());
+            throw new IOException("Can only access tables with names that match " + ALLOWED_NAMES.pattern()
+                + ", but was: " + tableName);
         }
         
         return tableName + ".csv";
