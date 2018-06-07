@@ -185,7 +185,6 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
     private void joinSpliComponent(JoinComponent mainComponent) {
         int maxThreads = config.getValue(DefaultSettings.ANALYSIS_SPLITCOMPONENT_MAX_THREADS);
         ThreadRenamer thReanmer = new ThreadRenamer(mainComponent.getResultName());
-//                List<Thread> threads = new LinkedList<>();
         ThreadPoolExecutor thPool = (ThreadPoolExecutor)
             ((maxThreads > 0) ? Executors.newFixedThreadPool(maxThreads) : Executors.newCachedThreadPool());
         int totalNoOfThreads = 0;
@@ -208,10 +207,21 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
                 }
             };
             
-            thPool.execute(run); 
+            if (totalNoOfThreads == 1) {
+                // Start first thread alone in order to provide all threads / cpu core to previous analysis components
+                Thread th = new Thread(run);
+                th.start();
+                try {
+                    th.join();
+                } catch (InterruptedException e) {
+                    LOGGER.logException("Could not start first thread", e);
+                }
+            } else {
+                thPool.execute(run);
+            }
         }
         
-        LOGGER.logInfo2("Joining ", totalNoOfThreads, " analysis components; ", thPool.getActiveCount(),
+        LOGGER.logInfo2("Joining ", totalNoOfThreads, " analysis components; ", (thPool.getActiveCount() + 1),
             " components already started");
             
         thPool.shutdown();
@@ -238,19 +248,6 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         }
         
         LOGGER.logInfo2("All analysis components joined.");
-//                for (AnalysisComponent<?> component : ((JoinComponent) mainComponent).getInputs()) {
-//                    Thread th = new Thread(() -> {
-//                        pollAndWriteOutput(component);
-//                    }, "AnalysisPipelineControllerOutputThread");
-//                    threads.add(th);
-//                    th.start();
-//                }
-//                for (Thread th : threads) {
-//                    try {
-//                        th.join();
-//                    } catch (InterruptedException e) {
-//                    }
-//                }
     }
     
     /**
