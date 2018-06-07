@@ -4,11 +4,11 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
@@ -360,8 +360,6 @@ public class VariabilityModelCacheTest {
         // write
         cache.write(originalVm);
         
-        System.out.println(Util.readStream(new FileInputStream(cacheDir.listFiles()[0])));
-        
         // read
         VariabilityModel readVm = cache.read(new File(""));
         
@@ -376,5 +374,95 @@ public class VariabilityModelCacheTest {
         expectedAttrs.add(Attribute.SOURCE_LOCATIONS);
         assertThat(readVm.getDescriptor().getAttributes(), is(expectedAttrs));
     }
+    
+    /**
+     * Tests caching with a {@link VariabilityModel} that contains {@link HierarchicalVariable}s.
+     * 
+     * @throws FormatException unwanted.
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testHierarchical() throws FormatException, IOException {
+        File dimacsFile = new File("testdata/vmCaching/testmodel.dimacs");
+        
+        Set<VariabilityVariable> set = new HashSet<VariabilityVariable>();
+        HierarchicalVariable a = new HierarchicalVariable("A", "bool");
+        HierarchicalVariable b = new HierarchicalVariable("B", "bool");
+        HierarchicalVariable c = new HierarchicalVariable("C", "bool");
+        HierarchicalVariable d = new HierarchicalVariable("D", "bool");
+        
+        b.setParent(a);
+        c.setParent(b);
+        d.setParent(a);
+        
+        set.add(a);
+        set.add(b);
+        set.add(c);
+        set.add(d);
+        
+        VariabilityModel originalVm = new VariabilityModel(dimacsFile, set);
+        originalVm.getDescriptor().setConstraintFileType(ConstraintFileType.DIMACS);
+        originalVm.getDescriptor().addAttribute(Attribute.HIERARCHICAL);
 
+        VariabilityModelCache cache = new VariabilityModelCache(cacheDir);
+        
+        // write
+        cache.write(originalVm);
+        
+        // read
+        VariabilityModel readVm = cache.read(new File(""));
+        
+        HierarchicalVariable readA = (HierarchicalVariable) readVm.getVariableMap().get("A");
+        HierarchicalVariable readB = (HierarchicalVariable) readVm.getVariableMap().get("B");
+        HierarchicalVariable readC = (HierarchicalVariable) readVm.getVariableMap().get("C");
+        HierarchicalVariable readD = (HierarchicalVariable) readVm.getVariableMap().get("D");
+        
+        assertThat(readA, notNullValue());
+        assertThat(readB, notNullValue());
+        assertThat(readC, notNullValue());
+        assertThat(readD, notNullValue());
+        assertThat(readVm.getVariableMap().size(), is(4));
+        
+        assertThat(readA.getName(), is("A"));
+        assertThat(readA.getType(), is("bool"));
+        assertThat(readA.getParent(), nullValue());
+        assertThat(readA.getNestingDepth(), is(0));
+        assertThat(readA.getChildren(), is(set(readB, readD)));
+        
+        assertThat(readB.getName(), is("B"));
+        assertThat(readB.getType(), is("bool"));
+        assertThat(readB.getParent(), sameInstance(readA));
+        assertThat(readB.getNestingDepth(), is(1));
+        assertThat(readB.getChildren(), is(set(readC)));
+        
+        assertThat(readC.getName(), is("C"));
+        assertThat(readC.getType(), is("bool"));
+        assertThat(readC.getParent(), sameInstance(readB));
+        assertThat(readC.getNestingDepth(), is(2));
+        assertThat(readC.getChildren(), is(set()));
+        
+        assertThat(readD.getName(), is("D"));
+        assertThat(readD.getType(), is("bool"));
+        assertThat(readD.getParent(), sameInstance(readA));
+        assertThat(readD.getNestingDepth(), is(1));
+        assertThat(readD.getChildren(), is(set()));
+    }
+
+    /**
+     * Creates a set from varargs.
+     * 
+     * @param ts The varargs.
+     * @param <T> The type of varargs.
+     * 
+     * @return A set with the varargs.
+     */
+    @SafeVarargs
+    private static <T> Set<T> set(T... ts) {
+        Set<T> set = new HashSet<>();
+        for (T t : ts) {
+            set.add(t);
+        }
+        return set;
+    }
+    
 }

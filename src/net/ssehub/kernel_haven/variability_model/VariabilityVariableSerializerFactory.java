@@ -20,7 +20,11 @@ public class VariabilityVariableSerializerFactory {
     public static final VariabilityVariableSerializerFactory INSTANCE = new VariabilityVariableSerializerFactory();
     
     static {
-        INSTANCE.registerSerializer(notNull(VariabilityVariable.class.getName()), new VariabilityVariableSerializer());
+        INSTANCE.registerSerializer(notNull(VariabilityVariable.class.getName()),
+                new VariabilityVariableSerializer());
+        
+        INSTANCE.registerSerializer(notNull(HierarchicalVariable.class.getName()),
+                new HierarchicalVariableSerializer());
     }
     
     private @NonNull Map<@NonNull String, VariabilityVariableSerializer> registeredSerializers;

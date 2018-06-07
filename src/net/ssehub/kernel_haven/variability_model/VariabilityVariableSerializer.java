@@ -84,6 +84,17 @@ public class VariabilityVariableSerializer {
         checkLength(csv);
         return deserializeImpl(csv);
     }
+
+    /**
+     * This method is called once a {@link VariabilityModel} has been completely read. By default, this does nothing,
+     * but inheriting classes may do some post-processing (like setting proper references between the variables).
+     * 
+     * @param varModel The resulting variability model.
+     * 
+     * @throws FormatException If something goes wrong.
+     */
+    public void postProcess(@NonNull VariabilityModel varModel) throws FormatException {
+    }
     
     /**
      * Deserializes the given CSV parts into a {@link VariabilityVariable}. This can be re-used by sub-classes if they

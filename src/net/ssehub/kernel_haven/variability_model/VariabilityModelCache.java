@@ -10,7 +10,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import net.ssehub.kernel_haven.provider.AbstractCache;
 import net.ssehub.kernel_haven.util.FormatException;
@@ -154,8 +156,10 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             // deserialize model descriptor
             VariabilityModelDescriptor descriptor = readDescriptor(in, version);
             
-            // TODO: removed null annotation because jacoco report fails with it
-            Map</*@NonNull*/ String, VariabilityVariable> variables = readVariables(in);
+            // TODO: removed null annotations because jacoco report fails with it
+            Set</*@NonNull*/ VariabilityVariableSerializer> usedSerializers = new HashSet<>();
+            @SuppressWarnings("null")
+            Map</*@NonNull*/ String, VariabilityVariable> variables = readVariables(in, usedSerializers);
             
             File constraintCopy = File.createTempFile("constraintModel", "");
             constraintCopy.deleteOnExit();
@@ -167,6 +171,10 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             VariabilityModel r = new VariabilityModel(constraintCopy, variables);
             r.setDescriptor(descriptor);
             result = r;
+            
+            for (VariabilityVariableSerializer serializer : usedSerializers) {
+                serializer.postProcess(result);
+            }
             
         } catch (FileNotFoundException e) { // ignore, just return null
         }
@@ -246,14 +254,15 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
      * Reads the serialized variables. This ends once the {@link #CONSTRAINT_FILE_SEPARATOR} has been found.
      * 
      * @param in The reader to read the variables from.
+     * @param usedSerializers A set that will be filled with all serializers that were used.
      * 
      * @return The read variables.
      * 
      * @throws IOException If reading the input stream fails.
      * @throws FormatException If the variables are malformed.
      */
-    private @NonNull Map<@NonNull String, VariabilityVariable> readVariables(@NonNull LineNumberReader in)
-            throws IOException, FormatException {
+    private @NonNull Map<@NonNull String, VariabilityVariable> readVariables(@NonNull LineNumberReader in,
+            @NonNull Set<@NonNull VariabilityVariableSerializer> usedSerializers) throws IOException, FormatException {
         
         if (!readOrThrow(in, "variable header").equals(VARIABLE_SEPARATOR)) {
             throw new FormatException("Expected variable header (\"" + VARIABLE_SEPARATOR + "\") in line"
@@ -272,6 +281,7 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
             
             try {
                 serializer = VariabilityVariableSerializerFactory.INSTANCE.getSerializer(classNameRow[0]);
+                usedSerializers.add(serializer);
                 
             } catch (IllegalArgumentException e) {
                 throw new FormatException("Found no serializer for class name " + classNameRow[0] + " in line "

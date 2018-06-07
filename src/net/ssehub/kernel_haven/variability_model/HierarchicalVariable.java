@@ -45,6 +45,16 @@ public class HierarchicalVariable extends VariabilityVariable {
     }
     
     /**
+     * Creates a {@link HierarchicalVariable}.
+     * 
+     * @param variable A variable to copy the name, type and DIMACS number from.
+     */
+    public HierarchicalVariable(@NonNull VariabilityVariable variable) {
+        super(variable.getName(), variable.getType(), variable.getDimacsNumber());
+        children = new HashSet<>();
+    }
+    
+    /**
      * Returns the parent of this variable.
      * 
      * @return The parent variable. <code>null</code> if this variable has no parent.
@@ -80,6 +90,15 @@ public class HierarchicalVariable extends VariabilityVariable {
         } else {
             this.nestingDepth = 0;
         }
+    }
+    
+    /**
+     * Overrides the nesting depth. This should only be called by the serialization, to ensure consistency.
+     * 
+     * @param nestingDepth The new nesting depth.
+     */
+    void setNestingDepth(int nestingDepth) {
+        this.nestingDepth = nestingDepth;
     }
     
     /**
