@@ -330,6 +330,8 @@ public class PipelineConfigurator {
      * @throws SetUpException If instantiating or executing the preparation class fails.
      */
     public void runPreparation() throws SetUpException {
+        String previousName = Thread.currentThread().getName();
+        
         Configuration config = this.config;
         if (config == null) {
             throw new SetUpException("Configuration not set");
@@ -343,10 +345,15 @@ public class PipelineConfigurator {
                 LOGGER.logInfo("Running preparation " + prepartionClass.getCanonicalName());
                 
                 IPreparation preparation = notNull(prepartionClass.newInstance());
+                
+                Thread.currentThread().setName("Preparation");
                 preparation.run(config);
             
             } catch (ReflectiveOperationException | ClassCastException e) {
                 throw new SetUpException(e);
+                
+            } finally {
+                Thread.currentThread().setName(previousName);
             }
         }
     }
