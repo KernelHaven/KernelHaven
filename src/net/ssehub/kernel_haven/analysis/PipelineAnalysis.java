@@ -186,6 +186,8 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
          */
         class ThreadCounter {
             private int runningThreads;
+            private boolean first = true;
+            private boolean firstDone = false;
         }
         
         ThreadCounter threadCounter = new ThreadCounter();
@@ -195,20 +197,24 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         for (AnalysisComponent<?> component : (mainComponent).getInputs()) {
             Thread th = new Thread(() -> {
                 synchronized (threadCounter) {
-                    while (maxThreads > 0 && threadCounter.runningThreads >= maxThreads) {
-                        try {
-                            threadCounter.wait();
-                        } catch (InterruptedException e) {
+                    if (!threadCounter.first && maxThreads > 0) {
+                        while (!threadCounter.firstDone || threadCounter.runningThreads >= maxThreads) {
+                            try {
+                                threadCounter.wait();
+                            } catch (InterruptedException e) {
+                            }
                         }
                     }
+                    threadCounter.first = false;
                     threadCounter.runningThreads++;
                 }
                 
                 pollAndWriteOutput(component);
                 
                 synchronized (threadCounter) {
+                    threadCounter.firstDone = true;
                     threadCounter.runningThreads--;
-                    threadCounter.notify();
+                    threadCounter.notifyAll();
                 }
                 
             }, "AnalysisPipelineControllerOutputThread");
