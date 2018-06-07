@@ -2,8 +2,11 @@ package net.ssehub.kernel_haven.analysis;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -188,6 +191,39 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         ThreadPoolExecutor thPool = (ThreadPoolExecutor)
             ((maxThreads > 0) ? Executors.newFixedThreadPool(maxThreads) : Executors.newCachedThreadPool());
         int totalNoOfThreads = 0;
+        
+    Runnable thMonitor = () -> {
+        while (!thPool.isTerminated()) {
+            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+            Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
+            Arrays.sort(threadArray, new Comparator<Thread>() {
+
+                @Override
+                public int compare(Thread o1, Thread o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
+            StringBuffer thMsg = new StringBuffer(threadArray[0].getName());
+            thMsg.append(" (");
+            thMsg.append(threadArray[0].getId());
+            thMsg.append(" )");
+            for (int i = 1; i < threadArray.length; i++) {
+                thMsg.append(", ");
+                thMsg.append(threadArray[i].getName());
+                thMsg.append(" ");
+                thMsg.append(threadArray[i].getId());
+                thMsg.append(" )");
+            }
+            LOGGER.logInfo("Currently executed threads: " + threadArray.length, thMsg.toString());
+            try {
+                Thread.sleep(5 * 60 * 1000);
+            } catch (InterruptedException exc) {
+                LOGGER.logException("", exc);
+            }
+        }
+    };
+    Thread thX = new Thread(thMonitor, "Thread list thread");
+    thX.start();
         
         AtomicInteger nThreadsProcessed = new AtomicInteger(0);
         for (AnalysisComponent<?> component : ((JoinComponent) mainComponent).getInputs()) {
