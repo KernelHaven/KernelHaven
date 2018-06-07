@@ -112,9 +112,11 @@ public class TableCollectionReaderFactoryTest {
      */
     @Test
     public void testCsvArchive() throws IOException {
-        ITableCollection collection = TableCollectionReaderFactory.INSTANCE.openFile(new File("test.csv.zip"));
+        File zipFile = new File("test.csv.zip");
+        ITableCollection collection = TableCollectionReaderFactory.INSTANCE.openFile(zipFile);
         assertThat(collection, CoreMatchers.instanceOf(CsvArchive.class));
         collection.close();
+        zipFile.delete();
     }
     
     /**

@@ -40,9 +40,11 @@ public class TableCollectionWriterFactoryTest {
      */
     @Test
     public void testCsvArchive() throws IOException {
-        ITableCollection collection = TableCollectionWriterFactory.INSTANCE.createCollection(new File("test.csv.zip"));
+        File zipFile = new File("test.csv.zip");
+        ITableCollection collection = TableCollectionWriterFactory.INSTANCE.createCollection(zipFile);
         assertThat(collection, CoreMatchers.instanceOf(CsvArchive.class));
         collection.close();
+        zipFile.delete();
     }
     
     /**
