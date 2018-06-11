@@ -154,7 +154,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             }
             
             if (mainComponent instanceof JoinComponent) {
-                joinSpliComponent((JoinComponent) mainComponent);
+                joinSplitComponent((JoinComponent) mainComponent);
                 
             } else {
                 pollAndWriteOutput(mainComponent);
@@ -182,7 +182,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * Part of {@link #run()} to handle {@link JoinComponent}s.
      * @param mainComponent The an analysis, which is joining results of multiple other components.
      */
-    private void joinSpliComponent(JoinComponent mainComponent) {
+    private void joinSplitComponent(JoinComponent mainComponent) {
         int maxThreads = config.getValue(DefaultSettings.ANALYSIS_SPLITCOMPONENT_MAX_THREADS);
         ThreadRenamer thReanmer = new ThreadRenamer(mainComponent.getResultName());
         ThreadPoolExecutor thPool = (ThreadPoolExecutor)
