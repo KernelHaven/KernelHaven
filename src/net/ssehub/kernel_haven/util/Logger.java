@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -298,7 +300,7 @@ public final class Logger {
     /**
      * Checks first whether to log the message and only iff the message shall be logged, it will concatenate
      * the single parts and log the complete message into a single line.
-     * @param level The log level to be written. Must not be null.
+     * @param level The log level to be written. Must not be <tt>null</tt>.
      * @param messageParts The message to be logged, for all elements {@link Object#toString()} is called to concatenate
      *     the message.
      */
@@ -591,6 +593,29 @@ public final class Logger {
      */
     public void logExceptionInfo(@NonNull String comment, @Nullable Throwable exc) {
         logException(Level.INFO, comment, exc);
+    }
+    
+    /**
+     * Prints a stack trace of the current thread to the log.
+     * @param level The log level to be written. Must not be <tt>null</tt>.
+     * @param text The title of the message to be printed (introduces the stack trace).
+     */
+    public void logStackTrace(@NonNull Level level, @NonNull String text) {
+        if (this.level.shouldLog(level)) {
+            // Creates the Stack Trace (copied from: Thread.currentThread().dumpStack())
+            Exception stackTrace = new Exception(text);
+            StringWriter sWriter = new StringWriter();
+            PrintWriter pWriter = new PrintWriter(sWriter);
+            stackTrace.printStackTrace(pWriter);
+            
+            // Delete exception from part from Stack Trace:
+            String result = sWriter.toString();
+            int startPos = 21; // "java.lang.Exception: ".length()
+            if (null != result && result.length() > startPos) {
+                result = result.substring(startPos);
+            }
+            log(level, (Object) text);
+        }
     }
     
     /**
