@@ -40,6 +40,8 @@
 	<property name="CodeBlockExtractor.location" value="${jenkins.location}/KernelHaven_CodeBlockExtractor/lastSuccessfulBuild/artifact/build/jar/CodeBlockExtractor.jar" />
 	<property name="BusybootPreparation.location_src" value="${jenkins.location}/KernelHaven_BusybootPreparation/lastSuccessfulBuild/artifact/build/jar/BusybootPreparation_withsource.jar" />
 	<property name="BusybootPreparation.location" value="${jenkins.location}/KernelHaven_BusybootPreparation/lastSuccessfulBuild/artifact/build/jar/BusybootPreparation.jar" />
+	<property name="PSS_MapperAnalysis.location_src" value="${jenkins.location}/KernelHaven_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis_withsource.jar" />
+	<property name="PSS_MapperAnalysis.location" value="${jenkins.location}/KernelHaven_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis.jar" />
 	
 	<!-- Other Artifacts -->
 	<property name="KH.Manual" value="${jenkins.location}/KernelHaven_Documentation/lastSuccessfulBuild/artifact/Manual.pdf" />
