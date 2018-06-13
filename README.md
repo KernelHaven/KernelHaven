@@ -163,6 +163,17 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
     </ul></td>
     <td><img src="https://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_Configuration_Mismatches" alt="Build Status of Configuration Mismatches"></td>
   </tr>
+  <!-- Problem-Solution-Space Mapper -->
+  <tr>
+    <td><a href="https://github.com/KernelHaven/ProblemSolutionSpaceMapperAnalysis">Problem-Solution-Space Mapper</a></td>
+    <td><b>Analysis:</b> Identification of relations between problem and solution space artifacts</td>
+    <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
+    <td><ul>
+      <li><a href="https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis.jar">JAR</a></li>
+      <li><a href="https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis_withsource.jar">JAR with sources</a></li>
+    </ul></td>
+    <td><img src="https://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_ProblemSolutionSpaceMapperAnalysis" alt="Build Status of Problem-Solution-Space Mapper"></td>
+  </tr>
 </table>
 
 ## Setup
