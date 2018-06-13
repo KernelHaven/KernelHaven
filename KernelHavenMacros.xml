@@ -43,6 +43,7 @@
 	<property name="PSS_MapperAnalysis.location_src" value="${jenkins.location}/KernelHaven_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis_withsource.jar" />
 	<property name="PSS_MapperAnalysis.location" value="${jenkins.location}/KernelHaven_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis.jar" />
 	<property name="PSS_DivergenceDetectorAnalysis.location_src" value="${jenkins.location}/KernelHaven_ProblemSolutionSpaceDivergenceDetectorAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceDivergenceDetectorAnalysis_withsource.jar" />
+	<property name="PSS_DivergenceCorrectorAnalysis.location_src" value="${jenkins.location}/KernelHaven_ProblemSolutionSpaceDivergenceCorrectorAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceDivergenceCorrectorAnalysis_withsource.jar" />
 	
 	<!-- Other Artifacts -->
 	<property name="KH.Manual" value="${jenkins.location}/KernelHaven_Documentation/lastSuccessfulBuild/artifact/Manual.pdf" />
