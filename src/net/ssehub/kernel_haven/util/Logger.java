@@ -609,12 +609,12 @@ public final class Logger {
             stackTrace.printStackTrace(pWriter);
             
             // Delete exception from part from Stack Trace:
-            String result = sWriter.toString();
+            String result = notNull(sWriter.toString());
             int startPos = 21; // "java.lang.Exception: ".length()
-            if (null != result && result.length() > startPos) {
-                result = result.substring(startPos);
+            if (result.length() > startPos) {
+                result = notNull(result.substring(startPos));
             }
-            log(level, (Object) text);
+            log(level, result.split("\n"));
         }
     }
     
