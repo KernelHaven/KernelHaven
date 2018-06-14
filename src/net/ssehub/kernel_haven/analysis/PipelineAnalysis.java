@@ -190,7 +190,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         int totalNoOfThreads = 0;
         
         AtomicInteger nThreadsProcessed = new AtomicInteger(0);
-        for (AnalysisComponent<?> component : ((JoinComponent) mainComponent).getInputs()) {
+        for (AnalysisComponent<?> component : mainComponent.getInputs()) {
             totalNoOfThreads++;
             NamedRunnable run = new NamedRunnable() {
                 

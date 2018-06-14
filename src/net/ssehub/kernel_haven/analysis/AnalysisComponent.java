@@ -1,6 +1,9 @@
 package net.ssehub.kernel_haven.analysis;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
@@ -25,6 +28,93 @@ public abstract class AnalysisComponent<O> {
      */
     protected static final Logger LOGGER = Logger.get();
     
+    /**
+     * Periodically logs the size of the result queues for all {@link AnalysisComponent}s.
+     * 
+     * TODO: This is a temporary debug measure.
+     */
+    private static class ResultSizeLogger extends Thread {
+        
+        private List<AnalysisComponent<?>> components;
+        
+        private List<AnalysisComponent<?>> doneComponents;
+        
+        /**
+         * Creates this logger. Private because there should be only one singleton instance.
+         */
+        private ResultSizeLogger() {
+            components = new LinkedList<>();
+            doneComponents = new LinkedList<>();
+        }
+        
+        /**
+         * Logs the size of all result queues. Periodically called by run().
+         */
+        private synchronized void logCurrentSizes() {
+            List<String> msg = new ArrayList<>(Math.max(components.size(), doneComponents.size()) + 1);
+            
+            msg.add("Currently running components:");
+            for (AnalysisComponent<?> component : components) {
+                msg.add("\t- " + component.getResultName() + ": " + component.results.getCurrentSize());
+            }
+            LOGGER.logInfo(msg.toArray(new String[0]));
+            msg.clear();
+            
+            msg.add("Finished components:");
+            for (AnalysisComponent<?> component : components) {
+                msg.add("\t- " + component.getResultName() + ": " + component.results.getCurrentSize());
+            }
+            LOGGER.logInfo(msg.toArray(new String[0]));
+        }
+        
+        /**
+         * Registers a newly create {@link AnalysisComponent}.
+         * 
+         * @param component The component that was newly created.
+         */
+        public synchronized void registerComponent(AnalysisComponent<?> component) {
+            components.add(component);
+        }
+        
+        /**
+         * Removes an {@link AnalysisComponent} that is done.
+         * 
+         * @param component The component that is done.
+         */
+        public synchronized void removeComponent(AnalysisComponent<?> component) {
+            components.remove(component);
+            doneComponents.add(component);
+        }
+        
+        @Override
+        public synchronized void start() {
+            this.setDaemon(true);
+            this.setName("ComponentResultSizeLogger");
+            super.start();
+        }
+        
+        @Override
+        public void run() {
+            while (true) {
+                
+                logCurrentSizes();
+                
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+        
+    }
+    
+    private static final ResultSizeLogger RESULZ_SIZE_LOGGER;
+    
+    static {
+        RESULZ_SIZE_LOGGER = new ResultSizeLogger();
+        RESULZ_SIZE_LOGGER.start();
+    }
+    
     private @NonNull BlockingQueue<O> results;
     
     private boolean logResults;
@@ -42,6 +132,7 @@ public abstract class AnalysisComponent<O> {
      */
     public AnalysisComponent(@NonNull Configuration config) {
         results = new BlockingQueue<>();
+        RESULZ_SIZE_LOGGER.registerComponent(this);
         
         setLogResults(config.getValue(DefaultSettings.ANALYSIS_COMPONENTS_LOG).contains(getClass().getSimpleName()));
     }
@@ -142,6 +233,8 @@ public abstract class AnalysisComponent<O> {
                 LOGGER.logException("Exception while closing output file", e);
             }
         }
+        
+        RESULZ_SIZE_LOGGER.removeComponent(this);
     }
     
     /**

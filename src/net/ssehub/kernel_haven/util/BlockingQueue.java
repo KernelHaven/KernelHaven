@@ -220,6 +220,17 @@ public class BlockingQueue<T> implements Iterable<T> {
             return end;
         }
     }
+    
+    /**
+     * Returns how many elements are currently in this buffer.
+     * 
+     * @return The current size of this queue.
+     */
+    public int getCurrentSize() {
+        synchronized (internalQueue) {
+            return internalQueue.size();
+        }
+    }
 
     @Override
     public @NonNull Iterator<T> iterator() {
