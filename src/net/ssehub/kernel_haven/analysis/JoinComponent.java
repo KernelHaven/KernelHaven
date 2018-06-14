@@ -41,7 +41,7 @@ public class JoinComponent extends AnalysisComponent<Void> {
 
     @Override
     public @NonNull String getResultName() {
-        return "PseudoJoinComponent";
+        return "JoinComponent";
     }
     
     @Override

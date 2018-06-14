@@ -69,7 +69,7 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
 
     @Override
     public @NonNull String getResultName() {
-        return "PseudoSplitComponent";
+        return "SplitComponent";
     }
     
     @Override
@@ -110,7 +110,7 @@ public final class SplitComponent<T> extends AnalysisComponent<Void> {
 
         @Override
         public @NonNull String getResultName() {
-            return "PseudoOutputComponent";
+            return "SplitOutputComponent";
         }
         
         @Override
