@@ -59,7 +59,12 @@ public abstract class AnalysisComponent<O> {
             for (AnalysisComponent<?> component : components) {
                 int size = component.results.getCurrentSize();
                 if (size > LOG_THRESHHOLD) {
-                    msg.add("\t- " + component.getResultName() + ": " + size);
+                    String line = "\t- " + component.getResultName() + ": " + size;
+                    if (msg.get(msg.size() - 1).startsWith(line)) {
+                        msg.set(msg.size() - 1, line + " ++");
+                    } else {
+                        msg.add(line);
+                    }
                 }
             }
             if (msg.size() > 1) {
@@ -73,7 +78,12 @@ public abstract class AnalysisComponent<O> {
             for (AnalysisComponent<?> component : components) {
                 int size = component.results.getCurrentSize();
                 if (size > LOG_THRESHHOLD) {
-                    msg.add("\t- " + component.getResultName() + ": " + size);
+                    String line = "\t- " + component.getResultName() + ": " + size;
+                    if (msg.get(msg.size() - 1).startsWith(line)) {
+                        msg.set(msg.size() - 1, msg.get(msg.size() - 1) + " ++");
+                    } else {
+                        msg.add(line);
+                    }
                 }
             }
             if (msg.size() > 1) {
