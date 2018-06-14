@@ -245,8 +245,12 @@ See [`config_template.properties`](https://github.com/KernelHaven/KernelHaven/bl
 
 Further documentation can be found in the [wiki on GitHub](https://github.com/KernelHaven/KernelHaven/wiki). A pdf version can be downloaded from [here](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Documentation/lastSuccessfulBuild/artifact/Manual.pdf).
 
-## Video Tutorial
+## Video Tutorials
 
+#### Introduction and Experiments
+[![KernelHaven - Introduction and Experiments](https://img.youtube.com/vi/xKde6tPY_jA/0.jpg)](https://youtu.be/xKde6tPY_jA)
+
+#### ICSE 2018 Demonstration
 [![KernelHaven - ICSE 2018 Demonstration Video](https://img.youtube.com/vi/IbNc-H1NoZU/0.jpg)](https://www.youtube.com/watch?v=IbNc-H1NoZU)
 
 ## License
