@@ -34,6 +34,8 @@ public abstract class AnalysisComponent<O> {
      * TODO: This is a temporary debug measure.
      */
     private static class ResultSizeLogger extends Thread {
+
+        private static final int LOG_THRESHHOLD = 10;
         
         private List<AnalysisComponent<?>> components;
         
@@ -55,16 +57,30 @@ public abstract class AnalysisComponent<O> {
             
             msg.add("Currently running components:");
             for (AnalysisComponent<?> component : components) {
-                msg.add("\t- " + component.getResultName() + ": " + component.results.getCurrentSize());
+                int size = component.results.getCurrentSize();
+                if (size > LOG_THRESHHOLD) {
+                    msg.add("\t- " + component.getResultName() + ": " + size);
+                }
             }
-            LOGGER.logInfo(msg.toArray(new String[0]));
+            if (msg.size() > 1) {
+                LOGGER.logInfo(msg.toArray(new String[0]));
+            } else {
+                LOGGER.logInfo("No running components with >10 results");
+            }
             msg.clear();
             
             msg.add("Finished components:");
             for (AnalysisComponent<?> component : components) {
-                msg.add("\t- " + component.getResultName() + ": " + component.results.getCurrentSize());
+                int size = component.results.getCurrentSize();
+                if (size > LOG_THRESHHOLD) {
+                    msg.add("\t- " + component.getResultName() + ": " + size);
+                }
             }
-            LOGGER.logInfo(msg.toArray(new String[0]));
+            if (msg.size() > 1) {
+                LOGGER.logInfo(msg.toArray(new String[0]));
+            } else {
+                LOGGER.logInfo("No done components with >10 results");
+            }
         }
         
         /**
