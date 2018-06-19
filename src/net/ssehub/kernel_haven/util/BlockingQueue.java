@@ -1,7 +1,7 @@
 package net.ssehub.kernel_haven.util;
 
+import java.util.ArrayDeque;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.TimeoutException;
 
@@ -64,7 +64,7 @@ public class BlockingQueue<T> implements Iterable<T> {
      * Creates an empty queue.
      */
     public BlockingQueue() {
-        internalQueue = new LinkedList<>();
+        internalQueue = new ArrayDeque<>();
     }
     
     /**
