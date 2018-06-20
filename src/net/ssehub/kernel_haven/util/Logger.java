@@ -54,7 +54,7 @@ public final class Logger {
         /**
          * Error, warning, and status messages are logged.
          */
-        STATUS("status ", 2, Color.BLUE.getAnsiCode() + "status" + Color.RESET.getAnsiCode() + "   "),
+        STATUS("status ", 2, Color.BLUE.getAnsiCode() + "status" + Color.RESET.getAnsiCode() + " "),
         
         /**
          * Error, warning, status, and info messages are logged.
