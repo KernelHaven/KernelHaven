@@ -426,6 +426,27 @@ public final class Logger {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
         log(Level.INFO, messageParts);
     }
+    
+    /**
+     * Logs a log entry with the log level "info".
+     * 
+     * @param lines
+     *            The content of the log entry. Must not be null.
+     */
+    public void logStatusLines(String /*@NonNull*/ ... lines) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
+        log(Level.STATUS, lines);
+    }
+    
+    /**
+     * Logs a log entry with the log level "info".
+     * 
+     * @param messageParts The content of the log entry.
+     */
+    public void logStatus(@Nullable Object /*@NonNull*/ ... messageParts) {
+        // TODO: commented out @NonNull annotation because checkstyle can't parse it
+        log(Level.STATUS, messageParts);
+    }
 
     /**
      * Logs a log entry with the log level "debug".
