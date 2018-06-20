@@ -163,8 +163,7 @@ public abstract class AbstractExtractor<ResultType> {
         
         new Thread(() -> {
             
-            LOGGER.logInfo("Starting on " + targets.size() + " targets in "
-                    + provider.getNumberOfThreads() + " threads");
+            LOGGER.logStatus("Starting on ", targets.size(), " targets in ", provider.getNumberOfThreads(), " threads");
            
             BlockingQueue<File> targetQueue = new BlockingQueue<>();
             for (File target : targets) {
@@ -187,7 +186,7 @@ public abstract class AbstractExtractor<ResultType> {
                 }
             }
             
-            LOGGER.logInfo("All threads done");
+            LOGGER.logStatus("All threads done");
             
             synchronized (isRunningMutex) {
                 isRunning = false;
