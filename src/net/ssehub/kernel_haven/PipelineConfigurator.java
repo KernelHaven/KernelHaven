@@ -427,7 +427,7 @@ public class PipelineConfigurator {
             LOGGER.logException("Error while setting up pipeline", e);
         }
         
-        LOGGER.logInfo("Pipeline done; exiting...");
+        LOGGER.logStatus("Pipeline done; exiting...");
     }
 
     /**
