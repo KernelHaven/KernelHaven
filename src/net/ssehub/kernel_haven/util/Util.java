@@ -621,7 +621,12 @@ public final class Util {
         /**
          * Yellow.
          */
-        YELLOW("\033[1;33m");
+        YELLOW("\033[1;33m"),
+        
+        /**
+         * Blue.
+         */
+        BLUE("\033[1;34m");
         
         private @NonNull String ansiCode;
         

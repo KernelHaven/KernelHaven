@@ -52,14 +52,19 @@ public final class Logger {
         WARNING("warning", 1, Color.YELLOW.getAnsiCode() + "warning" + Color.RESET.getAnsiCode() + ""),
         
         /**
-         * Error, warning and info messages are logged.
+         * Error, warning, and status messages are logged.
          */
-        INFO("info   ", 2, Color.GREEN.getAnsiCode() + "info" + Color.RESET.getAnsiCode() + "   "),
+        STATUS("status ", 2, Color.BLUE.getAnsiCode() + "status" + Color.RESET.getAnsiCode() + "   "),
         
         /**
-         * All messages (error, warning, info, debug) are logged.
+         * Error, warning, status, and info messages are logged.
          */
-        DEBUG("debug  ", 3, Color.CYAN.getAnsiCode() + "debug" + Color.RESET.getAnsiCode() + "  ");
+        INFO("info   ", 3, Color.GREEN.getAnsiCode() + "info" + Color.RESET.getAnsiCode() + "   "),
+        
+        /**
+         * All messages (error, warning, status, info, debug) are logged.
+         */
+        DEBUG("debug  ", 4, Color.CYAN.getAnsiCode() + "debug" + Color.RESET.getAnsiCode() + "  ");
         
         private @NonNull String str;
         
