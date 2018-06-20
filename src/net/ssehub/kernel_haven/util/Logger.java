@@ -53,6 +53,7 @@ public final class Logger {
         
         /**
          * Error, warning, and status messages are logged.
+         * Kind of info logging, but less frequent to show only the current status/progress of the whole analysis.
          */
         STATUS("status ", 2, Color.BLUE.getAnsiCode() + "status" + Color.RESET.getAnsiCode() + " "),
         
