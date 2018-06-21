@@ -18,7 +18,19 @@ public class Timestamp {
     /**
      * Global time-stamp to ensure that files created by one execution all get the same time-stamp.
      */
-    public static final @NonNull Timestamp INSTANCE = new Timestamp();
+    public static final @NonNull Timestamp INSTANCE;
+    
+    private static final @NonNull DateTimeFormatter FILE_FORMAT;
+    
+    private static final @NonNull DateTimeFormatter NORMAL_FORMAT;
+    
+    static {
+        // make sure to initialize formats before INSTANCE
+        NORMAL_FORMAT = notNull(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        FILE_FORMAT = notNull(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+        
+        INSTANCE = new Timestamp();
+    }
     
     /**
      * Time-stamp for normal output.
@@ -44,11 +56,9 @@ public class Timestamp {
      * "reset".
      */
     public void setToNow() {
-        DateTimeFormatter file = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-        DateTimeFormatter normal = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        timestamp = notNull(normal.format(now));
-        filestamp = notNull(file.format(now));
+        timestamp = notNull(NORMAL_FORMAT.format(now));
+        filestamp = notNull(FILE_FORMAT.format(now));
     }
     
     /**
