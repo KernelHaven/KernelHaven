@@ -2,7 +2,11 @@ package net.ssehub.kernel_haven;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -34,6 +38,21 @@ public class Run {
         List<String> lines = new LinkedList<>();
         lines.add("System Info:");
         
+        // try to get the KernelHaven version from version.txt in the jar file
+        // this only works properly if the class path only has the kernelhaven.jar
+        String version = null;
+        try (InputStream versionFile = ClassLoader.getSystemResourceAsStream("version.txt")) {
+            if (versionFile != null) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(versionFile));
+                version = in.readLine();
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+        if (version != null) {
+            lines.add("\tKernelHaven Version: " + version);
+        }
+        
         String[][] relevantKeys = {
             // key, visible name
             {"os.name", "OS Name"},
@@ -53,7 +72,7 @@ public class Run {
         
         for (String[] key : relevantKeys) {
             if (properties.containsKey(key[0])) {
-                lines.add("\t" + key[1] + " = " + properties.get(key[0]));
+                lines.add("\t" + key[1] + ": " + properties.get(key[0]));
             }
         }
         
