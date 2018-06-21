@@ -20,9 +20,7 @@ import net.ssehub.kernel_haven.util.Util;
  * 
  * Class for loading a configuration and starting the PipelineConfigurator.
  * 
- * @author Moritz
- * @author Marvin
- * @author Kevin
+ * @author Adam
  *
  */
 public class Run {

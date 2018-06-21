@@ -2,8 +2,10 @@ package net.ssehub.kernel_haven;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,6 +23,7 @@ import net.ssehub.kernel_haven.util.KernelHavenClassLoader;
 import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.PipelineArchiver;
 import net.ssehub.kernel_haven.util.StaticClassLoader;
+import net.ssehub.kernel_haven.util.ZipArchive;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
@@ -198,6 +201,25 @@ public class PipelineConfigurator {
         
         if (success) {
             LOGGER.logDebug("Successfully added jar to classpath: " + jarFile.getName());
+            
+            // try to get and log the version
+            String version = null;
+            
+            try (ZipArchive archive = new ZipArchive(jarFile)) {
+                File versionTxt = new File("version.txt");
+                if (archive.containsFile(versionTxt)) {
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(
+                            archive.getInputStream(versionTxt)))) {
+                        
+                        version = in.readLine();
+                    }
+                }
+            } catch (IOException e) {
+                // ignore
+            }
+            if (version != null) {
+                LOGGER.logInfo(jarFile.getName() + " version: " + version);
+            }
         }
         
         return success;
