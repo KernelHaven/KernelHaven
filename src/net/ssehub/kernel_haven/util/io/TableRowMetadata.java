@@ -23,6 +23,8 @@ public class TableRowMetadata {
     
     private @NonNull String @NonNull [] headers;
     
+    private boolean isRelation;
+    
     /**
      * Creates the metadata for the given table row class.
      * 
@@ -34,6 +36,8 @@ public class TableRowMetadata {
         if (!isTableRow(tableRowClass)) {
             throw new IllegalArgumentException("Can only create TableMetadata for classes annotated with @TableRow");
         }
+        TableRow rowAnnotation = notNull(tableRowClass.getAnnotation(TableRow.class));
+        this.isRelation = rowAnnotation.isRelation();
         
         this.rowClass = tableRowClass;
         
@@ -93,6 +97,15 @@ public class TableRowMetadata {
         }
         
         return notNullArrayWithNotNullContent(values);
+    }
+    
+    /**
+     * Whether the {@link TableRow} class has been marked as the special "relation" type.
+     * 
+     * @return Whether this metadata represents a "relation" type.
+     */
+    public boolean isRelation() {
+        return isRelation;
     }
     
     /**

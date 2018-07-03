@@ -16,5 +16,55 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface TableRow {
+    
+    /**
+     * <p>
+     * Specifies that this table row is of the special kind "relation". This means, that this table row has exactly two
+     * {@link TableElement}s <b>of the same type</b>. The two elements are in "relation" to each other. This attribute
+     * only has an effect when turning this into an SQL table.
+     * </p>
+     * <p>
+     * For example, consider the following relation objects:
+     * <code>
+     * <pre>
+     * {"A", "B"}
+     * {"A", "C"}
+     * {"B", "C"}
+     * </pre>
+     * </code>
+     * This would create the following two SQL tables:
+     * <table>
+     * <tr>
+     *      <th>Name</th><th>ID</th>
+     * </tr>
+     * <tr>
+     *      <td>A</td><td>1</td>
+     * </tr>
+     * <tr>
+     *      <td>B</td><td>2</td>
+     * </tr>
+     * <tr>
+     *      <td>C</td><td>3</td>
+     * </tr>
+     * </table>
+     * <table>
+     * <tr>
+     *      <th>ID</th><th>ID</th>
+     * </tr>
+     * <tr>
+     *      <td>1</td><td>2</td>
+     * </tr>
+     * <tr>
+     *      <td>1</td><td>3</td>
+     * </tr>
+     * <tr>
+     *      <td>2</td><td>3</td>
+     * </tr>
+     * </table>
+     * </p>
+     * 
+     * @return Whether this table row represents relations.
+     */
+    boolean isRelation() default false;
 
 }
