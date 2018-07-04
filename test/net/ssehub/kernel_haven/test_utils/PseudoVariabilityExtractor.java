@@ -7,8 +7,11 @@ import java.util.Set;
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.ExtractorException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.variability_model.AbstractVariabilityModelExtractor;
 import net.ssehub.kernel_haven.variability_model.VariabilityModel;
+import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor;
+import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.Attribute;
 import net.ssehub.kernel_haven.variability_model.VariabilityVariable;
 
 /**
@@ -33,6 +36,20 @@ public class PseudoVariabilityExtractor extends AbstractVariabilityModelExtracto
             vars.add(var);
         }
         model = new VariabilityModel(dimacsFile, vars);
+    }
+    
+    /**
+     * Adds the specified attributes to the descriptor of the variability model.
+     * Must be called after {@link #configure(File, VariabilityVariable...)} as this method resets all attributes.
+     * @param attributes The attributes to set for the variability model.
+     */
+    public static void setAttributes(@NonNull Attribute... attributes) {
+        if (null != model) {
+            VariabilityModelDescriptor descriptor = model.getDescriptor();
+            for (Attribute attribute : attributes) {
+                descriptor.addAttribute(attribute);
+            }
+        }
     }
     
     @Override

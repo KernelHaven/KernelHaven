@@ -103,7 +103,7 @@ public class VariabilityModel {
      * 
      * @return The {@link VariabilityModelDescriptor} for this model.
      */
-    public VariabilityModelDescriptor getDescriptor() {
+    public @NonNull VariabilityModelDescriptor getDescriptor() {
         return descriptor;
     }
     
