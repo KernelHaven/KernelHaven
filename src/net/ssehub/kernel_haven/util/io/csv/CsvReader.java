@@ -193,7 +193,7 @@ public class CsvReader implements ITableReader {
         // contains characters of the current field
         // new characters are added until a (unescaped) separator is found
         // when a (unescaped) separator is found, the contents of this contain the previous field
-        StringBuilder currentElement = new StringBuilder();
+        StringBuffer currentElement = new StringBuffer();
         
         // break; will be called once the one of line (or stream) is reached
         while (true) {
