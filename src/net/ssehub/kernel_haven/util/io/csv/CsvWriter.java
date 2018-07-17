@@ -122,7 +122,7 @@ public class CsvWriter extends AbstractTableWriter {
      */
     private void writeLine(@Nullable Object /*@NonNull*/ ... fields) throws IOException {
         // TODO: commented out @NonNull annotation because checkstyle can't parse it
-        StringBuffer line = new StringBuffer();
+        StringBuilder line = new StringBuilder();
         for (Object field : fields) {
             String str = field != null ? field.toString() : "";
             if (str == null) {
