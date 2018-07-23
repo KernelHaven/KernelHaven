@@ -234,5 +234,13 @@ public class CodeBlock implements CodeElement {
         return "CodeBlock[start=" + lineStart + "; end=" + lineEnd + "; file=" + sourceFile + "; condition="
                 + condition + "; pc=" + presenceCondition + "; #children=" + nested.size() + "]";
     }
+
+    public void setLineStart(int start) {
+        this.lineStart = start;
+    }
+
+    public void setLineEnd(int end) {
+        this.lineEnd = end;
+    }
     
 }

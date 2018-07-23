@@ -79,11 +79,25 @@ public interface CodeElement {
     public abstract int getLineStart();
 
     /**
+     * Set the line where this element starts in the source file.
+     * 
+     * @param The start line number. -1 if not available.
+     */
+    public abstract void setLineStart(int start);
+    
+    /**
      * Returns the line where this element ends in the source file.
      * 
      * @return The end line number. -1 if not available.
      */
     public abstract int getLineEnd();
+    
+    /**
+     * Sets the line where this element ends in the source file.
+     * 
+     * @param The end line number. -1 if not available.
+     */
+    public abstract void setLineEnd(int end);
     
     /**
      * Returns the source file that this element originates from.
