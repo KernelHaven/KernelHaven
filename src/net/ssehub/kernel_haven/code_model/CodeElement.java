@@ -79,9 +79,10 @@ public interface CodeElement {
     public abstract int getLineStart();
 
     /**
-     * Set the line where this element starts in the source file.
+     * Set the line where this element starts in the source file. This should only be called by the extractor
+     * that creates the code model.
      * 
-     * @param The start line number. -1 if not available.
+     * @param start The start line number. -1 if not available.
      */
     public abstract void setLineStart(int start);
     
@@ -93,9 +94,10 @@ public interface CodeElement {
     public abstract int getLineEnd();
     
     /**
-     * Sets the line where this element ends in the source file.
+     * Sets the line where this element ends in the source file. This should only be called by the extractor
+     * that creates the code model.
      * 
-     * @param The end line number. -1 if not available.
+     * @param end The end line number. -1 if not available.
      */
     public abstract void setLineEnd(int end);
     

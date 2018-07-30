@@ -57,19 +57,12 @@ public class SyntaxElement implements CodeElement {
         this.type = type;
     }
 
-    /**
-     * Sets the line that this node starts on.
-     * @param lineStart The start line of this node.
-     */
+    @Override
     public void setLineStart(int lineStart) {
         this.lineStart = lineStart;
     }
     
-    /**
-     * Sets the line that this node ends on.
-     * 
-     * @param lineEnd The end line of this node.
-     */
+    @Override
     public void setLineEnd(int lineEnd) {
         this.lineEnd = lineEnd;
     }

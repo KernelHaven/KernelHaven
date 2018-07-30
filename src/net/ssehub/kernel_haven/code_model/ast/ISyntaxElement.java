@@ -69,24 +69,6 @@ public interface ISyntaxElement extends CodeElement {
     public void setPresenceCondition(@NonNull Formula presenceCondition);
     
     /**
-     * Sets the starting line of this element.
-     * 
-     * @param lineStart The starting line.
-     * 
-     * @see #getLineStart()
-     */
-    public void setLineStart(int lineStart);
-    
-    /**
-     * Sets the end line of this element.
-     * 
-     * @param lineEnd The end line.
-     * 
-     * @see #getLineEnd()
-     */
-    public void setLineEnd(int lineEnd);
-    
-    /**
      * Converts this single element into a string. This should not consider nested elements. However, other attributes
      * may be added in additional lines with the given indentation + "\t".
      * 

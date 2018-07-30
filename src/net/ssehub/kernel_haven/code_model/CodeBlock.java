@@ -235,10 +235,12 @@ public class CodeBlock implements CodeElement {
                 + condition + "; pc=" + presenceCondition + "; #children=" + nested.size() + "]";
     }
 
+    @Override
     public void setLineStart(int start) {
         this.lineStart = start;
     }
 
+    @Override
     public void setLineEnd(int end) {
         this.lineEnd = end;
     }
