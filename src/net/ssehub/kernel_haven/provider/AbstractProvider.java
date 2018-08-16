@@ -8,6 +8,7 @@ import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.ExtractorException;
+import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -150,7 +151,12 @@ public abstract class AbstractProvider<ResultType> {
         resultQueue = new BlockingQueue<>();
         exceptionQueue = new BlockingQueue<>();
 
-        extractor.run(getTargets());
+        try {
+            extractor.run(getTargets());
+        } catch (SetUpException e) {
+            addResult(null); // signal that no more results are going to be sent (since starting the extractor failed)
+            throw e;
+        }
     }
     
     /**
@@ -189,7 +195,7 @@ public abstract class AbstractProvider<ResultType> {
             } catch (SetUpException e) {
                 // we can't properly handle the SetUpException here, since this extractor is started "implicitly" after
                 // the set up phase
-                throw new RuntimeException(e);
+                Logger.get().logException("Can't start extractor on demand", e);
             }
         }
     }
