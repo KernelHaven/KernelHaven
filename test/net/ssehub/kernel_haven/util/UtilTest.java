@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,6 +35,8 @@ import net.ssehub.kernel_haven.util.Util.OSType;
 public class UtilTest {
 
     private static final String BASE_RES = "net/ssehub/kernel_haven/util/test_resources/";
+    
+    private static final File TESTDATA = new File("testdata");
     
     /**
      * Tests whether the extractJarResourceToTemporaryFile() method throws an exception, if the
@@ -538,6 +541,85 @@ public class UtilTest {
         assertThat(Util.isNestedInDirectory(new File("some/dir/"), new File("some/dir/another/file")), is(true));
         assertThat(Util.isNestedInDirectory(new File("some/dir/"), new File("some/dir/a/b/c/other_file.txt")),
                 is(true));
+    }
+    
+    /**
+     * Tests that {@link Util#clearFolder(File)} creates a folder if the target does not exist.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testClearFolderNotExisting() throws IOException {
+        File toCreate = new File(TESTDATA, "folderToCreate");
+        
+        try {
+            
+            assertThat(toCreate.exists(), is(false));
+            
+            Util.clearFolder(toCreate);
+            
+            assertThat(toCreate.isDirectory(), is(true));
+            
+            
+        } finally {
+            // clean up
+            try {
+                Util.deleteFolder(toCreate);
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+    }
+    
+    /**
+     * Tests that {@link Util#clearFolder(File)} throws an exception if the given "folder" is a file.
+     * 
+     * @throws IOException wanted.
+     */
+    @Test(expected = IOException.class)
+    public void testClearFolderIsFile() throws IOException {
+        File toCreate = new File(TESTDATA, "testfile.txt");
+        Util.clearFolder(toCreate);
+    }
+    
+    /**
+     * Tests that {@link Util#clearFolder(File)} correctly clears a folder with previous content.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testClearFolder() throws IOException {
+        File toClear = new File(TESTDATA, "folderToClear");
+        
+        // set up
+        toClear.mkdir();
+        File subFolder = new File(toClear, "sub-folder"); 
+        subFolder.mkdir();
+        
+        new FileOutputStream(new File(toClear, "file.txt")).close();
+        new FileOutputStream(new File(subFolder, "file.txt")).close();
+        
+        // check precondition
+        assertThat(toClear.isDirectory(), is(true));
+        assertThat(subFolder.isDirectory(), is(true));
+        assertThat(toClear.listFiles().length, is(2));
+        assertThat(subFolder.listFiles().length, is(1));
+        
+        try {
+            
+            Util.clearFolder(toClear);
+            
+            assertThat(toClear.isDirectory(), is(true));
+            assertThat(toClear.listFiles().length, is(0));
+            
+        } finally {
+            // clean up
+            try {
+                Util.deleteFolder(toClear);
+            } catch (IOException e) {
+                // ignore
+            }
+        }
     }
     
 }

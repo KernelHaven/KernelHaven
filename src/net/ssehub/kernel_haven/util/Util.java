@@ -352,6 +352,50 @@ public final class Util {
     public static void deleteFolder(@NonNull File folder) throws IOException {
         Files.walk(folder.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
     }
+    
+    /**
+     * <p>
+     * Clears a folder (i.e. removes all contents from it). If the folder doesn't exist, it is created as an empty
+     * folder.
+     * </p>
+     * <p>
+     * This is a more robust approach than simply "delete and re-create". If the folder already exists, the contents
+     * are removed rather then deleting the whole folder and re-creating it. If the folder needs to be created,
+     * {@link SecurityException}s due to invalid permissions are properly handled. This approach has been tested
+     * in real-world.
+     * </p>
+     * 
+     * @param folder The folder to clear (or create). If this method succeeds, this {@link File} will point to an empty
+     *      folder.
+     *      
+     * @throws IOException If clearing the folder fails.
+     */
+    public static void clearFolder(@NonNull File folder) throws IOException {
+        if (folder.isDirectory()) {
+            for (File oldFile : folder.listFiles()) {
+                if (oldFile.isDirectory()) {
+                    Util.deleteFolder(oldFile);                    
+                } else {
+                    if (!oldFile.delete()) {
+                        throw new IOException("Can't remove file from folder to clear:" + oldFile);
+                    }
+                }
+            }
+        } else if (folder.exists()) {
+            throw new IOException(folder + " is a file");
+            
+        } else {
+            try {
+                boolean success = folder.mkdir();
+                if (!success) {
+                    throw new IOException("Could not create " + folder.getName() + " in "
+                            + folder.getParentFile().getAbsolutePath());
+                }
+            } catch (SecurityException exc) {
+                throw new IOException(exc);
+            }            
+        }
+    }
 
     /**
      * Copies the contents of one file to another file.
