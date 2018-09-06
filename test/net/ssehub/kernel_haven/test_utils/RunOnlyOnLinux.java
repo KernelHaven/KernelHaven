@@ -1,6 +1,8 @@
-package net.ssehub.kernel_haven;
+package net.ssehub.kernel_haven.test_utils;
 
 import org.junit.runners.model.InitializationError;
+
+import net.ssehub.kernel_haven.util.Util.OSType;
 
 /**
  * May be used to specify that a certain test class runs only on <b>Linux</b> systems.
@@ -21,8 +23,7 @@ public class RunOnlyOnLinux extends AbstractOsSpecificTestRunner {
 
 
     @Override
-    protected boolean isSupportedOS(String os) {
-        // Test that OS is liNUX.
-        return os.indexOf("nux") >= 0;
+    protected boolean isSupportedOS(OSType os) {
+        return os == OSType.LINUX64 || os == OSType.LINUX32;
     }
 }

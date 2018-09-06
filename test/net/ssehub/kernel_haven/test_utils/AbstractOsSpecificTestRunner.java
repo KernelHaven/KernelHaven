@@ -1,12 +1,13 @@
-package net.ssehub.kernel_haven;
+package net.ssehub.kernel_haven.test_utils;
 
 import static org.junit.Assume.assumeTrue;
-
-import java.util.Locale;
 
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
+
+import net.ssehub.kernel_haven.util.Util;
+import net.ssehub.kernel_haven.util.Util.OSType;
 
 /**
  * May be used to specify that a certain test class runs only on specific operating systems.
@@ -27,7 +28,7 @@ abstract class AbstractOsSpecificTestRunner extends BlockJUnit4ClassRunner {
 
     @Override
     public void run(RunNotifier notifier) {
-        String os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+        OSType os = Util.determineOS();
         boolean isSupported = isSupportedOS(os);
         assumeTrue(this.getTestClass().getName() + " skipped because of wrong OS used: " + os, isSupported);
         
@@ -36,8 +37,9 @@ abstract class AbstractOsSpecificTestRunner extends BlockJUnit4ClassRunner {
     
     /**
      * Specification whether the given operating system is supported by the executed test.
-     * @param os The name of the Operating system (<tt>System.getProperty("os.name")</tt>).
+     * 
+     * @param os The operating system as determined by {@link Util#determineOS()}.
      * @return <tt>true</tt> if the test can be executed on the OS, <tt>false</tt> if the test shall be skipped.
      */
-    protected abstract boolean isSupportedOS(String os);
+    protected abstract boolean isSupportedOS(OSType os);
 }
