@@ -7,7 +7,7 @@ import net.ssehub.kernel_haven.util.logic.Variable;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * A cache to help ensure that a {@link Formula} does not contain duplicate
+ * A cache to help ensure that a {@link net.ssehub.kernel_haven.util.logic.Formula} does not contain duplicate
  * {@link Variable} objects with the same name. Each instance of {@link Variable}
  * should always be obtained through {@link #getVariable(String)}.
  * 
