@@ -167,7 +167,7 @@ public class Configuration {
             }
             result = null;
         } else {
-            value = value.trim();
+            value = notNull(value.trim());
             switch (setting.getType()) {
             case STRING:
                 result = value;
