@@ -19,7 +19,7 @@ public class VariabilityModelProvider extends AbstractProvider<VariabilityModel>
 
     @Override
     protected long getTimeout() {
-        return (long) config.getValue(DefaultSettings.VARIABILITY_PROVIDER_TIMEOUT);
+        return config.getValue(DefaultSettings.VARIABILITY_PROVIDER_TIMEOUT);
     }
     
     @Override

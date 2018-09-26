@@ -19,7 +19,7 @@ public class BuildModelProvider extends AbstractProvider<BuildModel> {
 
     @Override
     protected long getTimeout() {
-        return (long) config.getValue(DefaultSettings.BUILD_PROVIDER_TIMEOUT);
+        return config.getValue(DefaultSettings.BUILD_PROVIDER_TIMEOUT);
     }
     
     @Override

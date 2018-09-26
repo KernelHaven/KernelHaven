@@ -22,7 +22,7 @@ public class CodeModelProvider extends AbstractProvider<SourceFile> {
 
     @Override
     protected long getTimeout() {
-        return (long) config.getValue(DefaultSettings.CODE_PROVIDER_TIMEOUT);
+        return config.getValue(DefaultSettings.CODE_PROVIDER_TIMEOUT);
     }
     
     @Override
