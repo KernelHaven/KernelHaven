@@ -256,13 +256,13 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * @param component The component to read the output from.
      */
     private void pollAndWriteOutput(@NonNull AnalysisComponent<?> component) {
-        LOGGER.logDebug("Starting and polling output of analysis component (" + component.getClass().getSimpleName()
-                + ")...");
+        LOGGER.logDebug2("Starting and polling output of analysis component (", component.getClass().getSimpleName(),
+            ")...");
         
         try (ITableWriter writer = resultCollection.getWriter(component.getResultName())) {
             Object result;
             while ((result = component.getNextResult()) != null) {
-                LOGGER.logDebug("Got analysis result: " + result.toString());
+                LOGGER.logDebug2("Got analysis result: ", result.toString());
                 
                 writer.writeObject(result);
             }
