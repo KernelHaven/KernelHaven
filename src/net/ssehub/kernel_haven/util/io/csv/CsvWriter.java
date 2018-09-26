@@ -2,6 +2,7 @@ package net.ssehub.kernel_haven.util.io.csv;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -44,7 +45,11 @@ public class CsvWriter extends AbstractTableWriter {
      * @param separator The separator character to use.
      */
     public CsvWriter(@NonNull OutputStream out, char separator) {
-        this.out = new BufferedWriter(new OutputStreamWriter(out, Charset.forName("UTF-8")));
+        this.out = new OutputStreamWriter(out, Charset.forName("UTF-8"));
+        if (!(out instanceof BufferedOutputStream)) {
+            // buffer if out isn't already buffered
+            this.out = new BufferedWriter(this.out);
+        }
         this.separator = separator;
     }
     
@@ -65,13 +70,11 @@ public class CsvWriter extends AbstractTableWriter {
      */
     public CsvWriter(@NonNull Writer out, char separator) {
         this.out = out instanceof BufferedWriter ? out : new BufferedWriter(out);
-//        this.out = out;
         this.separator = separator;
     }
     
     @Override
     public void close() throws IOException {
-        out.flush();
         out.close();
     }
     
@@ -140,7 +143,6 @@ public class CsvWriter extends AbstractTableWriter {
         line.append('\n');
         
         out.write(line.toString());
-//        out.flush();
     }
     
     @Override
