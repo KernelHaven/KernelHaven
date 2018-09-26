@@ -127,9 +127,9 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
     public void run() {
         Thread.currentThread().setName("AnalysisPipelineController");
         try {
-            vmStarter = new ExtractorDataDuplicator<>(vmProvider, false);
-            bmStarter = new ExtractorDataDuplicator<>(bmProvider, false);
-            cmStarter = new ExtractorDataDuplicator<>(cmProvider, true);
+            vmStarter = new ExtractorDataDuplicator<>(vmProvider, false, "VM");
+            bmStarter = new ExtractorDataDuplicator<>(bmProvider, false, "BM");
+            cmStarter = new ExtractorDataDuplicator<>(cmProvider, true, "CM");
             
             try {
                 resultCollection = createResultCollection();
@@ -287,15 +287,19 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         
         private boolean started;
         
+        private @NonNull String type;
+        
         /**
          * Creates a new ExtractorDataDuplicator.
          * 
          * @param provider The provider to get the data from.
          * @param multiple Whether the provider should be polled multiple times or just once.
+         * @param type The type of duplicator component ("CM", "BM" or "VM").
          */
-        public ExtractorDataDuplicator(@NonNull AbstractProvider<T> provider, boolean multiple) {
+        public ExtractorDataDuplicator(@NonNull AbstractProvider<T> provider, boolean multiple, @NonNull String type) {
             this.provider = provider;
             this.multiple = multiple;
+            this.type = type;
             startingComponents = new LinkedList<>();
         }
         
@@ -307,7 +311,8 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
          * @return The starting component that can be used as input data for other analysis components.
          */
         public @NonNull StartingComponent<T> createNewStartingComponent(@NonNull Configuration config) {
-            StartingComponent<T> component = new StartingComponent<>(config, this);
+            
+            StartingComponent<T> component = new StartingComponent<>(config, this, type);
             startingComponents.add(component);
             return component;
         }
@@ -382,16 +387,21 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         
         private @NonNull ExtractorDataDuplicator<T> duplicator;
         
+        private @NonNull String name;
+        
         /**
          * Creates a new starting component.
          * 
          * @param config The global configuration.
          * @param duplicator The {@link ExtractorDataDuplicator} to start when this component is started
          *      (start on demand).
+         * @param type The type of starting component ("CM", "BM" or "VM").
          */
-        public StartingComponent(@NonNull Configuration config, @NonNull ExtractorDataDuplicator<T> duplicator) {
+        public StartingComponent(@NonNull Configuration config, @NonNull ExtractorDataDuplicator<T> duplicator,
+                @NonNull String type) {
             super(config);
             this.duplicator = duplicator;
+            this.name = type + " StartingComponent";
         }
 
         @Override
@@ -411,7 +421,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
 
         @Override
         public String getResultName() {
-            return "StartingComponent";
+            return name;
         }
         
         @Override
