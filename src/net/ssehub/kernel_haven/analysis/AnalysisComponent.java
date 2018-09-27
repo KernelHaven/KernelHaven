@@ -35,6 +35,8 @@ public abstract class AnalysisComponent<O> {
      */
     private static class ResultSizeLogger extends Thread {
 
+        private static final boolean ENABLED = false;
+        
         private static final int LOG_THRESHHOLD = 10;
         
         private static final int PERIOD = 5000;
@@ -101,7 +103,9 @@ public abstract class AnalysisComponent<O> {
          * @param component The component that was newly created.
          */
         public synchronized void registerComponent(AnalysisComponent<?> component) {
-            components.add(component);
+            if (ENABLED) {
+                components.add(component);
+            }
         }
         
         /**
@@ -110,15 +114,19 @@ public abstract class AnalysisComponent<O> {
          * @param component The component that is done.
          */
         public synchronized void removeComponent(AnalysisComponent<?> component) {
-            components.remove(component);
-            doneComponents.add(component);
+            if (ENABLED) {
+                components.remove(component);
+                doneComponents.add(component);
+            }
         }
         
         @Override
         public synchronized void start() {
-            this.setDaemon(true);
-            this.setName("ComponentResultSizeLogger");
-            super.start();
+            if (ENABLED) {
+                this.setDaemon(true);
+                this.setName("ComponentResultSizeLogger");
+                super.start();
+            }
         }
         
         @Override
