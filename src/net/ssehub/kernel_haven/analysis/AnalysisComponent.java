@@ -35,7 +35,7 @@ public abstract class AnalysisComponent<O> {
      */
     private static class ResultSizeLogger extends Thread {
 
-        private static final boolean ENABLED = false;
+        private static final boolean ENABLED = true;
         
         private static final int LOG_THRESHHOLD = 10;
         
