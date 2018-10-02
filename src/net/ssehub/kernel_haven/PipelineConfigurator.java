@@ -493,7 +493,7 @@ public class PipelineConfigurator {
         int num = loadJarsFromDirectory(pluginsDir);
         LOGGER.logInfo("Successfully loaded " + num + " jars");
         
-        StaticClassLoader.loadClasses();
+        StaticClassLoader.loadClasses(config);
     }
     
     /**

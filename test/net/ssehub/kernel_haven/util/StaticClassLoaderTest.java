@@ -9,9 +9,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import org.junit.Test;
+
+import net.ssehub.kernel_haven.SetUpException;
+import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 
 /**
  * Tests the {@link StaticClassLoader}.
@@ -38,15 +42,17 @@ public class StaticClassLoaderTest {
     /**
      * Tests that net.ssehub.kernel_haven.util.StaticallyLoadedClass1 is loaded by the loadClasses.txt in the current
      * package.
+     * 
+     * @throws SetUpException unwanted.
      */
     @Test
-    public void testClassLoadedFromThisPackage() {
+    public void testClassLoadedFromThisPackage() throws SetUpException {
         // precondition: clear any previously registered classes
         testClassesLoaded.clear();
         assertThat(testClassesLoaded.contains("net.ssehub.kernel_haven.util.StaticallyLoadedClass1"), is(false));
         
         // execute
-        StaticClassLoader.loadClasses();
+        StaticClassLoader.loadClasses(new TestConfiguration(new Properties()));
         
         // verify
         assertThat(testClassesLoaded.contains("net.ssehub.kernel_haven.util.StaticallyLoadedClass1"), is(true));
@@ -59,10 +65,11 @@ public class StaticClassLoaderTest {
      * @throws MalformedURLException unwanted. 
      * @throws SecurityException unwanted.
      * @throws ReflectiveOperationException unwanted. 
+     * @throws SetUpException unwanted.
      */
     @Test
     public void testClassLoadedFromJar()
-            throws MalformedURLException, ReflectiveOperationException, SecurityException {
+            throws MalformedURLException, ReflectiveOperationException, SecurityException, SetUpException {
         
         // precondition: clear any previously registered classes
         testClassesLoaded.clear();
@@ -71,7 +78,7 @@ public class StaticClassLoaderTest {
         loadJar(new File("testdata/staticLoadingTest/validClass.jar"));
         
         // execute
-        StaticClassLoader.loadClasses();
+        StaticClassLoader.loadClasses(new TestConfiguration(new Properties()));
         
         // verify
         assertThat(testClassesLoaded.contains("net.ssehub.kernel_haven.util.StaticallyLoadedClass2"), is(true));
@@ -84,10 +91,11 @@ public class StaticClassLoaderTest {
      * @throws MalformedURLException unwanted. 
      * @throws SecurityException unwanted.
      * @throws ReflectiveOperationException unwanted. 
+     * @throws SetUpException unwanted.
      */
     @Test
     public void testClassWithOnlyStaticBlock()
-            throws MalformedURLException, ReflectiveOperationException, SecurityException {
+            throws MalformedURLException, ReflectiveOperationException, SecurityException, SetUpException {
         
         // precondition: clear any previously registered classes
         testClassesLoaded.clear();
@@ -96,7 +104,7 @@ public class StaticClassLoaderTest {
         loadJar(new File("testdata/staticLoadingTest/class3.jar"));
         
         // execute
-        StaticClassLoader.loadClasses();
+        StaticClassLoader.loadClasses(new TestConfiguration(new Properties()));
         
         // verify
         assertThat(testClassesLoaded.contains("net.ssehub.kernel_haven.util.StaticallyLoadedClass3"), is(true));
@@ -108,10 +116,11 @@ public class StaticClassLoaderTest {
      * @throws MalformedURLException unwanted. 
      * @throws SecurityException unwanted.
      * @throws ReflectiveOperationException unwanted. 
+     * @throws SetUpException unwanted.
      */
     @Test
     public void testInvalidClassName()
-            throws MalformedURLException, ReflectiveOperationException, SecurityException {
+            throws MalformedURLException, ReflectiveOperationException, SecurityException, SetUpException {
         
         // precondition: clear any previously registered classes
         testClassesLoaded.clear();
@@ -120,7 +129,7 @@ public class StaticClassLoaderTest {
         loadJar(new File("testdata/staticLoadingTest/invalidClassName.jar"));
         
         // execute
-        StaticClassLoader.loadClasses();
+        StaticClassLoader.loadClasses(new TestConfiguration(new Properties()));
         
         // verify
         assertThat(testClassesLoaded.contains("net.ssehub.kernel_haven.util.DoesntExist"), is(false)); // still false

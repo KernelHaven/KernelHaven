@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
@@ -29,13 +30,14 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * </p>
  * <p>
  * Classes that are specified in these files will be loaded (via {@link Class#forName(String)}) and the static
- * <code>public static void initialize()</code> method of the class will be called (if it is available).
+ * <code>public static void initialize(@NonNull {@link Configuration} config)</code> method of the class will be called.
+ * If loaded classes do not define this method, a warning is printed out.
  * </p>
  *
  * @author Adam
  */
 public class StaticClassLoader {
-
+    
     /**
      * The file name that text files that specify classes to load must have.
      */
@@ -57,8 +59,10 @@ public class StaticClassLoader {
     
     /**
      * Searches for all "loadClasses.txt" in all class loader URLs and loads the specified classes.
+     * 
+     * @param config The configuration to pass to the initialize methods.
      */
-    public static void loadClasses() {
+    public static void loadClasses(@NonNull Configuration config) {
         LOGGER.logInfo("Loading all classes specified in " + LOAD_CLASSES_FILENAME + " ...");
         
         URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
@@ -103,13 +107,13 @@ public class StaticClassLoader {
                 // don't use ClassLoader.loadClass(), because it doesn't initialize
                 Class<?> clazz = Class.forName(className, true, ClassLoader.getSystemClassLoader());
                 
-                // try to call the initialize() method
+                // try to call the initialize(Configuration) method
                 try {
-                    clazz.getMethod(INIT_METHOD_NAME).invoke(null);
+                    clazz.getMethod(INIT_METHOD_NAME, Configuration.class).invoke(null, config);
                     
                 } catch (NoSuchMethodException e) {
-                    // ignore that class has no initialize method; it maybe only want to execute the static block
-                    LOGGER.logDebug(clazz.getName() + " has no " + INIT_METHOD_NAME + " method");
+                    LOGGER.logWarning(clazz.getName() + " has no " + INIT_METHOD_NAME + "(Configuration) method");
+                    callLegacyMethod(clazz);
                     
                 } catch (ReflectiveOperationException | SecurityException e) {
                     LOGGER.logException("Can't execute " + INIT_METHOD_NAME + " for class " + clazz.getName(), e);
@@ -122,6 +126,26 @@ public class StaticClassLoader {
         }
         
         LOGGER.logInfo("Loaded " + loaded + " classes specified in loadClasses.txt files");
+    }
+    
+    /**
+     * Calls the old version of the initialize() method without a parameter. This was old behavior, before the
+     * configuration object was passed to it as a parameter.
+     * 
+     * @param clazz The class to call the method for.
+     */
+    private static void callLegacyMethod(@NonNull Class<?> clazz) {
+        // try to call the initialize() method
+        try {
+            clazz.getMethod(INIT_METHOD_NAME).invoke(null);
+            
+        } catch (NoSuchMethodException e) {
+            // ignore that class has no initialize method; it maybe only want to execute the static block
+            LOGGER.logDebug(clazz.getName() + " has no " + INIT_METHOD_NAME + " method");
+            
+        } catch (ReflectiveOperationException | SecurityException e) {
+            LOGGER.logException("Can't execute " + INIT_METHOD_NAME + " for class " + clazz.getName(), e);
+        }
     }
     
     /**
