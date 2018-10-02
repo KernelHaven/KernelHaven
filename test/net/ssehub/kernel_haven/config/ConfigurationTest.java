@@ -627,4 +627,72 @@ public class ConfigurationTest {
         assertThat(config.getProperty("s2", "default"), is("default"));
     }
     
+    /**
+     * Tests that included config files work correctly.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testIncludedFileSimple() throws SetUpException {
+        Configuration config = new Configuration(new File("testdata/configs/including_file_simple.properties"));
+        
+        assertThat(config.getProperty("a"), is("b")); // from including_file_simple.properties
+        assertThat(config.getProperty("c"), is("d")); // from included_file.properties
+    }
+    
+    /**
+     * Tests that included config files work correctly when loading recursively.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testIncludedFileRecursive() throws SetUpException {
+        Configuration config = new Configuration(new File("testdata/configs/including_file_recursive.properties"));
+        
+        assertThat(config.getProperty("a"), is("b")); // from including_file_simple.properties
+        assertThat(config.getProperty("c"), is("d")); // from included_file.properties
+        assertThat(config.getProperty("e"), is("f")); // from included_file_recursive.properties
+    }
+    
+    /**
+     * Tests that included config throw an exception if missing.
+     * 
+     * @throws SetUpException wanted.
+     */
+    @Test(expected = SetUpException.class)
+    public void testIncludedFileMissing() throws SetUpException {
+        new Configuration(new File("testdata/configs/including_file_doesnt_exist.properties"));
+    }
+    
+    /**
+     * Tests that included config files work correctly if relative paths to a sub-folder are given.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testIncludedFileRelative1() throws SetUpException {
+        Configuration config = new Configuration(new File("testdata/configs/including_file_relative1.properties"));
+        
+        assertThat(config.getProperty("a"), is("b")); // from including_file_relative1.properties
+        assertThat(config.getProperty("v"), is("g")); // from include/included_file.properties
+    }
+    
+    /**
+     * Tests that included config files work correctly if relative paths to a parent folder are given.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testIncludedFileRelative2() throws SetUpException {
+        Configuration config = new Configuration(
+                new File("testdata/configs/include/including_file_relative2.properties"));
+        
+        assertThat(config.getProperty("g"), is("v")); // from include/including_file_relative2.properties
+        assertThat(config.getProperty("c"), is("d")); // from included_file.properties
+    }
+    
 }

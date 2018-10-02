@@ -15,6 +15,7 @@ import java.util.regex.PatternSyntaxException;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.config.Setting.Type;
+import net.ssehub.kernel_haven.util.Logger;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -70,17 +71,54 @@ public class Configuration {
      * @throws SetUpException If some properties are invalid or the file cannot be read.
      */
     public Configuration(@NonNull File propertyFile) throws SetUpException {
-        this.properties = new Properties();
         this.values = new HashMap<>();
         this.settings = new HashMap<>();
         this.doChecks = true;
         this.propertyFile = propertyFile;
         
-        try (FileReader in = new FileReader(propertyFile)) {
-            properties.load(in);
+        try {
+            this.properties = loadFile(propertyFile); 
         } catch (IOException e) {
             throw new SetUpException(e);
         }
+    }
+    
+    /**
+     * Loads the given file. Recursively loads nested files.
+     * 
+     * @param file The file to load.
+     * 
+     * @return The read properties.
+     * 
+     * @throws IOException If loading any file fails.
+     * @throws SetUpException If an include file is misconfigured.
+     */
+    private @NonNull Properties loadFile(@NonNull File file) throws IOException, SetUpException {
+        Properties properties = new Properties();
+        properties.load(new FileReader(file));
+        
+        // check if include_file is set
+        String includeFileString = properties.getProperty(DefaultSettings.INCLUDE_FILE.getKey());
+        properties.remove(DefaultSettings.INCLUDE_FILE.getKey()); // always remove the include_file setting
+        if (includeFileString != null) {
+            File includeFile = new File(file.getParentFile(), includeFileString);
+            if (!includeFile.isFile()) {
+                throw new SetUpException(DefaultSettings.INCLUDE_FILE.getKey() + " in " + file + " points to an "
+                        + "invalid file location: " + includeFileString);
+            }
+            
+            // load included file
+            Logger.get().logDebug2("Loading included setting file ", includeFile);
+            Properties includedProps = loadFile(includeFile);
+            
+            // merge with already loaded properties
+            // already loaded keys have precedence
+            for (Map.Entry<Object, Object> entry : includedProps.entrySet()) {
+                properties.putIfAbsent(entry.getKey(), entry.getValue());
+            }
+        }
+        
+        return properties;
     }
     
     /**

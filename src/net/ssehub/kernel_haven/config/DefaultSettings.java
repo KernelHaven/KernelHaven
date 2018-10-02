@@ -39,6 +39,15 @@ public class DefaultSettings {
     // CHECKSTYLE:OFF
     
     /*
+     * Recursive file loading
+     */
+    
+    /**
+     * This is not a real setting. It is only here to generate an entry in the config_template generation.
+     */
+    static final @NonNull Setting<@Nullable File> INCLUDE_FILE = new Setting<>("include_file", FILE, false, null, "Specifies another property file, that is loaded as a base configuration before the file that this setting appears in. The file specified here is loaded first; if the same key appears in both files (included and including), then the value in the including file overwrites the value loaded in the included file. The path in here is relative to the configuration file that this setting appears in.");
+    
+    /*
      * Infrastructure directories
      */
     
@@ -135,7 +144,8 @@ public class DefaultSettings {
     static {
         for (Field field : DefaultSettings.class.getFields()) {
             if (Setting.class.isAssignableFrom(field.getType())
-                    && Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers())) {
+                    && Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers())
+                    && Modifier.isPublic(field.getModifiers())) {
                 try {
                     SETTINGS.add(notNull((Setting<?>) field.get(null)));
                 } catch (IllegalArgumentException | IllegalAccessException e) {
