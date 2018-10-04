@@ -6,7 +6,7 @@ import java.net.URLClassLoader;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * A class loaded to be used by KernelHaven. Starting with Java 9, it is required that this is set as the
+ * A {@link ClassLoader} to be used by KernelHaven. Starting with Java 9, it is required that this is set as the
  * <code>java.system.class.loader</code> in order for the plugin system to work.
  *
  * @author Adam
