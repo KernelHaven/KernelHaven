@@ -695,4 +695,20 @@ public class ConfigurationTest {
         assertThat(config.getProperty("c"), is("d")); // from included_file.properties
     }
     
+    /**
+     * Tests that including config files can override settings of the included config.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testIncludedFileOverride() throws SetUpException {
+        Configuration config = new Configuration(
+                new File("testdata/configs/including_file_override.properties"));
+        
+        // included_file.properties defines: c = d
+        // including_file_override.properties defines c = e
+        assertThat(config.getProperty("c"), is("e"));
+    }
+    
 }
