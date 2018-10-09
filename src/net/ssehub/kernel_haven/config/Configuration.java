@@ -5,6 +5,7 @@ import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -96,24 +97,34 @@ public class Configuration {
     private @NonNull Properties loadFile(@NonNull File file) throws IOException, SetUpException {
         Properties properties = new Properties();
         properties.load(new FileReader(file));
-        
-        // check if include_file is set
-        String includeFileString = properties.getProperty(DefaultSettings.INCLUDE_FILE.getKey());
-        properties.remove(DefaultSettings.INCLUDE_FILE.getKey()); // always remove the include_file setting
-        if (includeFileString != null) {
-            File includeFile = new File(file.getParentFile(), includeFileString);
-            if (!includeFile.isFile()) {
-                throw new SetUpException(DefaultSettings.INCLUDE_FILE.getKey() + " in " + file + " points to an "
-                        + "invalid file location: " + includeFileString);
+
+        // load all include_files.* properties
+        List<@NonNull Properties> includedProps = new ArrayList<>();
+        for (int index = 0; /*break will be called in the body*/; index++) {
+            String key = DefaultSettings.INCLUDE_FILE.getKey() + "." + index;
+            String includeFileString = properties.getProperty(key);
+            properties.remove(key); // always remove the include_file setting
+            
+            if (includeFileString != null) {
+                File includeFile = new File(file.getParentFile(), includeFileString);
+                if (!includeFile.isFile()) {
+                    throw new SetUpException(key + " in " + file + " points to an "
+                            + "invalid file location: " + includeFileString);
+                }
+                
+                // load included file
+                Logger.get().logDebug2("Loading included setting file ", includeFile);
+                includedProps.add(loadFile(includeFile));
+            } else {
+                break;
             }
-            
-            // load included file
-            Logger.get().logDebug2("Loading included setting file ", includeFile);
-            Properties includedProps = loadFile(includeFile);
-            
-            // merge with already loaded properties
-            // already loaded keys have precedence
-            for (Map.Entry<Object, Object> entry : includedProps.entrySet()) {
+        }
+        
+        // merge all included props with already loaded properties
+        // previously loaded keys have precedence
+        // go in reverse order, so that higher numbers in setting keys have precedence
+        for (int i = includedProps.size() - 1; i >= 0; i--) {
+            for (Map.Entry<Object, Object> entry : notNull(includedProps.get(i)).entrySet()) {
                 properties.putIfAbsent(entry.getKey(), entry.getValue());
             }
         }

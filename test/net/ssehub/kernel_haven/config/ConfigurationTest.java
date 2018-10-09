@@ -711,4 +711,36 @@ public class ConfigurationTest {
         assertThat(config.getProperty("c"), is("e"));
     }
     
+    /**
+     * Tests that including multiple config files works correctly.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testIncludedFileMultiple() throws SetUpException {
+        Configuration config = new Configuration(
+                new File("testdata/configs/including_file_multiple.properties"));
+
+        assertThat(config.getProperty("h"), is("u")); // from including_file_multiple.properties
+        assertThat(config.getProperty("c"), is("d")); // from included_file.properties
+        assertThat(config.getProperty("v"), is("g")); // from include/included_file.properties
+    }
+    
+    /**
+     * Tests that the same defined in multiple included config files works correctly.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testIncludedFileMultipleOverwrite() throws SetUpException {
+        Configuration config = new Configuration(
+                new File("testdata/configs/including_file_multiple_overwrite.properties"));
+
+        // included_file.properties defines:  c = d
+        // included_file_2.properties defines:  c = e
+        assertThat(config.getProperty("c"), is("e")); // from included_file.properties
+    }
+    
 }
