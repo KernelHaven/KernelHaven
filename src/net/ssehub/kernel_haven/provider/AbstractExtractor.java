@@ -117,12 +117,12 @@ public abstract class AbstractExtractor<ResultType> {
                     }
                     
                     if (result == null) {
-                        LOGGER.logInfo("Starting extractor for " + target.getPath());
+                        LOGGER.logDebug("Starting extractor for " + target.getPath());
                         result = runOnFile(target);
                         
                     } else {
                         readFromCache = true;
-                        LOGGER.logInfo("Read " + target.getPath() + " from cache");
+                        LOGGER.logDebug("Read " + target.getPath() + " from cache");
                     }
                     
                     if (result == null) {
@@ -134,7 +134,7 @@ public abstract class AbstractExtractor<ResultType> {
                     if (provider.writeCache() && !readFromCache) {
                         try {
                             provider.getCache().write(result);
-                            LOGGER.logInfo("Cache successfully written");
+                            LOGGER.logDebug("Cache successfully written");
                             
                         } catch (IOException e) {
                             LOGGER.logException("Error writing cache for file " + target.getPath(), e);
