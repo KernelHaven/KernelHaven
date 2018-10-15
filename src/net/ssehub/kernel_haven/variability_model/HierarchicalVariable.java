@@ -1,6 +1,7 @@
 package net.ssehub.kernel_haven.variability_model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -52,6 +53,13 @@ public class HierarchicalVariable extends VariabilityVariable {
     public HierarchicalVariable(@NonNull VariabilityVariable variable) {
         super(variable.getName(), variable.getType(), variable.getDimacsNumber());
         children = new HashSet<>();
+
+        List<@NonNull SourceLocation> locations = variable.getSourceLocations();
+        if (locations != null) {
+            for (SourceLocation sl : locations) {
+                addLocation(sl);
+            }
+        }
     }
     
     /**
