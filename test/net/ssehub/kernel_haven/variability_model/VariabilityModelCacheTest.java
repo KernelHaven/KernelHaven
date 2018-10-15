@@ -18,12 +18,10 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Util;
-import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.Attribute;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.ConstraintFileType;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.VariableType;
@@ -42,15 +40,6 @@ public class VariabilityModelCacheTest {
 
     private File cacheDir;
 
-    /**
-     * Registers the {@link TristateVariableSerializer}.
-     */
-    @BeforeClass
-    public static void registerSerializer() {
-        VariabilityVariableSerializerFactory.INSTANCE.registerSerializer(TristateVariable.class.getName(),
-                new TristateVariableSerializer());
-    }
-    
     /**
      * Creates the cache directory for each test.
      */
@@ -77,6 +66,8 @@ public class VariabilityModelCacheTest {
      */
     private static class TristateVariable extends VariabilityVariable {
 
+        private static final long serialVersionUID = 4857108469750179319L;
+        
         private int moduleNumber;
 
         /**
@@ -94,24 +85,6 @@ public class VariabilityModelCacheTest {
         public TristateVariable(String name, int dimacsNumber, int moduleNumber) {
             super(name, "tristate", dimacsNumber);
             this.moduleNumber = moduleNumber;
-        }
-
-        /**
-         * Creates a tristate variable from a given VariabilityVariable.
-         * 
-         * @param var
-         *            the variability variable.
-         * @param moduleNumber
-         *            the tristate module number.
-         */
-        private TristateVariable(VariabilityVariable var, int moduleNumber) {
-            this(var.getName(), var.getDimacsNumber(), moduleNumber);
-
-            if (var.getSourceLocations() != null) {
-                for (SourceLocation location : var.getSourceLocations()) {
-                    this.addLocation(location);
-                }
-            }
         }
         
         @Override
@@ -149,37 +122,6 @@ public class VariabilityModelCacheTest {
 
     }
     
-    /**
-     * A serializer for {@link TristateVariable}s.
-     */
-    private static class TristateVariableSerializer extends VariabilityVariableSerializer {
-
-        @Override
-        protected @NonNull List<@NonNull String> serializeImpl(@NonNull VariabilityVariable variable) {
-            TristateVariable triVar = (TristateVariable) variable;
-            
-            List<@NonNull String> result = super.serializeImpl(variable);
-            result.add(String.valueOf(triVar.moduleNumber));
-            
-            return result;
-        }
-        
-        @Override
-        protected @NonNull VariabilityVariable deserializeImpl(@NonNull String @NonNull [] csv) throws FormatException {
-            VariabilityVariable variable = super.deserializeImpl(csv);
-            TristateVariable result = new TristateVariable(variable, Integer.parseInt(csv[DEFAULT_SIZE]));
-            return result;
-        }
-        
-        @Override
-        protected void checkLength(@NonNull String @NonNull [] csv) throws FormatException {
-            if (csv.length != DEFAULT_SIZE + 1) {
-                throw new FormatException("Expected " + (DEFAULT_SIZE + 1) + " fields");
-            }
-        }
-        
-    }
-
     /**
      * Test serializing, and deserializing the result.
      * 
@@ -253,6 +195,26 @@ public class VariabilityModelCacheTest {
         assertThat(cacheLocation.getAbsolutePath() + " does not exist ", cacheLocation.exists(), is(true));
         assertThat(cacheLocation.getAbsolutePath() + " does is no directory", cacheLocation.isDirectory(), is(true));
         VariabilityModelCache cache = new VariabilityModelCache(cacheLocation);
+        
+        // this code was used to generate the cache file
+//        VariabilityVariable varA = new VariabilityVariable("ALPHA", "bool", 1);
+//        varA.addLocation(new SourceLocation(new File("path/to/code/code3.c"), 42));
+//        
+//        VariabilityVariable varB = new VariabilityVariable("BETA", "bool", 2);
+//        // no locations
+//        
+//        VariabilityVariable varC = new VariabilityVariable("GAMMA", "bool", 3);
+//        varC.addLocation(new SourceLocation(new File("path/to/code/code.c"), 15));
+//        varC.addLocation(new SourceLocation(new File("path/to/code/code2.c"), 11));
+//        
+//        Set<VariabilityVariable> variables = new HashSet<>();
+//        variables.add(varA);
+//        variables.add(varB);
+//        variables.add(varC);
+//        VariabilityModel varModel = new VariabilityModel(new File("testdata/vmCaching/testmodel.dimacs"), variables);
+//          
+//        cache.write(varModel);
+        
         VariabilityModel varmodel = cache.read(new File(""));
         assertThat(varmodel, notNullValue());
         Map<String, VariabilityVariable> varMap = varmodel.getVariableMap();
@@ -273,9 +235,21 @@ public class VariabilityModelCacheTest {
         assertThat(locationsBeta, nullValue());
     }
 
+//    /**
+//     * This class was used to create a varmodel with an non-existing class in it.
+//     */
+//    public static class DoesntExist extends VariabilityVariable {
+//
+//        private static final long serialVersionUID = 7201816166475759235L;
+//
+//        public DoesntExist(String name, String type) {
+//            super(name, type);
+//        }
+//        
+//    }
+    
     /**
-     * Tests if invalid class names are correctly thrown as
-     * {@link FormatException}.
+     * Tests if a missing class correctly throws a {@link FormatException}.
      * 
      * @throws IOException
      *             unwanted.
@@ -283,14 +257,22 @@ public class VariabilityModelCacheTest {
      *             wanted.
      */
     @Test(expected = FormatException.class)
-    public void testInvalidClassName() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache1"));
+    public void testMissingClass() throws FormatException, IOException {
+        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/missing_class"));
+        
+        // This code was used to generate the cache:
+//        Set<VariabilityVariable> variables = new HashSet<>();
+//        variables.add(new DoesntExist("A", "bool"));
+//        VariabilityModel varModel = new VariabilityModel(new File("testdata/vmCaching/testmodel.dimacs"), variables);
+//        
+//        cache.write(varModel);
+        
         cache.read(new File(""));
     }
 
     /**
      * Tests if the VariabilityVariable correctly throws an
-     * {@link FormatException} with an invalid csv file.
+     * {@link FormatException} with an invalid file.
      * 
      * @throws IOException
      *             unwanted.
@@ -298,8 +280,9 @@ public class VariabilityModelCacheTest {
      *             wanted.
      */
     @Test(expected = FormatException.class)
-    public void testMalFormCSV() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache2"));
+    public void testMalFormFile() throws FormatException, IOException {
+        // the cache file was valid and is cut-off randomly in the middle
+        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache_invalid"));
         cache.read(new File(""));
     }
 
@@ -313,29 +296,12 @@ public class VariabilityModelCacheTest {
      */
     @Test()
     public void testEmptyCache() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache3"));
+        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache_doesnt_exist"));
         VariabilityModel vm = cache.read(new File(""));
 
         assertThat(vm, nullValue());
     }
 
-    /**
-     * Tests if invalid codelocation correctly result in exceptions when read.
-     * 
-     * @throws IOException
-     *             unwanted.
-     * @throws FormatException
-     *             wanted.
-     */
-    @Test(expected = FormatException.class)
-    public void testInvalidCodeLocation() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(
-                new File("testdata/vmCaching/cache_codelocation_invalid"));
-        VariabilityModel vm = cache.read(new File(""));
-
-        assertThat(vm, nullValue());
-    }
-    
     /**
      * Tests that the {@link VariabilityModelDescriptor} is (de-)serialized correctly.
      * 

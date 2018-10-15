@@ -1,7 +1,6 @@
 package net.ssehub.kernel_haven.variability_model;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -10,11 +9,11 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 /**
  * A {@link VariabilityVariable} that has additional information about the hierarchy of variables.
  * 
- * TODO: serialization
- * 
  * @author Adam
  */
 public class HierarchicalVariable extends VariabilityVariable {
+
+    private static final long serialVersionUID = -1506716282814665963L;
 
     private @Nullable HierarchicalVariable parent;
     
@@ -43,23 +42,6 @@ public class HierarchicalVariable extends VariabilityVariable {
     public HierarchicalVariable(@NonNull String name, @NonNull String type, int dimacsNumer) {
         super(name, type, dimacsNumer);
         children = new HashSet<>();
-    }
-    
-    /**
-     * Creates a {@link HierarchicalVariable}.
-     * 
-     * @param variable A variable to copy the name, type and DIMACS number from.
-     */
-    public HierarchicalVariable(@NonNull VariabilityVariable variable) {
-        super(variable.getName(), variable.getType(), variable.getDimacsNumber());
-        children = new HashSet<>();
-
-        List<@NonNull SourceLocation> locations = variable.getSourceLocations();
-        if (locations != null) {
-            for (SourceLocation sl : locations) {
-                addLocation(sl);
-            }
-        }
     }
     
     /**

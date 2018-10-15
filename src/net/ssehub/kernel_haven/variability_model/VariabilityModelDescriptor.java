@@ -2,6 +2,7 @@ package net.ssehub.kernel_haven.variability_model;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,8 +14,10 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * @author Adam
  */
-public class VariabilityModelDescriptor {
+public class VariabilityModelDescriptor implements Serializable {
     
+    private static final long serialVersionUID = -3432348421563573283L;
+
     /**
      * Describes what {@link VariabilityVariable}s in the model represent.
      */

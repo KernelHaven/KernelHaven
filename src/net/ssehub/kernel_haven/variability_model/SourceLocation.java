@@ -1,6 +1,7 @@
 package net.ssehub.kernel_haven.variability_model;
 
 import java.io.File;
+import java.io.Serializable;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -14,9 +15,12 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  *
  *
  */
-public class SourceLocation {
+public class SourceLocation implements Serializable {
+    
+    private static final long serialVersionUID = 4905841080435718474L;
     
     private @NonNull File source;
+    
     private int lineNumber;
 
     /**

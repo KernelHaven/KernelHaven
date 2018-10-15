@@ -1,5 +1,6 @@
 package net.ssehub.kernel_haven.variability_model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,9 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * @author Marvin
  * @author Moritz
  */
-public class VariabilityVariable {
+public class VariabilityVariable implements Serializable {
+
+    private static final long serialVersionUID = -596269312096230553L;
 
     /**
      * The name of the variable. Never null.
@@ -56,9 +59,9 @@ public class VariabilityVariable {
      */
     private @Nullable List<@NonNull SourceLocation> sourceLocations;
     
-    private @Nullable Set<@NonNull VariabilityVariable> variablesUsedInConstraints; // TODO: caching
+    private @Nullable Set<@NonNull VariabilityVariable> variablesUsedInConstraints;
     
-    private @Nullable Set<@NonNull VariabilityVariable> usedInConstraintsOfOtherVariables; // TODO: caching
+    private @Nullable Set<@NonNull VariabilityVariable> usedInConstraintsOfOtherVariables;
 
     /**
      * Creates a new variable.
