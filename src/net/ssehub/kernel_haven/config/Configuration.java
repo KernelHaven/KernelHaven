@@ -7,10 +7,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -401,6 +403,25 @@ public class Configuration {
      */
     protected void setPropertyFile(@Nullable File propertyFile) {
         this.propertyFile = propertyFile;
+    }
+    
+    /**
+     * Returns a set of all keys in the properties that no {@link Setting} has been registered for.
+     * 
+     * @return A set of unused property keys.
+     */
+    public @NonNull Set<@NonNull String> getUnusedKeys() {
+        Set<@NonNull String> result = new HashSet<>(properties.size());
+        
+        for (Object key : properties.keySet()) {
+            if (key instanceof String) { // should be true for all keys; non-string keys don't bother us anyway
+                result.add((String) key);
+            }
+        }
+        
+        result.removeAll(settings.keySet());
+        
+        return result;
     }
     
 }

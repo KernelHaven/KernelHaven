@@ -10,6 +10,9 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import net.ssehub.kernel_haven.analysis.IAnalysis;
 import net.ssehub.kernel_haven.build_model.AbstractBuildModelExtractor;
@@ -447,6 +450,18 @@ public class PipelineConfigurator {
             archive();
         } catch (SetUpException e) {
             LOGGER.logException("Error while setting up pipeline", e);
+        }
+        
+        if (config != null) {
+            Set<@NonNull String> unusedKeys = config.getUnusedKeys();
+            if (!unusedKeys.isEmpty()) {
+                List<String> logLines = new LinkedList<>();
+                logLines.add("The following setting keys were not used during this execution:");
+                logLines.add("(This may be for example due to typos in the setting keys or plugins not being used in "
+                        + "this specific execution)");
+                unusedKeys.stream().map((key) -> "\t" + key).forEach(logLines::add);
+                LOGGER.logInfo(logLines.toArray(new String[0]));
+            }
         }
         
         LOGGER.logStatus("Pipeline done; exiting...");

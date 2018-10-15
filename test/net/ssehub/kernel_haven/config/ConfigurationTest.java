@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -741,6 +742,25 @@ public class ConfigurationTest {
         // included_file.properties defines:  c = d
         // included_file_2.properties defines:  c = e
         assertThat(config.getProperty("c"), is("e")); // from included_file.properties
+    }
+    
+    /**
+     * Tests that unused keys are found properly.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testGetUnusedKeys() throws SetUpException {
+        Properties props = new Properties();
+        props.put("a", "b"); // will be used
+        props.put("c", "d"); // will NOT be used
+        
+        Configuration config = new Configuration(props);
+        
+        config.registerSetting(new Setting<>("a", STRING, true, null, "")); // appears in props
+        config.registerSetting(new Setting<>("b", STRING, true, "empty", "")); // doesn't appear in props
+        
+        assertThat(config.getUnusedKeys(), is(new HashSet<>(Arrays.asList("c"))));
     }
     
 }
