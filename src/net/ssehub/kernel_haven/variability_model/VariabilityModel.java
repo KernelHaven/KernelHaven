@@ -1,7 +1,6 @@
 package net.ssehub.kernel_haven.variability_model;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -17,9 +16,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * @author Moritz
  * @author Kevin
  */
-public class VariabilityModel implements Serializable {
-    
-    private static final long serialVersionUID = 2532154230829863407L;
+public class VariabilityModel {
 
     private @NonNull VariabilityModelDescriptor descriptor;
     
@@ -27,7 +24,7 @@ public class VariabilityModel implements Serializable {
      * A representation of the constraints inside the variability model. Never
      * null.
      */
-    private transient @NonNull File constraintModel;
+    private @NonNull File constraintModel;
 
     /**
      * The variables defined by this variability model. Never null.
@@ -111,13 +108,12 @@ public class VariabilityModel implements Serializable {
     }
     
     /**
-     * Sets the constraint model file. Package visibility, because it should only be called by the
-     * {@link VariabilityModelCache}.
-     * 
-     * @param constraintModel The new constraint model file.
+     * Overrides the descriptor of this model. This should only be called by the deserializer.
+     *  
+     * @param descriptor The new descriptor.
      */
-    void setConstraintModel(@NonNull File constraintModel) {
-        this.constraintModel = constraintModel;
+    void setDescriptor(@NonNull VariabilityModelDescriptor descriptor) {
+        this.descriptor = descriptor;
     }
     
 }
