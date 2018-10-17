@@ -427,6 +427,79 @@ public class VariabilityModelCacheTest {
         assertThat(readD.getNestingDepth(), is(1));
         assertThat(readD.getChildren(), is(set()));
     }
+    
+    /**
+     * Tests that constraint usage is (de-)serialized properly.
+     * 
+     * @throws FormatException unwanted.
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testConstraintUsage() throws FormatException, IOException {
+        File dimacsFile = new File("testdata/vmCaching/testmodel.dimacs");
+
+        Set<VariabilityVariable> set = new HashSet<VariabilityVariable>();
+        VariabilityVariable a = new VariabilityVariable("A", "bool");
+        VariabilityVariable b = new VariabilityVariable("B", "bool");
+        VariabilityVariable c = new VariabilityVariable("C", "bool");
+        VariabilityVariable d = new VariabilityVariable("D", "bool");
+        
+        a.setUsedInConstraintsOfOtherVariables(set(b, c));
+        b.setUsedInConstraintsOfOtherVariables(set(d));
+        d.setUsedInConstraintsOfOtherVariables(set(c));
+        
+        b.setVariablesUsedInConstraints(set(a));
+        c.setVariablesUsedInConstraints(set(a, d));
+        d.setVariablesUsedInConstraints(set(b));
+        
+        set.add(a);
+        set.add(b);
+        set.add(c);
+        set.add(d);
+        
+        VariabilityModel originalVm = new VariabilityModel(dimacsFile, set);
+        originalVm.getDescriptor().setConstraintFileType(ConstraintFileType.DIMACS);
+        originalVm.getDescriptor().addAttribute(Attribute.CONSTRAINT_USAGE);
+
+        VariabilityModelCache cache = new VariabilityModelCache(cacheDir);
+        
+        // write
+        cache.write(originalVm);
+        
+        // read
+        VariabilityModel readVm = cache.read(new File(""));
+        
+        VariabilityVariable readA = readVm.getVariableMap().get("A");
+        VariabilityVariable readB = readVm.getVariableMap().get("B");
+        VariabilityVariable readC = readVm.getVariableMap().get("C");
+        VariabilityVariable readD = readVm.getVariableMap().get("D");
+        
+        assertThat(readA, notNullValue());
+        assertThat(readB, notNullValue());
+        assertThat(readC, notNullValue());
+        assertThat(readD, notNullValue());
+        assertThat(readVm.getVariableMap().size(), is(4));
+        
+        assertThat(readA.getName(), is("A"));
+        assertThat(readA.getType(), is("bool"));
+        assertThat(readA.getVariablesUsedInConstraints(), nullValue());
+        assertThat(readA.getUsedInConstraintsOfOtherVariables(), is(set(readB, readC)));
+        
+        assertThat(readB.getName(), is("B"));
+        assertThat(readB.getType(), is("bool"));
+        assertThat(readB.getVariablesUsedInConstraints(), is(set(readA)));
+        assertThat(readB.getUsedInConstraintsOfOtherVariables(), is(set(readD)));
+        
+        assertThat(readC.getName(), is("C"));
+        assertThat(readC.getType(), is("bool"));
+        assertThat(readC.getVariablesUsedInConstraints(), is(set(readA, readD)));
+        assertThat(readC.getUsedInConstraintsOfOtherVariables(), nullValue());
+        
+        assertThat(readD.getName(), is("D"));
+        assertThat(readD.getType(), is("bool"));
+        assertThat(readD.getVariablesUsedInConstraints(), is(set(readB)));
+        assertThat(readD.getUsedInConstraintsOfOtherVariables(), is(set(readC)));
+    }
 
     /**
      * Creates a set from varargs.
