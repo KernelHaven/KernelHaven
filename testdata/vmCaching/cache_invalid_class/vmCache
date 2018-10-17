@@ -5,7 +5,7 @@ BOOLEAN
 DIMACS
 SOURCE_LOCATIONS
 ---Variables---
-net.ssehub.kernel_haven.variability_model.VariabilityVariable;GAMMA;bool;3
+net.ssehub.kernel_haven.variability_model.DoesntExist;GAMMA;bool;3
 net.ssehub.kernel_haven.variability_model.VariabilityModelCacheTest$TristateVariable;ALPHA;tristate;1
 net.ssehub.kernel_haven.variability_model.VariabilityModelCacheTest$TristateVariable;BETA;tristate;5
 ---Variable Data---

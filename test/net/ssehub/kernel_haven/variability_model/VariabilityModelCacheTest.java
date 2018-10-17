@@ -18,7 +18,6 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.FormatException;
@@ -42,15 +41,6 @@ public class VariabilityModelCacheTest {
 
     private File cacheDir;
 
-    /**
-     * Registers the {@link TristateVariableSerializer}.
-     */
-    @BeforeClass
-    public static void registerSerializer() {
-        VariabilityVariableSerializerFactory.INSTANCE.registerSerializer(TristateVariable.class.getName(),
-                new TristateVariableSerializer());
-    }
-    
     /**
      * Creates the cache directory for each test.
      */
@@ -84,6 +74,17 @@ public class VariabilityModelCacheTest {
          * 
          * @param name
          *            The name of the new variable. Must not be null.
+         * @param type The type. Will be ignored and replaced with "tristate".
+         */
+        public TristateVariable(String name, String type) {
+            super(name, "tristate");
+        }
+        
+        /**
+         * Creates a new variable.
+         * 
+         * @param name
+         *            The name of the new variable. Must not be null.
          * @param dimacsNumber
          *            The number that this variable has in the DIMACS
          *            representation of the variability model.
@@ -96,28 +97,38 @@ public class VariabilityModelCacheTest {
             this.moduleNumber = moduleNumber;
         }
 
-        /**
-         * Creates a tristate variable from a given VariabilityVariable.
-         * 
-         * @param var
-         *            the variability variable.
-         * @param moduleNumber
-         *            the tristate module number.
-         */
-        private TristateVariable(VariabilityVariable var, int moduleNumber) {
-            this(var.getName(), var.getDimacsNumber(), moduleNumber);
-
-            if (var.getSourceLocations() != null) {
-                for (SourceLocation location : var.getSourceLocations()) {
-                    this.addLocation(location);
-                }
-            }
-        }
-        
         @Override
         public void getDimacsMapping(Map<Integer, String> mapping) {
             mapping.put(getDimacsNumber(), getName());
             mapping.put(moduleNumber, getName() + "_MODULE");
+        }
+        
+        @Override
+        protected @NonNull List<@NonNull String> getSerializationData() {
+            List<@NonNull String> data = super.getSerializationData();
+            
+            data.add(0, String.valueOf(moduleNumber));
+            
+            return data;
+        }
+        
+        @Override
+        protected void setSerializationData(@NonNull List<@NonNull String> data,
+                @NonNull Map<@NonNull String, VariabilityVariable> variables) throws FormatException {
+            
+            if (data.isEmpty()) {
+                throw new FormatException("Expected at least one element");
+            }
+            
+            try {
+                this.moduleNumber = Integer.valueOf(data.get(0));
+                data.remove(0);
+                
+            } catch (NumberFormatException e) {
+                throw new FormatException(e);
+            }
+            
+            super.setSerializationData(data, variables);
         }
 
         @Override
@@ -149,37 +160,6 @@ public class VariabilityModelCacheTest {
 
     }
     
-    /**
-     * A serializer for {@link TristateVariable}s.
-     */
-    private static class TristateVariableSerializer extends VariabilityVariableSerializer {
-
-        @Override
-        protected @NonNull List<@NonNull String> serializeImpl(@NonNull VariabilityVariable variable) {
-            TristateVariable triVar = (TristateVariable) variable;
-            
-            List<@NonNull String> result = super.serializeImpl(variable);
-            result.add(String.valueOf(triVar.moduleNumber));
-            
-            return result;
-        }
-        
-        @Override
-        protected @NonNull VariabilityVariable deserializeImpl(@NonNull String @NonNull [] csv) throws FormatException {
-            VariabilityVariable variable = super.deserializeImpl(csv);
-            TristateVariable result = new TristateVariable(variable, Integer.parseInt(csv[DEFAULT_SIZE]));
-            return result;
-        }
-        
-        @Override
-        protected void checkLength(@NonNull String @NonNull [] csv) throws FormatException {
-            if (csv.length != DEFAULT_SIZE + 1) {
-                throw new FormatException("Expected " + (DEFAULT_SIZE + 1) + " fields");
-            }
-        }
-        
-    }
-
     /**
      * Test serializing, and deserializing the result.
      * 
@@ -284,7 +264,7 @@ public class VariabilityModelCacheTest {
      */
     @Test(expected = FormatException.class)
     public void testInvalidClassName() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache1"));
+        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache_invalid_class"));
         cache.read(new File(""));
     }
 
@@ -299,7 +279,7 @@ public class VariabilityModelCacheTest {
      */
     @Test(expected = FormatException.class)
     public void testMalFormCSV() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache2"));
+        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache_invalid_csv"));
         cache.read(new File(""));
     }
 
@@ -313,7 +293,7 @@ public class VariabilityModelCacheTest {
      */
     @Test()
     public void testEmptyCache() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache3"));
+        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache_empty"));
         VariabilityModel vm = cache.read(new File(""));
 
         assertThat(vm, nullValue());

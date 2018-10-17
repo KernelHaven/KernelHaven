@@ -17,6 +17,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 public class SourceLocation {
     
     private @NonNull File source;
+    
     private int lineNumber;
 
     /**
@@ -73,6 +74,5 @@ public class SourceLocation {
     public @NonNull String toString() {
         return source.getPath() + ":" + lineNumber;
     }
-    
 
 }

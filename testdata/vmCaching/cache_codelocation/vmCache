@@ -1,17 +1,17 @@
 KernelHaven Variability Model Cache
-Version: 2
+Version: 4
 ---Model Descriptor---
 BOOLEAN
 UNSPECIFIED
-false
-false
+
 ---Variables---
-net.ssehub.kernel_haven.variability_model.VariabilityVariable
-GAMMA;bool;3;path/to/code/code.c>15|path/to/code/code2.c>11
-net.ssehub.kernel_haven.variability_model.VariabilityVariable
-ALPHA;bool;1;path/to/code/code3.c>42
-net.ssehub.kernel_haven.variability_model.VariabilityVariable
-BETA;bool;5;null
+net.ssehub.kernel_haven.variability_model.VariabilityVariable;GAMMA;bool;3
+net.ssehub.kernel_haven.variability_model.VariabilityVariable;ALPHA;bool;1
+net.ssehub.kernel_haven.variability_model.VariabilityVariable;BETA;bool;5
+---Variable Data---
+GAMMA;2;path/to/code/code.c:15;path/to/code/code2.c:11;null;null
+ALPHA;1;path/to/code/code3.c:42;null;null
+BETA;null;null;null
 ---Constraint File---
 c 1 ALPHA
 c 5 BETA

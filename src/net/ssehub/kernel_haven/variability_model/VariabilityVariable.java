@@ -1,10 +1,16 @@
 package net.ssehub.kernel_haven.variability_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -25,6 +31,12 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * If this variable is linked to a specific DIMACS representation, then the
  * dimacsNumber attribute is set to a non 0 value. This attribute then is the
  * number that this variable is represented by.
+ * </p>
+ * <p>
+ * <b>Serialization:</b> In order for the serialization mechanism to work, every sub-class needs a constructor
+ * with two String parameters (name and type, like {@link #VariabilityVariable(String, String)}). Additionally,
+ * sub-classes may override {@link #getSerializationData()} and {@link #setSerializationData(List, Map)} to store
+ * additional data during serialization.
  * </p>
  * 
  * @author Adam
@@ -56,9 +68,9 @@ public class VariabilityVariable {
      */
     private @Nullable List<@NonNull SourceLocation> sourceLocations;
     
-    private @Nullable Set<@NonNull VariabilityVariable> variablesUsedInConstraints; // TODO: caching
+    private @Nullable Set<@NonNull VariabilityVariable> variablesUsedInConstraints;
     
-    private @Nullable Set<@NonNull VariabilityVariable> usedInConstraintsOfOtherVariables; // TODO: caching
+    private @Nullable Set<@NonNull VariabilityVariable> usedInConstraintsOfOtherVariables;
 
     /**
      * Creates a new variable.
@@ -208,6 +220,194 @@ public class VariabilityVariable {
      */
     public @Nullable Set<@NonNull VariabilityVariable> getUsedInConstraintsOfOtherVariables() {
         return usedInConstraintsOfOtherVariables;
+    }
+    
+    /**
+     * Sets the (extra) data that has previously been serialized with {@link #getSerializationData()}. Overriding
+     * methods should read and <b>remove</b> their data from the beginning of the list, and then call the super method. 
+     * 
+     * @param data The data to deserialize.
+     * @param variables All variability variables of the final model. Do not add to this map.
+     *      (These may not yet be fully initialized.)
+     * 
+     * @throws FormatException If the deserialization data is faulty.
+     */
+    protected void setSerializationData(@NonNull List<@NonNull String> data,
+            @NonNull Map<@NonNull String, VariabilityVariable> variables) throws FormatException {
+        
+        readSerializedSourceLocations(data);
+        readSerializedVariablesUsedInConstraints(data, variables);
+        readSerializedUsedInConstraintsOfOtherVariables(data, variables);
+    }
+    
+    /**
+     * Reads the serialized {@link SourceLocation}s from the beginning of the given list.
+     * 
+     * @param data The data list.
+     * 
+     * @throws FormatException If the data is malformed.
+     */
+    private void readSerializedSourceLocations(List<@NonNull String> data) throws FormatException {
+        
+        if (data.isEmpty()) {
+            throw new FormatException("Expected at least 1 more element");
+        }
+        
+        String sizeStr = notNull(data.remove(0));
+        if (!sizeStr.equals("null")) {
+            
+            int size = Integer.parseInt(sizeStr);
+            if (data.size() < size) {
+                throw new FormatException("Expected at least " + size + " more elemnts");
+            }
+            
+            for (int i = 0; i < size; i++) {
+                String sl = notNull(data.remove(0));
+                String[] parts = sl.split(":");
+                if (parts.length != 2) {
+                    throw new FormatException("Invalid code location: " + sl);
+                }
+                
+                int line;
+                try {
+                    line = Integer.parseInt(parts[1]);
+                    
+                } catch (NumberFormatException e) {
+                    throw new FormatException(e);
+                }
+                
+                addLocation(new SourceLocation(new File(parts[0]), line));
+            }
+        }
+    }
+
+    /**
+     * Reads the serialized list of variables used in constraints from the beginning of the given list.
+     * 
+     * @param data The data list.
+     * @param variables The map of all existing variables.
+     * 
+     * @throws FormatException If the data is malformed.
+     */
+    private void readSerializedVariablesUsedInConstraints(List<@NonNull String> data,
+            Map<@NonNull String, VariabilityVariable> variables) throws FormatException {
+        
+        if (data.isEmpty()) {
+            throw new FormatException("Expected at least 1 more element");
+        }
+        
+        String sizeStr = notNull(data.remove(0));
+        if (!sizeStr.equals("null")) {
+            
+            int size = Integer.parseInt(sizeStr);
+            if (data.size() < size) {
+                throw new FormatException("Expected at least " + size + " more elemnts");
+            }
+            
+            Set<@NonNull VariabilityVariable> result = new HashSet<>(size);
+            for (int i = 0; i < size; i++) {
+                String varStr = notNull(data.remove(0));
+                VariabilityVariable var = variables.get(varStr);
+                
+                if (var == null) {
+                    throw new FormatException("Unknown variable name " + varStr);
+                }
+                
+                result.add(var);
+            }
+            
+            setVariablesUsedInConstraints(result);
+        }
+    }
+    
+    /**
+     * Reads the serialized list of used in constraints of other variables from the beginning of the given list.
+     * 
+     * @param data The data list.
+     * @param variables The map of all existing variables.
+     * 
+     * @throws FormatException If the data is malformed.
+     */
+    private void readSerializedUsedInConstraintsOfOtherVariables(List<@NonNull String> data,
+            Map<@NonNull String, VariabilityVariable> variables) throws FormatException {
+        if (data.isEmpty()) {
+            throw new FormatException("Expected at least 1 more element");
+        }
+        String sizeStr = notNull(data.remove(0));
+        if (!sizeStr.equals("null")) {
+            
+            int size = Integer.parseInt(sizeStr);
+            if (data.size() < size) {
+                throw new FormatException("Expected at least " + size + " more elemnts");
+            }
+            
+            Set<@NonNull VariabilityVariable> result = new HashSet<>(size);
+            for (int i = 0; i < size; i++) {
+                String varStr = notNull(data.remove(0));
+                VariabilityVariable var = variables.get(varStr);
+                
+                if (var == null) {
+                    throw new FormatException("Unknown variable name " + varStr);
+                }
+                
+                result.add(var);
+            }
+            
+            setUsedInConstraintsOfOtherVariables(result);
+        }
+    }
+
+    /**
+     * Creates a list of (extra) data that needs to be serialized. On deserialization, this will be passed to
+     * {@link #setSerializationDat(List)}. Overriding methods should always call the super method, and <b>prepend</b>
+     * their data to the returned list.
+     * 
+     * @return A list of extra data to serialize.
+     */
+    protected @NonNull List<@NonNull String> getSerializationData() {
+        
+        List<@NonNull String> result = new LinkedList<>();
+        
+        // sourceLocations
+        List<@NonNull SourceLocation> sourceLocations = this.sourceLocations;
+        if (sourceLocations != null) {
+            result.add(notNull(String.valueOf(sourceLocations.size())));
+            
+            for (SourceLocation sl : sourceLocations) {
+                result.add(sl.getSource().getPath() + ":" + sl.getLineNumber());
+            }
+            
+        } else {
+            result.add("null");
+        }
+        
+        // variablesUsedInConstraints
+        Set<@NonNull VariabilityVariable> variablesUsedInConstraints = this.variablesUsedInConstraints;
+        if (variablesUsedInConstraints != null) {
+            result.add(notNull(String.valueOf(variablesUsedInConstraints.size())));
+            
+            for (VariabilityVariable var : variablesUsedInConstraints) {
+                result.add(var.getName());
+            }
+            
+        } else {
+            result.add("null");
+        }
+        
+        // usedInConstraintsOfOtherVariables
+        Set<@NonNull VariabilityVariable> usedInConstraintsOfOtherVariables = this.usedInConstraintsOfOtherVariables;
+        if (usedInConstraintsOfOtherVariables != null) {
+            result.add(notNull(String.valueOf(usedInConstraintsOfOtherVariables.size())));
+            
+            for (VariabilityVariable var : usedInConstraintsOfOtherVariables) {
+                result.add(var.getName());
+            }
+            
+        } else {
+            result.add("null");
+        }
+        
+        return result;
     }
     
     @Override
