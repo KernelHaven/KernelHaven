@@ -11,6 +11,7 @@ import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Logger;
+import net.ssehub.kernel_haven.util.ProgressLogger;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -86,16 +87,21 @@ public abstract class AbstractExtractor<ResultType> {
         
         private @NonNull BlockingQueue<File> targets;
         
+        private @NonNull ProgressLogger progress;
+        
         /**
          * Creates a new worker thread.
          * 
          * @param name The name of the extractor.
          * @param number The number of this thread.
          * @param targets The queue to get targets from.
+         * @param progress A {@link ProgressLogger} to notfiy about finished items.
          */
-        public WorkerThread(@NonNull String name, int number, @NonNull BlockingQueue<File> targets) {
-            super(name + "Thread-" + number);
+        public WorkerThread(@NonNull String name, int number, @NonNull BlockingQueue<File> targets,
+                @NonNull ProgressLogger progress) {
+            super(name + "-" + number);
             this.targets = targets;
+            this.progress = progress;
         }
         
         @Override
@@ -144,6 +150,8 @@ public abstract class AbstractExtractor<ResultType> {
                 } catch (ExtractorException e) {
                     provider.addException(e);
                 }
+                
+                progress.oneDone();
             }
         }
         
@@ -164,6 +172,7 @@ public abstract class AbstractExtractor<ResultType> {
         new Thread(() -> {
             
             LOGGER.logStatus("Starting on ", targets.size(), " targets in ", provider.getNumberOfThreads(), " threads");
+            ProgressLogger progress = new ProgressLogger(getName(), targets.size());
            
             BlockingQueue<File> targetQueue = new BlockingQueue<>();
             for (File target : targets) {
@@ -174,7 +183,7 @@ public abstract class AbstractExtractor<ResultType> {
             List<WorkerThread> threads = new ArrayList<>(provider.getNumberOfThreads());
             
             for (int i = 1; i <= provider.getNumberOfThreads(); i++) {
-                WorkerThread th = new WorkerThread(getName(), i, targetQueue);
+                WorkerThread th = new WorkerThread(getName(), i, targetQueue, progress);
                 th.start();
                 threads.add(th);
             }
@@ -186,14 +195,14 @@ public abstract class AbstractExtractor<ResultType> {
                 }
             }
             
-            LOGGER.logStatus("All threads done");
+            progress.close();
             
             synchronized (isRunningMutex) {
                 isRunning = false;
                 provider.addResult(null);
             }
             
-        }, getName() + "Thread").start();
+        }, getName()).start();
     }
 
     /**

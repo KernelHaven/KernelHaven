@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * A utility class for periodically logging the progress of a long-running task.
+ * A utility class for periodically logging the progress of a long-running task. This class is fully thread-safe.
  * 
  * @author Adam
  */
@@ -76,10 +76,14 @@ public class ProgressLogger implements Closeable {
     
     /**
      * Signals that the task is done. This should be called, even if the number of items is reached via done() calls.
+     * This will immediately trigger a log message.
      */
     @Override
     public void close() {
         this.finished.set(true);
+        synchronized (LOG_THREAD) {
+            LOG_THREAD.notifyAll();
+        }
     }
     
     /**
@@ -149,7 +153,10 @@ public class ProgressLogger implements Closeable {
                 }
                 
                 try {
-                    Thread.sleep(interval);
+                    // wait instead of sleep, so that close() can trigger a log message via notifyAll()
+                    synchronized (this) {
+                        wait(interval);
+                    }
                 } catch (InterruptedException e) {
                     // ignore
                 }
