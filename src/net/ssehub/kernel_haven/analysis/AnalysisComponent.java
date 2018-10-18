@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.analysis;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -9,6 +11,7 @@ import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.Logger;
+import net.ssehub.kernel_haven.util.ProgressLogger;
 import net.ssehub.kernel_haven.util.io.ITableCollection;
 import net.ssehub.kernel_haven.util.io.ITableWriter;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -161,6 +164,8 @@ public abstract class AnalysisComponent<O> {
     
     private long tStart;
     
+    private @Nullable ProgressLogger progressLogger;
+    
     /**
      * Creates a new analysis component.
      * 
@@ -201,6 +206,7 @@ public abstract class AnalysisComponent<O> {
             Thread th = new Thread(() -> {
                 if (!isInternalHelperComponent()) {
                     LOGGER.logInfo("Analysis component " + getClass().getSimpleName() + " starting");
+                    progressLogger = new ProgressLogger(notNull(getClass().getSimpleName()));
                 }
                 
                 try {
@@ -238,6 +244,10 @@ public abstract class AnalysisComponent<O> {
     protected final void addResult(@NonNull O result) {
         results.add(result);
         
+        if (progressLogger != null) {
+            progressLogger.oneDone();
+        }
+        
         if (logResults) {
             LOGGER.logDebug("Analysis component " + getClass().getSimpleName() + " intermediate result: " + result);
             
@@ -259,6 +269,10 @@ public abstract class AnalysisComponent<O> {
             long duration = System.currentTimeMillis() - tStart;
             LOGGER.logInfo("Analysis component " + getClass().getSimpleName() + " done",
                     "Execution took " + duration + "ms");
+        }
+        
+        if (progressLogger != null) {
+            progressLogger.close();
         }
         
         results.end();
