@@ -213,6 +213,8 @@ public final class Logger {
                 }
             }
         }
+        
+        ProgressLogger.setInterval(config.getValue(DefaultSettings.LOG_PROGRESS_INTERVAL));
     }
     
     /**

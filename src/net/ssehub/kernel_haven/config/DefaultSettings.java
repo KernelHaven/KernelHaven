@@ -66,6 +66,7 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull Boolean> LOG_FILE = new Setting<>("log.file", BOOLEAN, true, "false", "If set to true all log messages will be written to a file in the log directory.");
     public static final @NonNull Setting<Logger.@NonNull Level> LOG_LEVEL = new EnumSetting<Logger.@NonNull Level>("log.level", Logger.Level.class, true, Logger.Level.INFO, "Defines the maximum log level to log."); 
     public static final @NonNull Setting<@Nullable Boolean> LOG_FORCE_COLOR = new Setting<>("log.force_color", BOOLEAN, false, null, "Overrides whether ANSI color codes should be used when logging to stdout. By default, it is automatically detected whether to use color or not (ANSI color codes are used on non-Windows operating systems and if output has not been redirected).");
+    public static final @NonNull Setting<@NonNull Integer> LOG_PROGRESS_INTERVAL = new Setting<>("log.progress_interval", INTEGER, true, "30000", "The update interval for the ProgressLogger, in milliseconds.");
     
     /*
      * Archiving

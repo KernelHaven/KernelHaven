@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
@@ -23,7 +24,7 @@ public class ProgressLogger implements Closeable {
     /**
      * The interval to log in, in milliseconds.
      */
-    private static int interval = 30000;
+    private static int interval = Integer.parseInt(DefaultSettings.LOG_PROGRESS_INTERVAL.getDefaultValue());
     
     private @NonNull String task;
     
@@ -81,6 +82,22 @@ public class ProgressLogger implements Closeable {
     @Override
     public void close() {
         this.finished.set(true);
+        
+        // trigger a new log round
+        synchronized (LOG_THREAD) {
+            LOG_THREAD.notifyAll();
+        }
+    }
+    
+    /**
+     * Sets the interval for logging the status of {@link ProgressLogger}s.
+     * 
+     * @param interval The logging interval, in milliseconds.
+     */
+    static void setInterval(int interval) {
+        ProgressLogger.interval = interval;
+        
+        // skip current waiting, so that shorter intervals have an immediate effect
         synchronized (LOG_THREAD) {
             LOG_THREAD.notifyAll();
         }
@@ -106,7 +123,8 @@ public class ProgressLogger implements Closeable {
         }
 
         /**
-         * Adds a new {@link ProgressLogger} to observe. This will be observed until
+         * Adds a new {@link ProgressLogger} to observe. This will be observed (and periodically logged) until it is
+         * closed.
          * 
          * @param progressLogger The {@link ProgressLogger} to add.
          */
