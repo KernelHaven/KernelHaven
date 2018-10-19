@@ -763,4 +763,27 @@ public class ConfigurationTest {
         assertThat(config.getUnusedKeys(), is(new HashSet<>(Arrays.asList("c"))));
     }
     
+    /**
+     * Tests that list keys are not marked as unused.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testGetUnusedKeysList() throws SetUpException {
+        Properties props = new Properties();
+        props.put("a.0", "b"); // will be used
+        props.put("a.1", "c"); // will be used
+        props.put("a.3", "c"); // will NOT be used (because .2 is skipped)
+        props.put("a", "c"); // will NOT be used (because its a setting list)
+        props.put("d.0", "e"); // will NOT be used
+        props.put("d.1", "f"); // will NOT be used
+        
+        Configuration config = new Configuration(props);
+        
+        config.registerSetting(new Setting<>("a", SETTING_LIST, true, null, "")); // appears in props
+        config.registerSetting(new Setting<>("b", SETTING_LIST, false, null, "")); // doesn't appear in props
+        
+        assertThat(config.getUnusedKeys(), is(new HashSet<>(Arrays.asList("d.0", "d.1", "a.3", "a"))));
+    }
+    
 }

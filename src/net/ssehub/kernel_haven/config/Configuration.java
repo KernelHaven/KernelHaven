@@ -419,7 +419,23 @@ public class Configuration {
             }
         }
         
-        result.removeAll(settings.keySet());
+        for (Setting<?> setting : settings.values()) {
+            if (setting.getType() == Type.SETTING_LIST) {
+                // for setting lists, we need to consider .0, .1, etc.
+                for (int i = 0; /* break will be called */; i++) {
+                    String key = setting.getKey() + "." + i;
+                    if (result.contains(key)) {
+                        result.remove(key);
+                    } else {
+                        break;
+                    }
+                }
+                
+            } else {
+                // just remove the normal key
+                result.remove(setting.getKey());
+            }
+        }
         
         return result;
     }
