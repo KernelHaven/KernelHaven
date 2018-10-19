@@ -151,7 +151,7 @@ public abstract class AbstractExtractor<ResultType> {
                     provider.addException(e);
                 }
                 
-                progress.oneDone();
+                progress.processedOne();
             }
         }
         

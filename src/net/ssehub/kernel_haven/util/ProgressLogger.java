@@ -30,7 +30,7 @@ public class ProgressLogger implements Closeable {
     
     private int numItems;
     
-    private @NonNull AtomicInteger doneItems;
+    private @NonNull AtomicInteger processedItems;
     
     private @NonNull AtomicBoolean finished;
     
@@ -53,31 +53,31 @@ public class ProgressLogger implements Closeable {
     public ProgressLogger(@NonNull String task, int numItems) {
         this.task = task;
         this.numItems = numItems;
-        this.doneItems = new AtomicInteger(0);
+        this.processedItems = new AtomicInteger(0);
         this.finished = new AtomicBoolean(false);
         
         LOG_THREAD.add(this);
     }
     
     /**
-     * Signals that one item is done.
+     * Signals that another item is processed.
      */
-    public void oneDone() {
-        doneItems.incrementAndGet();
+    public void processedOne() {
+        processedItems.incrementAndGet();
     }
     
     /**
-     * Signals that a number of items are done.
+     * Signals that a number of items are processed.
      * 
-     * @param numDone The number of items that are done. This is added to the previous amount of finished items.
+     * @param numDone The number of items that are processed. This is added to the previous amount of processed items.
      */
-    public void done(int numDone) {
-        doneItems.addAndGet(numDone);
+    public void processed(int numDone) {
+        processedItems.addAndGet(numDone);
     }
     
     /**
-     * Signals that the task is done. This should be called, even if the number of items is reached via done() calls.
-     * This will immediately trigger a log message.
+     * Signals that the task is done. This should be called, even if the number of items is reached via processed()
+     * calls. This will immediately trigger a log message.
      */
     @Override
     public void close() {
@@ -146,15 +146,15 @@ public class ProgressLogger implements Closeable {
                         ProgressLogger logger = notNull(list.get(i));
                         
                         int max = logger.numItems;
-                        int current = logger.doneItems.get();
+                        int current = logger.processedItems.get();
                         boolean done = logger.finished.get();
                         
                         if (max >= 0) {
-                            lines.add(String.format("%s finished %d of %d (%d%%) items"
+                            lines.add(String.format("%s processed %d of %d (%d%%) items"
                                     + (done ? " and is done" : ""),
                                     logger.task, current, max, (int) (current * 100.0 / max)));
                         } else {
-                            lines.add(String.format("%s finished %d items" + (done ? " and is done" : ""),
+                            lines.add(String.format("%s processed %d items" + (done ? " and is done" : ""),
                                     logger.task, current));
                         }
 
