@@ -43,6 +43,11 @@ public class ParameterizedJsonParserNegativeTest {
             new Object[] {"52 64", "number with space"},
             new Object[] {"52a64", "number with letter"},
             
+            new Object[] {"526.", "number with missing fraction"},
+            new Object[] {"52621321321321325454543637547854654654654654642523432423423423423423", "unparseable long"},
+            new Object[] {"526E", "number with missing exponent"},
+            new Object[] {"526E+", "number with only sign as exponent"},
+            
             new Object[] {"treu", "true typo"},
             new Object[] {"fasle", "false typo"},
             

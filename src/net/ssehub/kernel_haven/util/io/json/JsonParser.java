@@ -374,23 +374,73 @@ public class JsonParser implements Closeable {
      * @throws IOException If reading the stream fails.
      */
     private @NonNull JsonNumber readNumber() throws FormatException, IOException {
-        int sign = 1;
+        Number result;
+        
+        StringBuilder intDigits = new StringBuilder();
         if (peek() == '-') {
-            read();
-            sign = -1;
+            intDigits.append((char) read());
         }
-        
-        StringBuilder digits = new StringBuilder();
         while (isDigit(peek())) {
-            digits.append((char) read());
+            intDigits.append((char) read());
+        }
+
+        StringBuilder fracDigits = new StringBuilder();
+        if (peek() == '.') {
+            read(); // read '.'
+            
+            boolean foundOne = false;
+            while (isDigit(peek())) {
+                foundOne = true;
+                fracDigits.append((char) read());
+            }
+            
+            if (!foundOne) {
+                throw makeException("Expected at least one digit after '.', got '" + (char) peek() + "'");
+            }
         }
         
-        // TODO: float
+        StringBuilder expontentDigits = new StringBuilder();
+        if (peek() == 'e' || peek() == 'E') {
+            read(); // read the 'e'
+            
+            if (peek() == '-' || peek() == '+') {
+                expontentDigits.append((char) read());
+            }
+            
+            boolean foundOne = false;
+            while (isDigit(peek())) {
+                foundOne = true;
+                expontentDigits.append((char) read());
+            }
+            
+            if (!foundOne) {
+                throw makeException("Expected at least one digit after 'E', got '" + (char) peek() + "'");
+            }
+        }
         
-        int number = Integer.parseInt(digits.toString());
-        number *= sign;
+        try {
+            if (fracDigits.length() == 0 && expontentDigits.length() == 0) {
+                long l = Long.parseLong(intDigits.toString());
+                if (l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE) {
+                    result = (int) l;
+                } else {
+                    result = l;
+                }
+                
+            } else {
+                String toParse;
+                if (expontentDigits.length() == 0) {
+                    toParse = intDigits.toString() + '.' + fracDigits.toString();
+                } else {
+                    toParse = intDigits.toString() + '.' + fracDigits.toString() + 'E' + expontentDigits;
+                }
+                result = Double.parseDouble(toParse);
+            }
+        } catch (NumberFormatException e) {
+            throw makeException("Can't parse number " + e.getMessage());
+        }
         
-        return new JsonNumber(number);
+        return new JsonNumber(result);
     }
     
     /**

@@ -64,6 +64,16 @@ public class ParameterizedJsonParserTest {
             new Object[] {"5264", new JsonNumber(5264), "positive integer"},
             new Object[] {"-654564", new JsonNumber(-654564), "negative integer"},
             
+            new Object[] {"6526444543", new JsonNumber(6526444543L), "positive long"},
+            new Object[] {"-8654563454", new JsonNumber(-8654563454L), "negative long"},
+            
+            new Object[] {"53243.433", new JsonNumber(53243.433), "positive double"},
+            new Object[] {"-4545.34", new JsonNumber(-4545.34), "negative double"},
+            
+            new Object[] {"23.4e4", new JsonNumber(234000D), "double with positive exponent"},
+            new Object[] {"-23.4E+4", new JsonNumber(-234000D), "double with explicit positive exponent"},
+            new Object[] {"23.4e-4", new JsonNumber(0.00234), "double with positive exponent"},
+            
             new Object[] {"\"\"", new JsonString(""), "empty string"},
             new Object[] {"\"hello world\"", new JsonString("hello world"), "simple string"},
             
