@@ -10,6 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
     JsonParserTest.class,
+    ParameterizedJsonParserTest.class,
+    ParameterizedJsonParserNegativeTest.class,
     })
 public class AllJsonTests {
 

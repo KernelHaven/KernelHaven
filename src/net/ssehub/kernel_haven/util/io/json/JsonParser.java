@@ -182,11 +182,7 @@ public class JsonParser implements Closeable {
      * @throws IOException If reading the stream fails.
      */
     private @NonNull JsonObject readObject() throws FormatException, IOException {
-        int read = read();
-        
-        if (read != '{') {
-            throw makeException("Expecting '{' at start of object, got " + (char) read);
-        }
+        read(); // read the '{'
         
         JsonObject result = new JsonObject();
         
@@ -224,7 +220,7 @@ public class JsonParser implements Closeable {
         
         skipWhitespace();
         
-        read = read();
+        int read = read();
         if (read != '}') {
             throw makeException("Expecting '}' at end of object, got " + (char) read);
         }
@@ -241,11 +237,7 @@ public class JsonParser implements Closeable {
      * @throws IOException If reading the stream fails.
      */
     private @NonNull JsonList readList() throws FormatException, IOException {
-        int read = read();
-        
-        if (read != '[') {
-            throw makeException("Expecting '[' at start of list, got" + (char) read);
-        }
+        read(); // read the '['
         
         JsonList result = new JsonList();
         
@@ -270,7 +262,7 @@ public class JsonParser implements Closeable {
         
         skipWhitespace();
         
-        read = read();
+        int read = read();
         if (read != ']') {
             throw makeException("Expecting ']' at end of list, got " + (char) read);
         }
@@ -287,18 +279,59 @@ public class JsonParser implements Closeable {
      * @throws IOException If reading the stream fails.
      */
     private @NonNull JsonString readString() throws FormatException, IOException {
-        int read = read();
-        if (read != '"') {
-            throw makeException("Expecting '\"' at start of string, got " + (char) read);
-        }
+        read(); // read the '"'
         
         StringBuilder result = new StringBuilder();
-        while (peek() != '\"') {
-            // TODO escaping
-            result.append((char) read());
+        while (peek() != '\"' && peek() != -1) {
+            int read = read();
+            char unescaped;
+            
+            if (read == '\\') {
+                read = read();
+                
+                switch (read) {
+                case '"':
+                case '\\':
+                case '/':
+                    unescaped = (char) read;
+                    break;
+                case 'b':
+                    unescaped = '\b';
+                    break;
+                case 'n':
+                    unescaped = '\n';
+                    break;
+                case 'r':
+                    unescaped = '\r';
+                    break;
+                case 't':
+                    unescaped = '\t';
+                    break;
+                case 'u':
+                    StringBuilder hex = new StringBuilder();
+                    for (int i = 0; i < 4; i++) {
+                        int hexChar = read();
+                        if (!isHexDigit(hexChar)) {
+                            throw makeException("Expected four hex digits after \\u, got '" + (char) hexChar + "'");
+                        }
+                        hex.append((char) hexChar);
+                    }
+                    // parseInt() won't throw a NumberFormatException, because we checked that only hex digits appear
+                    unescaped = (char) Integer.parseInt(hex.toString(), 16);
+                    break;
+                    
+                default:
+                    throw makeException("Invalid escaped character '" + (char) read + "'");
+                }
+                
+            } else {
+                unescaped = (char) read;
+            }
+            
+            result.append(unescaped);
         }
         
-        read = read();
+        int read = read();
         if (read != '"') {
             throw makeException("Expecting '\"' at end of string, got " + (char) read);
         }
@@ -315,6 +348,21 @@ public class JsonParser implements Closeable {
      */
     private boolean isDigit(int character) {
         return character >= '0' && character <= '9';
+    }
+    
+    /**
+     * Checks if the given character is a hexadecimal digit.
+     * 
+     * @param character The character to check.
+     * 
+     * @return Whether the character is a hexadecimal digit.
+     */
+    private boolean isHexDigit(int character) {
+        // CHECKSTYLE:OFF // "boolean complexity" is too high...
+        return (character >= '0' && character <= '9')
+                || (character >= 'a' && character <= 'f')
+                || (character >= 'A' && character <= 'F');
+        // CHECKSTYLE:ON
     }
     
     /**
@@ -346,7 +394,7 @@ public class JsonParser implements Closeable {
     }
     
     /**
-     * Reads an JSON boolean from the stream. The next characters to read must be "true" or "false".
+     * Reads an JSON boolean from the stream. The next character to read must be 't' or 'f'.
      * 
      * @return The read boolean.
      * 
@@ -359,11 +407,9 @@ public class JsonParser implements Closeable {
             readAndAssert("true");
             result = JsonBoolean.TRUE;
             
-        } else if (peek() == 'f') {
+        } else { // 'f'
             readAndAssert("false");
             result = JsonBoolean.FALSE;
-        } else {
-            throw makeException("Expected either true or false, got " + (char) peek());
         }
         
         return result;
