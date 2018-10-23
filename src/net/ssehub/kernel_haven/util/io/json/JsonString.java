@@ -84,6 +84,9 @@ public class JsonString extends JsonValue<String> {
             case '\t':
                 result.append("\\t");
                 break;
+            case '\f':
+                result.append("\\f");
+                break;
                 
             default:
                 result.append(c);

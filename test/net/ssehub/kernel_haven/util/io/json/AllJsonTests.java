@@ -12,6 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
     JsonParserTest.class,
     ParameterizedJsonParserTest.class,
     ParameterizedJsonParserNegativeTest.class,
+    JsonTestSuite.class,
     })
 public class AllJsonTests {
 

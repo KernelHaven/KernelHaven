@@ -4,9 +4,13 @@ import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
 
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -20,10 +24,14 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * @author Adam
  */
 public class JsonParser implements Closeable {
+    
+    private static final int MAX_NESTING_DEPTH = 1200;
 
     private @NonNull LineNumberReader in;
     
     private @Nullable Integer peek;
+    
+    private int currentNestingDepth;
 
     /**
      * Creates a parser for the given input stream. Internally, the stream will be wrapped in a {@link BufferedReader}.
@@ -32,6 +40,17 @@ public class JsonParser implements Closeable {
      */
     public JsonParser(@NonNull Reader in) {
         this.in = new LineNumberReader(in);
+    }
+    
+    /**
+     * Creates a parser for the given file.
+     * 
+     * @param file The file to read from.
+     * 
+     * @throws IOException If opening the file fails.
+     */
+    public JsonParser(@NonNull File file) throws IOException {
+        this.in = new LineNumberReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
     }
     
     /**
@@ -79,6 +98,26 @@ public class JsonParser implements Closeable {
     }
     
     /**
+     * Increases the nesting depth of lists and objects.
+     * 
+     * @throws FormatException If the new nesting depth exceeds {@link #MAX_NESTING_DEPTH}.
+     */
+    private void increaseNestingDepth() throws FormatException {
+        currentNestingDepth++;
+        
+        if (currentNestingDepth >= MAX_NESTING_DEPTH) {
+            throw makeException("Exceeded maximum nesting depth of " + MAX_NESTING_DEPTH);
+        }
+    }
+    
+    /**
+     * Decreases the nesting depth of lists and objects.
+     */
+    private void decreaseNestingDepth() {
+        currentNestingDepth--;
+    }
+    
+    /**
      * Checks if the given character is a JSON whitespace.
      * 
      * @param character The character to check.
@@ -107,7 +146,7 @@ public class JsonParser implements Closeable {
     }
     
     /**
-     * Parses the stream to a {@link JsonElement}.
+     * Parses the stream to a {@link JsonElement}. This method may only be called once.
      * 
      * @return The parsed JSON.
      * 
@@ -142,11 +181,15 @@ public class JsonParser implements Closeable {
         switch (peek()) {
         
         case '{':
+            increaseNestingDepth();
             result = readObject();
+            decreaseNestingDepth();
             break;
         
         case '[':
+            increaseNestingDepth();
             result = readList();
+            decreaseNestingDepth();
             break;
             
         case 't':
@@ -307,6 +350,9 @@ public class JsonParser implements Closeable {
                 case 't':
                     unescaped = '\t';
                     break;
+                case 'f':
+                    unescaped = '\f';
+                    break;
                 case 'u':
                     StringBuilder hex = new StringBuilder();
                     for (int i = 0; i < 4; i++) {
@@ -325,6 +371,10 @@ public class JsonParser implements Closeable {
                 }
                 
             } else {
+                if (read < 0x20) { // control characters (< 0x20 (space)) are not allowed
+                    throw new FormatException("Unescaped control character " + Integer.toHexString(read));
+                }
+                
                 unescaped = (char) read;
             }
             
@@ -377,46 +427,13 @@ public class JsonParser implements Closeable {
         Number result;
         
         StringBuilder intDigits = new StringBuilder();
-        if (peek() == '-') {
-            intDigits.append((char) read());
-        }
-        while (isDigit(peek())) {
-            intDigits.append((char) read());
-        }
+        readIntDigits(intDigits);
 
         StringBuilder fracDigits = new StringBuilder();
-        if (peek() == '.') {
-            read(); // read '.'
-            
-            boolean foundOne = false;
-            while (isDigit(peek())) {
-                foundOne = true;
-                fracDigits.append((char) read());
-            }
-            
-            if (!foundOne) {
-                throw makeException("Expected at least one digit after '.', got '" + (char) peek() + "'");
-            }
-        }
+        readFracDigits(fracDigits);
         
         StringBuilder expontentDigits = new StringBuilder();
-        if (peek() == 'e' || peek() == 'E') {
-            read(); // read the 'e'
-            
-            if (peek() == '-' || peek() == '+') {
-                expontentDigits.append((char) read());
-            }
-            
-            boolean foundOne = false;
-            while (isDigit(peek())) {
-                foundOne = true;
-                expontentDigits.append((char) read());
-            }
-            
-            if (!foundOne) {
-                throw makeException("Expected at least one digit after 'E', got '" + (char) peek() + "'");
-            }
-        }
+        readExpDigits(expontentDigits);
         
         try {
             if (fracDigits.length() == 0 && expontentDigits.length() == 0) {
@@ -443,6 +460,83 @@ public class JsonParser implements Closeable {
         return new JsonNumber(result);
     }
     
+    /**
+     * Reads the integer digits (plus leading '-').
+     * 
+     * @param intDigits The builder to add the result to.
+     * 
+     * @throws IOException If reading the stream fails.
+     * @throws FormatException If the number is malformed.
+     */
+    private void readIntDigits(StringBuilder intDigits) throws IOException, FormatException {
+        int firstDigitIndex = 0;
+        if (peek() == '-') {
+            intDigits.append((char) read());
+            firstDigitIndex = 1;
+        }
+        while (isDigit(peek())) {
+            intDigits.append((char) read());
+        }
+        if (intDigits.length() > (firstDigitIndex + 1) && intDigits.charAt(firstDigitIndex) == '0') {
+            throw new FormatException("Number may not start with leading 0");
+        }
+        if (intDigits.length() == firstDigitIndex) {
+            throw new FormatException("Got no integer digits");
+        }
+    }
+    
+    /**
+     * Reads the fraction digits, if applicable (i.e. first checks if next char is '.').
+     * 
+     * @param fracDigits The builder to add the result to.
+     * 
+     * @throws IOException If reading the stream fails.
+     * @throws FormatException If the number is malformed.
+     */
+    private void readFracDigits(StringBuilder fracDigits) throws IOException, FormatException {
+        if (peek() == '.') {
+            read(); // read '.'
+            
+            boolean foundOne = false;
+            while (isDigit(peek())) {
+                foundOne = true;
+                fracDigits.append((char) read());
+            }
+            
+            if (!foundOne) {
+                throw makeException("Expected at least one digit after '.', got '" + (char) peek() + "'");
+            }
+        }
+    }
+
+    /**
+     * Reads the exponent digits, if applicable (i.e. first checks if next char is 'e' or 'E').
+     * 
+     * @param expontentDigits The builder to add the result to.
+     * 
+     * @throws IOException If reading the stream fails.
+     * @throws FormatException If the number is malformed.
+     */
+    private void readExpDigits(StringBuilder expontentDigits) throws IOException, FormatException {
+        if (peek() == 'e' || peek() == 'E') {
+            read(); // read the 'e'
+            
+            if (peek() == '-' || peek() == '+') {
+                expontentDigits.append((char) read());
+            }
+            
+            boolean foundOne = false;
+            while (isDigit(peek())) {
+                foundOne = true;
+                expontentDigits.append((char) read());
+            }
+            
+            if (!foundOne) {
+                throw makeException("Expected at least one digit after 'E', got '" + (char) peek() + "'");
+            }
+        }
+    }
+
     /**
      * Reads an JSON boolean from the stream. The next character to read must be 't' or 'f'.
      * 
