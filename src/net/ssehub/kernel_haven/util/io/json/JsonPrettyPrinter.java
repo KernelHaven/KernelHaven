@@ -90,7 +90,7 @@ public class JsonPrettyPrinter implements JsonVisitor<@NonNull String> {
 
     @Override
     public @NonNull String visitString(@NonNull JsonString string) {
-        return '"' + string.getValue() + '"'; // TODO: escaping
+        return '"' + JsonString.jsonEscape(string.getValue()) + '"';
     }
 
     @Override

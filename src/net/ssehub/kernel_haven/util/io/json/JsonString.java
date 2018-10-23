@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.util.io.json;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
@@ -27,8 +29,7 @@ public class JsonString extends JsonValue<String> {
     
     @Override
     public @NonNull String toString() {
-        // TODO: escape
-        return '"' + value + '"';
+        return '"' + jsonEscape(value) + '"';
     }
 
     @Override
@@ -49,6 +50,48 @@ public class JsonString extends JsonValue<String> {
     @Override
     public int hashCode() {
         return value.hashCode();
+    }
+    
+    /**
+     * Escapes the given string so that it is JSON compatible.
+     * 
+     * @param str The string to escape.
+     * 
+     * @return The properly escaped string.
+     */
+    public static @NonNull String jsonEscape(@NonNull String str) {
+        StringBuilder result = new StringBuilder();
+        
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            
+            switch (c) {
+            case '"':
+                result.append("\\\"");
+                break;
+            case '\\':
+                result.append("\\\\");
+                break;
+            case '\b':
+                result.append("\\b");
+                break;
+            case '\n':
+                result.append("\\n");
+                break;
+            case '\r':
+                result.append("\\r");
+                break;
+            case '\t':
+                result.append("\\t");
+                break;
+                
+            default:
+                result.append(c);
+                break;
+            }
+        }
+        
+        return notNull(result.toString());
     }
         
 }
