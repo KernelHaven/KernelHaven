@@ -1,7 +1,14 @@
 package net.ssehub.kernel_haven.variability_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 
+import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.json.JsonElement;
+import net.ssehub.kernel_haven.util.io.json.JsonNumber;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
+import net.ssehub.kernel_haven.util.io.json.JsonString;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -51,6 +58,36 @@ public class SourceLocation {
      */
     public int getLineNumber() {
         return lineNumber;
+    }
+    
+    /**
+     * Creates a JSON representation of this object.
+     * 
+     * @return A JSON of this object.
+     */
+    @NonNull JsonElement toJson() {
+        JsonObject result = new JsonObject();
+        
+        result.putElement("file", new JsonString(notNull(source.getPath())));
+        result.putElement("line", new JsonNumber(lineNumber));
+        
+        return result;
+    }
+    
+    /**
+     * Creates a {@link SourceLocation} from the given JSON.
+     * 
+     * @param obj The JSON object to convert.
+     * 
+     * @return The read {@link SourceLocation}.
+     * 
+     * @throws FormatException If the JSON has an invalid structure.
+     */
+    static @NonNull SourceLocation fromJson(@NonNull JsonObject obj) throws FormatException {
+        if (obj.getSize() != 2) {
+            throw new FormatException("Expected JsonObject with exactly 2 entries, but got " + obj.getSize());
+        }
+        return new SourceLocation(new File(obj.getString("file")), obj.getInt("line"));
     }
 
     @Override

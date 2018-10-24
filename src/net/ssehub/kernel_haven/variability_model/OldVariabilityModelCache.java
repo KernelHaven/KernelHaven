@@ -31,9 +31,13 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.Vari
 /**
  * A cache for permanently saving (and reading) a variability model to a file.
  * 
+ * @deprecated This is the old implementation, kept for converting old caches to the new format. Use
+ * {@link JsonVariabilityModelCache} for the new version.
+ * 
  * @author Adam
  */
-public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
+@Deprecated
+public class OldVariabilityModelCache extends AbstractCache<VariabilityModel> {
     
     private static final @NonNull String HEADER = "KernelHaven Variability Model Cache";
     
@@ -58,7 +62,7 @@ public class VariabilityModelCache extends AbstractCache<VariabilityModel> {
      * @param cacheDir The directory where to store the cache files. This must be a directory, and we must be able to
      *      read and write to it.
      */
-    public VariabilityModelCache(@NonNull File cacheDir) {
+    public OldVariabilityModelCache(@NonNull File cacheDir) {
         cacheFile = new File(cacheDir, "vmCache");
     }
 

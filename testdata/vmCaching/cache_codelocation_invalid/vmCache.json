@@ -1,0 +1,48 @@
+{
+	"version": 5,
+	"descriptor": {
+		"variableType": "BOOLEAN",
+		"constraintFileType": "DIMACS",
+		"attributes": [
+			"SOURCE_LOCATIONS"
+		]
+	},
+	"variables": [
+		{
+			"name": "ALPHA",
+			"type": "tristate",
+			"dimacsNumber": 1,
+			"sourceLocations": [
+				{
+					"file": "foxtrot\\unicorn\\charlie\\kilo.kconfig",
+					"line": 12
+				},
+				{
+					"file": "fruchtkernhafen.kconfig",
+					"line": 42
+				}
+			],
+			"dimacsModuleNumber": 2,
+			"class": "net.ssehub.kernel_haven.variability_model.VariabilityModelCacheTest$TristateVariable"
+		},
+		{
+			"name": "BETA",
+			"type": "tristate",
+			"dimacsNumber": 5,
+			"dimacsModuleNumber": 4,
+			"class": "net.ssehub.kernel_haven.variability_model.VariabilityModelCacheTest$TristateVariable"
+		},
+		{
+			"name": "GAMMA",
+			"type": "bool",
+			"dimacsNumber": 3,
+			"sourceLocations": [
+				{
+					"file": "baumstaemmer.kconfig"
+				}
+			],
+			"class": "net.ssehub.kernel_haven.variability_model.VariabilityVariable"
+		}
+	],
+	"constraintModel": "c 1 ALPHA\nc 5 BETA\nc 3 GAMMA\np cnf 5 7\n-1 5 0\n-3 -1 0\n-5 -3 -1 0 \n-3 5 0\n-5 -1 0\n-3 1 0\n-1 5 0\n"
+}

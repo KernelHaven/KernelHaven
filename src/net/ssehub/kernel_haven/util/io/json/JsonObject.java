@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -45,6 +46,147 @@ public class JsonObject extends JsonElement implements Iterable<Map.Entry<String
      */
     public @Nullable JsonElement getElement(@NonNull String key) {
         return elements.get(key);
+    }
+    
+    /**
+     * Helper method for reading a {@link JsonValue} with a specified type.
+     * 
+     * @param key The key of the element in this map.
+     * @param type The expected type of {@link JsonValue}.
+     * 
+     * @param <T> The type of value to return.
+     * 
+     * @return The value of the {@link JsonValue} with the specified key.
+     * 
+     * @throws FormatException If no element with such a key exists, or has an invalid type.
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    private <T> @NonNull T getValue(@NonNull String key, Class<? extends JsonValue<T>> type) throws FormatException {
+        JsonElement element = getElement(key);
+        if (element == null) {
+            throw new FormatException("No element with key \"" + key + "\"");
+        }
+        
+        if (!(type.isAssignableFrom(element.getClass()))) {
+            throw new FormatException("Expected key \"" + key + "\" with type " + type.getSimpleName() + ", but got "
+                    + element.getClass().getSimpleName());
+        }
+        
+        return ((JsonValue<T>) element).getValue();
+    }
+    
+    /**
+     * Convenience method for reading a string value.
+     * 
+     * @param key The key of the element to read.
+     * 
+     * @return The string value of this element.
+     * 
+     * @throws FormatException If no such element exists, or the element is not a string value.
+     */
+    public @NonNull String getString(@NonNull String key) throws FormatException {
+        return getValue(key, JsonString.class);
+    }
+    
+    /**
+     * Convenience method for reading an integer value.
+     * 
+     * @param key The key of the element to read.
+     * 
+     * @return The integer value of this element.
+     * 
+     * @throws FormatException If no such element exists, or the element is not an integer value.
+     */
+    public int getInt(@NonNull String key) throws FormatException {
+        Number value = getValue(key, JsonNumber.class);
+        if (!(value instanceof Integer)) {
+            throw new FormatException("Expected key \"" + key + "\" with type integer, but got "
+                    + value.getClass().getSimpleName());
+        }
+        return (int) value;
+    }
+    
+    /**
+     * Convenience method for reading a long value.
+     * 
+     * @param key The key of the element to read.
+     * 
+     * @return The long value of this element.
+     * 
+     * @throws FormatException If no such element exists, or the element is not a long value.
+     */
+    public long getLong(@NonNull String key) throws FormatException {
+        Number value = getValue(key, JsonNumber.class);
+        if (!(value instanceof Integer) && !(value instanceof Long)) {
+            throw new FormatException("Expected key \"" + key + "\" with type long, but got "
+                    + value.getClass().getSimpleName());
+        }
+        return value.longValue();
+    }
+    
+    /**
+     * Convenience method for reading a double value.
+     * 
+     * @param key The key of the element to read.
+     * 
+     * @return The double value of this element.
+     * 
+     * @throws FormatException If no such element exists, or the element is not a double value.
+     */
+    public double getDouble(@NonNull String key) throws FormatException {
+        Number value = getValue(key, JsonNumber.class);
+        if (!(value instanceof Double)) {
+            throw new FormatException("Expected key \"" + key + "\" with type double, but got "
+                    + value.getClass().getSimpleName());
+        }
+        return (double) value;
+    }
+    
+    /**
+     * Convenience method for reading a list value.
+     * 
+     * @param key The key of the element to read.
+     * 
+     * @return The list stored under the given key.
+     * 
+     * @throws FormatException If no such element exists, or the element is not a list.
+     */
+    public @NonNull JsonList getList(@NonNull String key) throws FormatException {
+        JsonElement element = getElement(key);
+        if (element == null) {
+            throw new FormatException("No element with key \"" + key + "\"");
+        }
+        
+        if (!(element instanceof JsonList)) {
+            throw new FormatException("Expected key \"" + key + "\" with type JsonList, but got "
+                    + element.getClass().getSimpleName());
+        }
+        
+        return (JsonList) element;
+    }
+    
+    /**
+     * Convenience method for reading an object value.
+     * 
+     * @param key The key of the element to read.
+     * 
+     * @return The object stored under the given key.
+     * 
+     * @throws FormatException If no such element exists, or the element is not an object.
+     */
+    public @NonNull JsonObject getObject(@NonNull String key) throws FormatException {
+        JsonElement element = getElement(key);
+        if (element == null) {
+            throw new FormatException("No element with key \"" + key + "\"");
+        }
+        
+        if (!(element instanceof JsonObject)) {
+            throw new FormatException("Expected key \"" + key + "\" with type JsonObject, but got "
+                    + element.getClass().getSimpleName());
+        }
+        
+        return (JsonObject) element;
     }
     
     /**

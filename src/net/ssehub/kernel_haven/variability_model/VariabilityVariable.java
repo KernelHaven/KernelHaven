@@ -11,6 +11,11 @@ import java.util.Map;
 import java.util.Set;
 
 import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.json.JsonElement;
+import net.ssehub.kernel_haven.util.io.json.JsonList;
+import net.ssehub.kernel_haven.util.io.json.JsonNumber;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
+import net.ssehub.kernel_haven.util.io.json.JsonString;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -35,7 +40,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * <p>
  * <b>Serialization:</b> In order for the serialization mechanism to work, every sub-class needs a constructor
  * with two String parameters (name and type, like {@link #VariabilityVariable(String, String)}). Additionally,
- * sub-classes may override {@link #getSerializationData()} and {@link #setSerializationData(List, Map)} to store
+ * sub-classes may override {@link #toJson()} and {@link #setJsonData(JsonObject, Map)} to store
  * additional data during serialization.
  * </p>
  * 
@@ -223,6 +228,109 @@ public class VariabilityVariable {
     }
     
     /**
+     * Converts this variable into a JSON object. Sub-classes may overwrite this method to add their own data, but
+     * should always call the super method.
+     * 
+     * @return A JSON representation of this object.
+     */
+    protected @NonNull JsonObject toJson() {
+        JsonObject result = new JsonObject();
+        
+        result.putElement("name", new JsonString(name));
+        result.putElement("type", new JsonString(type));
+        result.putElement("dimacsNumber", new JsonNumber(dimacsNumber));
+        
+        List<@NonNull SourceLocation> sourceLocations = this.sourceLocations;
+        if (sourceLocations != null) {
+            JsonList sls = new JsonList();
+            for (SourceLocation sl : sourceLocations) {
+                sls.addElement(sl.toJson());
+            }
+            result.putElement("sourceLocations", sls);
+        }
+        
+        Set<@NonNull VariabilityVariable> variablesUsedInConstraints = this.variablesUsedInConstraints;
+        if (variablesUsedInConstraints != null) {
+            JsonList vars = new JsonList();
+            for (VariabilityVariable var : variablesUsedInConstraints) {
+                vars.addElement(new JsonString(var.getName()));
+            }
+            result.putElement("variablesUsedInConstraints", vars);
+        }
+        
+        Set<@NonNull VariabilityVariable> usedInConstraintsOfOtherVariables = this.usedInConstraintsOfOtherVariables;
+        if (usedInConstraintsOfOtherVariables != null) {
+            JsonList vars = new JsonList();
+            for (VariabilityVariable var : usedInConstraintsOfOtherVariables) {
+                vars.addElement(new JsonString(var.getName()));
+            }
+            result.putElement("usedInConstraintsOfOtherVariables", vars);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Sets the JSON data during de-serialization. This is called after all variables are instantiated, so that
+     * variable name reference can be resolved. Sub-classes may overwrite this method, but should always call the
+     * super method.
+     * 
+     * @param data The JSON data to read.
+     * @param vars All variables of the variability model. Maps variable names to variables.
+     * 
+     * @throws FormatException If the JSON data does not have the correct structure.
+     */
+    protected void setJsonData(@NonNull JsonObject data, Map<@NonNull String, VariabilityVariable> vars)
+            throws FormatException {
+        
+        // name and type are already set in constructor
+        
+        this.dimacsNumber = data.getInt("dimacsNumber");
+        
+        if (data.getElement("sourceLocations") != null) {
+            for (JsonElement element : data.getList("sourceLocations")) {
+                if (!(element instanceof JsonObject)) {
+                    throw new FormatException("Expected JsonObject, but got " + element.getClass().getSimpleName());
+                }
+                
+                addLocation(SourceLocation.fromJson((JsonObject) element));
+            }
+        }
+        
+        if (data.getElement("variablesUsedInConstraints") != null) {
+            Set<@NonNull VariabilityVariable> result = new HashSet<>();
+            for (JsonElement element : data.getList("variablesUsedInConstraints")) {
+                if (!(element instanceof JsonString)) {
+                    throw new FormatException("Expected JsonString, but got " + element.getClass().getSimpleName());
+                }
+                
+                VariabilityVariable var = vars.get(((JsonString) element).getValue());
+                if (var == null) {
+                    throw new FormatException("Unknown variable ");
+                }
+                result.add(var);
+            }
+            setVariablesUsedInConstraints(result);
+        }
+        
+        if (data.getElement("usedInConstraintsOfOtherVariables") != null) {
+            Set<@NonNull VariabilityVariable> result = new HashSet<>();
+            for (JsonElement element : data.getList("usedInConstraintsOfOtherVariables")) {
+                if (!(element instanceof JsonString)) {
+                    throw new FormatException("Expected JsonString, but got " + element.getClass().getSimpleName());
+                }
+                
+                VariabilityVariable var = vars.get(((JsonString) element).getValue());
+                if (var == null) {
+                    throw new FormatException("Unknown variable ");
+                }
+                result.add(var);
+            }
+            setUsedInConstraintsOfOtherVariables(result);
+        }
+    }
+    
+    /**
      * Sets the (extra) data that has previously been serialized with {@link #getSerializationData()}. Overriding
      * methods should read and <b>remove</b> their data from the beginning of the list, and then call the super method. 
      * 
@@ -232,6 +340,7 @@ public class VariabilityVariable {
      * 
      * @throws FormatException If the deserialization data is faulty.
      */
+    @Deprecated
     protected void setSerializationData(@NonNull List<@NonNull String> data,
             @NonNull Map<@NonNull String, VariabilityVariable> variables) throws FormatException {
         
@@ -364,6 +473,7 @@ public class VariabilityVariable {
      * 
      * @return A list of extra data to serialize.
      */
+    @Deprecated
     protected @NonNull List<@NonNull String> getSerializationData() {
         
         List<@NonNull String> result = new LinkedList<>();

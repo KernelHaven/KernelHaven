@@ -1,0 +1,24 @@
+{
+	"version": 5,
+	"descriptor": {
+		"variableType": "BOOLEAN",
+		"constraintFileType": "DIMACS",
+		"attributes": [
+			"SOURCE_LOCATIONS"
+		]
+	},
+	"variables": [
+		{
+			"name": "ALPHA",
+			"type": "tristate",
+			"dimacsNumber": 1,
+			"sourceLocations": [
+				{
+					"file": "foxtrot\\unicorn\\charlie\\kilo.kconfig",
+					"line": 12
+				},
+				{
+					"file": "fruchtkernhafen.kconfig",
+					"line": 42
+				}
+			],

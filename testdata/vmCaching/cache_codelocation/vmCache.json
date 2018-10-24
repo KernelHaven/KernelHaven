@@ -1,0 +1,45 @@
+{
+	"version": 5,
+	"descriptor": {
+		"variableType": "BOOLEAN",
+		"constraintFileType": "UNSPECIFIED",
+		"attributes": []
+	},
+	"variables": [
+		{
+			"name": "ALPHA",
+			"type": "bool",
+			"dimacsNumber": 1,
+			"sourceLocations": [
+				{
+					"file": "path\\to\\code\\code3.c",
+					"line": 42
+				}
+			],
+			"class": "net.ssehub.kernel_haven.variability_model.VariabilityVariable"
+		},
+		{
+			"name": "BETA",
+			"type": "bool",
+			"dimacsNumber": 5,
+			"class": "net.ssehub.kernel_haven.variability_model.VariabilityVariable"
+		},
+		{
+			"name": "GAMMA",
+			"type": "bool",
+			"dimacsNumber": 3,
+			"sourceLocations": [
+				{
+					"file": "path\\to\\code\\code.c",
+					"line": 15
+				},
+				{
+					"file": "path\\to\\code\\code2.c",
+					"line": 11
+				}
+			],
+			"class": "net.ssehub.kernel_haven.variability_model.VariabilityVariable"
+		}
+	],
+	"constraintModel": "c 1 ALPHA\nc 5 BETA\nc 3 GAMMA\np cnf 5 7\n-1 5 0\n-3 -1 0\n-5 -3 -1 0 \n-3 5 0\n-5 -1 0\n-3 1 0\n-1 5 0\n"
+}

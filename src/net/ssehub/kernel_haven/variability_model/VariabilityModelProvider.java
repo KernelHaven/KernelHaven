@@ -31,7 +31,7 @@ public class VariabilityModelProvider extends AbstractProvider<VariabilityModel>
 
     @Override
     protected @NonNull AbstractCache<VariabilityModel> createCache() {
-        return new VariabilityModelCache(config.getValue(DefaultSettings.CACHE_DIR));
+        return new JsonVariabilityModelCache(config.getValue(DefaultSettings.CACHE_DIR));
     }
 
     @Override

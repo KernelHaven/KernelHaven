@@ -22,6 +22,8 @@ import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Util;
+import net.ssehub.kernel_haven.util.io.json.JsonNumber;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.Attribute;
 import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.ConstraintFileType;
@@ -96,6 +98,23 @@ public class VariabilityModelCacheTest {
             super(name, "tristate", dimacsNumber);
             this.moduleNumber = moduleNumber;
         }
+        
+        @Override
+        protected @NonNull JsonObject toJson() {
+            JsonObject result = super.toJson();
+            
+            result.putElement("dimacsModuleNumber", new JsonNumber(moduleNumber));
+            
+            return result;
+        }
+        
+        @Override
+        protected void setJsonData(@NonNull JsonObject data, Map<@NonNull String, VariabilityVariable> vars)
+                throws FormatException {
+            super.setJsonData(data, vars);
+            
+            this.moduleNumber = data.getInt("dimacsModuleNumber");
+        }
 
         @Override
         public void getDimacsMapping(Map<Integer, String> mapping) {
@@ -103,34 +122,6 @@ public class VariabilityModelCacheTest {
             mapping.put(moduleNumber, getName() + "_MODULE");
         }
         
-        @Override
-        protected @NonNull List<@NonNull String> getSerializationData() {
-            List<@NonNull String> data = super.getSerializationData();
-            
-            data.add(0, String.valueOf(moduleNumber));
-            
-            return data;
-        }
-        
-        @Override
-        protected void setSerializationData(@NonNull List<@NonNull String> data,
-                @NonNull Map<@NonNull String, VariabilityVariable> variables) throws FormatException {
-            
-            if (data.isEmpty()) {
-                throw new FormatException("Expected at least one element");
-            }
-            
-            try {
-                this.moduleNumber = Integer.valueOf(data.get(0));
-                data.remove(0);
-                
-            } catch (NumberFormatException e) {
-                throw new FormatException(e);
-            }
-            
-            super.setSerializationData(data, variables);
-        }
-
         @Override
         public String toString() {
             return "TristateVariable [name=" + getName() + ", type=" + getType() + ", dimacsNumber=" + getDimacsNumber()
@@ -185,11 +176,11 @@ public class VariabilityModelCacheTest {
         set.add(gamma);
         VariabilityModel originalVm = new VariabilityModel(dimacsFile, set);
 
-        VariabilityModelCache cache = new VariabilityModelCache(cacheDir);
+        JsonVariabilityModelCache cache = new JsonVariabilityModelCache(cacheDir);
 
         // write
         cache.write(originalVm);
-
+        
         // read
         VariabilityModel readVm = cache.read(new File(""));
 
@@ -232,7 +223,7 @@ public class VariabilityModelCacheTest {
         File cacheLocation = new File("testdata/vmCaching/cache_codelocation/");
         assertThat(cacheLocation.getAbsolutePath() + " does not exist ", cacheLocation.exists(), is(true));
         assertThat(cacheLocation.getAbsolutePath() + " does is no directory", cacheLocation.isDirectory(), is(true));
-        VariabilityModelCache cache = new VariabilityModelCache(cacheLocation);
+        JsonVariabilityModelCache cache = new JsonVariabilityModelCache(cacheLocation);
         VariabilityModel varmodel = cache.read(new File(""));
         assertThat(varmodel, notNullValue());
         Map<String, VariabilityVariable> varMap = varmodel.getVariableMap();
@@ -264,7 +255,8 @@ public class VariabilityModelCacheTest {
      */
     @Test(expected = FormatException.class)
     public void testInvalidClassName() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache_invalid_class"));
+        JsonVariabilityModelCache cache = new JsonVariabilityModelCache(
+                new File("testdata/vmCaching/cache_invalid_class"));
         cache.read(new File(""));
     }
 
@@ -279,7 +271,8 @@ public class VariabilityModelCacheTest {
      */
     @Test(expected = FormatException.class)
     public void testMalFormCSV() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache_invalid_csv"));
+        JsonVariabilityModelCache cache = new JsonVariabilityModelCache(
+                new File("testdata/vmCaching/cache_invalid_json"));
         cache.read(new File(""));
     }
 
@@ -293,7 +286,7 @@ public class VariabilityModelCacheTest {
      */
     @Test()
     public void testEmptyCache() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(new File("testdata/vmCaching/cache_empty"));
+        JsonVariabilityModelCache cache = new JsonVariabilityModelCache(new File("testdata/vmCaching/cache_empty"));
         VariabilityModel vm = cache.read(new File(""));
 
         assertThat(vm, nullValue());
@@ -309,7 +302,7 @@ public class VariabilityModelCacheTest {
      */
     @Test(expected = FormatException.class)
     public void testInvalidCodeLocation() throws FormatException, IOException {
-        VariabilityModelCache cache = new VariabilityModelCache(
+        JsonVariabilityModelCache cache = new JsonVariabilityModelCache(
                 new File("testdata/vmCaching/cache_codelocation_invalid"));
         VariabilityModel vm = cache.read(new File(""));
 
@@ -335,7 +328,7 @@ public class VariabilityModelCacheTest {
         originalVm.getDescriptor().addAttribute(Attribute.CONSTRAINT_USAGE);
         originalVm.getDescriptor().addAttribute(Attribute.SOURCE_LOCATIONS);
         
-        VariabilityModelCache cache = new VariabilityModelCache(cacheDir);
+        JsonVariabilityModelCache cache = new JsonVariabilityModelCache(cacheDir);
 
         // write
         cache.write(originalVm);
@@ -384,7 +377,7 @@ public class VariabilityModelCacheTest {
         originalVm.getDescriptor().setConstraintFileType(ConstraintFileType.DIMACS);
         originalVm.getDescriptor().addAttribute(Attribute.HIERARCHICAL);
 
-        VariabilityModelCache cache = new VariabilityModelCache(cacheDir);
+        JsonVariabilityModelCache cache = new JsonVariabilityModelCache(cacheDir);
         
         // write
         cache.write(originalVm);
@@ -461,7 +454,7 @@ public class VariabilityModelCacheTest {
         originalVm.getDescriptor().setConstraintFileType(ConstraintFileType.DIMACS);
         originalVm.getDescriptor().addAttribute(Attribute.CONSTRAINT_USAGE);
 
-        VariabilityModelCache cache = new VariabilityModelCache(cacheDir);
+        JsonVariabilityModelCache cache = new JsonVariabilityModelCache(cacheDir);
         
         // write
         cache.write(originalVm);

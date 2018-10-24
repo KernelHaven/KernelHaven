@@ -8,6 +8,12 @@ import java.util.Map;
 import java.util.Set;
 
 import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.json.JsonElement;
+import net.ssehub.kernel_haven.util.io.json.JsonList;
+import net.ssehub.kernel_haven.util.io.json.JsonNull;
+import net.ssehub.kernel_haven.util.io.json.JsonNumber;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
+import net.ssehub.kernel_haven.util.io.json.JsonString;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -129,6 +135,68 @@ public class HierarchicalVariable extends VariabilityVariable {
      */
     public int getNestingDepth() {
         return nestingDepth;
+    }
+    
+    @Override
+    protected @NonNull JsonObject toJson() {
+        JsonObject result = super.toJson();
+        
+        if (parent != null) {
+            result.putElement("parent", new JsonString(parent.getName()));
+        } else {
+            result.putElement("parent", JsonNull.INSTANCE);
+        }
+        
+        JsonList childrenList = new JsonList();
+        for (VariabilityVariable child : children) {
+            childrenList.addElement(new JsonString(child.getName()));
+        }
+        result.putElement("children", childrenList);
+        
+        result.putElement("nestingDepth", new JsonNumber(nestingDepth));
+        
+        return result;
+    }
+    
+    @Override
+    protected void setJsonData(@NonNull JsonObject data, Map<@NonNull String, VariabilityVariable> vars)
+            throws FormatException {
+        super.setJsonData(data, vars);
+        
+        if (data.getElement("parent") != JsonNull.INSTANCE) {
+            VariabilityVariable var = vars.get(data.getString("parent"));
+            
+            if (var == null) {
+                throw new FormatException("Unknown variable " + data.getString("parent"));
+            }
+            if (!(var instanceof HierarchicalVariable)) {
+                throw new FormatException(data.getString("parent") + " is not a hierarchical variable");
+                
+            }
+            
+            this.parent = (HierarchicalVariable) var;
+        }
+        
+        for (JsonElement element : data.getList("children")) {
+            if (!(element instanceof JsonString)) {
+                throw new FormatException("Expected JsonString, but got " + element.getClass().getSimpleName());
+            }
+            
+            String varName = ((JsonString) element).getValue();
+            VariabilityVariable var = vars.get(varName);
+            
+            if (var == null) {
+                throw new FormatException("Unknown variable " + varName);
+            }
+            if (!(var instanceof HierarchicalVariable)) {
+                throw new FormatException(varName + " is not a hierarchical variable");
+                
+            }
+            
+            children.add((HierarchicalVariable) var);
+        }
+        
+        this.nestingDepth = data.getInt("nestingDepth");
     }
     
     @Override
