@@ -79,7 +79,8 @@ public class JsonVariabilityModelCache extends AbstractCache<VariabilityModel> {
             }
             
             VariabilityModelDescriptor descriptor = readDescriptor(data.getObject("descriptor"));
-            Map<@NonNull String, VariabilityVariable> vars = readVariables(data.getList("variables"));
+            // TODO: removed null annotations because jacoco report fails with it
+            Map</*@NonNull*/ String, VariabilityVariable> vars = readVariables(data.getList("variables"));
             
             File constraintCopy = File.createTempFile("constraintModel", "");
             constraintCopy.deleteOnExit();
@@ -87,8 +88,10 @@ public class JsonVariabilityModelCache extends AbstractCache<VariabilityModel> {
                 Util.copyStream(new ByteArrayInputStream(data.getString("constraintModel").getBytes()), out);
             }
             
-            result = new VariabilityModel(constraintCopy, vars);
-            result.setDescriptor(descriptor);
+            @SuppressWarnings("null") // TODO: null annotation missing, see above
+            VariabilityModel tmp = new VariabilityModel(constraintCopy, vars);
+            tmp.setDescriptor(descriptor);
+            result = tmp;
         }
         
         return result;

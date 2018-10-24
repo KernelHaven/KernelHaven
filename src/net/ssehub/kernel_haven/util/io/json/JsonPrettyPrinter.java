@@ -22,7 +22,7 @@ public class JsonPrettyPrinter implements JsonVisitor<@NonNull String> {
             
         } else {
             result.append("{\n");
-            for (Map.Entry<String, @NonNull JsonElement> element : object) {
+            for (Map.Entry<String, JsonElement> element : object) {
                 
                 result.append("\t").append(new JsonString(notNull(element.getKey())).accept(this)).append(": ");
                 String[] lines = notNull(element.getValue()).accept(this).split("\n");

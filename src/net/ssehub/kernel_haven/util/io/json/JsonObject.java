@@ -16,9 +16,9 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * 
  * @author Adam
  */
-public class JsonObject extends JsonElement implements Iterable<Map.Entry<String, @NonNull JsonElement>> {
+public class JsonObject extends JsonElement implements Iterable<Map.Entry<String, JsonElement>> {
 
-    private @NonNull Map<String, @NonNull JsonElement> elements;
+    private @NonNull Map<String, JsonElement> elements;
     
     /**
      * Creates an empty {@link JsonObject}.
@@ -208,7 +208,7 @@ public class JsonObject extends JsonElement implements Iterable<Map.Entry<String
     }
     
     @Override
-    public @NonNull Iterator<Map.Entry<String, @NonNull JsonElement>> iterator() {
+    public @NonNull Iterator<Map.Entry<String, JsonElement>> iterator() {
         return notNull(elements.entrySet().iterator());
     }
     
@@ -220,7 +220,7 @@ public class JsonObject extends JsonElement implements Iterable<Map.Entry<String
         if (!elements.isEmpty()) {
             result.append("{ ");
             
-            for (Map.Entry<String, @NonNull JsonElement> entry : this) {
+            for (Map.Entry<String, JsonElement> entry : this) {
                 result.append('"')
                         .append(entry.getKey())
                         .append("\": ")
