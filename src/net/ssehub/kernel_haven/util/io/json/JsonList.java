@@ -14,9 +14,9 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * 
  * @author Adam
  */
-public class JsonList extends JsonElement implements Iterable<net.ssehub.kernel_haven.util.io.json.JsonElement> {
+public class JsonList extends JsonElement implements Iterable<@NonNull JsonElement> {
 
-    private @NonNull List<net.ssehub.kernel_haven.util.io.json.JsonElement> elements;
+    private @NonNull List<@NonNull JsonElement> elements;
     
     /**
      * Creates an empty list.
@@ -80,7 +80,7 @@ public class JsonList extends JsonElement implements Iterable<net.ssehub.kernel_
     }
     
     @Override
-    public @NonNull Iterator<net.ssehub.kernel_haven.util.io.json.JsonElement> iterator() {
+    public @NonNull Iterator<@NonNull JsonElement> iterator() {
         return notNull(elements.iterator());
     }
     
@@ -95,7 +95,7 @@ public class JsonList extends JsonElement implements Iterable<net.ssehub.kernel_
             result.append("[ ");
             
             for (int i = 0; i < elements.size(); i++) {
-                result.append(elements.get(i).toString());
+                result.append(notNull(elements.get(i)).toString());
                 if (i != elements.size() - 1) {
                     result.append(", ");
                 }

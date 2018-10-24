@@ -10,13 +10,14 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
- * A JSON object. Basically a {@link Map}&lt;{@link String}, {@link JsonElement}&gt;.
+ * A JSON object. Basically a {@link Map}&lt;{@link String}, {@link JsonElement}&gt;. Keeps insertion order when
+ * iterating using {@link #iterator()}.
  * 
  * @author Adam
  */
-public class JsonObject extends JsonElement implements Iterable<Map.Entry<String, JsonElement>> {
+public class JsonObject extends JsonElement implements Iterable<Map.Entry<String, @NonNull JsonElement>> {
 
-    private @NonNull Map<String, net.ssehub.kernel_haven.util.io.json.JsonElement> elements;
+    private @NonNull Map<String, @NonNull JsonElement> elements;
     
     /**
      * Creates an empty {@link JsonObject}.
@@ -65,7 +66,7 @@ public class JsonObject extends JsonElement implements Iterable<Map.Entry<String
     }
     
     @Override
-    public @NonNull Iterator<Map.Entry<String, net.ssehub.kernel_haven.util.io.json.JsonElement>> iterator() {
+    public @NonNull Iterator<Map.Entry<String, @NonNull JsonElement>> iterator() {
         return notNull(elements.entrySet().iterator());
     }
     
@@ -77,11 +78,11 @@ public class JsonObject extends JsonElement implements Iterable<Map.Entry<String
         if (!elements.isEmpty()) {
             result.append("{ ");
             
-            for (Map.Entry<String, net.ssehub.kernel_haven.util.io.json.JsonElement> entry : this) {
+            for (Map.Entry<String, @NonNull JsonElement> entry : this) {
                 result.append('"')
                         .append(entry.getKey())
                         .append("\": ")
-                        .append(entry.getValue().toString())
+                        .append(notNull(entry.getValue()).toString())
                         .append(", ");
             }
             result.delete(result.length() - 2, result.length()); // remvoe trailing ", "
