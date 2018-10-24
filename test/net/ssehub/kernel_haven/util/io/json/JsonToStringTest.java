@@ -74,10 +74,10 @@ public class JsonToStringTest {
         assertThat(o.toString(), is("{ \"a\": 42 }"));
         
         o.putElement("", new JsonString("Hello World"));
-        assertThat(o.toString(), is("{ \"\": \"Hello World\", \"a\": 42 }"));
+        assertThat(o.toString(), is("{ \"a\": 42, \"\": \"Hello World\" }"));
         
         o.putElement("b", JsonNull.INSTANCE);
-        assertThat(o.toString(), is("{ \"\": \"Hello World\", \"a\": 42, \"b\": null }"));
+        assertThat(o.toString(), is("{ \"a\": 42, \"\": \"Hello World\", \"b\": null }"));
     }
     
     /**
@@ -148,10 +148,10 @@ public class JsonToStringTest {
         assertThat(o.accept(p), is("{\n\t\"a\": 42\n}"));
         
         o.putElement("", new JsonString("Hello World"));
-        assertThat(o.accept(p), is("{\n\t\"\": \"Hello World\",\n\t\"a\": 42\n}"));
+        assertThat(o.accept(p), is("{\n\t\"a\": 42,\n\t\"\": \"Hello World\"\n}"));
         
         o.putElement("b", JsonNull.INSTANCE);
-        assertThat(o.accept(p), is("{\n\t\"\": \"Hello World\",\n\t\"a\": 42,\n\t\"b\": null\n}"));
+        assertThat(o.accept(p), is("{\n\t\"a\": 42,\n\t\"\": \"Hello World\",\n\t\"b\": null\n}"));
     }
     
    /**

@@ -2,8 +2,8 @@ package net.ssehub.kernel_haven.util.io.json;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -22,7 +22,7 @@ public class JsonObject extends JsonElement implements Iterable<Map.Entry<String
      * Creates an empty {@link JsonObject}.
      */
     public JsonObject() {
-        this.elements = new HashMap<>();
+        this.elements = new LinkedHashMap<>();
     }
     
     /**
