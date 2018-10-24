@@ -68,7 +68,7 @@ public class SourceLocation {
     @NonNull JsonElement toJson() {
         JsonObject result = new JsonObject();
         
-        result.putElement("file", new JsonString(notNull(source.getPath())));
+        result.putElement("file", new JsonString(notNull(source.getPath().replace(File.separatorChar, '/'))));
         result.putElement("line", new JsonNumber(lineNumber));
         
         return result;

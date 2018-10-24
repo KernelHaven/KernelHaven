@@ -14,7 +14,7 @@
 			"dimacsNumber": 1,
 			"sourceLocations": [
 				{
-					"file": "foxtrot\\unicorn\\charlie\\kilo.kconfig",
+					"file": "foxtrot/unicorn/charlie/kilo.kconfig",
 					"line": 12
 				},
 				{

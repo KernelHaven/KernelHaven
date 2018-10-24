@@ -12,7 +12,7 @@
 			"dimacsNumber": 1,
 			"sourceLocations": [
 				{
-					"file": "path\\to\\code\\code3.c",
+					"file": "path/to/code/code3.c",
 					"line": 42
 				}
 			],
@@ -30,11 +30,11 @@
 			"dimacsNumber": 3,
 			"sourceLocations": [
 				{
-					"file": "path\\to\\code\\code.c",
+					"file": "path/to/code/code.c",
 					"line": 15
 				},
 				{
-					"file": "path\\to\\code\\code2.c",
+					"file": "path/to/code/code2.c",
 					"line": 11
 				}
 			],
