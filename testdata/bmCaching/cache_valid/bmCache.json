@@ -1,0 +1,10 @@
+{
+    "version": 2,
+    "descriptor": {
+        "keyType": "FILE"
+    },
+    "presenceConditions": {
+        "dir/file.c": "CONFIG_A || CONFIG_A_MODULE",
+        "dir/file2.c": "1"
+    }
+}

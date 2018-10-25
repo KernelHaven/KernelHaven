@@ -32,8 +32,11 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * 
  * @author Adam
  * @author Kevin
+ * 
+ * @deprecated This is the old, CSV-based build model cache. Use {@link JsonBuildModelCache} instead.
  */
-public class BuildModelCache extends AbstractCache<BuildModel> {
+@Deprecated
+public class OldBuildModelCache extends AbstractCache<BuildModel> {
 
     private @NonNull File cacheFile;
 
@@ -44,7 +47,7 @@ public class BuildModelCache extends AbstractCache<BuildModel> {
      *            The directory where to store the cache files. This must be a
      *            directory, and we must be able to read and write to it.
      */
-    public BuildModelCache(@NonNull File cacheDir) {
+    public OldBuildModelCache(@NonNull File cacheDir) {
         cacheFile = new File(cacheDir, "bmCache");
     }
 

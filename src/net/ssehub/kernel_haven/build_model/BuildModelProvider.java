@@ -31,7 +31,7 @@ public class BuildModelProvider extends AbstractProvider<BuildModel> {
 
     @Override
     public @NonNull AbstractCache<BuildModel> createCache() {
-        return new BuildModelCache(config.getValue(DefaultSettings.CACHE_DIR));
+        return new JsonBuildModelCache(config.getValue(DefaultSettings.CACHE_DIR));
     }
 
     @Override

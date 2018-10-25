@@ -6,12 +6,14 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.build_model.BuildModel.KeyType;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Util;
 import net.ssehub.kernel_haven.util.logic.True;
@@ -63,11 +65,13 @@ public class BuildModelCacheTest {
         originalBm.add(new File("dir/file2.c"), True.INSTANCE);
         
 
-        BuildModelCache cache = new BuildModelCache(cacheDir);
+        JsonBuildModelCache cache = new JsonBuildModelCache(cacheDir);
 
         // write
         cache.write(originalBm);
-
+        
+        System.out.println(Util.readStream(new FileInputStream(new File(cacheDir, "bmCache.json"))));
+        
         // read
         BuildModel readBm = cache.read(new File(""));
 
@@ -89,7 +93,7 @@ public class BuildModelCacheTest {
      */
     @Test(expected = FormatException.class)
     public void testMalFormCsv() throws FormatException, IOException {
-        BuildModelCache cache = new BuildModelCache(new File("testdata/bmCaching/cache1"));
+        JsonBuildModelCache cache = new JsonBuildModelCache(new File("testdata/bmCaching/cache_json_malformed"));
         cache.read(new File(""));
     }
     
@@ -103,8 +107,8 @@ public class BuildModelCacheTest {
      *             wanted.
      */
     @Test(expected = FormatException.class)
-    public void testMalFormFormula() throws FormatException, IOException {
-        BuildModelCache cache = new BuildModelCache(new File("testdata/bmCaching/cache2"));
+    public void testMalformedFormula() throws FormatException, IOException {
+        JsonBuildModelCache cache = new JsonBuildModelCache(new File("testdata/bmCaching/cache_formula_malformed"));
         cache.read(new File(""));
     }
     
@@ -118,10 +122,37 @@ public class BuildModelCacheTest {
      */
     @Test()
     public void testEmptyCache() throws FormatException, IOException {
-        BuildModelCache cache = new BuildModelCache(new File("testdata/bmCaching/cache3"));
+        JsonBuildModelCache cache = new JsonBuildModelCache(new File("testdata/bmCaching/cache3"));
         BuildModel bm = cache.read(new File(""));
         
         assertThat(bm, nullValue());
+    }
+    
+    /**
+     * Tests that the {@link KeyType} is cached correctly.
+     * 
+     * @throws IOException unwanted.
+     * @throws FormatException unwanted.
+     */
+    @Test
+    public void testKeyType() throws IOException, FormatException {
+        JsonBuildModelCache cache = new JsonBuildModelCache(cacheDir);
+        BuildModel originalBm = new BuildModel();
+        
+        originalBm.setKeyType(KeyType.DIRECTORY);
+        cache.write(originalBm);
+        BuildModel readBm = cache.read(new File(""));
+        assertThat(readBm.getKeyType(), is(KeyType.DIRECTORY));
+        
+        originalBm.setKeyType(KeyType.FILE);
+        cache.write(originalBm);
+        readBm = cache.read(new File(""));
+        assertThat(readBm.getKeyType(), is(KeyType.FILE));
+        
+        originalBm.setKeyType(KeyType.FILE_AND_DIRECTORY);
+        cache.write(originalBm);
+        readBm = cache.read(new File(""));
+        assertThat(readBm.getKeyType(), is(KeyType.FILE_AND_DIRECTORY));
     }
     
 }

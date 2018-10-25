@@ -1,2 +1,0 @@
-dir\file2.c;1 || 0
-dir\file.c;(CONFIG_A || CONFIG_A_MODULE) && !CONFIG_C
