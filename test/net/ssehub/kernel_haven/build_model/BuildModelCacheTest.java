@@ -6,7 +6,6 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.junit.After;
@@ -69,8 +68,6 @@ public class BuildModelCacheTest {
 
         // write
         cache.write(originalBm);
-        
-        System.out.println(Util.readStream(new FileInputStream(new File(cacheDir, "bmCache.json"))));
         
         // read
         BuildModel readBm = cache.read(new File(""));
