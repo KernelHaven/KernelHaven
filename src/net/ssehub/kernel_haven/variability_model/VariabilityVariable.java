@@ -252,18 +252,20 @@ public class VariabilityVariable {
         Set<@NonNull VariabilityVariable> variablesUsedInConstraints = this.variablesUsedInConstraints;
         if (variablesUsedInConstraints != null) {
             JsonList vars = new JsonList();
-            for (VariabilityVariable var : variablesUsedInConstraints) {
-                vars.addElement(new JsonString(var.getName()));
-            }
+            variablesUsedInConstraints.stream()
+                    .map((var) -> var.getName())
+                    .sorted()
+                    .forEach((var) -> vars.addElement(new JsonString(var)));
             result.putElement("references", vars);
         }
         
         Set<@NonNull VariabilityVariable> usedInConstraintsOfOtherVariables = this.usedInConstraintsOfOtherVariables;
         if (usedInConstraintsOfOtherVariables != null) {
             JsonList vars = new JsonList();
-            for (VariabilityVariable var : usedInConstraintsOfOtherVariables) {
-                vars.addElement(new JsonString(var.getName()));
-            }
+            usedInConstraintsOfOtherVariables.stream()
+                    .map((var) -> var.getName())
+                    .sorted()
+                    .forEach((var) -> vars.addElement(new JsonString(var)));
             result.putElement("referenced-by", vars);
         }
         
