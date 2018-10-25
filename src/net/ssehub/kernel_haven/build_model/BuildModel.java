@@ -36,7 +36,13 @@ public class BuildModel implements Iterable<@NonNull File> {
          * given file does not have to match a stored key. Instead, the (parent) folders of the input file are checked
          * (recursively).
          */
-        DIRECTORY;
+        DIRECTORY,
+        
+        /**
+         * Combines {@link #FILE} and {@link #DIRECTORY}: First searches for exact file match, then for a matching
+         * parent directory.
+         */
+        FILE_AND_DIRECTORY;
         
     }
 
@@ -97,7 +103,7 @@ public class BuildModel implements Iterable<@NonNull File> {
         if (keyType == KeyType.FILE) {
             result = fileFormulaMapping.get(file);
             
-        } else { // DIRECTORY
+        } else if (keyType == KeyType.DIRECTORY) {
             result = null;
             File parent = file.getParentFile();
             
@@ -105,8 +111,30 @@ public class BuildModel implements Iterable<@NonNull File> {
                 result = fileFormulaMapping.get(parent);
                 parent = parent.getParentFile();
             }
+            
+        } else { // FILE_AND_DIRECTORY
+            File f = file;
+            result = null;
+            while (result == null && f != null) {
+                result = fileFormulaMapping.get(f);
+                f = f.getParentFile();
+            }
+            
         }
         return result;
+    }
+    
+    /**
+     * Returns the stored presence condition for the given key. As opposed to {@link #getPc(File)}, this does <b>not</b>
+     * adapt to the {@link KeyType}; this method directly returns what is stored inside the internal map at the given
+     * key.
+     * 
+     * @param key The key to query.
+     * 
+     * @return The stored PC for that key.
+     */
+    public @Nullable Formula getPcDirect(@NonNull File key) {
+        return fileFormulaMapping.get(key);
     }
 
     /**
