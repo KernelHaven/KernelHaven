@@ -200,6 +200,7 @@ public class HierarchicalVariable extends VariabilityVariable {
     }
     
     @Override
+    @Deprecated
     protected @NonNull List<@NonNull String> getSerializationData() {
         List<@NonNull String> result = super.getSerializationData();
         
@@ -223,6 +224,7 @@ public class HierarchicalVariable extends VariabilityVariable {
     }
     
     @Override
+    @Deprecated
     protected void setSerializationData(@NonNull List<@NonNull String> data,
             @NonNull Map<@NonNull String, VariabilityVariable> variables) throws FormatException {
         
