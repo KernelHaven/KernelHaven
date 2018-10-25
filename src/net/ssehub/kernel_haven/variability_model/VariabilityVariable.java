@@ -255,7 +255,7 @@ public class VariabilityVariable {
             for (VariabilityVariable var : variablesUsedInConstraints) {
                 vars.addElement(new JsonString(var.getName()));
             }
-            result.putElement("variablesUsedInConstraints", vars);
+            result.putElement("references", vars);
         }
         
         Set<@NonNull VariabilityVariable> usedInConstraintsOfOtherVariables = this.usedInConstraintsOfOtherVariables;
@@ -264,7 +264,7 @@ public class VariabilityVariable {
             for (VariabilityVariable var : usedInConstraintsOfOtherVariables) {
                 vars.addElement(new JsonString(var.getName()));
             }
-            result.putElement("usedInConstraintsOfOtherVariables", vars);
+            result.putElement("referenced-by", vars);
         }
         
         return result;
@@ -297,32 +297,34 @@ public class VariabilityVariable {
             }
         }
         
-        if (data.getElement("variablesUsedInConstraints") != null) {
+        if (data.getElement("references") != null) {
             Set<@NonNull VariabilityVariable> result = new HashSet<>();
-            for (JsonElement element : data.getList("variablesUsedInConstraints")) {
+            for (JsonElement element : data.getList("references")) {
                 if (!(element instanceof JsonString)) {
                     throw new FormatException("Expected JsonString, but got " + element.getClass().getSimpleName());
                 }
                 
-                VariabilityVariable var = vars.get(((JsonString) element).getValue());
+                String varName = ((JsonString) element).getValue();
+                VariabilityVariable var = vars.get(varName);
                 if (var == null) {
-                    throw new FormatException("Unknown variable ");
+                    throw new FormatException("Unknown variable " + varName);
                 }
                 result.add(var);
             }
             setVariablesUsedInConstraints(result);
         }
         
-        if (data.getElement("usedInConstraintsOfOtherVariables") != null) {
+        if (data.getElement("referenced-by") != null) {
             Set<@NonNull VariabilityVariable> result = new HashSet<>();
-            for (JsonElement element : data.getList("usedInConstraintsOfOtherVariables")) {
+            for (JsonElement element : data.getList("referenced-by")) {
                 if (!(element instanceof JsonString)) {
                     throw new FormatException("Expected JsonString, but got " + element.getClass().getSimpleName());
                 }
-                
-                VariabilityVariable var = vars.get(((JsonString) element).getValue());
+
+                String varName = ((JsonString) element).getValue();
+                VariabilityVariable var = vars.get(varName);
                 if (var == null) {
-                    throw new FormatException("Unknown variable ");
+                    throw new FormatException("Unknown variable " + varName);
                 }
                 result.add(var);
             }
