@@ -143,7 +143,6 @@ public class OrderPreservingParallelizer<Input, Output> {
     private void start(int numThreads) {
         // spawn worker threads
         for (int i = 0; i < numThreads; i++) {
-            Logger.get().logDebug("Spawning thread " + (i + 1)); // TODO
             new Thread(() -> {
                 
                 WorkPackage wp;
@@ -151,10 +150,9 @@ public class OrderPreservingParallelizer<Input, Output> {
                     wp.execute();
                     done.add(wp);
                 }
-            
+                
                 synchronized (OrderPreservingParallelizer.this) {
                     numWorkersDone++;
-                    Logger.get().logDebug("Worker " + numWorkersDone + " done"); // TODO
                     if (numWorkersDone == numThreads) {
                         done.end();
                     }
