@@ -3,6 +3,8 @@ package net.ssehub.kernel_haven.util;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.Queue;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -58,6 +60,8 @@ public class BlockingQueue<T> implements Iterable<T> {
 
     private Queue<T> internalQueue;
     
+    private Semaphore semaphore;
+    
     private boolean end;
 
     /**
@@ -65,6 +69,7 @@ public class BlockingQueue<T> implements Iterable<T> {
      */
     public BlockingQueue() {
         internalQueue = new ArrayDeque<>();
+        semaphore = new Semaphore(0, true);
     }
     
     /**
@@ -100,24 +105,27 @@ public class BlockingQueue<T> implements Iterable<T> {
     public @Nullable T get(long timeout) throws TimeoutException {
         T result = null;
         
-        synchronized (internalQueue) {
-            if (internalQueue.isEmpty() && !end) {
-                boolean waitSuccess = false;
-                while (!waitSuccess) {
-                    try {
-                        internalQueue.wait(timeout);
-                        waitSuccess = true;
-                    } catch (InterruptedException e) {
-                    }
+        boolean gotPermit = false;
+        boolean waitSuccess = false;
+        while (!waitSuccess) {
+            try {
+                if (timeout > 0) {
+                    gotPermit = semaphore.tryAcquire(1, timeout, TimeUnit.MILLISECONDS);
+                } else {
+                    semaphore.acquire();
+                    gotPermit = true;
                 }
+                waitSuccess = true;
+            } catch (InterruptedException e) {
             }
-            
+        }
+        
+        if (!gotPermit) {
+            throw new TimeoutException();
+        }
+        
+        synchronized (internalQueue) {
             result = internalQueue.poll();
-            
-            if (result == null && !end) {
-                throw new TimeoutException();
-            }
-            
         }
         
         return result;
@@ -156,24 +164,30 @@ public class BlockingQueue<T> implements Iterable<T> {
     public @Nullable T peek(long timeout) throws TimeoutException {
         T result = null;
         
-        synchronized (internalQueue) {
-            if (internalQueue.isEmpty() && !end) {
-                boolean waitSuccess = false;
-                while (!waitSuccess) {
-                    try {
-                        internalQueue.wait(timeout);
-                        waitSuccess = true;
-                    } catch (InterruptedException e) {
-                    }
+        boolean gotPermit = false;
+        boolean waitSuccess = false;
+        while (!waitSuccess) {
+            try {
+                if (timeout > 0) {
+                    gotPermit = semaphore.tryAcquire(1, timeout, TimeUnit.MILLISECONDS);
+                } else {
+                    semaphore.acquire();
+                    gotPermit = true;
                 }
+                waitSuccess = true;
+            } catch (InterruptedException e) {
             }
-            
+        }
+        
+        if (!gotPermit) {
+            throw new TimeoutException();
+        }
+        
+        
+        synchronized (internalQueue) {
             result = internalQueue.peek();
             
-            if (result == null && !end) {
-                throw new TimeoutException();
-            }
-            
+            semaphore.release(); // release after we peeked the element
         }
         
         return result;
@@ -194,7 +208,7 @@ public class BlockingQueue<T> implements Iterable<T> {
             }
             
             internalQueue.add(element);
-            internalQueue.notifyAll();
+            semaphore.release();
         }
     }
     
@@ -205,7 +219,7 @@ public class BlockingQueue<T> implements Iterable<T> {
     public void end() {
         synchronized (internalQueue) {
             end = true;
-            internalQueue.notifyAll();
+            semaphore.release(Integer.MAX_VALUE / 2);
         }
     }
     
