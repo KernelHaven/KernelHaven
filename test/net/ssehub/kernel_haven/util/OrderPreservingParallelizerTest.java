@@ -19,7 +19,7 @@ public class OrderPreservingParallelizerTest {
     /**
      * Tests whether a single element is processed correctly in one worker thread.
      */
-    @Test
+    @Test(timeout = 5000)
     public void testSingleElementInOneThread() {
         List<Character> result = new LinkedList<>();
         
@@ -39,7 +39,7 @@ public class OrderPreservingParallelizerTest {
     /**
      * Tests whether multiple elements are processed correctly in one worker thread.
      */
-    @Test
+    @Test(timeout = 5000)
     public void testMultipleElementsInOneThread() {
         List<Character> result = new LinkedList<>();
         
@@ -62,7 +62,7 @@ public class OrderPreservingParallelizerTest {
     /**
      * Tests whether many elements are processed correctly in one worker thread.
      */
-    @Test
+    @Test(timeout = 5000)
     public void testManyElementsInOneThread() {
         List<Character> result = new LinkedList<>();
         
@@ -86,7 +86,7 @@ public class OrderPreservingParallelizerTest {
     /**
      * Tests whether a single element is processed correctly in multiple worker threads.
      */
-    @Test
+    @Test(timeout = 5000)
     public void testSingleElementInMultipleThreads() {
         List<Character> result = new LinkedList<>();
         
@@ -106,7 +106,7 @@ public class OrderPreservingParallelizerTest {
     /**
      * Tests whether multiple elements are processed correctly in multiple worker threads.
      */
-    @Test
+    @Test(timeout = 5000)
     public void testMultipleElementsInMultipleThreads() {
         List<Character> result = new LinkedList<>();
         
@@ -129,7 +129,7 @@ public class OrderPreservingParallelizerTest {
     /**
      * Tests whether many elements are processed correctly in multiple worker threads.
      */
-    @Test
+    @Test(timeout = 5000)
     public void testManyElementsInMultiplehreads() {
         List<Character> result = new LinkedList<>();
         
@@ -153,7 +153,7 @@ public class OrderPreservingParallelizerTest {
     /**
      * Tests whether results that are calculated out-of-order will be passed in correct order to the consumer.
      */
-    @Test
+    @Test(timeout = 5000)
     public void testOutOfOrderInOneThread() {
         List<Character> result = new LinkedList<>();
         
@@ -184,7 +184,7 @@ public class OrderPreservingParallelizerTest {
     /**
      * Tests whether results that are calculated out-of-order will be passed in correct order to the consumer.
      */
-    @Test
+    @Test(timeout = 5000)
     public void testOutOfOrderInManyThreads() {
         List<Character> result = new LinkedList<>();
         
@@ -215,7 +215,7 @@ public class OrderPreservingParallelizerTest {
     /**
      * Tests whether calling add after end correctly throws an exception.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalStateException.class, timeout = 5000)
     public void testAddAfterEnd() {
         OrderPreservingParallelizer<Integer, Character> parallelizer = new OrderPreservingParallelizer<>(
             (input) -> (char) ('a' + input - 1),    // function: turn 1 into 'a', 2 into 'b', etc. 
@@ -231,7 +231,7 @@ public class OrderPreservingParallelizerTest {
     /**
      * Tests whether trying to create this with 0 threads fails.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class, timeout = 5000)
     public void test0NumberOfThreads() {
         new OrderPreservingParallelizer<Integer, Character>(
             (input) -> (char) ('a' + input - 1),    // function: turn 1 into 'a', 2 into 'b', etc. 
@@ -243,7 +243,7 @@ public class OrderPreservingParallelizerTest {
     /**
      * Tests whether trying to create this with -2 threads fails.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class, timeout = 5000)
     public void testNegativeNumberOfThreads() {
         new OrderPreservingParallelizer<Integer, Character>(
             (input) -> (char) ('a' + input - 1),    // function: turn 1 into 'a', 2 into 'b', etc. 

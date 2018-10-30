@@ -23,7 +23,7 @@ public class BlockingQueueTest {
      * 
      * @throws InterruptedException unwanted.
      */
-    @Test
+    @Test(timeout = 5000)
     public void testSync() throws InterruptedException {
         BlockingQueue<String> queue = new BlockingQueue<>();
         
@@ -74,7 +74,7 @@ public class BlockingQueueTest {
     /**
      * Tests the basic queue operations.
      */
-    @Test
+    @Test(timeout = 5000)
     public void testBasic() {
         BlockingQueue<String> queue = new BlockingQueue<>();
         
@@ -101,7 +101,7 @@ public class BlockingQueueTest {
      * 
      * @throws TimeoutException wanted.
      */
-    @Test(expected = TimeoutException.class)
+    @Test(expected = TimeoutException.class, timeout = 1000)
     public void testTimeoutException() throws TimeoutException {
         BlockingQueue<String> queue = new BlockingQueue<>();
         queue.get(200);

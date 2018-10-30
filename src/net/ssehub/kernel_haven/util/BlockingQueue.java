@@ -1,6 +1,6 @@
 package net.ssehub.kernel_haven.util;
 
-import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.maybeNull;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -126,7 +126,7 @@ public class BlockingQueue<T> {
         }
         
         synchronized (internalQueue) {
-            result = notNull(internalQueue.poll());
+            result = maybeNull(internalQueue.poll());
         }
         
         return result;
@@ -185,7 +185,7 @@ public class BlockingQueue<T> {
         }
         
         synchronized (internalQueue) {
-            result = notNull(internalQueue.peek());
+            result = maybeNull(internalQueue.peek());
             
             semaphore.release(); // release after we peeked the element
         }
