@@ -34,6 +34,10 @@ public class ProgressLogger implements Closeable {
     
     private @NonNull AtomicBoolean finished;
     
+    private long toStart;
+    
+    private long tEnd;
+    
     /**
      * Creates a  new {@link ProgressLogger} for the given task, without an estimated number of items to process.
      * 
@@ -57,6 +61,8 @@ public class ProgressLogger implements Closeable {
         this.finished = new AtomicBoolean(false);
         
         LOG_THREAD.add(this);
+        
+        this.toStart = System.currentTimeMillis();
     }
     
     /**
@@ -81,6 +87,7 @@ public class ProgressLogger implements Closeable {
      */
     @Override
     public void close() {
+        this.tEnd = System.currentTimeMillis();
         this.finished.set(true);
         
         // trigger a new log round
@@ -149,13 +156,16 @@ public class ProgressLogger implements Closeable {
                         int current = logger.processedItems.get();
                         boolean done = logger.finished.get();
                         
+                        String finishedStr = "";
+                        if (done) {
+                            finishedStr = " and finished in " + Util.formatDurationMs(logger.tEnd - logger.toStart);
+                        }
+                        
                         if (max >= 0) {
-                            lines.add(String.format("%s processed %d of %d (%d%%) items"
-                                    + (done ? " and is done" : ""),
-                                    logger.task, current, max, (int) (current * 100.0 / max)));
+                            lines.add(String.format("%s processed %d of %d (%d%%) items%s",
+                                    logger.task, current, max, (int) (current * 100.0 / max), finishedStr));
                         } else {
-                            lines.add(String.format("%s processed %d items" + (done ? " and is done" : ""),
-                                    logger.task, current));
+                            lines.add(String.format("%s processed %d items%s", logger.task, current, finishedStr));
                         }
 
                         // only remove after we logged the final message

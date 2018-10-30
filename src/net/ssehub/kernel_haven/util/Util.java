@@ -544,6 +544,39 @@ public final class Util {
     }
     
     /**
+     * Formats a duration of time to a human-readable string.
+     * 
+     * @param duration The duration in milliseconds.
+     * 
+     * @return A human-readable string.
+     */
+    public static @NonNull String formatDurationMs(long duration) {
+        boolean negated = false;
+        if (duration < 0) {
+            duration *= -1;
+            negated = true;
+        }
+        
+        long hours = duration / (60 * 60 * 1000);
+        long minutes = (duration % (60 * 60 * 1000)) / (60 * 1000);
+        long seconds = (duration % (60 * 1000)) / 1000;
+        long millis = duration % 1000;
+        
+        String result;
+        if (hours != 0) {
+            result = notNull(String.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, millis));
+        } else {
+            result = notNull(String.format("%02d:%02d.%03d", minutes, seconds, millis));
+        }
+        
+        if (negated) {
+            result = '-' + result;
+        }
+        
+        return result;
+    }
+    
+    /**
      * Platforms / operating sytems.
      * 
      * @author El-Sharkawy

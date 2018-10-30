@@ -423,6 +423,29 @@ public class UtilTest {
     }
     
     /**
+     * Tests the {@link Util#formatDurationMs(long)} method.
+     */
+    @Test
+    public void testFormatDurationMs() {
+        assertThat(Util.formatDurationMs(5), is("00:00.005"));
+        assertThat(Util.formatDurationMs(30), is("00:00.030"));
+        assertThat(Util.formatDurationMs(700), is("00:00.700"));
+        assertThat(Util.formatDurationMs(5000), is("00:05.000"));
+        assertThat(Util.formatDurationMs(56846), is("00:56.846"));
+        assertThat(Util.formatDurationMs(62000), is("01:02.000"));
+        assertThat(Util.formatDurationMs(156000), is("02:36.000"));
+        assertThat(Util.formatDurationMs(1320000), is("22:00.000"));
+        assertThat(Util.formatDurationMs(43200000), is("12:00:00.000"));
+        assertThat(Util.formatDurationMs(43200000 + 56846), is("12:00:56.846"));
+        assertThat(Util.formatDurationMs(43200000 + 62000), is("12:01:02.000"));
+        assertThat(Util.formatDurationMs(4204002060L), is("1167:46:42.060"));
+        
+        assertThat(Util.formatDurationMs(-56846), is("-00:56.846"));
+        assertThat(Util.formatDurationMs(-156000), is("-02:36.000"));
+        assertThat(Util.formatDurationMs(-(43200000 + 56846)), is("-12:00:56.846"));
+    }
+    
+    /**
      * Tests the determineOS() method.
      */
     @Test
