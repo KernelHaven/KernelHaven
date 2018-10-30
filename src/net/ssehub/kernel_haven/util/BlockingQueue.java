@@ -1,7 +1,8 @@
 package net.ssehub.kernel_haven.util;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.util.ArrayDeque;
-import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -56,11 +57,11 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * @author Alice
  *
  */
-public class BlockingQueue<T> implements Iterable<T> {
+public class BlockingQueue<T> {
 
-    private Queue<T> internalQueue;
+    private @NonNull Queue<@NonNull T> internalQueue;
     
-    private Semaphore semaphore;
+    private @NonNull Semaphore semaphore;
     
     private boolean end;
 
@@ -125,7 +126,7 @@ public class BlockingQueue<T> implements Iterable<T> {
         }
         
         synchronized (internalQueue) {
-            result = internalQueue.poll();
+            result = notNull(internalQueue.poll());
         }
         
         return result;
@@ -183,9 +184,8 @@ public class BlockingQueue<T> implements Iterable<T> {
             throw new TimeoutException();
         }
         
-        
         synchronized (internalQueue) {
-            result = internalQueue.peek();
+            result = notNull(internalQueue.peek());
             
             semaphore.release(); // release after we peeked the element
         }
@@ -244,22 +244,6 @@ public class BlockingQueue<T> implements Iterable<T> {
         synchronized (internalQueue) {
             return internalQueue.size();
         }
-    }
-
-    @Override
-    public @NonNull Iterator<T> iterator() {
-        return new Iterator<T>() {
-
-            @Override
-            public boolean hasNext() {
-                return peek() != null;
-            }
-
-            @Override
-            public T next() {
-                return get();
-            }
-        };
     }
     
 }

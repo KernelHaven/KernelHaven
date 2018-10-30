@@ -69,7 +69,8 @@ public class TestAnalysisComponentProvider<T> extends AnalysisTestHelperWrapper<
     }
         @Override
     protected void execute() {
-        for (T element : this.data) {
+        T element;
+        while ((element = this.data.get()) != null) {
             addResult(element);
         }
     }
