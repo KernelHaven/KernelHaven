@@ -72,9 +72,36 @@ public class FormulaSimplifier {
      * @return A new formula equal to the original, but simplified.
      */
     public static @NonNull Formula defaultSimplifier(@NonNull Formula formula) {
-        Formula result;
-        if (formula instanceof Negation) {
-            Formula nested = simplify(((Negation) formula).getFormula());
+        return DefaultSimplifierVisitor.INSTANCE.visit(formula);
+    }
+    
+    /**
+     * The visitor implementing {@link FormulaSimplifier#defaultSimplifier(Formula)}.
+     */
+    private static class DefaultSimplifierVisitor implements IFormulaVisitor<@NonNull Formula> {
+
+        static final @NonNull DefaultSimplifierVisitor INSTANCE = new DefaultSimplifierVisitor();
+        
+        @Override
+        public @NonNull Formula visitFalse(@NonNull False falseConstant) {
+            return falseConstant;
+        }
+
+        @Override
+        public @NonNull Formula visitTrue(@NonNull True trueConstant) {
+            return trueConstant;
+        }
+
+        @Override
+        public @NonNull Formula visitVariable(@NonNull Variable variable) {
+            return variable;
+        }
+
+        @Override
+        public @NonNull Formula visitNegation(@NonNull Negation formula) {
+            Formula nested = formula.getFormula().accept(this);
+            
+            Formula result;
             
             if (nested instanceof Negation) {
                 result = ((Negation) nested).getFormula();
@@ -86,12 +113,23 @@ public class FormulaSimplifier {
                 result = True.INSTANCE;
                 
             } else {
-                result = new Negation(nested);
+                // only create new instance if nested actually changed
+                if (formula.getFormula() != nested) {
+                    result = new Negation(nested);
+                } else {
+                    result = formula;
+                }
             }
             
-        } else if (formula instanceof Disjunction) {
-            Formula left = simplify(((Disjunction) formula).getLeft());
-            Formula right = simplify(((Disjunction) formula).getRight());
+            return result;
+        }
+
+        @Override
+        public @NonNull Formula visitDisjunction(@NonNull Disjunction formula) {
+            Formula left = formula.getLeft().accept(this);
+            Formula right = formula.getRight().accept(this);
+            
+            Formula result;
             
             if (left instanceof True || right instanceof True) {
                 result = True.INSTANCE;
@@ -109,12 +147,23 @@ public class FormulaSimplifier {
                 result = left;
                 
             } else {
-                result = new Disjunction(left, right);
+                // only create new instance if nested actually changed
+                if (formula.getLeft() != left || formula.getRight() != right) {
+                    result = new Disjunction(left, right);
+                } else {
+                    result = formula;
+                }
             }
             
-        } else if (formula instanceof Conjunction) {
-            Formula left = simplify(((Conjunction) formula).getLeft());
-            Formula right = simplify(((Conjunction) formula).getRight());
+            return result;
+        }
+
+        @Override
+        public @NonNull Formula visitConjunction(@NonNull Conjunction formula) {
+            Formula left = formula.getLeft().accept(this);
+            Formula right = formula.getRight().accept(this);
+            
+            Formula result;
             
             if (left instanceof False || right instanceof False) {
                 result = False.INSTANCE;
@@ -132,13 +181,17 @@ public class FormulaSimplifier {
                 result = left;
                 
             } else {
-                result = new Conjunction(left, right);
+                // only create new instance if nested actually changed
+                if (formula.getLeft() != left || formula.getRight() != right) {
+                    result = new Conjunction(left, right);
+                } else {
+                    result = formula;
+                }
             }
             
-        } else {
-            result = formula;
+            return result;
         }
-        return result;
+        
     }
     
 }
