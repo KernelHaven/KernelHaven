@@ -9,6 +9,7 @@ import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.util.BlockingQueue;
 import net.ssehub.kernel_haven.util.Logger;
+import net.ssehub.kernel_haven.util.Util;
 import net.ssehub.kernel_haven.util.io.ITableCollection;
 import net.ssehub.kernel_haven.util.io.ITableWriter;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -258,7 +259,7 @@ public abstract class AnalysisComponent<O> {
         if (!isInternalHelperComponent()) {
             long duration = System.currentTimeMillis() - tStart;
             LOGGER.logInfo("Analysis component " + getClass().getSimpleName() + " done",
-                    "Execution took " + duration + "ms");
+                    "Execution took " + Util.formatDurationMs(duration));
         }
         
         results.end();
