@@ -92,17 +92,18 @@ public class PerformanceProbe implements Closeable {
                 String context = notNull(entry.getKey());
                 long[] values = new long[entry.getValue().size()];
                 
-                double avg = 0;
+                long sum = 0;
                 int i = 0;
                 for (Long l : notNull(entry.getValue())) {
                     values[i++] = l;
-                    avg += (l - avg) / i;
+                    sum += l;
                 }
                 
                 Arrays.sort(values);
                 
                 long min = values[0];
                 long max = values[values.length - 1];
+                double avg = (double) sum / values.length;
                 double med;
                 if (values.length % 2 == 0) {
                     med = (values[values.length / 2 - 1] + values[values.length / 2]) / 2.0;
@@ -117,6 +118,7 @@ public class PerformanceProbe implements Closeable {
                 lines.add("        Med: " + Util.formatDurationMs((long) med / 1000000));
                 lines.add("        Avg: " + Util.formatDurationMs((long) avg / 1000000));
                 lines.add("        Max: " + Util.formatDurationMs(max / 1000000));
+                lines.add("        Sum: " + Util.formatDurationMs(sum / 1000000));
             });
         
         
