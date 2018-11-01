@@ -24,6 +24,7 @@ import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.provider.AbstractExtractor;
 import net.ssehub.kernel_haven.util.KernelHavenClassLoader;
 import net.ssehub.kernel_haven.util.Logger;
+import net.ssehub.kernel_haven.util.PerformanceProbe;
 import net.ssehub.kernel_haven.util.PipelineArchiver;
 import net.ssehub.kernel_haven.util.StaticClassLoader;
 import net.ssehub.kernel_haven.util.ZipArchive;
@@ -463,6 +464,8 @@ public class PipelineConfigurator {
                 LOGGER.logInfo(logLines.toArray(new String[0]));
             }
         }
+        
+        PerformanceProbe.printResult();
         
         LOGGER.logStatus("Pipeline done; exiting...");
     }
