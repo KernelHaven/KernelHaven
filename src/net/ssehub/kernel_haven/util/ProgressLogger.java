@@ -34,7 +34,7 @@ public class ProgressLogger implements Closeable {
     
     private @NonNull AtomicBoolean finished;
     
-    private long toStart;
+    private long tStart;
     
     private long tEnd;
     
@@ -62,7 +62,7 @@ public class ProgressLogger implements Closeable {
         
         LOG_THREAD.add(this);
         
-        this.toStart = System.currentTimeMillis();
+        this.tStart = System.currentTimeMillis();
     }
     
     /**
@@ -158,7 +158,7 @@ public class ProgressLogger implements Closeable {
                         
                         String finishedStr = "";
                         if (done) {
-                            finishedStr = " and finished in " + Util.formatDurationMs(logger.tEnd - logger.toStart);
+                            finishedStr = " and finished in " + Util.formatDurationMs(logger.tEnd - logger.tStart);
                         }
                         
                         if (max >= 0) {
