@@ -79,6 +79,10 @@ public class PerformanceProbe implements Closeable {
      * Aggregates the measurements per context and prints it to the {@link Logger}.
      */
     public static void printResult() {
+        if (measures.size() == 0) {
+            return;
+        }
+        
         List<@NonNull String> lines = new ArrayList<>(measures.size() * 5 + 1);
         lines.add("Performance Measurements:");
         
