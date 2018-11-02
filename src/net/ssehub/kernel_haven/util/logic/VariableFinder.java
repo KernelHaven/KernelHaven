@@ -14,7 +14,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  */
 public class VariableFinder implements IFormulaVisitor<Set<Variable>> {
 
-    private @NonNull Set<Variable> variables = new HashSet<>();
+    private @NonNull Set<@NonNull Variable> variables = new HashSet<>();
     
     @Override
     public @NonNull Set<Variable> visitFalse(@NonNull False falseConstant) {
@@ -58,7 +58,7 @@ public class VariableFinder implements IFormulaVisitor<Set<Variable>> {
      * Returns the distinct list of involved variables.
      * @return The variables, which are involved in the visited {@link Formula}.
      */
-    public @NonNull Set<Variable> getVariables() {
+    public @NonNull Set<@NonNull Variable> getVariables() {
         return variables;
     }
     
