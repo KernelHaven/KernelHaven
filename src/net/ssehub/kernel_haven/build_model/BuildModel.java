@@ -41,6 +41,14 @@ public class BuildModel implements Iterable<@NonNull File> {
             super(file.getPath());
         }
         
+        @Override
+        public File getParentFile() {
+            File parent = super.getParentFile();
+            if (parent != null) {
+                parent = new InternalFile(parent);
+            }
+            return parent;
+        }
         
         @Override
         public int hashCode() {
@@ -173,8 +181,6 @@ public class BuildModel implements Iterable<@NonNull File> {
      * @return Whether a formula for the given file is contained.
      */
     public boolean containsFile(@NonNull File file) {
-        file = new InternalFile(file);
-        
         return getPc(file) != null;
     }
     
