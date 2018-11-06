@@ -160,7 +160,8 @@ public class JsonBuildModelCache extends AbstractCache<BuildModel> {
         bm.forEach(files::add);
         
         files.stream()
-                .sorted()
+                .sorted((f1, f2) -> f1.getPath().replace(File.separatorChar, '/').compareTo(
+                        f2.getPath().replace(File.separatorChar, '/')))
                 .forEach((file) -> {
                     result.putElement(notNull(file.getPath().replace(File.separatorChar, '/')),
                             new JsonString(notNull(bm.getPcDirect(file)).toString()));
