@@ -52,7 +52,12 @@ public class BuildModel implements Iterable<@NonNull File> {
         
         @Override
         public int hashCode() {
-            return super.hashCode();
+            String path = getPath();
+            if (!(descriptor.isCaseSensitive())) {
+                path = path.toLowerCase();
+            }
+            
+            return path.hashCode();
         }
         
         @Override
