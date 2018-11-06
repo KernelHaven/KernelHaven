@@ -10,7 +10,7 @@ import java.io.File;
 
 import org.junit.Test;
 
-import net.ssehub.kernel_haven.build_model.BuildModel.KeyType;
+import net.ssehub.kernel_haven.build_model.BuildModelDescriptor.KeyType;
 import net.ssehub.kernel_haven.util.logic.Formula;
 
 /**
@@ -27,7 +27,7 @@ public class BuildModelTest {
     @Test
     public void testKeyTypeFile() {
         BuildModel bm = new BuildModel();
-        assertThat(bm.getKeyType(), is(KeyType.FILE)); // default value
+        assertThat(bm.getDescriptor().getKeyType(), is(KeyType.FILE)); // default value
         
         File dir = new File("dir");
         File file = new File(dir, "test.c");
@@ -62,9 +62,9 @@ public class BuildModelTest {
     @Test
     public void testKeyTypeDirectory() {
         BuildModel bm = new BuildModel();
-        bm.setKeyType(KeyType.DIRECTORY);
+        bm.getDescriptor().setKeyType(KeyType.DIRECTORY);
         
-        assertThat(bm.getKeyType(), is(KeyType.DIRECTORY));
+        assertThat(bm.getDescriptor().getKeyType(), is(KeyType.DIRECTORY));
         
         File dir = new File("dir");
         File file = new File(dir, "test.c");
@@ -99,9 +99,9 @@ public class BuildModelTest {
     @Test
     public void testKeyTypeDirectoryDeepNesting() {
         BuildModel bm = new BuildModel();
-        bm.setKeyType(KeyType.DIRECTORY);
+        bm.getDescriptor().setKeyType(KeyType.DIRECTORY);
         
-        assertThat(bm.getKeyType(), is(KeyType.DIRECTORY));
+        assertThat(bm.getDescriptor().getKeyType(), is(KeyType.DIRECTORY));
         
         Formula pc1 = or("A", "B");
         Formula pc2 = and("A", "C");
@@ -130,9 +130,9 @@ public class BuildModelTest {
     @Test
     public void testKeyTypeFileAndDirectory() {
         BuildModel bm = new BuildModel();
-        bm.setKeyType(KeyType.FILE_AND_DIRECTORY);
+        bm.getDescriptor().setKeyType(KeyType.FILE_AND_DIRECTORY);
         
-        assertThat(bm.getKeyType(), is(KeyType.FILE_AND_DIRECTORY));
+        assertThat(bm.getDescriptor().getKeyType(), is(KeyType.FILE_AND_DIRECTORY));
         
         File dir = new File("dir");
         File file = new File(dir, "test.c");
@@ -167,9 +167,9 @@ public class BuildModelTest {
     @Test
     public void testKeyTypeFileAndDirectoryDeepNesting() {
         BuildModel bm = new BuildModel();
-        bm.setKeyType(KeyType.FILE_AND_DIRECTORY);
+        bm.getDescriptor().setKeyType(KeyType.FILE_AND_DIRECTORY);
         
-        assertThat(bm.getKeyType(), is(KeyType.FILE_AND_DIRECTORY));
+        assertThat(bm.getDescriptor().getKeyType(), is(KeyType.FILE_AND_DIRECTORY));
         
         Formula pc1 = or("A", "B");
         Formula pc2 = and("A", "C");

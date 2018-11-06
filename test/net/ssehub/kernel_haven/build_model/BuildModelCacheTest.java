@@ -12,7 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.ssehub.kernel_haven.build_model.BuildModel.KeyType;
+import net.ssehub.kernel_haven.build_model.BuildModelDescriptor.KeyType;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Util;
 import net.ssehub.kernel_haven.util.logic.True;
@@ -136,20 +136,20 @@ public class BuildModelCacheTest {
         JsonBuildModelCache cache = new JsonBuildModelCache(cacheDir);
         BuildModel originalBm = new BuildModel();
         
-        originalBm.setKeyType(KeyType.DIRECTORY);
+        originalBm.getDescriptor().setKeyType(KeyType.DIRECTORY);
         cache.write(originalBm);
         BuildModel readBm = cache.read(new File(""));
-        assertThat(readBm.getKeyType(), is(KeyType.DIRECTORY));
+        assertThat(readBm.getDescriptor().getKeyType(), is(KeyType.DIRECTORY));
         
-        originalBm.setKeyType(KeyType.FILE);
+        originalBm.getDescriptor().setKeyType(KeyType.FILE);
         cache.write(originalBm);
         readBm = cache.read(new File(""));
-        assertThat(readBm.getKeyType(), is(KeyType.FILE));
+        assertThat(readBm.getDescriptor().getKeyType(), is(KeyType.FILE));
         
-        originalBm.setKeyType(KeyType.FILE_AND_DIRECTORY);
+        originalBm.getDescriptor().setKeyType(KeyType.FILE_AND_DIRECTORY);
         cache.write(originalBm);
         readBm = cache.read(new File(""));
-        assertThat(readBm.getKeyType(), is(KeyType.FILE_AND_DIRECTORY));
+        assertThat(readBm.getDescriptor().getKeyType(), is(KeyType.FILE_AND_DIRECTORY));
     }
     
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.ssehub.kernel_haven.build_model.BuildModelDescriptor.KeyType;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -19,34 +20,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  */
 public class BuildModel implements Iterable<@NonNull File> {
     
-    /**
-     * Different types of keys that a {@link BuildModel} may store. The {@link BuildModel#getPc(File)} method
-     * automatically adapts to the correct querying method.
-     */
-    public static enum KeyType {
-        
-        /**
-         * The {@link BuildModel} contains specific files as keys. When using {@link BuildModel#getPc(File)}, the given
-         * file has to match exactly with a stored key. This is the default.
-         */
-        FILE,
-        
-        /**
-         * The {@link BuildModel} contains directory entries as keys. When using {@link BuildModel#getPc(File)}, the
-         * given file does not have to match a stored key. Instead, the (parent) folders of the input file are checked
-         * (recursively).
-         */
-        DIRECTORY,
-        
-        /**
-         * Combines {@link #FILE} and {@link #DIRECTORY}: First searches for exact file match, then for a matching
-         * parent directory.
-         */
-        FILE_AND_DIRECTORY;
-        
-    }
-
-    private @NonNull KeyType keyType;
+    private @NonNull BuildModelDescriptor descriptor;
     
     private @NonNull Map<@NonNull File, Formula> fileFormulaMapping;
 
@@ -55,26 +29,25 @@ public class BuildModel implements Iterable<@NonNull File> {
      */
     public BuildModel() {
         fileFormulaMapping = new HashMap<>();
-        this.keyType = KeyType.FILE;
+        this.descriptor = new BuildModelDescriptor();
     }
     
     /**
-     * Returns the {@link KeyType} of this {@link BuildModel}.
+     * Returns the {@link BuildModelDescriptor} for this build model.
      * 
-     * @return The {@link KeyType} of this {@link BuildModel}.
+     * @return A descriptor for this model.
      */
-    public @NonNull KeyType getKeyType() {
-        return keyType;
+    public @NonNull BuildModelDescriptor getDescriptor() {
+        return descriptor;
     }
     
     /**
-     * Sets the {@link KeyType} for this {@link BuildModel}. This method should only be called by the extractor
-     * that created this {@link BuildModel}.
+     * Overrides the descriptor for this model.
      * 
-     * @param keyType The new {@link KeyType} for this {@link BuildModel}.
+     * @param descriptor The new descriptor.
      */
-    public void setKeyType(@NonNull KeyType keyType) {
-        this.keyType = keyType;
+    void setDescriptor(@NonNull BuildModelDescriptor descriptor) {
+        this.descriptor = descriptor;
     }
 
     /**
@@ -92,7 +65,7 @@ public class BuildModel implements Iterable<@NonNull File> {
 
     /**
      * Retrieves the presence condition for a given file. Automatically uses the correct query method according to
-     * {@link #getKeyType()}.
+     * {@link BuildModelDescriptor#getKeyType()}.
      * 
      * @param file The file to get the presence condition for.
      * @return The presence condition of the given file, or <code>null</code> if the given file does not appear in this
@@ -100,10 +73,10 @@ public class BuildModel implements Iterable<@NonNull File> {
      */
     public @Nullable Formula getPc(@NonNull File file) {
         Formula result;
-        if (keyType == KeyType.FILE) {
+        if (descriptor.getKeyType() == KeyType.FILE) {
             result = fileFormulaMapping.get(file);
             
-        } else if (keyType == KeyType.DIRECTORY) {
+        } else if (descriptor.getKeyType() == KeyType.DIRECTORY) {
             result = null;
             File parent = file.getParentFile();
             

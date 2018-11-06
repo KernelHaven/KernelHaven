@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.ssehub.kernel_haven.build_model.BuildModel.KeyType;
+import net.ssehub.kernel_haven.build_model.BuildModelDescriptor.KeyType;
 import net.ssehub.kernel_haven.provider.AbstractCache;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.io.json.JsonElement;
@@ -73,18 +73,32 @@ public class JsonBuildModelCache extends AbstractCache<BuildModel> {
                         + VERSION);
             }
             
-            JsonObject descriptor = data.getObject("descriptor");
-            KeyType keyType;
-            try {
-                keyType = KeyType.valueOf(descriptor.getString("keyType"));
-            } catch (IllegalArgumentException e) {
-                throw new FormatException(e);
-            }
-            
             result = new BuildModel();
-            result.setKeyType(keyType);
+            
+            result.setDescriptor(jsonToDescriptor(data.getObject("descriptor")));
             
             jsonToPcs(data.getObject("presenceConditions"), result);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Reads the {@link BuildModelDescriptor} from the given JSON.
+     * 
+     * @param json The JSON object that stores the {@link BuildModelDescriptor}.
+     * 
+     * @return The converted {@link BuildModelDescriptor}.
+     * 
+     * @throws FormatException If the JSON is malformed.
+     */
+    private @NonNull BuildModelDescriptor jsonToDescriptor(@NonNull JsonObject json) throws FormatException {
+        BuildModelDescriptor result = new BuildModelDescriptor();
+        
+        try {
+            result.setKeyType(KeyType.valueOf(json.getString("keyType")));
+        } catch (IllegalArgumentException e) {
+            throw new FormatException(e);
         }
         
         return result;
@@ -135,15 +149,27 @@ public class JsonBuildModelCache extends AbstractCache<BuildModel> {
         
         mainJson.putElement("version", new JsonNumber(VERSION));
         
-        JsonObject descriptor = new JsonObject();
-        descriptor.putElement("keyType", new JsonString(notNull(bm.getKeyType().name())));
-        mainJson.putElement("descriptor", descriptor);
-        
+        mainJson.putElement("descriptor", descriptorToJson(bm.getDescriptor()));
         mainJson.putElement("presenceConditions", pcsToJson(bm));
         
         try (BufferedWriter out = new BufferedWriter(new FileWriter(cacheFile))) {
             out.write(mainJson.accept(new JsonPrettyPrinter()));
         }
+    }
+    
+    /**
+     * Converts the given {@link BuildModelDescriptor} to a JSON object.
+     * 
+     * @param descriptor The descriptor to convert.
+     * 
+     * @return A JSON representation of the descriptor.
+     */
+    private @NonNull JsonObject descriptorToJson(@NonNull BuildModelDescriptor descriptor) {
+        JsonObject result = new JsonObject();
+        
+        result.putElement("keyType", new JsonString(notNull(descriptor.getKeyType().name())));
+        
+        return result;
     }
     
     /**
