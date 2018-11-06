@@ -90,6 +90,19 @@ public class JsonObject extends JsonElement implements Iterable<Map.Entry<String
     }
     
     /**
+     * Convenience method for reading a boolean value.
+     * 
+     * @param key The key of the element to read.
+     * 
+     * @return The boolean value of this element.
+     * 
+     * @throws FormatException If no such element exists, or the element is not a boolean value.
+     */
+    public boolean getBoolean(@NonNull String key) throws FormatException {
+        return getValue(key, JsonBoolean.class);
+    }
+    
+    /**
      * Convenience method for reading an integer value.
      * 
      * @param key The key of the element to read.

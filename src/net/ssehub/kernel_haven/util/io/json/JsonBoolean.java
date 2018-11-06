@@ -23,6 +23,17 @@ public class JsonBoolean extends JsonValue<Boolean> {
     private JsonBoolean(boolean value) {
         this.value = value;
     }
+    
+    /**
+     * Returns a {@link JsonBoolean} with the given boolean value.
+     * 
+     * @param value The value to get the {@link JsonBoolean} for.
+     * 
+     * @return The correct {@link JsonBoolean} instance.
+     */
+    public static @NonNull JsonBoolean get(boolean value) {
+        return value ? TRUE : FALSE;
+    }
 
     @Override
     public @NonNull Boolean getValue() {

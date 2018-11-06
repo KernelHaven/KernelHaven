@@ -14,6 +14,7 @@ import java.util.Map;
 import net.ssehub.kernel_haven.build_model.BuildModelDescriptor.KeyType;
 import net.ssehub.kernel_haven.provider.AbstractCache;
 import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.json.JsonBoolean;
 import net.ssehub.kernel_haven.util.io.json.JsonElement;
 import net.ssehub.kernel_haven.util.io.json.JsonNumber;
 import net.ssehub.kernel_haven.util.io.json.JsonObject;
@@ -101,6 +102,8 @@ public class JsonBuildModelCache extends AbstractCache<BuildModel> {
             throw new FormatException(e);
         }
         
+        result.setCaseSensitive(json.getBoolean("caseSensitive"));
+        
         return result;
     }
     
@@ -168,6 +171,7 @@ public class JsonBuildModelCache extends AbstractCache<BuildModel> {
         JsonObject result = new JsonObject();
         
         result.putElement("keyType", new JsonString(notNull(descriptor.getKeyType().name())));
+        result.putElement("caseSensitive", JsonBoolean.get(descriptor.isCaseSensitive()));
         
         return result;
     }

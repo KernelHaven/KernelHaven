@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import net.ssehub.kernel_haven.build_model.BuildModelDescriptor.KeyType;
 import net.ssehub.kernel_haven.util.logic.Formula;
@@ -23,7 +24,40 @@ public class BuildModel implements Iterable<@NonNull File> {
     private @NonNull BuildModelDescriptor descriptor;
     
     private @NonNull Map<@NonNull File, Formula> fileFormulaMapping;
+    
+    /**
+     * A custom {@link File} that does equality checks based on the case-sensitive setting in the descriptor.
+     */
+    private class InternalFile extends File {
 
+        private static final long serialVersionUID = -2222438911242442999L;
+
+        /**
+         * Converts the given file to an {@link InternalFile}.
+         * 
+         * @param file The file that this object should represent.
+         */
+        public InternalFile(File file) {
+            super(file.getPath());
+        }
+        
+        
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+        
+        @Override
+        public boolean equals(Object obj) {
+            boolean result = false;
+            if ((obj != null) && (obj instanceof File)) {
+                result = filesEqual(this, (File) obj);
+            }
+            return result;
+        }
+        
+    }
+    
     /**
      * Instantiates a new and empty BuildModel. The key type is {@link KeyType#FILE}.
      */
@@ -60,6 +94,8 @@ public class BuildModel implements Iterable<@NonNull File> {
      *            the presence condition. Must not be null.
      */
     public void add(@NonNull File file, @NonNull Formula pc) {
+        file = new InternalFile(file);
+        
         fileFormulaMapping.put(file, pc);
     }
 
@@ -72,6 +108,8 @@ public class BuildModel implements Iterable<@NonNull File> {
      *      {@link BuildModel}.
      */
     public @Nullable Formula getPc(@NonNull File file) {
+        file = new InternalFile(file);
+        
         Formula result;
         if (descriptor.getKeyType() == KeyType.FILE) {
             result = fileFormulaMapping.get(file);
@@ -107,6 +145,8 @@ public class BuildModel implements Iterable<@NonNull File> {
      * @return The stored PC for that key.
      */
     public @Nullable Formula getPcDirect(@NonNull File key) {
+        key = new InternalFile(key);
+        
         return fileFormulaMapping.get(key);
     }
 
@@ -119,6 +159,8 @@ public class BuildModel implements Iterable<@NonNull File> {
      * @return Whether the key is contained.
      */
     public boolean containsKey(@NonNull File file) {
+        file = new InternalFile(file);
+        
         return fileFormulaMapping.containsKey(file);
     }
     
@@ -131,6 +173,8 @@ public class BuildModel implements Iterable<@NonNull File> {
      * @return Whether a formula for the given file is contained.
      */
     public boolean containsFile(@NonNull File file) {
+        file = new InternalFile(file);
+        
         return getPc(file) != null;
     }
     
@@ -139,6 +183,8 @@ public class BuildModel implements Iterable<@NonNull File> {
      * @param file the given file. Must not be null.
      */
     public void delete(@NonNull File file) {
+        file = new InternalFile(file);
+        
         fileFormulaMapping.remove(file);
     }
     
@@ -150,7 +196,45 @@ public class BuildModel implements Iterable<@NonNull File> {
     public int getSize() {
         return fileFormulaMapping.size();
     }
-
+    
+    /**
+     * Checks if the two given files are equal. Considers {@link BuildModelDescriptor#isCaseSensitive()}.
+     * 
+     * @param file1 The first file.
+     * @param file2 The second file.
+     * 
+     * @return Whether the two files are equal.
+     */
+    public boolean filesEqual(@NonNull File file1, @NonNull File file2) {
+        File f1 = file1;
+        File f2 = file2;
+        
+        BiFunction<String, String, Boolean> checker;
+        if (descriptor.isCaseSensitive()) {
+            checker = String::equals;
+        } else {
+            checker = String::equalsIgnoreCase;
+        }
+        
+        // check if all path elements match
+        boolean equal = true;
+        while (equal && f1 != null && f2 != null) {
+            if (!checker.apply(f1.getName(), f2.getName())) {
+                equal = false;
+            } else {
+                f1 = f1.getParentFile();
+                f2 = f2.getParentFile();
+            }
+        }
+        
+        if (f1 != null || f2 != null) {
+            // paths haven not same length
+            equal = false;
+        }
+        
+        return equal;
+    }
+    
     @Override
     public @NonNull Iterator<@NonNull File> iterator() {
         return notNull(fileFormulaMapping.keySet().iterator());

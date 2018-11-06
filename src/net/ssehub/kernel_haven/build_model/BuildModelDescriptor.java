@@ -37,14 +37,17 @@ public class BuildModelDescriptor {
         FILE_AND_DIRECTORY;
         
     }
-
+    
     private @NonNull KeyType keyType;
+    
+    private boolean caseSensitive;
     
     /**
      * Creates a descriptor for a standard {@link BuildModel} (all standard values).
      */
     public BuildModelDescriptor() {
         this.keyType = KeyType.FILE;
+        this.caseSensitive = true;
     }
     
     /**
@@ -64,6 +67,26 @@ public class BuildModelDescriptor {
      */
     public void setKeyType(@NonNull KeyType keyType) {
         this.keyType = keyType;
+    }
+    
+    /**
+     * Whether the matching of filenames in the {@link BuildModel} is case-sensitive or not. Default: <code>true</code>.
+     * 
+     * @return Whether to match case-sensitive.
+     */
+    public boolean isCaseSensitive() {
+        return caseSensitive;
+    }
+    
+    /**
+     * Sets whether the matching of filenames in the {@link BuildModel} should be case-sensitive or not.
+     * Default: <code>true</code>. This method should only be called by the extractor that created the
+     * {@link BuildModel}.
+     * 
+     * @param caseSensitive The new case-sensitive value.
+     */
+    public void setCaseSensitive(boolean caseSensitive) {
+        this.caseSensitive = caseSensitive;
     }
 
 }

@@ -1,7 +1,8 @@
 {
     "version": 2,
     "descriptor": {
-        "keyType": "FILE"
+        "keyType": "FILE",
+		"caseSensitive": true
     },
     "presenceConditions": {
         "dir/file.c": "|| CONFIG_A_MODULE",
