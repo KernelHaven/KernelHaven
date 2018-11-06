@@ -238,8 +238,8 @@ public class BuildModel implements Iterable<@NonNull File> {
             }
         }
         
-        if (f1 != null || f2 != null) {
-            // paths haven not same length
+        if (equal && (f1 != null || f2 != null)) {
+            // paths have not same length
             equal = false;
         }
         
