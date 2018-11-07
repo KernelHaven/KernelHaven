@@ -1,7 +1,7 @@
 package net.ssehub.kernel_haven.test_utils;
 
-import static org.junit.Assume.assumeTrue;
-
+import org.junit.AssumptionViolatedException;
+import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
@@ -29,10 +29,15 @@ abstract class AbstractOsSpecificTestRunner extends BlockJUnit4ClassRunner {
     @Override
     public void run(RunNotifier notifier) {
         OSType os = Util.determineOS();
-        boolean isSupported = isSupportedOS(os);
-        assumeTrue(this.getTestClass().getName() + " skipped because of wrong OS used: " + os, isSupported);
         
-        super.run(notifier);            
+        if (!isSupportedOS(os)) {
+            notifier.fireTestAssumptionFailed(new Failure(super.getDescription(),
+                    new AssumptionViolatedException(this.getTestClass().getName()
+                            + " skipped because of wrong OS used: " + os)));
+        } else {
+            super.run(notifier);            
+            
+        }
     }
     
     /**
