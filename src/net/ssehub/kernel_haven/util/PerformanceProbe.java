@@ -72,7 +72,7 @@ public class PerformanceProbe implements Closeable {
      * @return Whether to measure the given context.
      */
     private static boolean isEnabled(@NonNull String context) {
-        return true; // TODO: implement mechanism to disable contexts
+        return false; // TODO: implement mechanism to disable contexts
     }
     
     /**
