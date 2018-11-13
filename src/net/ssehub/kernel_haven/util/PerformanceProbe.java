@@ -6,13 +6,13 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
-import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * <p>
@@ -26,11 +26,13 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  *  
  * @author Adam
  */
-public class PerformanceProbe implements Closeable {
+public final class PerformanceProbe implements Closeable {
     
-    private static @NonNull Map<String, Deque<@NonNull Long>> measures = new ConcurrentHashMap<>(500);
+    private static @NonNull Map<String, Deque<@NonNull PerformanceProbe>> probes = new ConcurrentHashMap<>(500);
     
-    private @Nullable Deque<@NonNull Long> resultList;
+    private @NonNull String context;
+    
+    private @NonNull Map<String, Double> extraData;
     
     private long tStart;
     
@@ -42,14 +44,20 @@ public class PerformanceProbe implements Closeable {
      * @param context The context that is measured.
      */
     public PerformanceProbe(@NonNull String context) {
-        if (isEnabled(context)) {
-            Deque<@NonNull Long> newList = new ConcurrentLinkedDeque<>();
-            this.resultList = measures.putIfAbsent(context, newList);
-            if (this.resultList == null) {
-                this.resultList = newList;
-            }
-            tStart = System.nanoTime();
-        }
+        this.context = context;
+        this.extraData = new HashMap<>();
+        this.tStart = System.nanoTime();
+    }
+    
+    /**
+     * Adds an additional bit of data to this probe. This additional data will be aggregated based on the context of 
+     * this probe and the given type. Each performance probe may only contain one data point per type.
+     * 
+     * @param type The type of data that is provided. 
+     * @param value The additional data.
+     */
+    public void addExtraData(@NonNull String type, double value) {
+        this.extraData.put(type, value);
     }
     
     /**
@@ -57,11 +65,25 @@ public class PerformanceProbe implements Closeable {
      */
     @Override
     public void close() {
-        tEnd = System.nanoTime();
+        this.tEnd = System.nanoTime();
         
-        if (resultList != null) {
-            resultList.add(tEnd - tStart);
+        if (isEnabled(context)) {
+            Deque<@NonNull PerformanceProbe> newList = new ConcurrentLinkedDeque<>();
+            Deque<@NonNull PerformanceProbe> list = probes.putIfAbsent(context, newList);
+            if (list == null) {
+                list = newList;
+            }
+            list.add(this);
         }
+    }
+    
+    /**
+     * Returns the elapsed time of this probe, in nanoseconds.
+     * 
+     * @return The elapsed time.
+     */
+    private long getElapsed() {
+        return tEnd - tStart;
     }
     
     /**
@@ -72,53 +94,101 @@ public class PerformanceProbe implements Closeable {
      * @return Whether to measure the given context.
      */
     private static boolean isEnabled(@NonNull String context) {
-        return false; // TODO: implement mechanism to disable contexts
+        return true; // TODO: implement mechanism to disable contexts
+    }
+    
+    /**
+     * Aggregates the given list of doubles and adds the result strings to the given string list.
+     * 
+     * @param list The list of doubles to aggregate.
+     * @param lines The list to add the result lines to.
+     */
+    private static void aggregateList(@NonNull List<Double> list, @NonNull List<@NonNull String> lines) {
+        double[] values = new double[list.size()];
+        
+        double sum = 0;
+        int i = 0;
+        for (Double d : list) {
+            values[i++] = d;
+            sum += d;
+        }
+
+        Arrays.sort(values);
+        
+        double min = values[0];
+        double max = values[values.length - 1];
+        double avg = sum / values.length;
+        double med;
+        if (values.length % 2 == 0) {
+            med = (values[values.length / 2 - 1] + values[values.length / 2]) / 2.0;
+        } else {
+            med = values[values.length / 2];
+        }
+        
+        lines.add("          Num Measures: " + values.length);
+        lines.add("          Min: " + min);
+        lines.add("          Med: " + med);
+        lines.add("          Avg: " + avg);
+        lines.add("          Max: " + max);
+        lines.add("          Sum: " + sum);
     }
     
     /**
      * Aggregates the measurements per context and prints it to the {@link Logger}.
      */
     public static void printResult() {
-        if (measures.size() == 0) {
+        if (probes.isEmpty()) {
             return;
         }
         
-        List<@NonNull String> lines = new ArrayList<>(measures.size() * 5 + 1);
+        List<@NonNull String> lines = new ArrayList<>(probes.size() * 20 + 1);
         lines.add("Performance Measurements:");
         
-        measures.entrySet().stream()
+        probes.entrySet().stream()
             .sorted((e1, e2) -> e1.getKey().compareToIgnoreCase(e2.getKey()))
             .forEach((entry) -> {
                 String context = notNull(entry.getKey());
-                long[] values = new long[entry.getValue().size()];
+                long[] timeValues = new long[entry.getValue().size()];
                 
-                long sum = 0;
+                Map<String, ArrayList<Double>> extraData = new HashMap<>();
+                
+                long tSum = 0;
                 int i = 0;
-                for (Long l : notNull(entry.getValue())) {
-                    values[i++] = l;
-                    sum += l;
+                for (PerformanceProbe p : notNull(entry.getValue())) {
+                    timeValues[i++] = p.getElapsed();
+                    tSum += p.getElapsed();
+                    
+                    for (Map.Entry<String, Double> ed : p.extraData.entrySet()) {
+                        extraData.putIfAbsent(ed.getKey(), new ArrayList<>());
+                        extraData.get(ed.getKey()).add(ed.getValue());
+                    }
                 }
                 
-                Arrays.sort(values);
+                Arrays.sort(timeValues);
                 
-                long min = values[0];
-                long max = values[values.length - 1];
-                double avg = (double) sum / values.length;
-                double med;
-                if (values.length % 2 == 0) {
-                    med = (values[values.length / 2 - 1] + values[values.length / 2]) / 2.0;
+                long tMin = timeValues[0];
+                long tMax = timeValues[timeValues.length - 1];
+                double tAvg = (double) tSum / timeValues.length;
+                double tMed;
+                if (timeValues.length % 2 == 0) {
+                    tMed = (timeValues[timeValues.length / 2 - 1] + timeValues[timeValues.length / 2]) / 2.0;
                 } else {
-                    med = values[values.length / 2];
+                    tMed = timeValues[timeValues.length / 2];
                 }
                 
-                Logger.get().logDebug(context + " (in nanoseconds): " + entry.getValue());
+                lines.add("  " + context);
+                lines.add("      Time:");
+                lines.add("          Num Measures: " + timeValues.length);
+                lines.add("          Min: " + Util.formatDurationMs(tMin / 1000000));
+                lines.add("          Med: " + Util.formatDurationMs((long) tMed / 1000000));
+                lines.add("          Avg: " + Util.formatDurationMs((long) tAvg / 1000000));
+                lines.add("          Max: " + Util.formatDurationMs(tMax / 1000000));
+                lines.add("          Sum: " + Util.formatDurationMs(tSum / 1000000));
                 
-                lines.add("    " + context);
-                lines.add("        Min: " + Util.formatDurationMs(min / 1000000));
-                lines.add("        Med: " + Util.formatDurationMs((long) med / 1000000));
-                lines.add("        Avg: " + Util.formatDurationMs((long) avg / 1000000));
-                lines.add("        Max: " + Util.formatDurationMs(max / 1000000));
-                lines.add("        Sum: " + Util.formatDurationMs(sum / 1000000));
+                for (Map.Entry<String, ArrayList<Double>> ed : extraData.entrySet()) {
+                    lines.add("      " + ed.getKey() + ":");
+                    aggregateList(notNull(ed.getValue()), lines);
+                }
             });
         
         
