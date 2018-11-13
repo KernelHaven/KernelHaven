@@ -68,6 +68,8 @@ public class DefaultSettings {
     public static final @NonNull Setting<@Nullable Boolean> LOG_FORCE_COLOR = new Setting<>("log.force_color", BOOLEAN, false, null, "Overrides whether ANSI color codes should be used when logging to stdout. By default, it is automatically detected whether to use color or not (ANSI color codes are used on non-Windows operating systems and if output has not been redirected).");
     public static final @NonNull Setting<@NonNull Integer> LOG_PROGRESS_INTERVAL = new Setting<>("log.progress_interval", INTEGER, true, "30000", "The update interval for the ProgressLogger, in milliseconds.");
     
+    public static final @NonNull Setting<@NonNull Boolean> MEASURE_PERFORMANCE = new Setting<>("performance_probes.enabled", BOOLEAN, true, "false", "Whether the PerformanceProbes measurements should be enabled.");
+    
     /*
      * Archiving
      */
@@ -120,7 +122,8 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull Boolean> BUILD_PROVIDER_CACHE_WRITE = new Setting<>("build.provider.cache.write", BOOLEAN, true, "false", "Defines whether the build model provider will write its results to the cache directory.");
     public static final @NonNull Setting<@NonNull Boolean> BUILD_PROVIDER_CACHE_READ = new Setting<>("build.provider.cache.read", BOOLEAN, true, "false", "Defines whether the code model build is allowed to read the cache instead of starting the extractor.");
 	public static final @NonNull Setting<@NonNull Pattern> BUILD_EXTRACTOR_FILE_REGEX = new Setting<>("build.extractor.file_regex", REGEX, true, ".*(?i)(^|\\/|\\\\)(Makefile\\.?\\w*|Kbuild|Build)", "A Java regular expression defining which files are considered to be files relevant for parsing the build model.");
-    /*
+    
+	/*
      * Variability model parameters
      */
     
@@ -130,7 +133,8 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull Boolean> VARIABILITY_PROVIDER_CACHE_READ = new Setting<>("variability.provider.cache.read", BOOLEAN, true, "false", "Defines whether the variability model provider is allowed to read the cache instead of starting the extractor.");
     public static final @NonNull Setting<@Nullable File> VARIABILITY_INPUT_FILE = new Setting<>("variability.input.file", FILE, false, null, "Path of a single file to be parsed by a variability model extractor.");
 	public static final @NonNull Setting<@NonNull Pattern> VARIABILITY_EXTRACTOR_FILE_REGEX = new Setting<>("variability.extractor.file_regex", REGEX, true, "..*(?i)(^|\\/|\\\\)(Kconfig)", "A Java regular expression defining which files are considered to be source files relevant for parsing the variability model.");
-    /*
+    
+	/*
      * Other
      */
     

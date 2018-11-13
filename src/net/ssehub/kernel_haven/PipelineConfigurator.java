@@ -441,6 +441,10 @@ public class PipelineConfigurator {
      */
     public void execute() {
         LOGGER.logInfo("Start setting up pipeline...");
+        if (config != null) {
+            PerformanceProbe.initialize(config);
+        }
+        
         try {
             loadPlugins();
             instantiateExtractors();

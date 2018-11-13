@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
@@ -27,6 +29,8 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * @author Adam
  */
 public final class PerformanceProbe implements Closeable {
+    
+    private static boolean enabled = false;
     
     private static @NonNull Map<String, Deque<@NonNull PerformanceProbe>> probes = new ConcurrentHashMap<>(500);
     
@@ -94,7 +98,7 @@ public final class PerformanceProbe implements Closeable {
      * @return Whether to measure the given context.
      */
     private static boolean isEnabled(@NonNull String context) {
-        return true; // TODO: implement mechanism to disable contexts
+        return enabled; // TODO: add mechanism to en-/disable specific probe contexts
     }
     
     /**
@@ -193,6 +197,16 @@ public final class PerformanceProbe implements Closeable {
         
         
         Logger.get().logInfo(lines.toArray(new String[0]));
+    }
+    
+    /**
+     * Initializes this class with the given configuration. Determines whether performance measurements should be
+     * enabled.
+     * 
+     * @param config The pipeline configuration.
+     */
+    public static void initialize(@NonNull Configuration config) {
+        enabled = config.getValue(DefaultSettings.MEASURE_PERFORMANCE);
     }
 
 }
