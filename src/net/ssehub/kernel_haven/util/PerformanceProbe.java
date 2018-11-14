@@ -36,7 +36,7 @@ public final class PerformanceProbe implements Closeable {
     
     private @NonNull String context;
     
-    private @NonNull Map<String, Double> extraData;
+    private Map<String, Double> extraData;
     
     private long tStart;
     
@@ -49,8 +49,11 @@ public final class PerformanceProbe implements Closeable {
      */
     public PerformanceProbe(@NonNull String context) {
         this.context = context;
-        this.extraData = new HashMap<>();
-        this.tStart = System.nanoTime();
+        
+        if (isEnabled(context)) {
+            this.extraData = new HashMap<>();
+            this.tStart = System.nanoTime();
+        }
     }
     
     /**
@@ -61,7 +64,9 @@ public final class PerformanceProbe implements Closeable {
      * @param value The additional data.
      */
     public void addExtraData(@NonNull String type, double value) {
-        this.extraData.put(type, value);
+        if (isEnabled(context)) {
+            this.extraData.put(type, value);
+        }
     }
     
     /**
@@ -69,9 +74,9 @@ public final class PerformanceProbe implements Closeable {
      */
     @Override
     public void close() {
-        this.tEnd = System.nanoTime();
-        
         if (isEnabled(context)) {
+            this.tEnd = System.nanoTime();
+            
             Deque<@NonNull PerformanceProbe> newList = new ConcurrentLinkedDeque<>();
             Deque<@NonNull PerformanceProbe> list = probes.putIfAbsent(context, newList);
             if (list == null) {
