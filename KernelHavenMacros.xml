@@ -28,6 +28,7 @@
 	<property name="FeatureEffectAnalysis.location_src" value="${jenkins.location}/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis_withsource.jar" />
 	<property name="IOUtils.location" value="${jenkins.location}/KernelHaven_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils.jar" />
 	<property name="IOUtils.location_src" value="${jenkins.location}/KernelHaven_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils_withsource.jar" />
+	<property name="DBUtils.location" value="${jenkins.location}/KernelHaven_DBUtils/lastSuccessfulBuild/artifact/build/jar/DBUtils.jar" />
 	<property name="DBUtils.location_src" value="${jenkins.location}/KernelHaven_DBUtils/lastSuccessfulBuild/artifact/build/jar/DBUtils_withsource.jar" />
 	<property name="UnDeadAnalyzer.location_src" value="${jenkins.location}/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/UnDeadAnalyzer_withsource.jar" />
 	<property name="MetricHaven.location_src" value="${jenkins.location}/KernelHaven_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven_withsource.jar" />
