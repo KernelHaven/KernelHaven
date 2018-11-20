@@ -240,6 +240,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             }
         };
         Thread th = new Thread(monitor, getClass().getSimpleName());
+        th.setDaemon(true);
         th.start();
         try {
             thPool.awaitTermination(96L, TimeUnit.HOURS);
