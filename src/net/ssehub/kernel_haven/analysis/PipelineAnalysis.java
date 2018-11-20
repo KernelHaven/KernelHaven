@@ -2,6 +2,7 @@ package net.ssehub.kernel_haven.analysis;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -154,7 +155,12 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             }
             
             if (mainComponent instanceof JoinComponent) {
-                joinSplitComponent((JoinComponent) mainComponent);
+                int threads = config.getValue(DefaultSettings.ANALYSIS_SPLITCOMPONENT_MAX_THREADS);
+                if (threads > 0) {
+                    joinSplitComponentWithPool((JoinComponent) mainComponent, threads);
+                } else {
+                    joinSplitComponentFull((JoinComponent) mainComponent);
+                }
                 
             } else {
                 pollAndWriteOutput(mainComponent);
@@ -179,14 +185,40 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
     }
 
     /**
-     * Part of {@link #run()} to handle {@link JoinComponent}s.
-     * @param mainComponent The an analysis, which is joining results of multiple other components.
+     * Part of {@link #run()} to handle {@link JoinComponent}s. This method joins all components in parallel.
+     * 
+     * @param mainComponent The analysis, which is joining results of multiple other components.
      */
-    private void joinSplitComponent(JoinComponent mainComponent) {
-        int maxThreads = config.getValue(DefaultSettings.ANALYSIS_SPLITCOMPONENT_MAX_THREADS);
+    private void joinSplitComponentFull(@NonNull JoinComponent mainComponent) {
+        List<Thread> threads = new ArrayList<>(mainComponent.getInputs().length);
+        
+        for (AnalysisComponent<?> component : mainComponent.getInputs()) {
+            Thread th = new Thread(() -> {
+                pollAndWriteOutput(component);
+            }, "AnalysisPipelineControllerOutputThread");
+            threads.add(th);
+            th.setDaemon(true);
+            th.start();
+        }
+        
+        for (Thread th : threads) {
+            try {
+                th.join();
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+    
+    /**
+     * Part of {@link #run()} to handle {@link JoinComponent}s. This method joins all components using a fixed-sized
+     * thread pool (see {@link DefaultSettings#ANALYSIS_SPLITCOMPONENT_MAX_THREADS}).
+     * 
+     * @param mainComponent The an analysis, which is joining results of multiple other components.
+     * @param numThreads The number of threads to use for the pool; must be greater than 0.
+     */
+    private void joinSplitComponentWithPool(@NonNull JoinComponent mainComponent, int numThreads) {
         ThreadRenamer thReanmer = new ThreadRenamer(mainComponent.getResultName());
-        ThreadPoolExecutor thPool = (ThreadPoolExecutor)
-            ((maxThreads > 0) ? Executors.newFixedThreadPool(maxThreads) : Executors.newCachedThreadPool());
+        ThreadPoolExecutor thPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(numThreads);
         int totalNoOfThreads = 0;
         
         AtomicInteger nThreadsProcessed = new AtomicInteger(0);
