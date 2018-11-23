@@ -1,7 +1,6 @@
 package net.ssehub.kernel_haven.util.io;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
-import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNullArrayWithNullableContent;
 
 import java.io.IOException;
 
@@ -56,8 +55,9 @@ public abstract class AbstractTableWriter implements ITableWriter {
      * 
      * @throws IOException If writing the header fails.
      */
+    @SuppressWarnings("null") // converting from @NonNull Object @NonNull [] to @Nullable Object ... creates a warning
     protected void writeAnnotationHeader(@NonNull TableRowMetadata metadata) throws IOException {
-        writeHeader(notNullArrayWithNullableContent(metadata.getHeaders()));
+        writeHeader(metadata.getHeaders());
     }
     
     /**
@@ -84,7 +84,7 @@ public abstract class AbstractTableWriter implements ITableWriter {
                     + object.getClass().getName());
         }
         try {
-            writeRow(notNullArrayWithNullableContent(metadata.getContent(object)));
+            writeRow(metadata.getContent(object));
         } catch (ReflectiveOperationException e) {
             throw new IOException("Can't read field values", e);
         }

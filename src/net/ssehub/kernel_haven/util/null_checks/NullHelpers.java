@@ -65,40 +65,4 @@ public class NullHelpers {
         return value;
     }
     
-    /**
-     * Declares that an array reference is {@link NonNull}, but the elements inside are {@link Nullable}.
-     * 
-     * @param <T> The type of nested elements in the array.
-     * 
-     * @param array The array to declare as {@link NonNull}, with {@link Nullable} elements.
-     * @return The annotated array.
-     * 
-     * @throws AssertionError If <code>array==null</code>.
-     */
-    @SuppressWarnings("null")
-    public static final <T> @Nullable T @NonNull [] notNullArrayWithNullableContent(T[] array) throws AssertionError {
-        if (array == null) {
-            throw new AssertionError("Supplied array is null, but was expected not null");
-        }
-        return array;
-    }
-    
-    /**
-     * Declares that an array reference is {@link NonNull}, with the elements inside also {@link NonNull}.
-     * 
-     * @param <T> The type of nested elements in the array.
-     * 
-     * @param array The array to declare as {@link NonNull}, with {@link NonNull} elements.
-     * @return The annotated array.
-     * 
-     * @throws AssertionError If <code>array==null</code>. Elements inside the array are <b>not</b> checked.
-     */
-    @SuppressWarnings("null")
-    public static final <T> @NonNull T @NonNull [] notNullArrayWithNotNullContent(T[] array) throws AssertionError {
-        if (array == null) {
-            throw new AssertionError("Supplied array is null, but was expected not null");
-        }
-        return array;
-    }
-    
 }

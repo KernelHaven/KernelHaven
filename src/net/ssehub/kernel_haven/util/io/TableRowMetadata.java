@@ -2,13 +2,13 @@ package net.ssehub.kernel_haven.util.io;
 
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.maybeNull;
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
-import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNullArrayWithNotNullContent;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.TreeMap;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
+import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
  * Metadata about the fields for a class that is annotated via the {@link TableRow} annotation.
@@ -49,19 +49,19 @@ public class TableRowMetadata {
             }
         }
 
-        Method[] fields = new Method[methods.size()];
-        String[] headers = new String[methods.size()];
+        @NonNull Method[] fields = new @NonNull Method[methods.size()];
+        @NonNull String[] headers = new @NonNull String[methods.size()];
         int index = 0;
         for (Map.Entry<Integer, Method> entry : methods.entrySet()) {
             // we silently ignore if index != entry.getKey(); the order is correct, because of the TreeMap; we don't
             //  care about "holes" in the ordering
-            fields[index] = entry.getValue();
+            fields[index] = notNull(entry.getValue());
             headers[index] = notNull(entry.getValue().getAnnotation(TableElement.class)).name();
             index++;
         }
         
-        this.fields = notNullArrayWithNotNullContent(fields);
-        this.headers = notNullArrayWithNotNullContent(headers); 
+        this.fields = fields;
+        this.headers = headers; 
     }
     
     /**
@@ -82,8 +82,8 @@ public class TableRowMetadata {
      * @throws ReflectiveOperationException If retrieving the field contents fails (e.g. because the given object is
      *      not an instance of the class that this metadata is made for).
      */
-    public @NonNull Object @NonNull [] getContent(@NonNull Object instance) throws ReflectiveOperationException {
-        Object[] values = new Object[fields.length];
+    public @Nullable Object @NonNull [] getContent(@NonNull Object instance) throws ReflectiveOperationException {
+        @Nullable Object[] values = new @Nullable Object[fields.length];
         
         try {
             int index = 0;
@@ -96,7 +96,7 @@ public class TableRowMetadata {
             throw new ReflectiveOperationException("Can't access field value", e);
         }
         
-        return notNullArrayWithNotNullContent(values);
+        return values;
     }
     
     /**
