@@ -44,7 +44,7 @@ public final class Negation extends Formula {
     }
     
     @Override
-    public void toString(@NonNull StringBuffer result) {
+    public void toString(@NonNull StringBuilder result) {
         result.append('!');
         if (!(formula instanceof Negation) && formula.getPrecedence() <= this.getPrecedence()) {
             result.append('(');

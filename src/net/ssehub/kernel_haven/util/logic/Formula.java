@@ -38,7 +38,7 @@ public abstract class Formula implements Serializable {
      * @param result The result object to which the result in a C-style like format shall be appended to
      *     (must not be <tt>null</tt>) .
      */
-    public abstract void toString(@NonNull StringBuffer result);
+    public abstract void toString(@NonNull StringBuilder result);
     
     /**
      * Checks whether two {@link Formula}s are equal. {@link Formula}s are equal,

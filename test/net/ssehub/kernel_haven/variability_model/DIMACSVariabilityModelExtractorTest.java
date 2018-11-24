@@ -197,7 +197,7 @@ public class DIMACSVariabilityModelExtractorTest {
         Assert.assertNotNull(txtFile);
         Assert.assertTrue(txtFile.getAbsolutePath() + " does not exist", txtFile.exists());
         
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         try {
             Files.lines(txtFile.toPath()).forEachOrdered(l -> result.append(l));
         } catch (IOException e) {

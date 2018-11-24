@@ -62,7 +62,7 @@ public final class Conjunction extends Formula {
     }
     
     @Override
-    public void toString(@NonNull StringBuffer result) {
+    public void toString(@NonNull StringBuilder result) {
         if (!(left instanceof Conjunction) && left.getPrecedence() <= this.getPrecedence()) {
             result.append('(');
             left.toString(result);

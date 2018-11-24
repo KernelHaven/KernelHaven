@@ -284,7 +284,7 @@ public final class Logger {
      * @return A string in the format "[level] [time] [threadName] "
      */
     private @NonNull String constructHeader(@NonNull Level level, boolean useColors) {
-        StringBuffer hdr = new StringBuffer();
+        StringBuilder hdr = new StringBuilder();
         
         String timestamp = new Timestamp().getTimestamp();
         
@@ -314,7 +314,7 @@ public final class Logger {
      */
     private void log(@NonNull Level level, @Nullable Object /*@NonNull*/ ... messageParts) {
         if (this.level.shouldLog(level) && null != messageParts) {
-            StringBuffer messageLine = new StringBuffer();
+            StringBuilder messageLine = new StringBuilder();
             for (Object object : messageParts) {
                 if (object instanceof Object[]) {
                     Object[] innerArray = (Object[]) object;
@@ -357,7 +357,7 @@ public final class Logger {
         }
         byte[] headerBytes = header.getBytes(charset);
 
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
         for (int i = 0; i < lines.length; i++) {
             if (i != 0) {
                 str.append(indent);

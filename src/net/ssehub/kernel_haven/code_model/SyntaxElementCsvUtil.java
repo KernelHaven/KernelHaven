@@ -170,7 +170,7 @@ public class SyntaxElementCsvUtil {
 //      result.add(element.getCondition() == null ? "null" : element.getCondition().toString());
         Formula condition = element.getCondition();
         if (null != condition) {
-            StringBuffer formula = new StringBuffer();
+            StringBuilder formula = new StringBuilder();
             condition.toString(formula);
             result.add(notNull(formula.toString()));
         } else {
@@ -181,7 +181,7 @@ public class SyntaxElementCsvUtil {
         if (cache != null) {
             result.add(cache.getSerializedFormula(element.getPresenceCondition()));
         } else {
-            StringBuffer formula = new StringBuffer();
+            StringBuilder formula = new StringBuilder();
             element.getPresenceCondition().toString(formula);
             result.add(notNull(formula.toString()));
         }

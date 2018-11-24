@@ -60,7 +60,7 @@ public final class True extends Formula {
     }
     
     @Override
-    public void toString(@NonNull StringBuffer result) {
+    public void toString(@NonNull StringBuilder result) {
         result.append(toString());
     }
     

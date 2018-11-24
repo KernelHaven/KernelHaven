@@ -62,7 +62,7 @@ public final class Disjunction extends Formula {
     }
     
     @Override
-    public void toString(@NonNull StringBuffer result) {
+    public void toString(@NonNull StringBuilder result) {
         if (!(left instanceof Disjunction) && left.getPrecedence() <= this.getPrecedence()) {
             result.append('(');
             left.toString(result);

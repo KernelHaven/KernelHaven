@@ -31,7 +31,7 @@ public class FormulaCache {
         String serialized = cache.get(formula);
         if (null == serialized) {
             // Serialize formula
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             formula.toString(buffer);
             serialized = notNull(buffer.toString());
             

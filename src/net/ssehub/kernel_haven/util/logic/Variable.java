@@ -73,7 +73,7 @@ public final class Variable extends Formula {
     }
     
     @Override
-    public void toString(@NonNull StringBuffer result) {
+    public void toString(@NonNull StringBuilder result) {
         result.append(toString());
     }
 }
