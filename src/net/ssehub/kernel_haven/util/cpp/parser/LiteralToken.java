@@ -10,7 +10,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  */
 final class LiteralToken extends CppToken {
 
-    private long value;
+    private @NonNull Number value;
     
     private int length;
     
@@ -21,7 +21,7 @@ final class LiteralToken extends CppToken {
      * @param length The length of the original text token.
      * @param value The value of this token.
      */
-    public LiteralToken(int pos, int length, long value) {
+    public LiteralToken(int pos, int length, @NonNull Number value) {
         super(pos);
         this.length = length;
         this.value = value;
@@ -32,7 +32,7 @@ final class LiteralToken extends CppToken {
      * 
      * @return The value of this token.
      */
-    public long getValue() {
+    public @NonNull Number getValue() {
         return value;
     }
     
@@ -46,14 +46,14 @@ final class LiteralToken extends CppToken {
         boolean equal = super.equals(obj);
         if (equal && obj instanceof LiteralToken) {
             LiteralToken other = (LiteralToken) obj;
-            equal = other.value == this.value && this.length == other.length;
+            equal = other.value.equals(this.value) && this.length == other.length;
         }
         return equal;
     }
     
     @Override
     public int hashCode() {
-        return super.hashCode() + Long.hashCode(value) + Integer.hashCode(length);
+        return super.hashCode() + value.hashCode() + Integer.hashCode(length);
     }
 
     @Override

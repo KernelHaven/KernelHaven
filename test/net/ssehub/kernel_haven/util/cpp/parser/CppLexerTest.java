@@ -169,8 +169,8 @@ public class CppLexerTest {
     public void testSimpleLiteralDetection() throws ExpressionFormatException {
         CppParser parser = new CppParser();
 
-        assertThat(parser.lex("14"), is(new CppToken[] {new LiteralToken(0, 2, 14)}));
-        assertThat(parser.lex("0x14"), is(new CppToken[] {new LiteralToken(0, 4, 20)}));
+        assertThat(parser.lex("14"), is(new CppToken[] {new LiteralToken(0, 2, 14L)}));
+        assertThat(parser.lex("0x14"), is(new CppToken[] {new LiteralToken(0, 4, 20L)}));
     }
     
     /**
@@ -182,21 +182,21 @@ public class CppLexerTest {
     public void testLiteralWithSuffix() throws ExpressionFormatException {
         CppParser parser = new CppParser();
         
-        assertThat(parser.lex("14L"), is(new CppToken[] {new LiteralToken(0, 3, 14)}));
-        assertThat(parser.lex("1434UL"), is(new CppToken[] {new LiteralToken(0, 6, 1434)}));
-        assertThat(parser.lex("543ULL"), is(new CppToken[] {new LiteralToken(0, 6, 543)}));
+        assertThat(parser.lex("14L"), is(new CppToken[] {new LiteralToken(0, 3, 14L)}));
+        assertThat(parser.lex("1434UL"), is(new CppToken[] {new LiteralToken(0, 6, 1434L)}));
+        assertThat(parser.lex("543ULL"), is(new CppToken[] {new LiteralToken(0, 6, 543L)}));
     }
     
     /**
-     * Tests that a literal with decimals correctly throws an exception.
+     * Tests that a literal with decimals is correctly detected. 
      * 
-     * @throws ExpressionFormatException wanted.
+     * @throws ExpressionFormatException unwanted.
      */
-    @Test(expected = ExpressionFormatException.class)
+    @Test
     public void testLiteralDecimal() throws ExpressionFormatException {
         CppParser parser = new CppParser();
         
-        parser.lex("14.4");
+        assertThat(parser.lex("14.4"), is(new CppToken[] {new LiteralToken(0, 4, 14.4)}));
     }
     
     /**

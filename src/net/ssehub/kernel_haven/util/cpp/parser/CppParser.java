@@ -36,7 +36,7 @@ import net.ssehub.kernel_haven.util.cpp.parser.ast.CppExpression;
 import net.ssehub.kernel_haven.util.cpp.parser.ast.ExpressionList;
 import net.ssehub.kernel_haven.util.cpp.parser.ast.FunctionCall;
 import net.ssehub.kernel_haven.util.cpp.parser.ast.ICppExressionVisitor;
-import net.ssehub.kernel_haven.util.cpp.parser.ast.IntegerLiteral;
+import net.ssehub.kernel_haven.util.cpp.parser.ast.NumberLiteral;
 import net.ssehub.kernel_haven.util.cpp.parser.ast.Operator;
 import net.ssehub.kernel_haven.util.cpp.parser.ast.Variable;
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
@@ -131,7 +131,7 @@ public class CppParser {
         }
 
         @Override
-        public @NonNull CppExpression visitLiteral(@NonNull IntegerLiteral literal) throws ExpressionFormatException {
+        public @NonNull CppExpression visitLiteral(@NonNull NumberLiteral literal) throws ExpressionFormatException {
             return literal;
         }
         
@@ -263,7 +263,7 @@ public class CppParser {
         }
 
         @Override
-        public @NonNull CppExpression visitLiteral(@NonNull IntegerLiteral literal) throws ExpressionFormatException {
+        public @NonNull CppExpression visitLiteral(@NonNull NumberLiteral literal) throws ExpressionFormatException {
             return literal;
         }
         
@@ -314,7 +314,7 @@ public class CppParser {
                 expressionListStack.peek().addExpression(new Operator(((OperatorToken) currentToken).getOperator()));
                 
             } else if (currentToken instanceof LiteralToken) {
-                expressionListStack.peek().addExpression(new IntegerLiteral(((LiteralToken) currentToken).getValue()));
+                expressionListStack.peek().addExpression(new NumberLiteral(((LiteralToken) currentToken).getValue()));
                 
             } else {
                 throw makeException(expression, "Unexpected token: " + currentToken, currentToken.getPos());
@@ -442,13 +442,13 @@ public class CppParser {
             try {
                 // parse number
                 Number numberValue = NumberUtils.convertToNumber(notNull(literal.toString()));
-                if (numberValue == null || !(numberValue instanceof Long)) {
+                if (numberValue == null) {
                     throw new NumberFormatException();
                 }
                 
                 // replace IdentifierToken with LiteralToken
                 tokens.set(tokenIndex,
-                        new LiteralToken(identifier.getPos(), identifier.getLength(), (long) numberValue));
+                        new LiteralToken(identifier.getPos(), identifier.getLength(), numberValue));
                 
             } catch (NumberFormatException e) {
                 throw makeException(expression, "Cannot parse literal " + identifier.getName(), identifier.getPos());
@@ -598,7 +598,7 @@ public class CppParser {
         // performant, and this
         // is a rather performance critical code path.
         return (expr[exprPos] >= 'a' && expr[exprPos] <= 'z') || (expr[exprPos] >= 'A' && expr[exprPos] <= 'Z')
-                || (expr[exprPos] >= '0' && expr[exprPos] <= '9') || (expr[exprPos] == '_');
+                || (expr[exprPos] >= '0' && expr[exprPos] <= '9') || (expr[exprPos] == '_')  || expr[exprPos] == '.';
         // CHECKSTYLE:ON
     }
     

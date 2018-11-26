@@ -4,30 +4,30 @@ import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * An (integer) literal.
+ * A number literal.
  *
  * @author Adam
  */
-public class IntegerLiteral extends CppExpression {
+public class NumberLiteral extends CppExpression {
 
-    private long value;
+    private @NonNull Number value;
     
     /**
-     * Creates a new integer literal.
+     * Creates a new literal number.
      * 
      * @param value The literal value.
      */
-    public IntegerLiteral(long value) {
+    public NumberLiteral(@NonNull Number value) {
         this.value = value;
     }
     
     /**
-     * Returns the literal value. This is saved as a long, since CPP doesn't know data types and a normal integer may
-     * overflow.
+     * Returns the literal value. This is saved as a long or double, since CPP doesn't know data types and a normal
+     * integer may overflow.
      * 
      * @return The literal value.
      */
-    public long getValue() {
+    public @NonNull Number getValue() {
         return value;
     }
 

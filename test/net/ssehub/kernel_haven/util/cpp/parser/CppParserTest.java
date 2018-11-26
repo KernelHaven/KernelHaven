@@ -9,10 +9,11 @@ import org.junit.Test;
 
 import net.ssehub.kernel_haven.util.cpp.parser.ast.CppExpression;
 import net.ssehub.kernel_haven.util.cpp.parser.ast.FunctionCall;
-import net.ssehub.kernel_haven.util.cpp.parser.ast.IntegerLiteral;
+import net.ssehub.kernel_haven.util.cpp.parser.ast.NumberLiteral;
 import net.ssehub.kernel_haven.util.cpp.parser.ast.Operator;
 import net.ssehub.kernel_haven.util.cpp.parser.ast.Variable;
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Tests the {@link CppParser}.
@@ -424,6 +425,78 @@ public class CppParserTest {
         assertVariable(op1[0], "A");
         assertThat(op1[1], nullValue());
     }
+
+    /**
+     * Tests that integer literals are parsed correctly.
+     * 
+     * @throws ExpressionFormatException unwanted.
+     */
+    @Test
+    public void testIntegerLiterals() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+
+        CppExpression result = parser.parse("A + 3");
+        
+        CppExpression[] op1 = assertOperator(result, CppOperator.INT_ADD);
+        
+        assertVariable(op1[0], "A");
+        assertLiteral(op1[1], 3L);
+    }
+    
+    /**
+     * Tests that floating point literals are parsed correctly.
+     * 
+     * @throws ExpressionFormatException unwanted.
+     */
+    @Test
+    public void testFloatingPointLiterals() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+
+        CppExpression result = parser.parse("A + 3.7");
+        
+        CppExpression[] op1 = assertOperator(result, CppOperator.INT_ADD);
+        
+        assertVariable(op1[0], "A");
+        assertLiteral(op1[1], 3.7);
+    }
+    
+    /**
+     * Tests that negative integer literals are parsed correctly.
+     * 
+     * @throws ExpressionFormatException unwanted.
+     */
+    @Test
+    public void testIntegerLiteralsNegative() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+
+        CppExpression result = parser.parse("A + -3");
+        
+        CppExpression[] op1 = assertOperator(result, CppOperator.INT_ADD);
+        
+        assertVariable(op1[0], "A");
+        
+        CppExpression[] op2 = assertOperator(op1[1], CppOperator.INT_SUB_UNARY);
+        assertLiteral(op2[0], 3L);
+    }
+    
+    /**
+     * Tests that negative floating point literals are parsed correctly.
+     * 
+     * @throws ExpressionFormatException unwanted.
+     */
+    @Test
+    public void testFloatingPointLiteralsNegative() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+
+        CppExpression result = parser.parse("A + -3.7");
+        
+        CppExpression[] op1 = assertOperator(result, CppOperator.INT_ADD);
+        
+        assertVariable(op1[0], "A");
+        
+        CppExpression[] op2 = assertOperator(op1[1], CppOperator.INT_SUB_UNARY);
+        assertLiteral(op2[0], 3.7);
+    }
     
     /**
      * Asserts that the given expression is a {@link Variable}.
@@ -480,14 +553,14 @@ public class CppParserTest {
     }
     
     /**
-     * Asserts that the given expression is an {@link IntegerLiteral}.
+     * Asserts that the given expression is an {@link NumberLiteral}.
      * 
-     * @param expression The expression that should be an {@link IntegerLiteral}.
+     * @param expression The expression that should be an {@link NumberLiteral}.
      * @param value The expected literal value.
      */
-    public static void assertLiteral(CppExpression expression, long value) {
-        assertThat(expression, instanceOf(IntegerLiteral.class));
-        IntegerLiteral literal = (IntegerLiteral) expression;
+    public static void assertLiteral(CppExpression expression, @NonNull Number value) {
+        assertThat(expression, instanceOf(NumberLiteral.class));
+        NumberLiteral literal = (NumberLiteral) expression;
         
         assertThat(literal.getValue(), is(value));
     }

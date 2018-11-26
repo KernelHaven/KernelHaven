@@ -59,7 +59,7 @@ public interface ICppExressionVisitor<T> {
     public T visitOperator(@NonNull Operator operator) throws ExpressionFormatException;
     
     /**
-     * Visits an {@link IntegerLiteral}.
+     * Visits an {@link NumberLiteral}.
      * 
      * @param literal The literal to visit.
      * 
@@ -67,6 +67,6 @@ public interface ICppExressionVisitor<T> {
      * 
      * @throws ExpressionFormatException If the expression is malformed.
      */
-    public T visitLiteral(@NonNull IntegerLiteral literal) throws ExpressionFormatException;
+    public T visitLiteral(@NonNull NumberLiteral literal) throws ExpressionFormatException;
     
 }

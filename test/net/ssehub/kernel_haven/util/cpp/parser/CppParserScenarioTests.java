@@ -31,11 +31,11 @@ public class CppParserScenarioTests {
         CppExpression result = parser.parse("((VAR & 2) > 0)");
         
         CppExpression[] op1 = assertOperator(result, CppOperator.CMP_GT);
-        assertLiteral(op1[1], 0);
+        assertLiteral(op1[1], 0L);
         
         CppExpression[] op2 = assertOperator(op1[0], CppOperator.BIN_AND);
         assertVariable(op2[0], "VAR");
-        assertLiteral(op2[1], 2);
+        assertLiteral(op2[1], 2L);
     }
     
     /**
@@ -57,7 +57,7 @@ public class CppParserScenarioTests {
         assertVariable(op2[1], "VAR2");
         
         assertVariable(op3[0], "VAR3");
-        assertLiteral(op3[1], 2);
+        assertLiteral(op3[1], 2L);
     }
     
     /**
@@ -96,7 +96,7 @@ public class CppParserScenarioTests {
         
         CppExpression[] op1 = assertOperator(result, CppOperator.CMP_EQ);
         CppExpression[] op2 = assertOperator(op1[0], CppOperator.INT_MOD);
-        assertLiteral(op1[1], 0);
+        assertLiteral(op1[1], 0L);
         CppExpression[] op3 = assertOperator(op2[1], CppOperator.INT_DIV);
         
         assertVariable(op2[0], "TICK_NSEC");
