@@ -426,32 +426,42 @@ public class CppParser {
     private void identifierFinished(@Nullable IdentifierToken identifier, @NonNull List<@NonNull CppToken> tokens,
             int tokenIndex, @NonNull  String expression) throws ExpressionFormatException {
         
-        if (identifier != null && Character.isDigit(identifier.getName().charAt(0))) {
-            
-            StringBuilder literal = new StringBuilder(identifier.getName().toLowerCase());
-            
-            // remove any trailing 'l's
-            while (literal.charAt(literal.length() - 1) == 'l') {
-                literal.replace(literal.length() - 1, literal.length(), "");
-            }
-            // remove one trailing 'u'
-            if (literal.charAt(literal.length() - 1) == 'u') {
-                literal.replace(literal.length() - 1, literal.length(), "");
-            }
-            
-            try {
-                // parse number
-                Number numberValue = NumberUtils.convertToNumber(notNull(literal.toString()));
-                if (numberValue == null) {
-                    throw new NumberFormatException();
+        if (identifier != null) {
+            if (Character.isDigit(identifier.getName().charAt(0))) {
+                StringBuilder literal = new StringBuilder(identifier.getName().toLowerCase());
+                
+                // remove any trailing 'l's
+                while (literal.charAt(literal.length() - 1) == 'l') {
+                    literal.replace(literal.length() - 1, literal.length(), "");
+                }
+                // remove one trailing 'u'
+                if (literal.charAt(literal.length() - 1) == 'u') {
+                    literal.replace(literal.length() - 1, literal.length(), "");
                 }
                 
-                // replace IdentifierToken with LiteralToken
-                tokens.set(tokenIndex,
-                        new LiteralToken(identifier.getPos(), identifier.getLength(), numberValue));
+                try {
+                    // parse number
+                    Number numberValue = NumberUtils.convertToNumber(notNull(literal.toString()));
+                    if (numberValue == null) {
+                        throw new NumberFormatException();
+                    }
+                    
+                    // replace IdentifierToken with LiteralToken
+                    tokens.set(tokenIndex,
+                            new LiteralToken(identifier.getPos(), identifier.getLength(), numberValue));
+                    
+                } catch (NumberFormatException e) {
+                    throw makeException(expression, "Cannot parse literal " + identifier.getName(),
+                            identifier.getPos());
+                }
                 
-            } catch (NumberFormatException e) {
-                throw makeException(expression, "Cannot parse literal " + identifier.getName(), identifier.getPos());
+            } else {
+                int dotIndex = identifier.getName().indexOf('.');
+                if (dotIndex != -1) {
+                    throw makeException(expression, "Literal contains invalid character: '.'",
+                            identifier.getPos() + dotIndex);
+                }
+                
             }
         }
         

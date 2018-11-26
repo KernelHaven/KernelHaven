@@ -236,4 +236,16 @@ public class CppLexerTest {
         assertThat(parser.lex("&"), is(new CppToken[] {new OperatorToken(0, CppOperator.BIN_AND)}));
     }
     
+    /**
+     * Tests that an identifier with a '.' character correctly throws an exception.
+     * 
+     * @throws ExpressionFormatException wanted.
+     */
+    @Test(expected = ExpressionFormatException.class)
+    public void testIdentifierWithDot() throws ExpressionFormatException {
+        CppParser parser = new CppParser();
+        
+        parser.lex("A.B");
+    }
+    
 }
