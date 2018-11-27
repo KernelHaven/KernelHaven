@@ -176,6 +176,10 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
   </tr>
 </table>
 
+The following image visualizes the dependencies between the plugins (open image in a new browser tab to make plugin links clickable):
+
+![Plugin dependencies](misc/plugin_dependencies.svg)
+
 ## Setup
 
 Although KernelHaven can be configured to use different paths, the usual setup looks like this:
