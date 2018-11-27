@@ -239,7 +239,7 @@ plugins_dir = plugins/
 resource_dir = res/
 ```
 
-See [`config_template.properties`](https://github.com/KernelHaven/KernelHaven/blob/master/config_template.properties) for a full list of available configuration options for the infrastructure and common plugins.
+See [`config_template.properties`](config_template.properties) for a full list of available configuration options for the infrastructure and common plugins.
 
 ## Further Documentation
 
