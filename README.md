@@ -8,14 +8,14 @@ KernelHaven offers a generic infrastructure for performing different analyses on
 
 ### Core Infrastructure
 
-These archives contain the core infrastructure only. Additional [plugins](https://github.com/KernelHaven/KernelHaven#plugins) are needed for a useful execution.
+These archives contain the core infrastructure only. Additional [plugins](#plugins) are needed for a useful execution.
 
 * [KernelHaven infrastructure (without sources)](https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven.jar)
 * [KernelHaven infrastructure (sources included)](https://jenkins.sse.uni-hildesheim.de/job/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven_withsource.jar)
 
 ### Bundled Releases
 
-These archives contain the infrastructure as well as all public [plugins](https://github.com/KernelHaven/KernelHaven#plugins). These bundles contain more than needed to run most experiments.
+These archives contain the infrastructure as well as all public [plugins](#plugins). These bundles contain more than needed to run most experiments.
 
 * [KernelHaven plus all plugins (GPLv3 and Apache License 2.0)](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_GPLv3_withsource.zip)
 * [KernelHaven plus only plugins available under the Apache License 2.0](https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/KernelHaven_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_Apache-2.0_withsource.zip)
