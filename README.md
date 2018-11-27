@@ -1,6 +1,6 @@
 # KernelHaven
 
-![Build Status](https://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_Infrastructure)
+![Build Status](https://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_Infrastructure "Build Status")
 
 KernelHaven offers a generic infrastructure for performing different analyses on product lines. This repository contains the main infrastructure, plugins are located in separate repositories.
 
@@ -178,7 +178,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
 
 The following image visualizes the dependencies between the plugins (open image in a new browser tab to make plugin links clickable):
 
-![Plugin dependencies](misc/plugin_dependencies.svg)
+![Plugin Dependencies](misc/plugin_dependencies.svg "Plugin Dependencies")
 
 ## Setup
 
@@ -252,10 +252,10 @@ Further documentation can be found in the [wiki on GitHub](https://github.com/Ke
 ## Video Tutorials
 
 #### Introduction and Experiments
-[![KernelHaven - Introduction and Experiments](https://img.youtube.com/vi/xKde6tPY_jA/0.jpg)](https://youtu.be/xKde6tPY_jA)
+[![KernelHaven - Introduction and Experiments](https://img.youtube.com/vi/xKde6tPY_jA/0.jpg "KernelHaven - Introduction and Experiments")](https://youtu.be/xKde6tPY_jA)
 
 #### ICSE 2018 Demonstration
-[![KernelHaven - ICSE 2018 Demonstration Video](https://img.youtube.com/vi/IbNc-H1NoZU/0.jpg)](https://www.youtube.com/watch?v=IbNc-H1NoZU)
+[![KernelHaven - ICSE 2018 Demonstration Video](https://img.youtube.com/vi/IbNc-H1NoZU/0.jpg "KernelHaven - ICSE 2018 Demonstration Video")](https://www.youtube.com/watch?v=IbNc-H1NoZU)
 
 ## License
 
