@@ -8,7 +8,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * @author El-Sharkawy
  */
-public class Comment extends AbstractSyntaxElement implements ICode {
+public class Comment extends AbstractSyntaxElementNoNesting implements ICode {
 
     private @NonNull ICode comment;
     

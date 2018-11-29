@@ -146,10 +146,15 @@ public class SyntaxElement extends AbstractCodeElementWithNesting<SyntaxElement>
         return SyntaxElementCsvUtil.csvToElement(csv, parser);
     }
 
-    // TODO: move to abstract superclass
     @Override
     public @NonNull String toString() {
+        // override this, since we need the relation handling
         return toString("", "");
+    }
+    
+    @Override
+    public @NonNull String elementToString(@NonNull String indentation) {
+        return type.toString() + '\n';
     }
     
     /**

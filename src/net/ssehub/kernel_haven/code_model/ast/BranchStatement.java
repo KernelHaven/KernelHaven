@@ -23,7 +23,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * @author Adam
  * @author El-Sharkawy
  */
-public class BranchStatement extends AbstractSyntaxElementWithChildreen {
+public class BranchStatement extends AbstractSyntaxElementWithNesting {
     
     /**
      * The type of {@link BranchStatement}. 

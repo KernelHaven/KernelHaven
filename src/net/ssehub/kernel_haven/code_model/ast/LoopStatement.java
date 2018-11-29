@@ -8,7 +8,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * @author El-Sharkawy
  */
-public class LoopStatement extends AbstractSyntaxElementWithChildreen {
+public class LoopStatement extends AbstractSyntaxElementWithNesting {
 
     /**
      * The type of loop.

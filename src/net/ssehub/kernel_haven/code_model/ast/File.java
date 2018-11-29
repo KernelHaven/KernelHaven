@@ -9,7 +9,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  *
  * @author Adam
  */
-public class File extends AbstractSyntaxElementWithChildreen {
+public class File extends AbstractSyntaxElementWithNesting {
 
     private java.io.@NonNull File path;
     

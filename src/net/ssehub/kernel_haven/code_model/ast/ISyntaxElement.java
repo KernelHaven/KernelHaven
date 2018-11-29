@@ -66,25 +66,6 @@ public interface ISyntaxElement extends CodeElement<ISyntaxElement> {
     public void setPresenceCondition(@NonNull Formula presenceCondition);
     
     /**
-     * Converts this single element into a string. This should not consider nested elements. However, other attributes
-     * may be added in additional lines with the given indentation + "\t".
-     * 
-     * @param indentation The initial indentation to use for multiple lines.
-     * 
-     * @return A string representation of this single element.
-     */
-    public @NonNull String elementToString(@NonNull String indentation);
-    
-    /**
-     * Converts this element and all its nested elements into a string.
-     * 
-     * @param indentation The initial indentation to use.
-     * 
-     * @return A string representation of the full hierarchy starting from this element.
-     */
-    public @NonNull String toString(@NonNull String indentation);
-
-    /**
      * Accept this visitor.
      * 
      * @param visitor The visitor to accept.

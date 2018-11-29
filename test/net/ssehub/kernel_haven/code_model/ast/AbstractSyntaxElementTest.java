@@ -17,7 +17,7 @@ import net.ssehub.kernel_haven.util.logic.Variable;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * Tests the {@link AbstractSyntaxElement} and {@link AbstractSyntaxElementWithChildreen} classes.
+ * Tests the {@link AbstractSyntaxElementNoNesting} and {@link AbstractSyntaxElementWithNesting} classes.
  *
  * @author Adam
  */
@@ -25,7 +25,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 public class AbstractSyntaxElementTest {
 
     /**
-     * Tests the {@link AbstractSyntaxElement#toString()} method on
+     * Tests the {@link AbstractSyntaxElementNoNesting#toString()} method on
      * {@link AllAstTests#createFullAst()}.
      */
     @Test
@@ -79,7 +79,7 @@ public class AbstractSyntaxElementTest {
     /**
      * A mock for testing purposes.
      */
-    private static class PseudoSyntaxElement extends AbstractSyntaxElement {
+    private static class PseudoSyntaxElement extends AbstractSyntaxElementNoNesting {
 
         /**
          * Creates this mock.
@@ -104,7 +104,7 @@ public class AbstractSyntaxElementTest {
     /**
      * A mock for testing purposes.
      */
-    private static class PseudoSyntaxElementWC extends AbstractSyntaxElementWithChildreen {
+    private static class PseudoSyntaxElementWC extends AbstractSyntaxElementWithNesting {
 
         /**
          * Creates this mock.
@@ -203,7 +203,7 @@ public class AbstractSyntaxElementTest {
     }
     
     /**
-     * Tests that {@link AbstractSyntaxElementWithChildreen} correctly stores children.
+     * Tests that {@link AbstractSyntaxElementWithNesting} correctly stores children.
      */
     @Test
     public void testChildStorage() {
@@ -246,7 +246,7 @@ public class AbstractSyntaxElementTest {
     }
     
     /**
-     * Tests the iterator of {@link AbstractSyntaxElementWithChildreen}.
+     * Tests the iterator of {@link AbstractSyntaxElementWithNesting}.
      */
     @Test
     public void testIterator() {

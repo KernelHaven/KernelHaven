@@ -12,7 +12,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * 
  * @author El-Sharkawy
  */
-public class CaseStatement extends AbstractSyntaxElementWithChildreen {
+public class CaseStatement extends AbstractSyntaxElementWithNesting {
     
     /**
      * The type of case or default statement.

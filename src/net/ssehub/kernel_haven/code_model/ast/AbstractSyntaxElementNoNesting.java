@@ -1,7 +1,5 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
-import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
-
 import java.io.File;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,19 +15,19 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * </p>
  * <p>
  * This does not store a list of nested elements. Sub-classes that want children should subclass
- * {@link AbstractSyntaxElementWithChildreen} instead.
+ * {@link AbstractSyntaxElementWithNesting} instead.
  * </p>
  * 
  * @author Adam
  */
-abstract class AbstractSyntaxElement extends AbstractCodeElement<ISyntaxElement> implements ISyntaxElement {
+abstract class AbstractSyntaxElementNoNesting extends AbstractCodeElement<ISyntaxElement> implements ISyntaxElement {
 
     /**
-     * Creates this {@link AbstractSyntaxElement} with the given presence condition.
+     * Creates this {@link AbstractSyntaxElementNoNesting} with the given presence condition.
      * 
      * @param presenceCondition The presence condition of this element.
      */
-    public AbstractSyntaxElement(@NonNull Formula presenceCondition) {
+    public AbstractSyntaxElementNoNesting(@NonNull Formula presenceCondition) {
         super(presenceCondition);
     }
     
@@ -52,37 +50,6 @@ abstract class AbstractSyntaxElement extends AbstractCodeElement<ISyntaxElement>
     public void replaceNestedElement(@NonNull ISyntaxElement oldElement, @NonNull ISyntaxElement newElement)
             throws NoSuchElementException {
         throw new NoSuchElementException();
-    }
-    
-    @Override
-    public @NonNull String toString() {
-        return toString("");
-    }
-    
-    @Override
-    public abstract @NonNull String elementToString(@NonNull String indentation);
-    
-    @Override
-    public @NonNull String toString(@NonNull String indentation) {
-        StringBuilder result = new StringBuilder();
-        
-        Formula condition = getCondition();
-        String conditionStr = condition == null ? "<null>" : condition.toString();
-        if (conditionStr.length() > 64) {
-            conditionStr = "...";
-        }
-        
-        result.append(indentation).append("[").append(conditionStr).append("] ");
-        
-        result.append(elementToString(indentation));
-        
-        indentation += '\t';
-        
-        for (ISyntaxElement child : this) {
-            result.append(child.toString(indentation));
-        }
-        
-        return notNull(result.toString());
     }
     
     @Override

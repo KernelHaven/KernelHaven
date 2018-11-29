@@ -10,7 +10,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  *
  * @author Adam
  */
-public class SingleStatement extends AbstractSyntaxElement {
+public class SingleStatement extends AbstractSyntaxElementNoNesting {
     
     /**
      * The type of statement.

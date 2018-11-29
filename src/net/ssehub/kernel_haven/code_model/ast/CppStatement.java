@@ -9,7 +9,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  *
  * @author Adam
  */
-public class CppStatement extends AbstractSyntaxElement {
+public class CppStatement extends AbstractSyntaxElementNoNesting {
 
     /**
      * The type of preprocessor directive.

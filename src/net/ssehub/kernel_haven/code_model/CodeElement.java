@@ -99,6 +99,25 @@ public interface CodeElement<NestedType extends CodeElement<NestedType>> extends
     public abstract @NonNull Formula getPresenceCondition();
     
     /**
+     * Converts this single element into a string. This should not consider nested elements. However, other attributes
+     * may be added in additional lines with the given indentation + "\t".
+     * 
+     * @param indentation The initial indentation to use for multiple lines.
+     * 
+     * @return A string representation of this single element.
+     */
+    public @NonNull String elementToString(@NonNull String indentation);
+    
+    /**
+     * Converts this element and all its nested elements into a string.
+     * 
+     * @param indentation The initial indentation to use.
+     * 
+     * @return A string representation of the full hierarchy starting from this element.
+     */
+    public @NonNull String toString(@NonNull String indentation);
+    
+    /**
      * Serializes this element as a CSV line. This does not consider nested elements.
      * Extending classes also need a createFromCsv(String[], Parser<Formula>) method that deserializes
      * this output.

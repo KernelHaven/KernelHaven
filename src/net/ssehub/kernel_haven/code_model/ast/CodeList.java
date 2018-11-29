@@ -10,7 +10,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  *
  * @author Adam
  */
-public class CodeList extends AbstractSyntaxElementWithChildreen implements ICode {
+public class CodeList extends AbstractSyntaxElementWithNesting implements ICode {
 
     /**
      * Creates a {@link CodeList}.

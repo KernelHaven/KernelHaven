@@ -1,5 +1,7 @@
 package net.ssehub.kernel_haven.code_model;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -144,6 +146,34 @@ public abstract class AbstractCodeElement<NestedType extends CodeElement<NestedT
             }
             
         };
+    }
+    
+    @Override
+    public @NonNull String toString() {
+        return toString("");
+    }
+    
+    @Override
+    public @NonNull String toString(@NonNull String indentation) {
+        StringBuilder result = new StringBuilder();
+        
+        Formula condition = getCondition();
+        String conditionStr = condition == null ? "<null>" : condition.toString();
+        if (conditionStr.length() > 64) {
+            conditionStr = "...";
+        }
+        
+        result.append(indentation).append("[").append(conditionStr).append("] ");
+        
+        result.append(elementToString(indentation));
+        
+        indentation += '\t';
+        
+        for (NestedType child : this) {
+            result.append(child.toString(indentation));
+        }
+        
+        return notNull(result.toString());
     }
     
     @Override

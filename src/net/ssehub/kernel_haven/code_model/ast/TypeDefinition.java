@@ -14,7 +14,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * @author El-Sharkawy
  */
-public class TypeDefinition extends AbstractSyntaxElementWithChildreen {
+public class TypeDefinition extends AbstractSyntaxElementWithNesting {
 
     /**
      * The type of typedef.

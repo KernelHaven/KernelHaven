@@ -101,13 +101,10 @@ public class CodeBlock extends AbstractCodeElementWithNesting<CodeBlock> {
         return new CodeBlock(lineStart, lineEnd, sourceFile, condition, presenceCondition);
     }
 
-    
-    // TODO: move to superclass
     @Override
-    public String toString() {
+    public @NonNull String elementToString(@NonNull String indentation) {
         return "CodeBlock[start=" + getLineStart() + "; end=" + getLineEnd() + "; file=" + getSourceFile()
-                + "; condition=" + getCondition() + "; pc=" + getPresenceCondition()
-                + "; #children=" + getNestedElementCount() + "]";
+                + "; condition=" + getCondition() + "; pc=" + getPresenceCondition() + "]\n";
     }
-
+    
 }

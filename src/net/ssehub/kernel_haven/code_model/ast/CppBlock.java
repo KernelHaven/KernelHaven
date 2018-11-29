@@ -15,7 +15,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  *
  * @author El-Sharkawy
  */
-public class CppBlock extends AbstractSyntaxElementWithChildreen implements ICode {
+public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode {
     
     /**
      * The kind of preprocessor block.

@@ -8,7 +8,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * @author Adam
  */
-public class Code extends AbstractSyntaxElement implements ICode {
+public class Code extends AbstractSyntaxElementNoNesting implements ICode {
 
     private @NonNull String text;
     

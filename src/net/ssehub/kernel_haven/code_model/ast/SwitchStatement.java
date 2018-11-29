@@ -19,7 +19,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  *
  * @author Adam
  */
-public class SwitchStatement extends AbstractSyntaxElementWithChildreen {
+public class SwitchStatement extends AbstractSyntaxElementWithNesting {
 
     private @NonNull ICode header;
     

@@ -9,7 +9,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * @author El-Sharkawy
  */
-public class Label extends AbstractSyntaxElement {
+public class Label extends AbstractSyntaxElementNoNesting {
 
     private @NonNull ICode code;
 

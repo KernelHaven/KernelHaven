@@ -9,7 +9,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  *
  * @author Adam
  */
-public class Function extends AbstractSyntaxElementWithChildreen {
+public class Function extends AbstractSyntaxElementWithNesting {
 
     private @NonNull String name;
     
