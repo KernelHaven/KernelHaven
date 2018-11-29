@@ -20,8 +20,8 @@ public class EmptyCodeModelExtractor extends AbstractCodeModelExtractor {
     }
 
     @Override
-    protected @Nullable SourceFile runOnFile(@NonNull File target) throws ExtractorException {
-        return new SourceFile(target);
+    protected @Nullable SourceFile<CodeBlock> runOnFile(@NonNull File target) throws ExtractorException {
+        return new SourceFile<CodeBlock>(target);
     }
 
     @Override

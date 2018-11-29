@@ -3,11 +3,10 @@ package net.ssehub.kernel_haven.code_model.ast;
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import net.ssehub.kernel_haven.code_model.CodeElement;
+import net.ssehub.kernel_haven.code_model.AbstractCodeElement;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -23,74 +22,30 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * 
  * @author Adam
  */
-abstract class AbstractSyntaxElement implements ISyntaxElement {
+abstract class AbstractSyntaxElement extends AbstractCodeElement<ISyntaxElement> implements ISyntaxElement {
 
-    private @NonNull Formula presenceCondition;
-    
-    private @Nullable Formula condition;
-    
-    private @NonNull File sourceFile;
-    
-    private int lineStart;
-    
-    private int lineEnd;
-    
     /**
      * Creates this {@link AbstractSyntaxElement} with the given presence condition.
      * 
      * @param presenceCondition The presence condition of this element.
      */
     public AbstractSyntaxElement(@NonNull Formula presenceCondition) {
-        this.presenceCondition = presenceCondition;
-        this.sourceFile = new File("<unknown>");
-        this.condition = null;
-        lineStart = -1;
-        lineEnd = -1;
+        super(presenceCondition);
     }
     
     @Override
     public void setSourceFile(@NonNull File sourceFile) {
-        this.sourceFile = sourceFile;
+        super.setSourceFile(sourceFile);
     }
     
     @Override
     public void setCondition(@Nullable Formula condition) {
-        this.condition = condition;
+        super.setCondition(condition);
     }
     
     @Override
     public void setPresenceCondition(@NonNull Formula presenceCondition) {
-        this.presenceCondition = presenceCondition;
-    }
-    
-    @Override
-    public void setLineStart(int lineStart) {
-        this.lineStart = lineStart;
-    }
-    
-    @Override
-    public void setLineEnd(int lineEnd) {
-        this.lineEnd = lineEnd;
-    }
-    
-    @Override
-    public @NonNull Formula getPresenceCondition() {
-        return presenceCondition;
-    }
-    
-    @Override
-    public @NonNull AbstractSyntaxElement getNestedElement(int index) throws IndexOutOfBoundsException {
-        throw new IndexOutOfBoundsException();
-    }
-    
-    @Override
-    public int getNestedElementCount() {
-        return 0;
-    }
-    
-    @Override
-    public void addNestedElement(@NonNull CodeElement element) throws IndexOutOfBoundsException {
-        throw new IndexOutOfBoundsException();
+        super.setPresenceCondition(presenceCondition);
     }
     
     @Override
@@ -111,7 +66,7 @@ abstract class AbstractSyntaxElement implements ISyntaxElement {
     public @NonNull String toString(@NonNull String indentation) {
         StringBuilder result = new StringBuilder();
         
-        Formula condition = this.condition;
+        Formula condition = getCondition();
         String conditionStr = condition == null ? "<null>" : condition.toString();
         if (conditionStr.length() > 64) {
             conditionStr = "...";
@@ -123,34 +78,13 @@ abstract class AbstractSyntaxElement implements ISyntaxElement {
         
         indentation += '\t';
         
-        for (int i = 0; i < getNestedElementCount(); i++) {
-            AbstractSyntaxElement child = getNestedElement(i);
+        for (ISyntaxElement child : this) {
             result.append(child.toString(indentation));
         }
         
         return notNull(result.toString());
     }
     
-    @Override
-    public int getLineStart() {
-        return lineStart;
-    }
-    
-    @Override
-    public int getLineEnd() {
-        return lineEnd;
-    }
-
-    @Override
-    public @NonNull File getSourceFile() {
-        return sourceFile;
-    }
-
-    @Override
-    public @Nullable Formula getCondition() {
-        return condition;
-    }
-
     @Override
     public @NonNull List<@NonNull String> serializeCsv() {
         // TODO SE: @Adam please fix this
@@ -159,29 +93,5 @@ abstract class AbstractSyntaxElement implements ISyntaxElement {
     
     @Override
     public abstract void accept(@NonNull ISyntaxElementVisitor visitor);
-    
-    @Override
-    public Iterable<@NonNull ISyntaxElement> iterateNestedSyntaxElements() {
-        return new Iterable<@NonNull ISyntaxElement>() {
-            
-            @Override
-            public @NonNull Iterator<@NonNull ISyntaxElement> iterator() {
-                return new Iterator<@NonNull ISyntaxElement>() {
-
-                    private int index = 0;
-                    
-                    @Override
-                    public boolean hasNext() {
-                        return index < getNestedElementCount();
-                    }
-
-                    @Override
-                    public ISyntaxElement next() {
-                        return getNestedElement(index++);
-                    }
-                };
-            }
-        };
-    }
     
 }

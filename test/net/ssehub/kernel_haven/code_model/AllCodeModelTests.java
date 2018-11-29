@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import net.ssehub.kernel_haven.code_model.ast.AllAstTests;
+import net.ssehub.kernel_haven.code_model.simple_ast.SyntaxElementTest;
 
 /**
  * Tests for code_model package.

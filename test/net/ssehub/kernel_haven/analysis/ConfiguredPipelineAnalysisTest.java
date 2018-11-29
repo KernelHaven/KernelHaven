@@ -298,7 +298,7 @@ public class ConfiguredPipelineAnalysisTest {
         }
         
         @Override
-        protected AnalysisComponent<SourceFile> getCmComponent() {
+        protected AnalysisComponent<SourceFile<?>> getCmComponent() {
             return new DummyExtractorComponent<>(config, "code");
         }
         

@@ -4,8 +4,6 @@ import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import net.ssehub.kernel_haven.util.FormatException;
@@ -20,31 +18,15 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * 
  * @author Adam
  */
-public class CodeBlock implements CodeElement {
+public class CodeBlock extends AbstractCodeElementWithNesting<CodeBlock> {
 
-    private @NonNull List<@NonNull CodeBlock> nested;
-    
-    private int lineStart;
-    
-    private int lineEnd;
-    
-    private @NonNull File sourceFile;
-    
-    private @Nullable Formula condition;
-    
-    private @NonNull Formula presenceCondition;
-    
     /**
      * Creates a new code block.
      * 
      * @param presenceCondition The presence condition of this block.
      */
     public CodeBlock(@NonNull Formula presenceCondition) {
-        this.nested = new LinkedList<>();
-        this.lineStart = -1;
-        this.lineEnd = -1;
-        this.sourceFile = new File("<unknown>");
-        this.presenceCondition = presenceCondition;
+        super(presenceCondition);
     }
     
     /**
@@ -59,67 +41,24 @@ public class CodeBlock implements CodeElement {
     public CodeBlock(int lineStart, int lineEnd, @NonNull File sourceFile, @Nullable Formula condition,
             @NonNull Formula presenceCondition) {
         
-        this.nested = new LinkedList<>();
-        this.lineStart = lineStart;
-        this.lineEnd = lineEnd;
-        this.sourceFile = sourceFile;
-        this.condition = condition;
-        this.presenceCondition = presenceCondition;
-    }
-
-    @Override
-    public int getNestedElementCount() {
-        return nested.size();
-    }
-
-    @Override
-    public @NonNull CodeBlock getNestedElement(int index) throws IndexOutOfBoundsException {
-        return notNull(nested.get(index));
-    }
-    
-    @Override
-    public void addNestedElement(@NonNull CodeElement element) {
-        if (!(element instanceof CodeBlock)) {
-            throw new IllegalArgumentException("Can only add CodeBlocks as child of CodeBlock");
-        }
-        nested.add((CodeBlock) element);
-    }
-
-    @Override
-    public int getLineStart() {
-        return lineStart;
-    }
-
-    @Override
-    public int getLineEnd() {
-        return lineEnd;
-    }
-
-    @Override
-    public @NonNull File getSourceFile() {
-        return sourceFile;
-    }
-
-    @Override
-    public @Nullable Formula getCondition() {
-        return condition;
-    }
-
-    @Override
-    public @NonNull Formula getPresenceCondition() {
-        return presenceCondition;
+        super(presenceCondition);
+        
+        setSourceFile(sourceFile);
+        setLineStart(lineStart);
+        setLineEnd(lineEnd);
+        setCondition(condition);
     }
 
     @Override
     public @NonNull List<@NonNull String> serializeCsv() {
         List<@NonNull String> result = new ArrayList<>(5);
         
-        result.add(notNull(Integer.toString(lineStart)));
-        result.add(notNull(Integer.toString(lineEnd)));
-        result.add(notNull(sourceFile.getPath()));
-        Formula condition = this.condition;
+        result.add(notNull(Integer.toString(getLineStart())));
+        result.add(notNull(Integer.toString(getLineEnd())));
+        result.add(notNull(getSourceFile().getPath()));
+        Formula condition = getCondition();
         result.add(condition == null ? "null" : condition.toString());
-        result.add(presenceCondition.toString());
+        result.add(getPresenceCondition().toString());
         
         return result;
     }
@@ -162,87 +101,13 @@ public class CodeBlock implements CodeElement {
         return new CodeBlock(lineStart, lineEnd, sourceFile, condition, presenceCondition);
     }
 
-    /**
-     * Iterates over the blocks nested inside this blocks. Not recursively.
-     * 
-     * @return An iterable over the nested blocks.
-     */
-    public @NonNull Iterable<@NonNull CodeBlock> iterateNestedBlocks() {
-        return new Iterable<@NonNull CodeBlock>() {
-            
-            @Override
-            public @NonNull Iterator<@NonNull CodeBlock> iterator() {
-                return new Iterator<@NonNull CodeBlock>() {
-
-                    private int index = 0;
-                    
-                    @Override
-                    public boolean hasNext() {
-                        return index < getNestedElementCount();
-                    }
-
-                    @Override
-                    public CodeBlock next() {
-                        return getNestedElement(index++);
-                    }
-                };
-            }
-        };
-    }
     
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(lineStart) + Integer.hashCode(lineEnd) + sourceFile.hashCode()
-            + (condition != null ? condition.hashCode() : 54234) + presenceCondition.hashCode()
-            + nested.hashCode();
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        boolean equal = false;
-        if (obj instanceof CodeBlock) {
-            CodeBlock other = (CodeBlock) obj;
-            equal = true;
-            
-            equal = this.lineStart == other.lineStart && this.lineEnd == other.lineEnd;
-            if (equal) {
-                equal &= this.sourceFile.equals(other.sourceFile);
-            }
-            
-            if (equal) {
-                Formula condition = this.condition;
-                if (condition == null) {
-                    equal &= other.condition == null;
-                } else {
-                    equal &= condition.equals(other.condition);
-                }
-            }
-            
-            if (equal) {
-                equal &= this.presenceCondition.equals(other.presenceCondition);
-            }
-            
-            if (equal) {
-                equal &= this.nested.equals(other.nested);
-            }
-        }
-        return equal;
-    }
-    
+    // TODO: move to superclass
     @Override
     public String toString() {
-        return "CodeBlock[start=" + lineStart + "; end=" + lineEnd + "; file=" + sourceFile + "; condition="
-                + condition + "; pc=" + presenceCondition + "; #children=" + nested.size() + "]";
+        return "CodeBlock[start=" + getLineStart() + "; end=" + getLineEnd() + "; file=" + getSourceFile()
+                + "; condition=" + getCondition() + "; pc=" + getPresenceCondition()
+                + "; #children=" + getNestedElementCount() + "]";
     }
 
-    @Override
-    public void setLineStart(int start) {
-        this.lineStart = start;
-    }
-
-    @Override
-    public void setLineEnd(int end) {
-        this.lineEnd = end;
-    }
-    
 }

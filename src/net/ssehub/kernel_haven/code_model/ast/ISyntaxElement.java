@@ -22,11 +22,8 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * 
  * @author Adam
  */
-public interface ISyntaxElement extends CodeElement {
+public interface ISyntaxElement extends CodeElement<ISyntaxElement> {
 
-    @Override
-    public @NonNull ISyntaxElement getNestedElement(int index) throws IndexOutOfBoundsException;
-    
     /**
      * Replaces the given nested element with the given new element. This method should only be called by the extractor
      * that creates the AST.
@@ -93,12 +90,5 @@ public interface ISyntaxElement extends CodeElement {
      * @param visitor The visitor to accept.
      */
     public abstract void accept(@NonNull ISyntaxElementVisitor visitor);
-    
-    /**
-     * Iterates over the {@link ISyntaxElement}s nested inside this element. Not recursively.
-     * 
-     * @return An iterable over the nested elements.
-     */
-    public Iterable<@NonNull ISyntaxElement> iterateNestedSyntaxElements();
     
 }

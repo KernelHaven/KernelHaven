@@ -32,7 +32,7 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * @author Adam
  * @author Alice
  */
-public class CodeModelCache extends AbstractCache<SourceFile> {
+public class CodeModelCache extends AbstractCache<SourceFile<?>> {
     
     private @NonNull File cacheDir;
     
@@ -92,7 +92,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * @throws IOException If writing the cache file fails.
      */
     @Override
-    public void write(@NonNull SourceFile file) throws IOException {
+    public void write(@NonNull SourceFile<?> file) throws IOException {
         File cacheFile;
         if (compress) {
             // delete the uncompressed version, since this method is supposed to overwrite any previous cache
@@ -114,7 +114,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
             }
             writer = new CsvWriter(fileStream);
 
-            for (CodeElement element : file) {
+            for (CodeElement<?> element : file) {
                 serializeElement(element, 0, writer);
             }
             
@@ -142,7 +142,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * @param writer The writer to write to.
      * @throws IOException If writing fails.
      */
-    private void serializeElement(@NonNull CodeElement element, int level, @NonNull CsvWriter writer)
+    private void serializeElement(@NonNull CodeElement<?> element, int level, @NonNull CsvWriter writer)
             throws IOException {
         
         List<String> serialized = element.serializeCsv();
@@ -157,7 +157,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
         
         writer.writeRow(csvParts);
         
-        for (CodeElement child : element.iterateNestedElements()) {
+        for (CodeElement<?> child : element) {
             serializeElement(child, level + 1, writer);
         }
     }
@@ -172,7 +172,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * @throws FormatException If the cache content is invalid.
      */
     @Override
-    public @Nullable SourceFile read(@NonNull File path) throws IOException, FormatException {
+    public @Nullable SourceFile<?> read(@NonNull File path) throws IOException, FormatException {
         // always try uncompressed first, since its faster
         boolean compressed = false;
         File cacheFile = getCacheFile(path);
@@ -184,7 +184,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
         
         CsvReader reader = null;
         ZipArchive archive = null;
-        SourceFile result = null;
+        SourceFile<CodeElement<?>> result = null;
 
         try {
             InputStream fileIn;
@@ -196,11 +196,12 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
             }
             reader = new CsvReader(fileIn);
 
-            result = new SourceFile(path);
+            result = new SourceFile<CodeElement<?>>(path);
 
             VariableCache cache = new VariableCache();
             Parser<Formula> parser = new Parser<>(new CStyleBooleanGrammar(cache));
 
+            @SuppressWarnings("rawtypes")
             Stack<CodeElement> nesting = new Stack<>();
             
             String[] csvParts;
@@ -245,8 +246,9 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
      * 
      * @throws ReflectiveOperationException If invoking the createFromCsv method fails on the fully qualified classname.
      */
-    private void readLine(@NonNull String @NonNull [] csvParts, @NonNull Stack<@NonNull CodeElement> nesting,
-            @NonNull SourceFile result, @NonNull Parser<@NonNull Formula> parser)
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private void readLine(@NonNull String @NonNull [] csvParts, @NonNull Stack<CodeElement> nesting,
+            @NonNull SourceFile<CodeElement<?>> result, @NonNull Parser<@NonNull Formula> parser)
             throws ReflectiveOperationException {
 
         String className = csvParts[0];
@@ -254,8 +256,7 @@ public class CodeModelCache extends AbstractCache<SourceFile> {
         
         CodeElement created;
         try {
-            @SuppressWarnings("unchecked")
-            Class<? extends CodeElement> clazz = (Class<? extends CodeElement>)
+            Class<? extends CodeElement<?>> clazz = (Class<? extends CodeElement<?>>)
                     ClassLoader.getSystemClassLoader().loadClass(className);
             Method m = clazz.getMethod("createFromCsv", String[].class, Parser.class);
             String[] smallCsv = new String[csvParts.length - 2];

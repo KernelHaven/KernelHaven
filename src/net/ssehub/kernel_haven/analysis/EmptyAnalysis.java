@@ -57,7 +57,7 @@ public class EmptyAnalysis extends AbstractAnalysis {
             
             // code
             int numCm = 0;
-            SourceFile result;
+            SourceFile<?> result;
             do {
                 result = cmProvider.getNextResult();
                 if (result != null) {

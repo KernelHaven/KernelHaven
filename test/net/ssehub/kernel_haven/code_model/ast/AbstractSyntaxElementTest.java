@@ -11,7 +11,6 @@ import java.util.Iterator;
 
 import org.junit.Test;
 
-import net.ssehub.kernel_haven.code_model.CodeBlock;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.True;
 import net.ssehub.kernel_haven.util.logic.Variable;
@@ -244,13 +243,6 @@ public class AbstractSyntaxElementTest {
         } catch (IndexOutOfBoundsException e) {
             // expected
         }
-        
-        try {
-            element.addNestedElement(new CodeBlock(True.INSTANCE));
-            fail("expected exception");
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
     }
     
     /**
@@ -262,7 +254,7 @@ public class AbstractSyntaxElementTest {
         element.addNestedElement(new PseudoSyntaxElement(True.INSTANCE));
         element.addNestedElement(new PseudoSyntaxElement(True.INSTANCE));
         
-        Iterator<ISyntaxElement> it = element.iterateNestedSyntaxElements().iterator();
+        Iterator<ISyntaxElement> it = element.iterator();
         assertThat(it.hasNext(), is(true));
         assertThat(it.next(), notNullValue());
         assertThat(it.hasNext(), is(true));

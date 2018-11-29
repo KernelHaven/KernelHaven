@@ -12,6 +12,11 @@ import java.util.Map;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.code_model.simple_ast.ErrorSyntaxElement;
+import net.ssehub.kernel_haven.code_model.simple_ast.LiteralSyntaxElement;
+import net.ssehub.kernel_haven.code_model.simple_ast.SyntaxElement;
+import net.ssehub.kernel_haven.code_model.simple_ast.SyntaxElementCsvUtil;
+import net.ssehub.kernel_haven.code_model.simple_ast.SyntaxElementTypes;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.logic.Conjunction;
 import net.ssehub.kernel_haven.util.logic.Formula;

@@ -1,4 +1,4 @@
-package net.ssehub.kernel_haven.code_model;
+package net.ssehub.kernel_haven.code_model.simple_ast;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -47,7 +47,7 @@ public class SyntaxElementTest {
         assertThat(main.getNestedElement("nested"), sameInstance(nested2));
         assertThat(main.getNestedElement("other"), nullValue());
         
-        Iterator<SyntaxElement> iter = main.iterateNestedSyntaxElements().iterator();
+        Iterator<SyntaxElement> iter = main.iterator();
         assertThat(iter.hasNext(), is(true));
         assertThat(iter.next(), sameInstance(nested1));
         assertThat(iter.hasNext(), is(true));
@@ -55,15 +55,6 @@ public class SyntaxElementTest {
         assertThat(iter.hasNext(), is(true));
         assertThat(iter.next(), sameInstance(nested3));
         assertThat(iter.hasNext(), is(false));
-    }
-    
-    /**
-     * Tests whether adding a wrong type of child correctly throws an exception.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testAddWrongSyntaxElement() {
-        SyntaxElement main = new SyntaxElement(SyntaxElementTypes.COMPOUND_STATEMENT, True.INSTANCE, True.INSTANCE);
-        main.addNestedElement(new CodeBlock(True.INSTANCE));
     }
     
     /**

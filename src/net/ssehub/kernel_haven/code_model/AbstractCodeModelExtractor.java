@@ -7,6 +7,6 @@ import net.ssehub.kernel_haven.provider.AbstractExtractor;
  *
  * @author Adam
  */
-public abstract class AbstractCodeModelExtractor extends AbstractExtractor<SourceFile> {
+public abstract class AbstractCodeModelExtractor extends AbstractExtractor<SourceFile<?>> {
 
 }

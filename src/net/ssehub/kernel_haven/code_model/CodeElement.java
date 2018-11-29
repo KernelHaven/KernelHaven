@@ -1,7 +1,6 @@
 package net.ssehub.kernel_haven.code_model;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 
 import net.ssehub.kernel_haven.util.logic.Formula;
@@ -11,38 +10,12 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 /**
  * Represents a code element inside a {@link SourceFile}.
  * 
+ * @param <NestedType> The type of elements that are nested inside this element.
+ * 
  * @author Johannes
  * @author Adam
  */
-public interface CodeElement {
-
-    /**
-     * Iterates over the elements nested inside this element. Not recursively.
-     * 
-     * @return An iterable over the nested elements.
-     */
-    public default Iterable<@NonNull CodeElement> iterateNestedElements() {
-        return new Iterable<@NonNull CodeElement>() {
-            
-            @Override
-            public @NonNull Iterator<@NonNull CodeElement> iterator() {
-                return new Iterator<@NonNull CodeElement>() {
-
-                    private int index = 0;
-                    
-                    @Override
-                    public boolean hasNext() {
-                        return index < getNestedElementCount();
-                    }
-
-                    @Override
-                    public CodeElement next() {
-                        return getNestedElement(index++);
-                    }
-                };
-            }
-        };
-    }
+public interface CodeElement<NestedType extends CodeElement<NestedType>> extends Iterable<@NonNull NestedType> {
 
     /**
      * Returns the number of nested elements (not recursively).
@@ -60,7 +33,7 @@ public interface CodeElement {
      * 
      * @throws IndexOutOfBoundsException If index >= getNestedElementCount().
      */
-    public abstract @NonNull CodeElement getNestedElement(int index) throws IndexOutOfBoundsException;
+    public abstract @NonNull NestedType getNestedElement(int index) throws IndexOutOfBoundsException;
 
     /**
      * Adds a nested element to the end of the list.
@@ -69,7 +42,7 @@ public interface CodeElement {
      * 
      * @throws IndexOutOfBoundsException If the concrete class conceptually does not allow any more children.
      */
-    public abstract void addNestedElement(@NonNull CodeElement element) throws IndexOutOfBoundsException;
+    public abstract void addNestedElement(@NonNull NestedType element) throws IndexOutOfBoundsException;
     
     /**
      * Returns the line where this element starts in the source file.

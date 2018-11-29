@@ -18,7 +18,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  *
  * @author Adam
  */
-public class CodeModelProvider extends AbstractProvider<SourceFile> {
+public class CodeModelProvider extends AbstractProvider<SourceFile<?>> {
 
     @Override
     protected long getTimeout() {
@@ -77,7 +77,7 @@ public class CodeModelProvider extends AbstractProvider<SourceFile> {
     }
 
     @Override
-    protected @NonNull AbstractCache<SourceFile> createCache() {
+    protected @NonNull AbstractCache<SourceFile<?>> createCache() {
         return new CodeModelCache(config.getValue(DefaultSettings.CACHE_DIR),
                 config.getValue(DefaultSettings.CODE_PROVIDER_CACHE_COMPRESS));
     }

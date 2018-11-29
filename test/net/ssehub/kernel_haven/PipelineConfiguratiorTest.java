@@ -351,7 +351,7 @@ public class PipelineConfiguratiorTest {
         }
 
         @Override
-        protected SourceFile runOnFile(File target) throws ExtractorException {
+        protected SourceFile<?> runOnFile(File target) throws ExtractorException {
             return null;
         }
 

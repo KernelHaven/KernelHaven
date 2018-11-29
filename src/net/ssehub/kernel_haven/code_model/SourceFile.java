@@ -12,10 +12,12 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 /**
  * Represents a single file from the source tree.
  * 
+ * @param <ElementType> The type of nested elements in this file.
+ * 
  * @author Johannes
  * @author Adam
  */
-public class SourceFile implements Iterable<@NonNull CodeElement> {
+public class SourceFile<ElementType extends CodeElement<?>> implements Iterable<@NonNull ElementType> {
 
     /**
      * This path is relative to the source tree.
@@ -25,7 +27,7 @@ public class SourceFile implements Iterable<@NonNull CodeElement> {
     /**
      * This are the toplevel elements which are not nested in other elements.
      */
-    private @NonNull List<@NonNull CodeElement> elements;
+    private @NonNull List<@NonNull ElementType> elements;
 
     /**
      * Constructs a Sourcefile.
@@ -51,10 +53,9 @@ public class SourceFile implements Iterable<@NonNull CodeElement> {
     /**
      * Adds a element to the end of the list.
      * 
-     * @param element
-     *            The element to add. Must not be <code>null</code>.
+     * @param element The element to add. Must not be <code>null</code>.
      */
-    public void addElement(@NonNull CodeElement element) {
+    public void addElement(@NonNull ElementType element) {
         this.elements.add(element);
     }
 
@@ -63,7 +64,7 @@ public class SourceFile implements Iterable<@NonNull CodeElement> {
      * @return an iterator over top elements.
      */
     @Override
-    public Iterator<@NonNull CodeElement> iterator() {
+    public Iterator<@NonNull ElementType> iterator() {
         return elements.iterator();
     }
     
@@ -75,7 +76,7 @@ public class SourceFile implements Iterable<@NonNull CodeElement> {
      * 
      * @throws IndexOutOfBoundsException If index is out of range.
      */
-    public @NonNull CodeElement getElement(int index) throws IndexOutOfBoundsException {
+    public @NonNull ElementType getElement(int index) throws IndexOutOfBoundsException {
         return notNull(elements.get(index));
     }
     
@@ -86,6 +87,29 @@ public class SourceFile implements Iterable<@NonNull CodeElement> {
      */
     public int getTopElementCount() {
         return elements.size();
+    }
+    
+    /**
+     * Casts this {@link SourceFile} to a source file with the given nested type.
+     * 
+     * @param type The new type to cast to.
+     * 
+     * @param <T> The new generic type.
+     * 
+     * @return This, with a different generic.
+     * 
+     * @throws ClassCastException If the nested elements do not match the given type.
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends CodeElement<?>> @NonNull SourceFile<T> castTo(Class<T> type) throws ClassCastException {
+        for (ElementType element : this) {
+            if (!type.isAssignableFrom(element.getClass())) {
+                throw new ClassCastException("Nested element with type " + element.getClass().getName()
+                        + " can't be cast to " + type.getName());
+            }
+        }
+        
+        return (SourceFile<T>) this;
     }
 
 }

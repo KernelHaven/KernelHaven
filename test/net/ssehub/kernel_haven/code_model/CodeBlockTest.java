@@ -45,21 +45,12 @@ public class CodeBlockTest {
         assertThat(main.getNestedElement(0), sameInstance(nested1));
         assertThat(main.getNestedElement(1), sameInstance(nested2));
         
-        Iterator<CodeBlock> iter = main.iterateNestedBlocks().iterator();
+        Iterator<CodeBlock> iter = main.iterator();
         assertThat(iter.hasNext(), is(true));
         assertThat(iter.next(), sameInstance(nested1));
         assertThat(iter.hasNext(), is(true));
         assertThat(iter.next(), sameInstance(nested2));
         assertThat(iter.hasNext(), is(false));
-    }
-    
-    /**
-     * Tests whether adding a wrong type of child correctly throws an exception.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testAddWrongSyntaxElement() {
-        CodeBlock main = new CodeBlock(True.INSTANCE);
-        main.addNestedElement(new SyntaxElement(SyntaxElementTypes.COMPOUND_STATEMENT, True.INSTANCE, True.INSTANCE));
     }
     
     /**

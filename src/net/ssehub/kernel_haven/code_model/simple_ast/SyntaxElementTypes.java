@@ -1,4 +1,4 @@
-package net.ssehub.kernel_haven.code_model;
+package net.ssehub.kernel_haven.code_model.simple_ast;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -40,7 +40,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
     
     private ExtractorDataDuplicator<BuildModel> bmStarter;
     
-    private ExtractorDataDuplicator<SourceFile> cmStarter;
+    private ExtractorDataDuplicator<SourceFile<?>> cmStarter;
     
     /**
      * Creates a new {@link PipelineAnalysis}.
@@ -84,7 +84,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      * 
      * @return The {@link AnalysisComponent} that provides the code model.
      */
-    protected @NonNull AnalysisComponent<SourceFile> getCmComponent() {
+    protected @NonNull AnalysisComponent<SourceFile<?>> getCmComponent() {
         return cmStarter.createNewStartingComponent(config);
     }
     

@@ -57,7 +57,7 @@ public class CodeModelProviderTest {
         }
 
         @Override
-        protected SourceFile runOnFile(File target) throws ExtractorException {
+        protected SourceFile<?> runOnFile(File target) throws ExtractorException {
             filesToParse.add(target);
             
             try {
@@ -67,7 +67,7 @@ public class CodeModelProviderTest {
             if (throwException) {
                 throw new CodeExtractorException(target, "Test exception");
             } else {
-                return new SourceFile(target);                    
+                return new SourceFile<CodeElement<?>>(target);                    
             }
         }
 
@@ -332,7 +332,7 @@ public class CodeModelProviderTest {
         provider.start();
 
         // read until the provider is empty
-        SourceFile file = provider.getNextResult();
+        SourceFile<?> file = provider.getNextResult();
         while (file != null) {
             file = provider.getNextResult();
         }
@@ -366,7 +366,7 @@ public class CodeModelProviderTest {
         provider.start();
         
         // read until the provider is empty
-        SourceFile file = provider.getNextResult();
+        SourceFile<?> file = provider.getNextResult();
         while (file != null) {
             file = provider.getNextResult();
         }
@@ -399,7 +399,7 @@ public class CodeModelProviderTest {
         provider.start();
         
         // read until the provider is empty
-        SourceFile file = provider.getNextResult();
+        SourceFile<?> file = provider.getNextResult();
         while (file != null) {
             file = provider.getNextResult();
         }
@@ -434,7 +434,7 @@ public class CodeModelProviderTest {
         provider.start();
         
         // read until the provider is empty
-        SourceFile file = provider.getNextResult();
+        SourceFile<?> file = provider.getNextResult();
         while (file != null) {
             file = provider.getNextResult();
         }

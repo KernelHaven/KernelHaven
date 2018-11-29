@@ -12,6 +12,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.code_model.simple_ast.SyntaxElement;
+import net.ssehub.kernel_haven.code_model.simple_ast.SyntaxElementTypes;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.Util;
 import net.ssehub.kernel_haven.util.logic.Conjunction;
@@ -63,7 +65,7 @@ public class CodeModelCacheTest {
     @Test
     public void testCaching() throws IOException, FormatException {
         File location = new File("test.c");
-        SourceFile originalSourceFile = new SourceFile(location);
+        SourceFile<CodeBlock> originalSourceFile = new SourceFile<>(location);
         Variable a = new Variable("A");
         Variable b = new Variable("B");
         CodeBlock block1 = new CodeBlock(1, 2, new File("file"), a, a);
@@ -80,14 +82,14 @@ public class CodeModelCacheTest {
         cache.write(originalSourceFile);
 
         // read
-        SourceFile readSourceFile = cache.read(location);
+        SourceFile<CodeBlock> readSourceFile = cache.read(location).castTo(CodeBlock.class);
 
         // check if equal
         assertThat(readSourceFile.getPath(), is(originalSourceFile.getPath()));
         assertThat(readSourceFile.getTopElementCount(), is(originalSourceFile.getTopElementCount()));
 
-        Iterator<CodeElement> originalIt = originalSourceFile.iterator();
-        Iterator<CodeElement> readIt = readSourceFile.iterator();
+        Iterator<CodeBlock> originalIt = originalSourceFile.iterator();
+        Iterator<CodeBlock> readIt = readSourceFile.iterator();
 
         assertElementEqual(readIt.next(), originalIt.next());
         assertElementEqual(readIt.next(), originalIt.next());
@@ -102,7 +104,7 @@ public class CodeModelCacheTest {
      * @param expected
      *            The expected value.
      */
-    private void assertElementEqual(CodeElement actual, CodeElement expected) {
+    private void assertElementEqual(CodeElement<CodeBlock> actual, CodeElement<CodeBlock> expected) {
         assertThat(actual.getClass(), is((Object) expected.getClass()));
         assertThat(actual.getLineStart(), is(expected.getLineStart()));
         assertThat(actual.getLineEnd(), is(expected.getLineEnd()));
@@ -110,14 +112,14 @@ public class CodeModelCacheTest {
         assertThat(actual.getPresenceCondition(), is(expected.getPresenceCondition()));
         assertThat(actual.getNestedElementCount(), is(expected.getNestedElementCount()));
 
-        Iterator<CodeElement> actualIt = actual.iterateNestedElements().iterator();
-        Iterator<CodeElement> expectedIt = expected.iterateNestedElements().iterator();
+        Iterator<CodeBlock> actualIt = actual.iterator();
+        Iterator<CodeBlock> expectedIt = expected.iterator();
 
         while (expectedIt.hasNext()) {
             assertThat(actualIt.hasNext(), is(true));
 
-            CodeElement actualChild = actualIt.next();
-            CodeElement expectedChild = expectedIt.next();
+            CodeBlock actualChild = actualIt.next();
+            CodeBlock expectedChild = expectedIt.next();
             assertElementEqual(actualChild, expectedChild);
         }
         assertThat(actualIt.hasNext(), is(false));
@@ -164,7 +166,7 @@ public class CodeModelCacheTest {
     @Test()
     public void testEmptyCache() throws FormatException, IOException {
         CodeModelCache cache = new CodeModelCache(new File("testdata/bmCaching/cache3"));
-        SourceFile result = cache.read(new File("test.c"));
+        SourceFile<?> result = cache.read(new File("test.c"));
 
         assertThat(result, nullValue());
     }
@@ -195,7 +197,7 @@ public class CodeModelCacheTest {
     @Test
     public void testSyntaxElementCaching() throws IOException, FormatException {
         File location = new File("test.c");
-        SourceFile originalSourceFile = new SourceFile(location);
+        SourceFile<SyntaxElement> originalSourceFile = new SourceFile<>(location);
         Variable a = new Variable("A");
         Variable b = new Variable("B");
 
@@ -224,17 +226,17 @@ public class CodeModelCacheTest {
         cache.write(originalSourceFile);
 
         // read
-        SourceFile readSourceFile = cache.read(location);
+        SourceFile<SyntaxElement> readSourceFile = cache.read(location).castTo(SyntaxElement.class);
 
         // check if equal
         assertThat(readSourceFile.getPath(), is(originalSourceFile.getPath()));
         assertThat(readSourceFile.getTopElementCount(), is(originalSourceFile.getTopElementCount()));
 
-        Iterator<CodeElement> originalIt = originalSourceFile.iterator();
-        Iterator<CodeElement> readIt = readSourceFile.iterator();
+        Iterator<SyntaxElement> originalIt = originalSourceFile.iterator();
+        Iterator<SyntaxElement> readIt = readSourceFile.iterator();
 
-        assertSyntaxElementEqual((SyntaxElement) readIt.next(), (SyntaxElement) originalIt.next());
-        assertSyntaxElementEqual((SyntaxElement) readIt.next(), (SyntaxElement) originalIt.next());
+        assertSyntaxElementEqual(readIt.next(), originalIt.next());
+        assertSyntaxElementEqual(readIt.next(), originalIt.next());
         assertThat(readIt.hasNext(), is(false));
     }
 
@@ -261,8 +263,8 @@ public class CodeModelCacheTest {
             assertThat(actual.getRelation(i), is(expected.getRelation(i)));
         }
 
-        Iterator<SyntaxElement> actualIt = actual.iterateNestedSyntaxElements().iterator();
-        Iterator<SyntaxElement> expectedIt = expected.iterateNestedSyntaxElements().iterator();
+        Iterator<SyntaxElement> actualIt = actual.iterator();
+        Iterator<SyntaxElement> expectedIt = expected.iterator();
 
         while (expectedIt.hasNext()) {
             assertThat(actualIt.hasNext(), is(true));
@@ -285,7 +287,7 @@ public class CodeModelCacheTest {
     @Test
     public void testCachingCompressed() throws IOException, FormatException {
         File location = new File("test.c");
-        SourceFile originalSourceFile = new SourceFile(location);
+        SourceFile<CodeBlock> originalSourceFile = new SourceFile<>(location);
         Variable a = new Variable("A");
         Variable b = new Variable("B");
         CodeBlock block1 = new CodeBlock(1, 2, new File("file"), a, a);
@@ -302,14 +304,14 @@ public class CodeModelCacheTest {
         cache.write(originalSourceFile);
 
         // read
-        SourceFile readSourceFile = cache.read(location);
+        SourceFile<CodeBlock> readSourceFile = cache.read(location).castTo(CodeBlock.class);
 
         // check if equal
         assertThat(readSourceFile.getPath(), is(originalSourceFile.getPath()));
         assertThat(readSourceFile.getTopElementCount(), is(originalSourceFile.getTopElementCount()));
 
-        Iterator<CodeElement> originalIt = originalSourceFile.iterator();
-        Iterator<CodeElement> readIt = readSourceFile.iterator();
+        Iterator<CodeBlock> originalIt = originalSourceFile.iterator();
+        Iterator<CodeBlock> readIt = readSourceFile.iterator();
 
         assertElementEqual(readIt.next(), originalIt.next());
         assertElementEqual(readIt.next(), originalIt.next());
@@ -327,7 +329,7 @@ public class CodeModelCacheTest {
     @Test
     public void testCachingReadCompressed() throws IOException, FormatException {
         File location = new File("test.c");
-        SourceFile originalSourceFile = new SourceFile(location);
+        SourceFile<CodeBlock> originalSourceFile = new SourceFile<>(location);
         Variable a = new Variable("A");
         Variable b = new Variable("B");
         CodeBlock block1 = new CodeBlock(1, 2, new File("file"), a, a);
@@ -343,14 +345,14 @@ public class CodeModelCacheTest {
         // don't write, the directory already contains the valid cache
         
         // read
-        SourceFile readSourceFile = cache.read(location);
+        SourceFile<CodeBlock> readSourceFile = cache.read(location).castTo(CodeBlock.class);
 
         // check if equal
         assertThat(readSourceFile.getPath(), is(originalSourceFile.getPath()));
         assertThat(readSourceFile.getTopElementCount(), is(originalSourceFile.getTopElementCount()));
 
-        Iterator<CodeElement> originalIt = originalSourceFile.iterator();
-        Iterator<CodeElement> readIt = readSourceFile.iterator();
+        Iterator<CodeBlock> originalIt = originalSourceFile.iterator();
+        Iterator<CodeBlock> readIt = readSourceFile.iterator();
 
         assertElementEqual(readIt.next(), originalIt.next());
         assertElementEqual(readIt.next(), originalIt.next());
