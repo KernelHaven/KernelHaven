@@ -42,5 +42,22 @@ public class Label extends AbstractSyntaxElementNoNesting {
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitLabel(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + code.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof Label && super.equals(obj)) {
+            Label other = (Label) obj;
+            equal = this.code.equals(other.code);
+        }
+        
+        return equal;
+    }
 
 }

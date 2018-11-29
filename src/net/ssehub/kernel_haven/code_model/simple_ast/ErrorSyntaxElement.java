@@ -34,4 +34,20 @@ public class ErrorSyntaxElement implements ISyntaxElementType {
         return "Error: " + message;
     }
     
+    @Override
+    public int hashCode() {
+        return message.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof ErrorSyntaxElement) {
+            equal = this.message.equals(((ErrorSyntaxElement) obj).message);
+        }
+        
+        return equal;
+    }
+    
 }

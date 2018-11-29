@@ -42,4 +42,21 @@ public class Code extends AbstractSyntaxElementNoNesting implements ICode {
         visitor.visitCode(this);
     }
     
+    @Override
+    public int hashCode() {
+        return super.hashCode() + text.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof Code && super.equals(obj)) {
+            Code other = (Code) obj;
+            equal = this.text.equals(other.text);
+        }
+        
+        return equal;
+    }
+    
 }

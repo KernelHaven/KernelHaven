@@ -87,5 +87,29 @@ public class CaseStatement extends AbstractSyntaxElementWithNesting {
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitCaseStatement(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + type.hashCode() + switchStatement.hashCode()
+                + (caseCondition != null ? caseCondition.hashCode() : 523);
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof CaseStatement && super.equals(obj)) {
+            CaseStatement other = (CaseStatement) obj;
+            equal = this.type.equals(other.type) && this.switchStatement.equals(other.switchStatement);
+            
+            if (equal && this.caseCondition != null) {
+                equal &= this.caseCondition.equals(other.caseCondition);
+            } else {
+                equal &= other.caseCondition == null;
+            }
+        }
+        
+        return equal;
+    }
 
 }

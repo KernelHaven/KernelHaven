@@ -88,5 +88,22 @@ public class SwitchStatement extends AbstractSyntaxElementWithNesting {
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitSwitchStatement(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + header.hashCode() + cases.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof SwitchStatement && super.equals(obj)) {
+            SwitchStatement other = (SwitchStatement) obj;
+            equal = this.header.equals(other.header) && this.cases.equals(other.cases);
+        }
+        
+        return equal;
+    }
 
 }

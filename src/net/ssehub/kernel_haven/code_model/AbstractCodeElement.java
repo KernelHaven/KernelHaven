@@ -187,7 +187,6 @@ public abstract class AbstractCodeElement<NestedType extends CodeElement<NestedT
         boolean equal = false;
         if (obj instanceof AbstractCodeElement<?>) {
             AbstractCodeElement<?> other = (AbstractCodeElement<?>) obj;
-            equal = true;
             
             equal = this.lineStart == other.lineStart && this.lineEnd == other.lineEnd;
             if (equal) {

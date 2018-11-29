@@ -55,5 +55,22 @@ public class Function extends AbstractSyntaxElementWithNesting {
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitFunction(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + name.hashCode() + header.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof Function && super.equals(obj)) {
+            Function other = (Function) obj;
+            equal = this.name.equals(other.name) && this.header.equals(other.header);
+        }
+        
+        return equal;
+    }
 
 }

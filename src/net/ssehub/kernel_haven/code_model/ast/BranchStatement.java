@@ -118,5 +118,29 @@ public class BranchStatement extends AbstractSyntaxElementWithNesting {
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitBranchStatement(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + type.hashCode() + siblings.hashCode()
+            + (ifCondition != null ? ifCondition.hashCode() : 123);
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof BranchStatement && super.equals(obj)) {
+            BranchStatement other = (BranchStatement) obj;
+            equal = this.type.equals(other.type) && this.siblings.equals(other.siblings);
+            
+            if (equal && this.ifCondition != null) {
+                equal &= this.ifCondition.equals(other.ifCondition);
+            } else {
+                equal &= other.ifCondition == null;
+            }
+        }
+        
+        return equal;
+    }
 
 }

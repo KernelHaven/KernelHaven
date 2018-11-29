@@ -54,5 +54,22 @@ public class LoopStatement extends AbstractSyntaxElementWithNesting {
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitLoopStatement(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + type.hashCode() + condition.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof LoopStatement && super.equals(obj)) {
+            LoopStatement other = (LoopStatement) obj;
+            equal = this.type.equals(other.type) && this.condition.equals(other.condition);
+        }
+        
+        return equal;
+    }
 
 }

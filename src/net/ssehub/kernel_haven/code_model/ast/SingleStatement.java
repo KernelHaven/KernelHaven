@@ -89,5 +89,22 @@ public class SingleStatement extends AbstractSyntaxElementNoNesting {
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitSingleStatement(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + type.hashCode() + code.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof SingleStatement && super.equals(obj)) {
+            SingleStatement other = (SingleStatement) obj;
+            equal = this.code.equals(other.code) && this.type.equals(other.type);
+        }
+        
+        return equal;
+    }
 
 }

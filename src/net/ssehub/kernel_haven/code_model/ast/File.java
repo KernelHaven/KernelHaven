@@ -43,5 +43,22 @@ public class File extends AbstractSyntaxElementWithNesting {
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitFile(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + path.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof File && super.equals(obj)) {
+            File other = (File) obj;
+            equal = this.path.equals(other.path);
+        }
+        
+        return equal;
+    }
 
 }

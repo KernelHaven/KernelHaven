@@ -190,4 +190,21 @@ public class SyntaxElement extends AbstractCodeElementWithNesting<SyntaxElement>
         return notNull(result.toString());
     }
     
+    @Override
+    public int hashCode() {
+        return super.hashCode() + relations.hashCode() + type.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof SyntaxElement && super.equals(obj)) {
+            SyntaxElement other = (SyntaxElement) obj;
+            equal = this.type.equals(other.type) && this.relations.equals(other.relations);
+        }
+        
+        return equal;
+    }
+    
 }

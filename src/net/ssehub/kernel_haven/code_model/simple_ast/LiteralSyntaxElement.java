@@ -33,5 +33,21 @@ public class LiteralSyntaxElement implements ISyntaxElementType {
     public @NonNull String toString() {
         return "Literal: " + content;
     }
+    
+    @Override
+    public int hashCode() {
+        return content.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof LiteralSyntaxElement) {
+            equal = this.content.equals(((LiteralSyntaxElement) obj).content);
+        }
+        
+        return equal;
+    }
 
 }

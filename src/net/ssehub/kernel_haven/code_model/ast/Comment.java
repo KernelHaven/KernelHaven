@@ -41,5 +41,22 @@ public class Comment extends AbstractSyntaxElementNoNesting implements ICode {
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitComment(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + comment.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof Comment && super.equals(obj)) {
+            Comment other = (Comment) obj;
+            equal = this.comment.equals(other.comment);
+        }
+        
+        return equal;
+    }
 
 }

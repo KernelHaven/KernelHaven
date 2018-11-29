@@ -113,5 +113,29 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitCppBlock(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + type.hashCode() + siblings.hashCode()
+                + (condition != null ? condition.hashCode() : 123);
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof CppBlock && super.equals(obj)) {
+            CppBlock other = (CppBlock) obj;
+            equal = this.type.equals(other.type) && this.siblings.equals(other.siblings);
+            
+            if (equal && this.condition != null) {
+                equal &= this.condition.equals(other.condition);
+            } else {
+                equal &= other.condition == null;
+            }
+        }
+        
+        return equal;
+    }
 
 }

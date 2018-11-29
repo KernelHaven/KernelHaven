@@ -69,5 +69,22 @@ public class TypeDefinition extends AbstractSyntaxElementWithNesting {
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitTypeDefinition(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + declaration.hashCode() + type.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof TypeDefinition && super.equals(obj)) {
+            TypeDefinition other = (TypeDefinition) obj;
+            equal = this.type.equals(other.type) && this.declaration.equals(other.declaration);
+        }
+        
+        return equal;
+    }
 
 }

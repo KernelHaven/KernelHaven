@@ -70,5 +70,27 @@ public class CppStatement extends AbstractSyntaxElementNoNesting {
     public void accept(@NonNull ISyntaxElementVisitor visitor) {
         visitor.visitCppStatement(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode() + type.hashCode() + (expression != null ? expression.hashCode() : 123);
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        
+        if (obj instanceof CppStatement && super.equals(obj)) {
+            CppStatement other = (CppStatement) obj;
+            equal = this.type.equals(other.type);
+            if (equal && this.expression != null) {
+                equal &= this.expression.equals(other.expression);
+            } else {
+                equal &= other.expression == null;
+            }
+        }
+        
+        return equal;
+    }
 
 }
