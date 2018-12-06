@@ -366,7 +366,8 @@ public abstract class AbstractCodeElement<NestedType extends CodeElement<NestedT
         
         return equal;
     }
-    
+
+    // this method is mainly implemented for test cases
     @Override
     public final boolean equals(Object obj) {
         boolean equal = false;
@@ -433,6 +434,7 @@ public abstract class AbstractCodeElement<NestedType extends CodeElement<NestedT
             + (condition != null ? condition.hashCode() : 54234) + presenceCondition.hashCode();
     }
     
+    // this method is mainly implemented for test cases
     @Override
     public final int hashCode() {
         return new CodeElementHasher().hashCode(this);

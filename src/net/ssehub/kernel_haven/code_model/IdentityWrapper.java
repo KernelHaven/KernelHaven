@@ -9,7 +9,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * @param <T> The type that is held by this wrapper.
  */
-class IdentityWrapper<T> {
+final class IdentityWrapper<T> {
 
 
     private @NonNull T data;
