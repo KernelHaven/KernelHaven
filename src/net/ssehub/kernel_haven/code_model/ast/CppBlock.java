@@ -1,10 +1,24 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
+import net.ssehub.kernel_haven.code_model.AbstractCodeElement;
+import net.ssehub.kernel_haven.code_model.CodeElement;
+import net.ssehub.kernel_haven.code_model.JsonCodeModelCache.CheckedFunction;
+import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.json.JsonElement;
+import net.ssehub.kernel_haven.util.io.json.JsonList;
+import net.ssehub.kernel_haven.util.io.json.JsonNumber;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
+import net.ssehub.kernel_haven.util.io.json.JsonString;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -28,7 +42,9 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
     
     private @NonNull Type type;
     
-    private List<CppBlock> siblings;
+    private List<@NonNull CppBlock> siblings;
+
+    private @Nullable List<@NonNull Integer> serializationSiblingIds;
     
     /**
      * Creates a {@link CppBlock}.
@@ -45,10 +61,42 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
     }
     
     /**
+     * De-serializes the given JSON to a {@link CodeElement}. This is the inverse operation to
+     * {@link #serializeToJson(JsonObject, Function, Function)}.
+     * 
+     * @param json The JSON do de-serialize.
+     * @param deserializeFunction The function to use for de-serializing secondary nested elements. Do not use this to
+     *      de-serialize the {@link CodeElement}s in the primary nesting structure!
+     *      (i.e. {@link #getNestedElement(int)})
+     * 
+     * @throws FormatException If the JSON does not have the expected format.
+     */
+    protected CppBlock(@NonNull JsonObject json,
+        @NonNull CheckedFunction<@NonNull JsonElement, @NonNull CodeElement<?>, FormatException> deserializeFunction)
+        throws FormatException {
+        super(json, deserializeFunction);
+        
+        this.type = Type.valueOf(json.getString("cppType"));
+        
+        if (json.getElement("cppCondition") != null) {
+            this.condition = parseJsonFormula(json.getString("cppCondition"));
+        }
+        
+        JsonList siblingIds = json.getList("cppSiblings");
+        List<@NonNull Integer> serializationSiblingIds = new ArrayList<>(siblingIds.getSize());
+        for (JsonElement siblingId : siblingIds) {
+            serializationSiblingIds.add((Integer) ((JsonNumber) siblingId).getValue());
+        }
+        
+        this.serializationSiblingIds = serializationSiblingIds;
+        this.siblings = new LinkedList<>(); // will be filled in resolveIds()
+    }
+    
+    /**
      * Adds another if, elif, else block, which belongs to the same block.
      * @param sibling Another if, elif, else block, which belongs to the this block structure.
      */
-    public void addSibling(CppBlock sibling) {
+    public void addSibling(@NonNull CppBlock sibling) {
         siblings.add(sibling);
     }
     
@@ -56,10 +104,10 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
      * Returns an unmodifiable iterator for iterating through all the siblings starting at the opening <tt>if</tt>.
      * @return An unmodifiable iterator for iterating through all the siblings.
      */
-    public Iterator<CppBlock> getSiblingsIterator() {
+    public Iterator<@NonNull CppBlock> getSiblingsIterator() {
         // Copied from: java.util.Collections.UnmodifiableCollection<E>
-        return new Iterator<CppBlock>() {
-            private final Iterator<CppBlock> itr = siblings.iterator();
+        return new Iterator<@NonNull CppBlock>() {
+            private final Iterator<@NonNull CppBlock> itr = siblings.iterator();
 
             @Override
             public boolean hasNext() {
@@ -67,8 +115,8 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
             }
             
             @Override
-            public CppBlock next() {
-                return itr.next();
+            public @NonNull CppBlock next() {
+                return notNull(itr.next());
             }
             
             @Override
@@ -115,27 +163,76 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
     }
     
     @Override
-    public int hashCode() {
-        return super.hashCode() + type.hashCode() + siblings.hashCode()
+    protected int hashCode(@NonNull CodeElementHasher hasher) {
+        int result = 1;
+        
+        for (CppBlock sibling : siblings) {
+            result = 31 * result + hasher.hashCode(sibling);
+        }
+        
+        return result + super.hashCode(hasher) + type.hashCode()
                 + (condition != null ? condition.hashCode() : 123);
     }
     
     @Override
-    public boolean equals(Object obj) {
-        boolean equal = false;
+    protected boolean equals(@NonNull AbstractCodeElement<?> other, @NonNull CodeElementEqualityChecker checker) {
+        boolean equal = other instanceof CppBlock && super.equals(other, checker);
         
-        if (obj instanceof CppBlock && super.equals(obj)) {
-            CppBlock other = (CppBlock) obj;
-            equal = this.type.equals(other.type) && this.siblings.equals(other.siblings);
+        if (equal) {
+            CppBlock o = (CppBlock) other;
             
-            if (equal && this.condition != null) {
-                equal &= this.condition.equals(other.condition);
+            if (this.condition != null && o.condition != null) {
+                equal = this.type == o.type && this.condition.equals(o.condition)
+                        && this.siblings.size() == o.siblings.size();
             } else {
-                equal &= other.condition == null;
+                equal = this.type == o.type && this.condition == o.condition
+                        && this.siblings.size() == o.siblings.size();
+            }
+            
+            for (int i = 0; equal && i < this.siblings.size(); i++) {
+                equal &= checker.isEqual(this.siblings.get(i), o.siblings.get(i));
             }
         }
         
         return equal;
+    }
+    
+    @Override
+    public void serializeToJson(JsonObject result,
+            @NonNull Function<@NonNull CodeElement<?>, @NonNull JsonElement> serializeFunction,
+            @NonNull Function<@NonNull CodeElement<?>, @NonNull Integer> idFunction) {
+        super.serializeToJson(result, serializeFunction, idFunction);
+        
+        result.putElement("cppType", new JsonString(notNull(type.name())));
+        if (condition != null) {
+            result.putElement("cppCondition", new JsonString(condition.toString()));
+        }
+        
+        JsonList siblingIds = new JsonList();
+        for (CppBlock sibling : siblings) {
+            siblingIds.addElement(new JsonNumber(idFunction.apply(sibling)));
+        }
+
+        result.putElement("cppSiblings", siblingIds);
+    }
+    
+    @Override
+    public void resolveIds(Map<Integer, CodeElement<?>> mapping) throws FormatException {
+        super.resolveIds(mapping);
+        
+        List<@NonNull Integer> serializationSiblingIds = this.serializationSiblingIds;
+        this.serializationSiblingIds = null;
+        if (serializationSiblingIds == null) {
+            throw new FormatException("Did not get de-erialization IDs");
+        }
+        
+        for (Integer id : serializationSiblingIds) {
+            CppBlock sibling = (CppBlock) mapping.get(id);
+            if (sibling == null) {
+                throw new FormatException("Unknown ID: " + id);
+            }
+            this.siblings.add(sibling);
+        }
     }
 
 }

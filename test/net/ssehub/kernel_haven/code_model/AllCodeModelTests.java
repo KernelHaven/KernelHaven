@@ -16,6 +16,7 @@ import net.ssehub.kernel_haven.code_model.simple_ast.SyntaxElementTest;
     
     CodeBlockTest.class,
     CodeModelCacheTest.class,
+    JsonCodeModelCacheTest.class,
     CodeModelProviderTest.class,
     SyntaxElementCsvUtilTest.class,
     SyntaxElementTest.class,

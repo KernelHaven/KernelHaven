@@ -1,5 +1,18 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
+import java.util.Map;
+import java.util.function.Function;
+
+import net.ssehub.kernel_haven.code_model.AbstractCodeElement;
+import net.ssehub.kernel_haven.code_model.CodeElement;
+import net.ssehub.kernel_haven.code_model.JsonCodeModelCache.CheckedFunction;
+import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.json.JsonElement;
+import net.ssehub.kernel_haven.util.io.json.JsonNumber;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
+import net.ssehub.kernel_haven.util.io.json.JsonString;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -27,6 +40,8 @@ public class CaseStatement extends AbstractSyntaxElementWithNesting {
     
     private @NonNull SwitchStatement switchStatement;
     
+    private @Nullable Integer serializationSwitchId;
+    
     /**
      * Creates a {@link CaseStatement}.
      * 
@@ -42,6 +57,31 @@ public class CaseStatement extends AbstractSyntaxElementWithNesting {
         this.caseCondition = caseCondition;
         this.type = type;
         this.switchStatement = switchStatement;
+    }
+    
+    /**
+     * De-serializes the given JSON to a {@link CodeElement}. This is the inverse operation to
+     * {@link #serializeToJson(JsonObject, Function, Function)}.
+     * 
+     * @param json The JSON do de-serialize.
+     * @param deserializeFunction The function to use for de-serializing secondary nested elements. Do not use this to
+     *      de-serialize the {@link CodeElement}s in the primary nesting structure!
+     *      (i.e. {@link #getNestedElement(int)})
+     * 
+     * @throws FormatException If the JSON does not have the expected format.
+     */
+    @SuppressWarnings("null") // switchStatement will be initialized in resolveIds()
+    protected CaseStatement(@NonNull JsonObject json,
+        @NonNull CheckedFunction<@NonNull JsonElement, @NonNull CodeElement<?>, FormatException> deserializeFunction)
+        throws FormatException {
+        super(json, deserializeFunction);
+        
+        this.type = CaseType.valueOf(json.getString("caseType"));
+        if (json.getElement("caseCondition") != null) {
+            this.caseCondition = (ICode) deserializeFunction.apply(json.getObject("caseCondition"));
+        }
+        
+        this.serializationSwitchId = json.getInt("switch");
     }
     
     /**
@@ -89,27 +129,59 @@ public class CaseStatement extends AbstractSyntaxElementWithNesting {
     }
     
     @Override
-    public int hashCode() {
-        return super.hashCode() + type.hashCode() + switchStatement.hashCode()
-                + (caseCondition != null ? caseCondition.hashCode() : 523);
+    protected int hashCode(@NonNull CodeElementHasher hasher) {
+        return super.hashCode(hasher) + type.hashCode() + hasher.hashCode(switchStatement)
+                + (caseCondition != null ? hasher.hashCode((AbstractCodeElement<?>) caseCondition) : 523);
     }
     
     @Override
-    public boolean equals(Object obj) {
-        boolean equal = false;
+    protected boolean equals(@NonNull AbstractCodeElement<?> other, @NonNull CodeElementEqualityChecker checker) {
+        boolean equal = other instanceof CaseStatement && super.equals(other, checker);
         
-        if (obj instanceof CaseStatement && super.equals(obj)) {
-            CaseStatement other = (CaseStatement) obj;
-            equal = this.type.equals(other.type) && this.switchStatement.equals(other.switchStatement);
+        if (equal) {
+            CaseStatement o = (CaseStatement) other;
             
-            if (equal && this.caseCondition != null) {
-                equal &= this.caseCondition.equals(other.caseCondition);
+            if (this.caseCondition != null && o.caseCondition != null) {
+                equal = this.type == o.type && checker.isEqual(
+                        (AbstractCodeElement<?>) this.caseCondition, (AbstractCodeElement<?>) o.caseCondition);
             } else {
-                equal &= other.caseCondition == null;
+                equal = this.type == o.type && this.caseCondition == o.caseCondition;
             }
+            
+            equal &= checker.isEqual(this.switchStatement, o.switchStatement);
         }
         
         return equal;
+    }
+    
+    @Override
+    public void serializeToJson(JsonObject result,
+            @NonNull Function<@NonNull CodeElement<?>, @NonNull JsonElement> serializeFunction,
+            @NonNull Function<@NonNull CodeElement<?>, @NonNull Integer> idFunction) {
+        super.serializeToJson(result, serializeFunction, idFunction);
+        
+        result.putElement("caseType", new JsonString(notNull(type.name())));
+        if (caseCondition != null) {
+            result.putElement("caseCondition", serializeFunction.apply(caseCondition));
+        }
+        result.putElement("switch", new JsonNumber(idFunction.apply(switchStatement)));
+    }
+    
+    @Override
+    public void resolveIds(Map<Integer, CodeElement<?>> mapping) throws FormatException {
+        super.resolveIds(mapping);
+        
+        Integer serializationSwitchId = this.serializationSwitchId;
+        this.serializationSwitchId = null;
+        if (serializationSwitchId == null) {
+            throw new FormatException("Did not get ID");
+        }
+        
+        SwitchStatement stmt = (SwitchStatement) mapping.get(serializationSwitchId);
+        if (stmt == null) {
+            throw new FormatException("Unkown ID: " + serializationSwitchId);
+        }
+        this.switchStatement = stmt;
     }
 
 }

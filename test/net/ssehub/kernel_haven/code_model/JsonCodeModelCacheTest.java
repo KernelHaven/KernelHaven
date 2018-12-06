@@ -10,8 +10,11 @@ import java.util.Iterator;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import net.ssehub.kernel_haven.code_model.ast.AllAstTests;
+import net.ssehub.kernel_haven.code_model.ast.ISyntaxElement;
 import net.ssehub.kernel_haven.code_model.simple_ast.SyntaxElement;
 import net.ssehub.kernel_haven.code_model.simple_ast.SyntaxElementTypes;
 import net.ssehub.kernel_haven.util.FormatException;
@@ -22,13 +25,12 @@ import net.ssehub.kernel_haven.util.logic.True;
 import net.ssehub.kernel_haven.util.logic.Variable;
 
 /**
- * Tests the code model cache.
+ * Tests the {@link JsonCodeModelCache}.
  *
  * @author Adam
- * @author Alice
  */
 @SuppressWarnings("null")
-public class CodeModelCacheTest {
+public class JsonCodeModelCacheTest {
 
     private File cacheDir;
 
@@ -54,16 +56,13 @@ public class CodeModelCacheTest {
     }
 
     /**
-     * Caching test. Is Caching a BuildModel Object and comparing it to the
-     * cached one
+     * Writes and reads a code model consisting of {@link CodeBlock}s to the cache, and asserts that contents are equal.
      * 
-     * @throws IOException
-     *             unwanted.
-     * @throws FormatException
-     *             unwanted.
+     * @throws IOException unwanted.
+     * @throws FormatException unwanted.
      */
     @Test
-    public void testCaching() throws IOException, FormatException {
+    public void testBlockCaching() throws IOException, FormatException {
         File location = new File("test.c");
         SourceFile<CodeBlock> originalSourceFile = new SourceFile<>(location);
         Variable a = new Variable("A");
@@ -76,11 +75,11 @@ public class CodeModelCacheTest {
         originalSourceFile.addElement(block1);
         originalSourceFile.addElement(block2);
 
-        CodeModelCache cache = new CodeModelCache(cacheDir);
+        JsonCodeModelCache cache = new JsonCodeModelCache(cacheDir);
 
         // write
         cache.write(originalSourceFile);
-
+        
         // read
         SourceFile<CodeBlock> readSourceFile = cache.read(location).castTo(CodeBlock.class);
 
@@ -91,40 +90,11 @@ public class CodeModelCacheTest {
         Iterator<CodeBlock> originalIt = originalSourceFile.iterator();
         Iterator<CodeBlock> readIt = readSourceFile.iterator();
 
-        assertElementEqual(readIt.next(), originalIt.next());
-        assertElementEqual(readIt.next(), originalIt.next());
+        assertThat(readIt.next(), is(originalIt.next()));
+        assertThat(readIt.next(), is(originalIt.next()));
         assertThat(readIt.hasNext(), is(false));
     }
-
-    /**
-     * Asserts that both elements are equal. Recursively checks child elements, too.
-     * 
-     * @param actual
-     *            The actual value.
-     * @param expected
-     *            The expected value.
-     */
-    private void assertElementEqual(CodeElement<CodeBlock> actual, CodeElement<CodeBlock> expected) {
-        assertThat(actual.getClass(), is((Object) expected.getClass()));
-        assertThat(actual.getLineStart(), is(expected.getLineStart()));
-        assertThat(actual.getLineEnd(), is(expected.getLineEnd()));
-        assertThat(actual.getCondition(), is(expected.getCondition()));
-        assertThat(actual.getPresenceCondition(), is(expected.getPresenceCondition()));
-        assertThat(actual.getNestedElementCount(), is(expected.getNestedElementCount()));
-
-        Iterator<CodeBlock> actualIt = actual.iterator();
-        Iterator<CodeBlock> expectedIt = expected.iterator();
-
-        while (expectedIt.hasNext()) {
-            assertThat(actualIt.hasNext(), is(true));
-
-            CodeBlock actualChild = actualIt.next();
-            CodeBlock expectedChild = expectedIt.next();
-            assertElementEqual(actualChild, expectedChild);
-        }
-        assertThat(actualIt.hasNext(), is(false));
-    }
-
+    
     /**
      * Tests if an invalid cache file correctly throws an
      * {@link FormatException} with an invalid CSV.
@@ -136,7 +106,7 @@ public class CodeModelCacheTest {
      */
     @Test(expected = FormatException.class)
     public void testInvalidClass() throws FormatException, IOException {
-        CodeModelCache cache = new CodeModelCache(new File("testdata/cmCaching/cache_invalid_class"));
+        JsonCodeModelCache cache = new JsonCodeModelCache(new File("testdata/cmCaching/cache_invalid_class"));
         cache.read(new File("test.c"));
     }
 
@@ -151,7 +121,7 @@ public class CodeModelCacheTest {
      */
     @Test(expected = FormatException.class)
     public void testMalFormFormula() throws FormatException, IOException {
-        CodeModelCache cache = new CodeModelCache(new File("testdata/cmCaching/cache_malformed_formula"));
+        JsonCodeModelCache cache = new JsonCodeModelCache(new File("testdata/cmCaching/cache_malformed_formula"));
         cache.read(new File("test.c"));
     }
 
@@ -163,9 +133,9 @@ public class CodeModelCacheTest {
      * @throws FormatException
      *             unwanted.
      */
-    @Test()
+    @Test
     public void testEmptyCache() throws FormatException, IOException {
-        CodeModelCache cache = new CodeModelCache(new File("testdata/bmCaching/cache_empty"));
+        JsonCodeModelCache cache = new JsonCodeModelCache(new File("testdata/bmCaching/cache_empty"));
         SourceFile<?> result = cache.read(new File("test.c"));
 
         assertThat(result, nullValue());
@@ -181,8 +151,8 @@ public class CodeModelCacheTest {
      *             wanted.
      */
     @Test(expected = FormatException.class)
-    public void testInvalidCsv() throws FormatException, IOException {
-        CodeModelCache cache = new CodeModelCache(new File("testdata/cmCaching/cache_invalid_format"));
+    public void testInvalidJson() throws FormatException, IOException {
+        JsonCodeModelCache cache = new JsonCodeModelCache(new File("testdata/cmCaching/cache_invalid_format"));
         cache.read(new File("test.c"));
     }
 
@@ -195,6 +165,7 @@ public class CodeModelCacheTest {
      *             unwanted.
      */
     @Test
+    @Ignore // TODO: not yet implemented
     public void testSyntaxElementCaching() throws IOException, FormatException {
         File location = new File("test.c");
         SourceFile<SyntaxElement> originalSourceFile = new SourceFile<>(location);
@@ -220,7 +191,7 @@ public class CodeModelCacheTest {
         originalSourceFile.addElement(element1);
         originalSourceFile.addElement(element2);
 
-        CodeModelCache cache = new CodeModelCache(cacheDir);
+        JsonCodeModelCache cache = new JsonCodeModelCache(cacheDir);
 
         // write
         cache.write(originalSourceFile);
@@ -235,45 +206,9 @@ public class CodeModelCacheTest {
         Iterator<SyntaxElement> originalIt = originalSourceFile.iterator();
         Iterator<SyntaxElement> readIt = readSourceFile.iterator();
 
-        assertSyntaxElementEqual(readIt.next(), originalIt.next());
-        assertSyntaxElementEqual(readIt.next(), originalIt.next());
+        assertThat(readIt.next(), is(originalIt.next()));
+        assertThat(readIt.next(), is(originalIt.next()));
         assertThat(readIt.hasNext(), is(false));
-    }
-
-    /**
-     * Asserts that both syntax elements are equal. Recursively checks child
-     * elements, too.
-     * 
-     * @param actual
-     *            The actual value.
-     * @param expected
-     *            The expected value.
-     */
-    public static void assertSyntaxElementEqual(SyntaxElement actual, SyntaxElement expected) {
-        assertThat(actual.getClass(), is((Object) expected.getClass()));
-        assertThat(actual.getSourceFile().getPath(), is(expected.getSourceFile().getPath()));
-        assertThat(actual.getLineStart(), is(expected.getLineStart()));
-        assertThat(actual.getLineEnd(), is(expected.getLineEnd()));
-        assertThat(actual.getCondition(), is(expected.getCondition()));
-        assertThat(actual.getPresenceCondition(), is(expected.getPresenceCondition()));
-        assertThat(actual.getNestedElementCount(), is(expected.getNestedElementCount()));
-
-        assertThat(actual.getType().toString(), is(expected.getType().toString()));
-        for (int i = 0; i < actual.getNestedElementCount(); i++) {
-            assertThat(actual.getRelation(i), is(expected.getRelation(i)));
-        }
-
-        Iterator<SyntaxElement> actualIt = actual.iterator();
-        Iterator<SyntaxElement> expectedIt = expected.iterator();
-
-        while (expectedIt.hasNext()) {
-            assertThat(actualIt.hasNext(), is(true));
-
-            SyntaxElement actualChild = actualIt.next();
-            SyntaxElement expectedChild = expectedIt.next();
-            assertSyntaxElementEqual(actualChild, expectedChild);
-        }
-        assertThat(actualIt.hasNext(), is(false));
     }
 
     /**
@@ -298,7 +233,7 @@ public class CodeModelCacheTest {
         originalSourceFile.addElement(block1);
         originalSourceFile.addElement(block2);
 
-        CodeModelCache cache = new CodeModelCache(cacheDir, true);
+        JsonCodeModelCache cache = new JsonCodeModelCache(cacheDir, true);
 
         // write
         cache.write(originalSourceFile);
@@ -313,8 +248,8 @@ public class CodeModelCacheTest {
         Iterator<CodeBlock> originalIt = originalSourceFile.iterator();
         Iterator<CodeBlock> readIt = readSourceFile.iterator();
 
-        assertElementEqual(readIt.next(), originalIt.next());
-        assertElementEqual(readIt.next(), originalIt.next());
+        assertThat(readIt.next(), is(originalIt.next()));
+        assertThat(readIt.next(), is(originalIt.next()));
         assertThat(readIt.hasNext(), is(false));
     }
     
@@ -340,7 +275,7 @@ public class CodeModelCacheTest {
         originalSourceFile.addElement(block1);
         originalSourceFile.addElement(block2);
 
-        CodeModelCache cache = new CodeModelCache(new File("testdata/cmCaching/cache_compressed"), false);
+        JsonCodeModelCache cache = new JsonCodeModelCache(new File("testdata/cmCaching/cache_compressed"), false);
 
         // don't write, the directory already contains the valid cache
         
@@ -354,8 +289,42 @@ public class CodeModelCacheTest {
         Iterator<CodeBlock> originalIt = originalSourceFile.iterator();
         Iterator<CodeBlock> readIt = readSourceFile.iterator();
 
-        assertElementEqual(readIt.next(), originalIt.next());
-        assertElementEqual(readIt.next(), originalIt.next());
+        assertThat(readIt.next(), is(originalIt.next()));
+        assertThat(readIt.next(), is(originalIt.next()));
+        assertThat(readIt.hasNext(), is(false));
+    }
+    
+    /**
+     * Writes and reads a code model consisting of {@link ISyntaxElement}s to the cache, and asserts that contents
+     * are equal.
+     * 
+     * @throws IOException unwanted.
+     * @throws FormatException unwanted.
+     */
+    @Test
+    public void testAstCaching() throws IOException, FormatException {
+        ISyntaxElement element = AllAstTests.createFullAst();
+
+        File location = new File("test.c");
+        SourceFile<ISyntaxElement> originalSourceFile = new SourceFile<>(location);
+        originalSourceFile.addElement(element);
+
+        JsonCodeModelCache cache = new JsonCodeModelCache(cacheDir);
+
+        // write
+        cache.write(originalSourceFile);
+        
+        // read
+        SourceFile<ISyntaxElement> readSourceFile = cache.read(location).castTo(ISyntaxElement.class);
+
+        // check if equal
+        assertThat(readSourceFile.getPath(), is(originalSourceFile.getPath()));
+        assertThat(readSourceFile.getTopElementCount(), is(originalSourceFile.getTopElementCount()));
+
+        Iterator<ISyntaxElement> originalIt = originalSourceFile.iterator();
+        Iterator<ISyntaxElement> readIt = readSourceFile.iterator();
+        
+        assertThat(readIt.next(), is(originalIt.next()));
         assertThat(readIt.hasNext(), is(false));
     }
 

@@ -1,0 +1,18 @@
+{
+	"version": 2,
+	"path": "test.c",
+	"elements": [
+		{
+			"class": "net.ssehub.kernel_haven.code_model.CodeBlock",
+			"id": 1,
+			"sourceFile": "file",
+			"lineStart": 1,
+			"lineEnd": 2,
+			"condition": "A",
+			"presenceCondition": "A"
+		},
+		{
+			"class": "net.ssehub.kernel_haven.code_model.CodeBlock",
+			"id": 2,
+			"sourceFile": "file",
+			"lineStart": 3,

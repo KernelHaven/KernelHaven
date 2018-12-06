@@ -1,5 +1,12 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
+import net.ssehub.kernel_haven.code_model.AbstractCodeElement;
+import net.ssehub.kernel_haven.code_model.CodeElement;
+import net.ssehub.kernel_haven.code_model.JsonCodeModelCache.CheckedFunction;
+import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.json.JsonElement;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
+import net.ssehub.kernel_haven.util.io.json.JsonString;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
@@ -26,6 +33,26 @@ public class Function extends AbstractSyntaxElementWithNesting {
         super(presenceCondition);
         this.header = header;
         this.name = name;
+    }
+    
+    /**
+     * De-serializes the given JSON to a {@link CodeElement}. This is the inverse operation to
+     * {@link #serializeToJson(JsonObject, Function, Function)}.
+     * 
+     * @param json The JSON do de-serialize.
+     * @param deserializeFunction The function to use for de-serializing secondary nested elements. Do not use this to
+     *      de-serialize the {@link CodeElement}s in the primary nesting structure!
+     *      (i.e. {@link #getNestedElement(int)})
+     * 
+     * @throws FormatException If the JSON does not have the expected format.
+     */
+    protected Function(@NonNull JsonObject json,
+        @NonNull CheckedFunction<@NonNull JsonElement, @NonNull CodeElement<?>, FormatException> deserializeFunction)
+        throws FormatException {
+        super(json, deserializeFunction);
+        
+        this.name = json.getString("functionName");
+        this.header = (ICode) deserializeFunction.apply(json.getObject("functionHeader"));
     }
     
     /**
@@ -57,20 +84,32 @@ public class Function extends AbstractSyntaxElementWithNesting {
     }
     
     @Override
-    public int hashCode() {
-        return super.hashCode() + name.hashCode() + header.hashCode();
+    protected int hashCode(@NonNull CodeElementHasher hasher) {
+        return super.hashCode(hasher) + name.hashCode() + hasher.hashCode((AbstractCodeElement<?>) header);
     }
     
     @Override
-    public boolean equals(Object obj) {
-        boolean equal = false;
+    protected boolean equals(@NonNull AbstractCodeElement<?> other, @NonNull CodeElementEqualityChecker checker) {
+        boolean equal = other instanceof Function && super.equals(other, checker);
         
-        if (obj instanceof Function && super.equals(obj)) {
-            Function other = (Function) obj;
-            equal = this.name.equals(other.name) && this.header.equals(other.header);
+        if (equal) {
+            Function o = (Function) other;
+            
+            equal = this.name.equals(o.name) && checker.isEqual(
+                    (AbstractCodeElement<?>) this.header, (AbstractCodeElement<?>) o.header);
         }
         
         return equal;
+    }
+    
+    @Override
+    public void serializeToJson(JsonObject result,
+            java.util.function.@NonNull Function<@NonNull CodeElement<?>, @NonNull JsonElement> serializeFunction,
+            java.util.function.@NonNull Function<@NonNull CodeElement<?>, @NonNull Integer> idFunction) {
+        super.serializeToJson(result, serializeFunction, idFunction);
+        
+        result.putElement("functionName", new JsonString(name));
+        result.putElement("functionHeader", serializeFunction.apply(header));
     }
 
 }

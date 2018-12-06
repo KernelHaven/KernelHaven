@@ -2,7 +2,12 @@ package net.ssehub.kernel_haven.code_model;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
+import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.json.JsonElement;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
@@ -124,6 +129,31 @@ public interface CodeElement<NestedType extends CodeElement<NestedType>> extends
      * 
      * @return The CSV parts representing this element.
      */
-    public abstract @NonNull List<@NonNull String> serializeCsv();
+    public @NonNull List<@NonNull String> serializeCsv();
+
+    /**
+     * Serializes this element as a JSON. Does not recurse into the primary nesting structure, but may recurse
+     * into secondary nested elements. Overriding methods should always call
+     * super.{@link #serializeToJson(JsonObject, Function, Function)}.
+     * 
+     * @param result The resulting JSON object to serialize into.
+     * @param serializeFunction The function to use for serializing secondary nested elements. Do not use this to
+     *      serialize the {@link CodeElement} in the primary nesting structure! (i.e. {@link #getNestedElement(int)})
+     * @param idFunction The function to convert {@link CodeElement}s to IDs. Use this for references to other
+     *      {@link CodeElement} that are somewhere else in the primary nesting structure.
+     */
+    public void serializeToJson(JsonObject result,
+            @NonNull Function<@NonNull CodeElement<?>, @NonNull JsonElement> serializeFunction,
+            @NonNull Function<@NonNull CodeElement<?>, @NonNull Integer> idFunction);
+    
+    /**
+     * Helper method for de-serialization. This method resolves the temporary integer IDs back to {@link CodeElement}
+     * references. Overriding methods should always call super.{@link #resolveIds(Map)}.
+     * 
+     * @param mapping The mapping of integer IDs to {@link CodeElement}s.
+     * 
+     * @throws FormatException If matching code elements could not be found.
+     */
+    public void resolveIds(Map<Integer, CodeElement<?>> mapping) throws FormatException;
     
 }

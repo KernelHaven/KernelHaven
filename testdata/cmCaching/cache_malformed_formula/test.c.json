@@ -1,0 +1,35 @@
+{
+	"version": 2,
+	"path": "test.c",
+	"elements": [
+		{
+			"class": "net.ssehub.kernel_haven.code_model.CodeBlock",
+			"id": 1,
+			"sourceFile": "file",
+			"lineStart": 1,
+			"lineEnd": 2,
+			"condition": "A",
+			"presenceCondition": "A"
+		},
+		{
+			"class": "net.ssehub.kernel_haven.code_model.CodeBlock",
+			"id": 2,
+			"sourceFile": "file",
+			"lineStart": 3,
+			"lineEnd": 15,
+			"condition": "(()",
+			"presenceCondition": "!A",
+			"nested": [
+				{
+					"class": "net.ssehub.kernel_haven.code_model.CodeBlock",
+					"id": 3,
+					"sourceFile": "file",
+					"lineStart": 4,
+					"lineEnd": 5,
+					"condition": "B",
+					"presenceCondition": "B && !A"
+				}
+			]
+		}
+	]
+}

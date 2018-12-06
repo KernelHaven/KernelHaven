@@ -4,10 +4,15 @@ import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 
+import net.ssehub.kernel_haven.code_model.AbstractCodeElement;
 import net.ssehub.kernel_haven.code_model.AbstractCodeElementWithNesting;
+import net.ssehub.kernel_haven.code_model.CodeElement;
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.FormulaCache;
+import net.ssehub.kernel_haven.util.io.json.JsonElement;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -191,20 +196,29 @@ public class SyntaxElement extends AbstractCodeElementWithNesting<SyntaxElement>
     }
     
     @Override
-    public int hashCode() {
-        return super.hashCode() + relations.hashCode() + type.hashCode();
+    protected int hashCode(@NonNull CodeElementHasher hasher) {
+        return super.hashCode(hasher) + this.type.hashCode() + this.relations.hashCode();
     }
     
     @Override
-    public boolean equals(Object obj) {
-        boolean equal = false;
+    protected boolean equals(@NonNull AbstractCodeElement<?> other, @NonNull CodeElementEqualityChecker checker) {
+        boolean equal = other instanceof SyntaxElement && super.equals(other, checker);
         
-        if (obj instanceof SyntaxElement && super.equals(obj)) {
-            SyntaxElement other = (SyntaxElement) obj;
-            equal = this.type.equals(other.type) && this.relations.equals(other.relations);
+        if (equal) {
+            SyntaxElement o = (SyntaxElement) other;
+            
+            equal = o.type == this.type && o.relations.equals(this.relations);
         }
         
         return equal;
+    }
+    
+    @Override
+    public void serializeToJson(JsonObject result,
+            @NonNull Function<@NonNull CodeElement<?>, @NonNull JsonElement> serializeFunction,
+            @NonNull Function<@NonNull CodeElement<?>, @NonNull Integer> idFunction) {
+        // TODO: JSON caching
+        throw new UnsupportedOperationException("JSON caching not yet implementd for simple_ast.SyntaxElement");
     }
     
 }

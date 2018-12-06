@@ -1,5 +1,16 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
+import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
+
+import java.util.function.Function;
+
+import net.ssehub.kernel_haven.code_model.AbstractCodeElement;
+import net.ssehub.kernel_haven.code_model.CodeElement;
+import net.ssehub.kernel_haven.code_model.JsonCodeModelCache.CheckedFunction;
+import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.json.JsonElement;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
+import net.ssehub.kernel_haven.util.io.json.JsonString;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
@@ -43,6 +54,26 @@ public class TypeDefinition extends AbstractSyntaxElementWithNesting {
     }
     
     /**
+     * De-serializes the given JSON to a {@link CodeElement}. This is the inverse operation to
+     * {@link #serializeToJson(JsonObject, Function, Function)}.
+     * 
+     * @param json The JSON do de-serialize.
+     * @param deserializeFunction The function to use for de-serializing secondary nested elements. Do not use this to
+     *      de-serialize the {@link CodeElement}s in the primary nesting structure!
+     *      (i.e. {@link #getNestedElement(int)})
+     * 
+     * @throws FormatException If the JSON does not have the expected format.
+     */
+    protected TypeDefinition(@NonNull JsonObject json,
+        @NonNull CheckedFunction<@NonNull JsonElement, @NonNull CodeElement<?>, FormatException> deserializeFunction)
+        throws FormatException {
+        super(json, deserializeFunction);
+        
+        this.type = TypeDefType.valueOf(json.getString("typedefType"));
+        this.declaration = (ICode) deserializeFunction.apply(json.getObject("typedefDeclaration"));
+    }
+    
+    /**
      * Returns the declaration of this type.
      * 
      * @return The declaration of this type.
@@ -71,20 +102,32 @@ public class TypeDefinition extends AbstractSyntaxElementWithNesting {
     }
     
     @Override
-    public int hashCode() {
-        return super.hashCode() + declaration.hashCode() + type.hashCode();
+    protected int hashCode(@NonNull CodeElementHasher hasher) {
+        return super.hashCode(hasher) + hasher.hashCode((AbstractCodeElement<?>) declaration) + type.hashCode();
     }
     
     @Override
-    public boolean equals(Object obj) {
-        boolean equal = false;
+    protected boolean equals(@NonNull AbstractCodeElement<?> other, @NonNull CodeElementEqualityChecker checker) {
+        boolean equal = other instanceof TypeDefinition && super.equals(other, checker);
         
-        if (obj instanceof TypeDefinition && super.equals(obj)) {
-            TypeDefinition other = (TypeDefinition) obj;
-            equal = this.type.equals(other.type) && this.declaration.equals(other.declaration);
+        if (equal) {
+            TypeDefinition o = (TypeDefinition) other;
+            
+            equal = this.type == o.type && checker.isEqual(
+                    (AbstractCodeElement<?>) this.declaration, (AbstractCodeElement<?>) o.declaration);
         }
         
         return equal;
+    }
+    
+    @Override
+    public void serializeToJson(JsonObject result,
+            @NonNull Function<@NonNull CodeElement<?>, @NonNull JsonElement> serializeFunction,
+            @NonNull Function<@NonNull CodeElement<?>, @NonNull Integer> idFunction) {
+        super.serializeToJson(result, serializeFunction, idFunction);
+        
+        result.putElement("typedefType", new JsonString(notNull(type.name())));
+        result.putElement("typedefDeclaration", serializeFunction.apply(declaration));
     }
 
 }

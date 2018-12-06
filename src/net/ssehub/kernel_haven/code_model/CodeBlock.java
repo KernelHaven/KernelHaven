@@ -5,8 +5,12 @@ import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
+import net.ssehub.kernel_haven.code_model.JsonCodeModelCache.CheckedFunction;
 import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.json.JsonElement;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.logic.parser.ExpressionFormatException;
 import net.ssehub.kernel_haven.util.logic.parser.Parser;
@@ -47,6 +51,23 @@ public class CodeBlock extends AbstractCodeElementWithNesting<CodeBlock> {
         setLineStart(lineStart);
         setLineEnd(lineEnd);
         setCondition(condition);
+    }
+    
+    /**
+     * De-serializes the given JSON to a {@link CodeElement}. This is the inverse operation to
+     * {@link #serializeToJson(JsonObject, Function, Function)}.
+     * 
+     * @param json The JSON do de-serialize.
+     * @param deserializeFunction The function to use for de-serializing secondary nested elements. Do not use this to
+     *      de-serialize the {@link CodeElement}s in the primary nesting structure!
+     *      (i.e. {@link #getNestedElement(int)})
+     * 
+     * @throws FormatException If the JSON does not have the expected format.
+     */
+    protected CodeBlock(@NonNull JsonObject json,
+        @NonNull CheckedFunction<@NonNull JsonElement, @NonNull CodeElement<?>, FormatException> deserializeFunction)
+        throws FormatException {
+        super(json, deserializeFunction);
     }
 
     @Override

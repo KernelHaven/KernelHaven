@@ -6,7 +6,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
+import net.ssehub.kernel_haven.code_model.JsonCodeModelCache.CheckedFunction;
+import net.ssehub.kernel_haven.util.FormatException;
+import net.ssehub.kernel_haven.util.io.json.JsonElement;
+import net.ssehub.kernel_haven.util.io.json.JsonObject;
 import net.ssehub.kernel_haven.util.logic.Formula;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
@@ -30,6 +35,25 @@ public abstract class AbstractCodeElementWithNesting<NestedType extends CodeElem
      */
     public AbstractCodeElementWithNesting(@NonNull Formula presenceCondition) {
         super(presenceCondition);
+        
+        this.nested = new LinkedList<>();
+    }
+    
+    /**
+     * De-serializes the given JSON to a {@link CodeElement}. This is the inverse operation to
+     * {@link #serializeToJson(JsonObject, Function, Function)}.
+     * 
+     * @param json The JSON do de-serialize.
+     * @param deserializeFunction The function to use for de-serializing secondary nested elements. Do not use this to
+     *      de-serialize the {@link CodeElement}s in the primary nesting structure!
+     *      (i.e. {@link #getNestedElement(int)})
+     * 
+     * @throws FormatException If the JSON does not have the expected format.
+     */
+    protected AbstractCodeElementWithNesting(@NonNull JsonObject json,
+        @NonNull CheckedFunction<@NonNull JsonElement, @NonNull CodeElement<?>, FormatException> deserializeFunction)
+        throws FormatException {
+        super(json, deserializeFunction);
         
         this.nested = new LinkedList<>();
     }
@@ -75,17 +99,28 @@ public abstract class AbstractCodeElementWithNesting<NestedType extends CodeElem
     }
     
     @Override
-    public int hashCode() {
-        return super.hashCode() + nested.hashCode();
+    protected int hashCode(@NonNull CodeElementHasher hasher) {
+        int result = 1;
+
+        for (NestedType n : nested) {
+            result = 31 * result + hasher.hashCode((AbstractCodeElement<?>) n);
+        }
+        
+        return result + super.hashCode(hasher);
     }
     
     @Override
-    public boolean equals(Object obj) {
-        boolean equal = false;
+    protected boolean equals(@NonNull AbstractCodeElement<?> other, @NonNull CodeElementEqualityChecker checker) {
+        boolean equal = other instanceof AbstractCodeElementWithNesting && super.equals(other, checker);
         
-        if (obj instanceof AbstractCodeElementWithNesting && super.equals(obj)) {
-            AbstractCodeElementWithNesting<?> other = (AbstractCodeElementWithNesting<?>) obj;
-            equal = this.nested.equals(other.nested);
+        if (equal) {
+            AbstractCodeElementWithNesting<?> o = (AbstractCodeElementWithNesting<?>) other;
+            
+            equal = this.nested.size() == o.nested.size();
+            for (int i = 0; equal && i < this.nested.size(); i++) {
+                equal &= checker.isEqual((AbstractCodeElement<?>) this.nested.get(i),
+                        (AbstractCodeElement<?>) o.nested.get(i));
+            }
         }
         
         return equal;
