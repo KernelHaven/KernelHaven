@@ -27,8 +27,8 @@ import net.ssehub.kernel_haven.util.logic.Variable;
  * @author Adam
  * @author Alice
  */
-@SuppressWarnings("null")
-public class CodeModelCacheTest {
+@SuppressWarnings({"null", "deprecation"})
+public class OldCodeModelCacheTest {
 
     private File cacheDir;
 
@@ -76,7 +76,7 @@ public class CodeModelCacheTest {
         originalSourceFile.addElement(block1);
         originalSourceFile.addElement(block2);
 
-        CodeModelCache cache = new CodeModelCache(cacheDir);
+        OldCodeModelCache cache = new OldCodeModelCache(cacheDir);
 
         // write
         cache.write(originalSourceFile);
@@ -136,7 +136,7 @@ public class CodeModelCacheTest {
      */
     @Test(expected = FormatException.class)
     public void testInvalidClass() throws FormatException, IOException {
-        CodeModelCache cache = new CodeModelCache(new File("testdata/cmCaching/cache_invalid_class"));
+        OldCodeModelCache cache = new OldCodeModelCache(new File("testdata/cmCaching/cache_invalid_class"));
         cache.read(new File("test.c"));
     }
 
@@ -151,7 +151,7 @@ public class CodeModelCacheTest {
      */
     @Test(expected = FormatException.class)
     public void testMalFormFormula() throws FormatException, IOException {
-        CodeModelCache cache = new CodeModelCache(new File("testdata/cmCaching/cache_malformed_formula"));
+        OldCodeModelCache cache = new OldCodeModelCache(new File("testdata/cmCaching/cache_malformed_formula"));
         cache.read(new File("test.c"));
     }
 
@@ -165,7 +165,7 @@ public class CodeModelCacheTest {
      */
     @Test()
     public void testEmptyCache() throws FormatException, IOException {
-        CodeModelCache cache = new CodeModelCache(new File("testdata/bmCaching/cache_empty"));
+        OldCodeModelCache cache = new OldCodeModelCache(new File("testdata/bmCaching/cache_empty"));
         SourceFile<?> result = cache.read(new File("test.c"));
 
         assertThat(result, nullValue());
@@ -182,7 +182,7 @@ public class CodeModelCacheTest {
      */
     @Test(expected = FormatException.class)
     public void testInvalidCsv() throws FormatException, IOException {
-        CodeModelCache cache = new CodeModelCache(new File("testdata/cmCaching/cache_invalid_format"));
+        OldCodeModelCache cache = new OldCodeModelCache(new File("testdata/cmCaching/cache_invalid_format"));
         cache.read(new File("test.c"));
     }
 
@@ -220,7 +220,7 @@ public class CodeModelCacheTest {
         originalSourceFile.addElement(element1);
         originalSourceFile.addElement(element2);
 
-        CodeModelCache cache = new CodeModelCache(cacheDir);
+        OldCodeModelCache cache = new OldCodeModelCache(cacheDir);
 
         // write
         cache.write(originalSourceFile);
@@ -298,7 +298,7 @@ public class CodeModelCacheTest {
         originalSourceFile.addElement(block1);
         originalSourceFile.addElement(block2);
 
-        CodeModelCache cache = new CodeModelCache(cacheDir, true);
+        OldCodeModelCache cache = new OldCodeModelCache(cacheDir, true);
 
         // write
         cache.write(originalSourceFile);
@@ -340,7 +340,7 @@ public class CodeModelCacheTest {
         originalSourceFile.addElement(block1);
         originalSourceFile.addElement(block2);
 
-        CodeModelCache cache = new CodeModelCache(new File("testdata/cmCaching/cache_compressed"), false);
+        OldCodeModelCache cache = new OldCodeModelCache(new File("testdata/cmCaching/cache_compressed"), false);
 
         // don't write, the directory already contains the valid cache
         

@@ -78,7 +78,7 @@ public class CodeModelProvider extends AbstractProvider<SourceFile<?>> {
 
     @Override
     protected @NonNull AbstractCache<SourceFile<?>> createCache() {
-        return new CodeModelCache(config.getValue(DefaultSettings.CACHE_DIR),
+        return new JsonCodeModelCache(config.getValue(DefaultSettings.CACHE_DIR),
                 config.getValue(DefaultSettings.CODE_PROVIDER_CACHE_COMPRESS));
     }
 

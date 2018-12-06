@@ -31,8 +31,11 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * 
  * @author Adam
  * @author Alice
+ * 
+ * @deprecated Use {@link JsonCodeModelCache} instead.
  */
-public class CodeModelCache extends AbstractCache<SourceFile<?>> {
+@Deprecated
+public class OldCodeModelCache extends AbstractCache<SourceFile<?>> {
     
     private @NonNull File cacheDir;
     
@@ -45,7 +48,7 @@ public class CodeModelCache extends AbstractCache<SourceFile<?>> {
      *            The directory where to store the cache files. This must be a
      *            directory, and we must be able to read and write to it.
      */
-    public CodeModelCache(@NonNull File cacheDir) {
+    public OldCodeModelCache(@NonNull File cacheDir) {
         this.cacheDir = cacheDir;
     }
     
@@ -58,7 +61,7 @@ public class CodeModelCache extends AbstractCache<SourceFile<?>> {
      * @param compress Whether the cache files should be written compressed. Already existing compressed cache files
      *      are always read, even if compression is turned off.
      */
-    public CodeModelCache(@NonNull File cacheDir, boolean compress) {
+    public OldCodeModelCache(@NonNull File cacheDir, boolean compress) {
         this.cacheDir = cacheDir;
         this.compress = compress;
     }

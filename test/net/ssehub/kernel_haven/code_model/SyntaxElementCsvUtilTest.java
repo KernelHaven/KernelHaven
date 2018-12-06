@@ -79,7 +79,7 @@ public class SyntaxElementCsvUtilTest {
         mainRead.addNestedElement(SyntaxElementCsvUtil.csvToElement(
                 SyntaxElementCsvUtil.elementToCsv(nested5).toArray(new String[0]), PARSER));
         
-        CodeModelCacheTest.assertSyntaxElementEqual(mainRead, main);
+        OldCodeModelCacheTest.assertSyntaxElementEqual(mainRead, main);
     }
     
     /**
