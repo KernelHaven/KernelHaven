@@ -70,11 +70,6 @@ public final class Negation extends Formula {
     }
 
     @Override
-    public int getLiteralSize() {
-        return formula.getLiteralSize();
-    }
-    
-    @Override
     public <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
         return visitor.visitNegation(this);
     }

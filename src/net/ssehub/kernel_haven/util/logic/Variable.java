@@ -53,11 +53,6 @@ public final class Variable extends Formula {
     }
 
     @Override
-    public int getLiteralSize() {
-        return 1;
-    }
-    
-    @Override
     public <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
         return visitor.visitVariable(this);
     }

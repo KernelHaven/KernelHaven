@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
     FormulaSimplifierTest.class,
     FormulaBuilderTest.class,
     DepthCalculatorTest.class,
+    FormulaLiteralCounterTest.class,
     })
 public class AllLogicTests {
 

@@ -40,11 +40,6 @@ public final class True extends Formula {
     }
 
     @Override
-    public int getLiteralSize() {
-        return 0;
-    }
-    
-    @Override
     public <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
         return visitor.visitTrue(this);
     }

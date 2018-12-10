@@ -97,11 +97,6 @@ public final class Disjunction extends Formula {
     }
     
     @Override
-    public int getLiteralSize() {
-        return left.getLiteralSize() + right.getLiteralSize();
-    }
-    
-    @Override
     public <T> T accept(@NonNull IFormulaVisitor<T> visitor) {
         return visitor.visitDisjunction(this);
     }

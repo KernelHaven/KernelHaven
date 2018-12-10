@@ -4,10 +4,12 @@ import net.ssehub.kernel_haven.util.logic.Conjunction;
 import net.ssehub.kernel_haven.util.logic.Disjunction;
 import net.ssehub.kernel_haven.util.logic.False;
 import net.ssehub.kernel_haven.util.logic.Formula;
+import net.ssehub.kernel_haven.util.logic.FormulaLiteralCounter;
 import net.ssehub.kernel_haven.util.logic.IVoidFormulaVisitor;
 import net.ssehub.kernel_haven.util.logic.Negation;
 import net.ssehub.kernel_haven.util.logic.True;
 import net.ssehub.kernel_haven.util.logic.Variable;
+import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * Checks if the given formula is contained in the visited formula.
@@ -16,7 +18,9 @@ import net.ssehub.kernel_haven.util.logic.Variable;
  */
 public class SubFormulaChecker implements IVoidFormulaVisitor {
     
-    private Formula nestedFormula;
+    private @NonNull FormulaLiteralCounter counter = new FormulaLiteralCounter();
+    
+    private @NonNull Formula nestedFormula;
     private boolean isNested;
     private int formulaSize;
     
@@ -25,10 +29,10 @@ public class SubFormulaChecker implements IVoidFormulaVisitor {
      * The accept method must still be called.
      * @param nestedFormula The formula to check if it is nested inside the visited formula.
      */
-    public SubFormulaChecker(Formula nestedFormula) {
+    public SubFormulaChecker(@NonNull Formula nestedFormula) {
         this.nestedFormula = nestedFormula;
         // Size as a small optimization
-        formulaSize = nestedFormula.getLiteralSize();
+        formulaSize = counter.visit(nestedFormula);
         isNested = false;
     }
 
@@ -75,14 +79,14 @@ public class SubFormulaChecker implements IVoidFormulaVisitor {
             
             if (!isNested()) {
                 Formula leftFormula = formula.getLeft();
-                if (leftFormula.getLiteralSize() >= formulaSize) {
+                if (counter.visit(leftFormula) >= formulaSize) {
                     visit(leftFormula);
                 }
             }
             
             if (!isNested()) {
                 Formula rightFormula = formula.getRight();
-                if (rightFormula.getLiteralSize() >= formulaSize) {
+                if (counter.visit(rightFormula) >= formulaSize) {
                     visit(rightFormula);
                 }
             }
@@ -96,14 +100,14 @@ public class SubFormulaChecker implements IVoidFormulaVisitor {
             
             if (!isNested()) {
                 Formula leftFormula = formula.getLeft();
-                if (leftFormula.getLiteralSize() >= formulaSize) {
+                if (counter.visit(leftFormula) >= formulaSize) {
                     visit(leftFormula);
                 }
             }
             
             if (!isNested()) {
                 Formula rightFormula = formula.getRight();
-                if (rightFormula.getLiteralSize() >= formulaSize) {
+                if (counter.visit(rightFormula) >= formulaSize) {
                     visit(rightFormula);
                 }
             }
