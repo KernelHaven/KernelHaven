@@ -5,10 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import net.ssehub.kernel_haven.SetUpException;
 import net.ssehub.kernel_haven.build_model.BuildModel;
@@ -155,12 +151,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             }
             
             if (mainComponent instanceof JoinComponent) {
-                int threads = config.getValue(DefaultSettings.ANALYSIS_SPLITCOMPONENT_MAX_THREADS);
-                if (threads > 0) {
-                    joinSplitComponentWithPool((JoinComponent) mainComponent, threads);
-                } else {
-                    joinSplitComponentFull((JoinComponent) mainComponent);
-                }
+                joinSplitComponentFull((JoinComponent) mainComponent);
                 
             } else {
                 pollAndWriteOutput(mainComponent);
@@ -207,80 +198,6 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
             } catch (InterruptedException e) {
             }
         }
-    }
-    
-    /**
-     * Part of {@link #run()} to handle {@link JoinComponent}s. This method joins all components using a fixed-sized
-     * thread pool (see {@link DefaultSettings#ANALYSIS_SPLITCOMPONENT_MAX_THREADS}).
-     * 
-     * @param mainComponent The an analysis, which is joining results of multiple other components.
-     * @param numThreads The number of threads to use for the pool; must be greater than 0.
-     */
-    private void joinSplitComponentWithPool(@NonNull JoinComponent mainComponent, int numThreads) {
-        ThreadRenamer thReanmer = new ThreadRenamer(mainComponent.getResultName());
-        ThreadPoolExecutor thPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(numThreads);
-        int totalNoOfThreads = 0;
-        
-        AtomicInteger nThreadsProcessed = new AtomicInteger(0);
-        for (AnalysisComponent<?> component : mainComponent.getInputs()) {
-            totalNoOfThreads++;
-            NamedRunnable run = new NamedRunnable() {
-                
-                @Override
-                public void run() {
-                    thReanmer.rename();
-                    pollAndWriteOutput(component);
-                    nThreadsProcessed.incrementAndGet();
-                }
-   
-                @Override
-                public String getName() {
-                    return component.getResultName();
-                }
-            };
-            
-            if (totalNoOfThreads == 1) {
-                // Start first thread alone in order to provide all threads / cpu core to previous analysis components
-                Thread th = new Thread(run);
-                th.start();
-                try {
-                    th.join();
-                } catch (InterruptedException e) {
-                    LOGGER.logException("Could not start first thread", e);
-                }
-            } else {
-                thPool.execute(run);
-            }
-        }
-        
-        LOGGER.logInfo2("Joining ", totalNoOfThreads, " analysis components; ", (thPool.getActiveCount() + 1),
-            " components already started");
-            
-        thPool.shutdown();
-        final int submittedThreads = totalNoOfThreads;
-        Runnable monitor = () -> {
-            while (!thPool.isTerminated()) {
-                LOGGER.logInfo("Joining components:",
-                    "Total: " + submittedThreads, 
-                    "Finished: " + nThreadsProcessed.get(),
-                    "Processing: " + thPool.getActiveCount());
-                try {
-                    Thread.sleep(3 * 60 * 1000);
-                } catch (InterruptedException exc) {
-                    LOGGER.logException("", exc);
-                }
-            }
-        };
-        Thread th = new Thread(monitor, getClass().getSimpleName());
-        th.setDaemon(true);
-        th.start();
-        try {
-            thPool.awaitTermination(96L, TimeUnit.HOURS);
-        } catch (InterruptedException e) {
-            LOGGER.logException("", e);
-        }
-        
-        LOGGER.logInfo2("All analysis components joined.");
     }
     
     /**
