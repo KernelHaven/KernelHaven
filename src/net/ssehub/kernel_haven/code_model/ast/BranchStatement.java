@@ -182,7 +182,8 @@ public class BranchStatement extends AbstractSyntaxElementWithNesting {
             result = 31 * result + hasher.hashCode(sibling);
         }
         
-        return result + super.hashCode(hasher) + type.hashCode() + (ifCondition != null ? ifCondition.hashCode() : 123);
+        return result + super.hashCode(hasher) + type.hashCode()
+                + (ifCondition != null ? hasher.hashCode((AbstractCodeElement<?>) ifCondition) : 123);
     }
 
     @Override
