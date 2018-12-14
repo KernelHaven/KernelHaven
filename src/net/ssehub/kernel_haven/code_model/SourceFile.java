@@ -111,5 +111,20 @@ public class SourceFile<ElementType extends CodeElement<?>> implements Iterable<
         
         return (SourceFile<T>) this;
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = false;
+        if (obj instanceof SourceFile<?>) {
+            SourceFile<?> other = (SourceFile<?>) obj;
+            result = this.path.equals(other.path) && this.elements.equals(other.elements);
+        }
+        return result;
+    }
+    
+    @Override
+    public int hashCode() {
+        return path.hashCode() * 31 + elements.hashCode();
+    }
 
 }
