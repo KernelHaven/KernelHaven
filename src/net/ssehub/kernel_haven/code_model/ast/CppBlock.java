@@ -93,15 +93,46 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
     }
     
     /**
-     * Adds another if, elif, else block, which belongs to the same block.
-     * @param sibling Another if, elif, else block, which belongs to the this block structure.
+     * Adds another sibling to this {@link CppBlock}. This should only be
+     * called by the extractors that creates the AST. It should be ensured that
+     * all siblings have a complete list of all siblings in a given
+     * #if-#elif-#else construct (including themselves).
+     * 
+     * @param sibling
+     *            The sibling to add.
      */
     public void addSibling(@NonNull CppBlock sibling) {
         siblings.add(sibling);
     }
+
+    /**
+     * Returns the number of siblings this element has. This is at least one
+     * (this object itself).
+     * 
+     * @return The number of siblings.
+     */
+    public int getSiblingCount() {
+        return siblings.size();
+    }
+
+    /**
+     * Returns the sibling at the given index.
+     * 
+     * @param index
+     *            The index to get the sibling for.
+     * @return The sibling at the given index.
+     * 
+     * @throws IndexOutOfBoundsException
+     *             If index is out of bounds.
+     */
+    public @NonNull CppBlock getSibling(int index) throws IndexOutOfBoundsException {
+        return notNull(siblings.get(index));
+    }
     
     /**
      * Returns an unmodifiable iterator for iterating through all the siblings starting at the opening <tt>if</tt>.
+     * This also contains this element itself.
+     * 
      * @return An unmodifiable iterator for iterating through all the siblings.
      */
     public Iterator<@NonNull CppBlock> getSiblingsIterator() {

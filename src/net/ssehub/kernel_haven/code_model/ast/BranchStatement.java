@@ -118,7 +118,7 @@ public class BranchStatement extends AbstractSyntaxElementWithNesting {
     }
 
     /**
-     * Returns the number of siblings this element has. This is at lest one
+     * Returns the number of siblings this element has. This is at least one
      * (this object itself).
      * 
      * @return The number of siblings.
