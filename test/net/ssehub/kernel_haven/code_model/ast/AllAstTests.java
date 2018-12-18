@@ -163,6 +163,12 @@ public class AllAstTests {
         
         elsedef.addNestedElement(makeCode("2", sourceFile, not("A"), not("A")));
         
+        // CppBlock siblings
+        ifdef.addSibling(ifdef);
+        ifdef.addSibling(elsedef);
+        elsedef.addSibling(ifdef);
+        elsedef.addSibling(elsedef);
+        
         codeList.addNestedElement(makeCode("int a = ", sourceFile, True.INSTANCE, True.INSTANCE));
         codeList.addNestedElement(ifdef);
         codeList.addNestedElement(elsedef);
