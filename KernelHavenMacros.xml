@@ -65,7 +65,7 @@
 	<!--
 		Requires that the contents of https://projects.sse.uni-hildesheim.de/tools/ant-lib.zip
 		is copied and placed at <user_home>/.ant/lib
-		To execute this script from Eclipse, is is required that the jars in this folder are also added via:
+		To execute this script from Eclipse, it is required that the jars in this folder are also added via:
 		Window -> Preferences -> Ant -> Runtime -> Global Entries -> Add External JARs...
 	-->
 	<path id="classpath.testing">
