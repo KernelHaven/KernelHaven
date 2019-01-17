@@ -11,6 +11,7 @@
 	<property name="main.class" value="net.ssehub.kernel_haven.Run" />
 
 	<target name="jenkins">
+		<antcall target="KH_Common.download.dependencies" />
 		<antcall target="KH_Common.prepare.folders" />
 		<antcall target="KH_Common.compile" />
 		<antcall target="KH_Common.test" />

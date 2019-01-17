@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:jacoco="antlib:org.jacoco.ant" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle.ant">
+	<property name="user.home.lib" value="${user.home}/.ant/lib" />
 	<property name="lib.dir" value="${basedir}/lib" />
 	<property name="build.dir" value="${basedir}/build" />
 	<property name="jar.dir" value="${build.dir}/jar" />
@@ -64,14 +65,15 @@
 
 	<!--
 		Requires that the contents of https://projects.sse.uni-hildesheim.de/tools/ant-lib.zip
-		is copied and placed at <user_home>/.ant/lib
+		are existing at <user_home>/.ant/lib
+		The "download.dependencies" target automatically do this. 
 		To execute this script from Eclipse, it is required that the jars in this folder are also added via:
 		Window -> Preferences -> Ant -> Runtime -> Global Entries -> Add External JARs...
 	-->
 	<path id="classpath.testing">
 		<fileset dir="${lib.dir}" />
 		<!-- Loads Junit from ANT installation folder -->
-		<fileset dir="${user.home}/.ant/lib">
+		<fileset dir="${user.home.lib}">
 			<include name="junit*.jar" />
 			<include name="hamcrest*.jar" />
 		</fileset>
@@ -89,6 +91,25 @@
 		<format property="TS_FOR_VERSION_FILE" pattern="yyyy-MM-dd HH:mm:ss" locale="en,US" />
 	</tstamp>
 
+	<!-- Check if several jar files available in <user_home>/.ant/lib -->
+	<target name="check.dependencies" >
+	     <condition property="dependencies.exists">
+	         <and>
+			    <available file="${user.home.lib}/junit-4.12.jar" />
+			    <available file="${user.home.lib}/hamcrest-core-1.3.jar"/>
+			    <available file="${user.home.lib}/jacocoant.jar" />
+	         </and>
+	     </condition>
+	</target>
+	
+	<!-- Download dependencies from https://projects.sse.uni-hildesheim.de/tools/ant-lib.zip and move them to <user_home>/.ant/lib -->
+	<target name="download.dependencies" unless="dependencies.exists" depends="check.dependencies">
+		<get src="https://projects.sse.uni-hildesheim.de/tools/ant-lib.zip" dest="ant-lib.zip" />
+    	<mkdir dir="${user.home.lib}" />
+		<unzip src="ant-lib.zip" dest="${user.home.lib}" />
+    	<delete file="ant-lib.zip" />
+	</target>
+	
 	<!-- Target to create folder structure for releases, requires argument: base.kh.folder -->
 	<target name="kh.folder.structure">
 		<delete dir="${base.kh.folder}" />
