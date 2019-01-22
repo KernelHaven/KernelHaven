@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class CsvReader implements ITableReader {
      * @param separator The separator character to use.
      */
     public CsvReader(@NonNull InputStream in, char separator) {
-        this (new InputStreamReader(in, Charset.forName("UTF-8")), separator);
+        this (new InputStreamReader(in, StandardCharsets.UTF_8), separator);
     }
     
     /**

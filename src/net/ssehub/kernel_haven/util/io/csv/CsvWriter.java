@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import net.ssehub.kernel_haven.util.io.AbstractTableWriter;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -45,7 +45,7 @@ public class CsvWriter extends AbstractTableWriter {
      * @param separator The separator character to use.
      */
     public CsvWriter(@NonNull OutputStream out, char separator) {
-        this.out = new OutputStreamWriter(out, Charset.forName("UTF-8"));
+        this.out = new OutputStreamWriter(out, StandardCharsets.UTF_8);
         if (!(out instanceof BufferedOutputStream)) {
             // buffer if out isn't already buffered
             this.out = new BufferedWriter(this.out);

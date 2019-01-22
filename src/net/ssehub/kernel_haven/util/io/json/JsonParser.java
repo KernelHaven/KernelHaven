@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import net.ssehub.kernel_haven.util.FormatException;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -50,7 +50,7 @@ public class JsonParser implements Closeable {
      * @throws IOException If opening the file fails.
      */
     public JsonParser(@NonNull File file) throws IOException {
-        this.in = new LineNumberReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
+        this.in = new LineNumberReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
     }
     
     /**

@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -120,11 +120,11 @@ public class JsonCodeModelCache extends AbstractCache<SourceFile<?>> {
             try (ZipArchive archive = new ZipArchive(cacheFile);
                     OutputStream out = archive.getOutputStream(new File("cache.json"))) {
                 
-                out.write(json.accept(new JsonPrettyPrinter()).getBytes(Charset.forName("UTF-8")));
+                out.write(json.accept(new JsonPrettyPrinter()).getBytes(StandardCharsets.UTF_8));
             }
         } else {
             try (OutputStream out = new FileOutputStream(cacheFile)) {
-                out.write(json.accept(new JsonPrettyPrinter()).getBytes(Charset.forName("UTF-8")));
+                out.write(json.accept(new JsonPrettyPrinter()).getBytes(StandardCharsets.UTF_8));
             }
         }
     }

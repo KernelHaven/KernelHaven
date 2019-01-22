@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -169,7 +169,7 @@ public class ZipArchive implements Closeable {
      */
     public void writeFile(@NonNull File file, @NonNull String content) throws IOException {
         OutputStream out = getOutputStream(file);
-        out.write(content.getBytes(Charset.forName("UTF-8")));
+        out.write(content.getBytes(StandardCharsets.UTF_8));
         out.close();
     }
     

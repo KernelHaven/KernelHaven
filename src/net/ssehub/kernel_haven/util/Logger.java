@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -170,7 +171,7 @@ public final class Logger {
         this.targets = new ArrayList<>(2);
         addTarget(notNull(System.out));
         
-        this.charset = notNull(Charset.forName("UTF-8"));
+        this.charset = notNull(StandardCharsets.UTF_8);
         this.level = Level.INFO;
     }
     
