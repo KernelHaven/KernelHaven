@@ -757,4 +757,37 @@ public class PipelineAnalysisTest {
         assertThat(analysis.getOutputFiles(), is(files));
     }
     
+    /**
+     * Creates and runs a simple pipeline with a single analysis component. Tests whether the output file starts with
+     * the specified analysis output name prefix.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testAnalysisOutputName() throws SetUpException {
+        Properties props = new Properties();
+        props.put("output_dir", tempOutputDir.getPath());
+        props.put("source_tree", tempOutputDir.getPath());
+        props.put("analysis.output.name", "MyAnalysis");
+        TestConfiguration config = new TestConfiguration(props);
+        
+        PipelineAnalysis analysis = createAnalysis(config, (pipeline) ->
+                new SimpleAnalysisComponent(config, "Result1", "Result2", "Result3"));
+        
+        analysis.run();
+        
+        File[] outputFiles = tempOutputDir.listFiles();
+        assertThat(outputFiles.length, is(1));
+        assertThat(outputFiles[0].getName(), startsWith("MyAnalysis_"));
+        assertThat(outputFiles[0].getName(), endsWith("_SimpleResult.csv"));
+        FileContentsAssertion.assertContents(outputFiles[0], "Result1\nResult2\nResult3\n");
+        
+        assertThat(analysis.getOutputFiles().size(), is(1));
+        Set<File> files = new HashSet<>();
+        for (File f : outputFiles) {
+            files.add(f);
+        }
+        assertThat(analysis.getOutputFiles(), is(files));
+    }
+    
 }

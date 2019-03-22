@@ -102,7 +102,8 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
      */
     private ITableCollection createResultCollection() throws SetUpException {
         String outputSuffix = config.getValue(DefaultSettings.ANALYSIS_RESULT);
-        File outputFile = new File(getOutputDir(), Timestamp.INSTANCE.getFilename("Analysis", outputSuffix));
+        File outputFile = new File(getOutputDir(), Timestamp.INSTANCE.getFilename(
+                config.getValue(DefaultSettings.ANALYSIS_RESULT_NAME), outputSuffix));
         
         try {
             return TableCollectionWriterFactory.INSTANCE.createCollection(outputFile);
