@@ -1,6 +1,6 @@
 # KernelHaven
 
-![Build Status](https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_Infrastructure "Build Status")
+![Build Status](https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_KernelHaven "Build Status")
 
 KernelHaven offers a generic infrastructure for performing different analyses on product lines. This repository contains the main infrastructure, plugins are located in separate repositories.
 
@@ -10,8 +10,8 @@ KernelHaven offers a generic infrastructure for performing different analyses on
 
 These archives contain the core infrastructure only. Additional [plugins](#plugins) are needed for a useful execution.
 
-* [KernelHaven infrastructure (without sources)](https://jenkins-2.sse.uni-hildesheim.de/job/KH_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven.jar)
-* [KernelHaven infrastructure (sources included)](https://jenkins-2.sse.uni-hildesheim.de/job/KH_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven_withsource.jar)
+* [KernelHaven infrastructure (without sources)](https://jenkins-2.sse.uni-hildesheim.de/job/KH_KernelHaven/lastSuccessfulBuild/artifact/build/jar/KernelHaven.jar)
+* [KernelHaven infrastructure (sources included)](https://jenkins-2.sse.uni-hildesheim.de/job/KH_KernelHaven/lastSuccessfulBuild/artifact/build/jar/KernelHaven_withsource.jar)
 
 ### Bundled Releases
 
