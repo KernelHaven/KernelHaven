@@ -12,11 +12,11 @@
 	<property name="reports.xml.dir" value="${reports.dir}/xml" />
 	<property name="reports.html.dir" value="${reports.dir}/html" />
 	<property name="workspace.snapshot.dir" value="${build.dir}/workspacesnapshot/" />
-	<property name="jenkins.location" value="https://jenkins.sse.uni-hildesheim.de/job" />
+	<property name="jenkins.location" value="https://jenkins-2.sse.uni-hildesheim.de/job" />
 
 	<!-- Public Plug-ins & Core -->
-	<property name="infrastructure.location" value="${jenkins.location}/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven_fortesting.jar" />
-	<property name="infrastructure.location.core_src" value="${jenkins.location}/KernelHaven_Infrastructure/lastSuccessfulBuild/artifact/build/jar/KernelHaven_withsource.jar" />
+	<property name="infrastructure.location" value="${jenkins.location}/KH_KernelHaven/lastSuccessfulBuild/artifact/build/jar/KernelHaven_fortesting.jar" />
+	<property name="infrastructure.location.core_src" value="${jenkins.location}/KH_KernelHaven/lastSuccessfulBuild/artifact/build/jar/KernelHaven_withsource.jar" />
 	<property name="CnfUtils.location" value="${jenkins.location}/KernelHaven_CnfUtils/lastStableBuild/artifact/build/jar/CnfUtils.jar" />
 	<property name="CnfUtils.location_src" value="${jenkins.location}/KernelHaven_CnfUtils/lastStableBuild/artifact/build/jar/CnfUtils_withsource.jar" />
 	<property name="TypeChef.location" value="${jenkins.location}/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor.jar" />
