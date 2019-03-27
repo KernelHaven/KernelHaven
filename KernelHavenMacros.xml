@@ -17,35 +17,35 @@
 	<!-- Public Plug-ins & Core -->
 	<property name="infrastructure.location" value="${jenkins.location}/KH_KernelHaven/lastSuccessfulBuild/artifact/build/jar/KernelHaven_fortesting.jar" />
 	<property name="infrastructure.location.core_src" value="${jenkins.location}/KH_KernelHaven/lastSuccessfulBuild/artifact/build/jar/KernelHaven_withsource.jar" />
-	<property name="CnfUtils.location" value="${jenkins.location}/KernelHaven_CnfUtils/lastStableBuild/artifact/build/jar/CnfUtils.jar" />
-	<property name="CnfUtils.location_src" value="${jenkins.location}/KernelHaven_CnfUtils/lastStableBuild/artifact/build/jar/CnfUtils_withsource.jar" />
-	<property name="TypeChef.location" value="${jenkins.location}/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor.jar" />
-	<property name="TypeChef.location_src" value="${jenkins.location}/KernelHaven_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor_withsource.jar" />
-	<property name="Undertaker.location" value="${jenkins.location}/KernelHaven_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor.jar" />
-	<property name="Undertaker.location_src" value="${jenkins.location}/KernelHaven_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor_withsource.jar" />
-	<property name="srcML.location_src" value="${jenkins.location}/KernelHaven_SrcMlExtractor/lastSuccessfulBuild/artifact/build/jar/SrcMLExtractor_withsource.jar" />
-	<property name="featureEffectAnalysis.location" value="${jenkins.location}/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis.jar" />
-	<property name="FeatureEffectAnalysis.location_src" value="${jenkins.location}/KernelHaven_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis_withsource.jar" />
-	<property name="IOUtils.location" value="${jenkins.location}/KernelHaven_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils.jar" />
-	<property name="IOUtils.location_src" value="${jenkins.location}/KernelHaven_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils_withsource.jar" />
-	<property name="DBUtils.location" value="${jenkins.location}/KernelHaven_DBUtils/lastSuccessfulBuild/artifact/build/jar/DBUtils.jar" />
-	<property name="DBUtils.location_src" value="${jenkins.location}/KernelHaven_DBUtils/lastSuccessfulBuild/artifact/build/jar/DBUtils_withsource.jar" />
-	<property name="UnDeadAnalyzer.location_src" value="${jenkins.location}/KernelHaven_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/UnDeadAnalyzer_withsource.jar" />
-	<property name="MetricHaven.location_src" value="${jenkins.location}/KernelHaven_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven_withsource.jar" />
-	<property name="KconfigReaderExtractor.location_src" value="${jenkins.location}/KernelHaven_KconfigReaderExtractor/lastSuccessfulBuild/artifact/build/jar/KconfigReaderExtractor_withsource.jar" />
-	<property name="KbuildMinerExtractor.location_src" value="${jenkins.location}/KernelHaven_KbuildMinerExtractor/lastSuccessfulBuild/artifact/build/jar/KbuildminerExtractor_withsource.jar" />
-	<property name="NonBooleanUtils.location" value="${jenkins.location}/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils.jar" />
-	<property name="NonBooleanUtils.location_src" value="${jenkins.location}/KernelHaven_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils_withsource.jar" />
-	<property name="ConfigurationMismatchAnalysis.location" value="${jenkins.location}/KernelHaven_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis.jar" />
-	<property name="ConfigurationMismatchAnalysis.location_src" value="${jenkins.location}/KernelHaven_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis_withsource.jar" />
-	<property name="CodeBlockExtractor.location_src" value="${jenkins.location}/KernelHaven_CodeBlockExtractor/lastSuccessfulBuild/artifact/build/jar/CodeBlockExtractor_withsource.jar" />
-	<property name="CodeBlockExtractor.location" value="${jenkins.location}/KernelHaven_CodeBlockExtractor/lastSuccessfulBuild/artifact/build/jar/CodeBlockExtractor.jar" />
-	<property name="BusybootPreparation.location_src" value="${jenkins.location}/KernelHaven_BusybootPreparation/lastSuccessfulBuild/artifact/build/jar/BusybootPreparation_withsource.jar" />
-	<property name="BusybootPreparation.location" value="${jenkins.location}/KernelHaven_BusybootPreparation/lastSuccessfulBuild/artifact/build/jar/BusybootPreparation.jar" />
-	<property name="PSS_MapperAnalysis.location_src" value="${jenkins.location}/KernelHaven_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis_withsource.jar" />
-	<property name="PSS_MapperAnalysis.location" value="${jenkins.location}/KernelHaven_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis.jar" />
-	<property name="PSS_DivergenceDetectorAnalysis.location_src" value="${jenkins.location}/KernelHaven_ProblemSolutionSpaceDivergenceDetectorAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceDivergenceDetectorAnalysis_withsource.jar" />
-	<property name="PSS_DivergenceCorrectorAnalysis.location_src" value="${jenkins.location}/KernelHaven_ProblemSolutionSpaceDivergenceCorrectorAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceDivergenceCorrectorAnalysis_withsource.jar" />
+	<property name="CnfUtils.location" value="${jenkins.location}/KH_CnfUtils/lastStableBuild/artifact/build/jar/CnfUtils.jar" />
+	<property name="CnfUtils.location_src" value="${jenkins.location}/KH_CnfUtils/lastStableBuild/artifact/build/jar/CnfUtils_withsource.jar" />
+	<property name="TypeChef.location" value="${jenkins.location}/KH_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor.jar" />
+	<property name="TypeChef.location_src" value="${jenkins.location}/KH_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor_withsource.jar" />
+	<property name="Undertaker.location" value="${jenkins.location}/KH_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor.jar" />
+	<property name="Undertaker.location_src" value="${jenkins.location}/KH_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor_withsource.jar" />
+	<property name="srcML.location_src" value="${jenkins.location}/KH_SrcMlExtractor/lastSuccessfulBuild/artifact/build/jar/SrcMLExtractor_withsource.jar" />
+	<property name="featureEffectAnalysis.location" value="${jenkins.location}/KH_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis.jar" />
+	<property name="FeatureEffectAnalysis.location_src" value="${jenkins.location}/KH_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis_withsource.jar" />
+	<property name="IOUtils.location" value="${jenkins.location}/KH_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils.jar" />
+	<property name="IOUtils.location_src" value="${jenkins.location}/KH_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils_withsource.jar" />
+	<property name="DBUtils.location" value="${jenkins.location}/KH_DBUtils/lastSuccessfulBuild/artifact/build/jar/DBUtils.jar" />
+	<property name="DBUtils.location_src" value="${jenkins.location}/KH_DBUtils/lastSuccessfulBuild/artifact/build/jar/DBUtils_withsource.jar" />
+	<property name="UnDeadAnalyzer.location_src" value="${jenkins.location}/KH_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/UnDeadAnalyzer_withsource.jar" />
+	<property name="MetricHaven.location_src" value="${jenkins.location}/KH_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven_withsource.jar" />
+	<property name="KconfigReaderExtractor.location_src" value="${jenkins.location}/KH_KconfigReaderExtractor/lastSuccessfulBuild/artifact/build/jar/KconfigReaderExtractor_withsource.jar" />
+	<property name="KbuildMinerExtractor.location_src" value="${jenkins.location}/KH_KbuildMinerExtractor/lastSuccessfulBuild/artifact/build/jar/KbuildminerExtractor_withsource.jar" />
+	<property name="NonBooleanUtils.location" value="${jenkins.location}/KH_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils.jar" />
+	<property name="NonBooleanUtils.location_src" value="${jenkins.location}/KH_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils_withsource.jar" />
+	<property name="ConfigurationMismatchAnalysis.location" value="${jenkins.location}/KH_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis.jar" />
+	<property name="ConfigurationMismatchAnalysis.location_src" value="${jenkins.location}/KH_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis_withsource.jar" />
+	<property name="CodeBlockExtractor.location_src" value="${jenkins.location}/KH_CodeBlockExtractor/lastSuccessfulBuild/artifact/build/jar/CodeBlockExtractor_withsource.jar" />
+	<property name="CodeBlockExtractor.location" value="${jenkins.location}/KH_CodeBlockExtractor/lastSuccessfulBuild/artifact/build/jar/CodeBlockExtractor.jar" />
+	<property name="BusybootPreparation.location_src" value="${jenkins.location}/KH_BusybootPreparation/lastSuccessfulBuild/artifact/build/jar/BusybootPreparation_withsource.jar" />
+	<property name="BusybootPreparation.location" value="${jenkins.location}/KH_BusybootPreparation/lastSuccessfulBuild/artifact/build/jar/BusybootPreparation.jar" />
+	<property name="PSS_MapperAnalysis.location_src" value="${jenkins.location}/KH_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis_withsource.jar" />
+	<property name="PSS_MapperAnalysis.location" value="${jenkins.location}/KH_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis.jar" />
+	<property name="PSS_DivergenceDetectorAnalysis.location_src" value="${jenkins.location}/KH_ProblemSolutionSpaceDivergenceDetectorAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceDivergenceDetectorAnalysis_withsource.jar" />
+	<property name="PSS_DivergenceCorrectorAnalysis.location_src" value="${jenkins.location}/KH_ProblemSolutionSpaceDivergenceCorrectorAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceDivergenceCorrectorAnalysis_withsource.jar" />
 	
 	<!-- Other Artifacts -->
 	<property name="KH.Manual" value="${jenkins.location}/KernelHaven_Documentation/lastSuccessfulBuild/artifact/Manual.pdf" />
