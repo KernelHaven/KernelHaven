@@ -1,6 +1,6 @@
 # KernelHaven
 
-![Build Status](https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_Infrastructure "Build Status")
+![Build Status](https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_Infrastructure "Build Status")
 
 KernelHaven offers a generic infrastructure for performing different analyses on product lines. This repository contains the main infrastructure, plugins are located in separate repositories.
 
@@ -40,7 +40,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_KconfigReaderExtractor/lastSuccessfulBuild/artifact/build/jar/KconfigReaderExtractor.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_KconfigReaderExtractor/lastSuccessfulBuild/artifact/build/jar/KconfigReaderExtractor_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_KconfigReaderExtractor" alt="Build Status of KconfigReaderExtractor"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_KconfigReaderExtractor" alt="Build Status of KconfigReaderExtractor"></td>
   </tr>
   <!-- UndertakerExtractor -->
   <tr>
@@ -51,7 +51,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_UndertakerExtractor/lastSuccessfulBuild/artifact/build/jar/UndertakerExtractor_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_UndertakerExtractor" alt="Build Status of UndertakerExtractor"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_UndertakerExtractor" alt="Build Status of UndertakerExtractor"></td>
   </tr>
   <!-- TypeChefExtractor -->
   <tr>
@@ -62,7 +62,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_TypeChefExtractor/lastSuccessfulBuild/artifact/build/jar/TypeChefExtractor_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_TypeChefExtractor" alt="Build Status of TypeChefExtractor"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_TypeChefExtractor" alt="Build Status of TypeChefExtractor"></td>
   </tr>
   <!-- srcMLExtractor -->
   <tr>
@@ -73,7 +73,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_SrcMlExtractor/lastSuccessfulBuild/artifact/build/jar/SrcMLExtractor.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_SrcMlExtractor/lastSuccessfulBuild/artifact/build/jar/SrcMLExtractor_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_SrcMlExtractor" alt="Build Status of srcMLExtractor"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_SrcMlExtractor" alt="Build Status of srcMLExtractor"></td>
   </tr>
   <!-- KbuildMinerExtractor -->
   <tr>
@@ -84,7 +84,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_KbuildMinerExtractor/lastSuccessfulBuild/artifact/build/jar/KbuildminerExtractor.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_KbuildMinerExtractor/lastSuccessfulBuild/artifact/build/jar/KbuildminerExtractor_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_KbuildMinerExtractor" alt="Build Status of KbuildMinerExtractor"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_KbuildMinerExtractor" alt="Build Status of KbuildMinerExtractor"></td>
   </tr>
   <!-- CnfUtils -->
   <tr>
@@ -95,7 +95,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_CnfUtils/lastSuccessfulBuild/artifact/build/jar/CnfUtils.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_CnfUtils/lastSuccessfulBuild/artifact/build/jar/CnfUtils_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_CnfUtils" alt="Build Status of CnfUtils"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_CnfUtils" alt="Build Status of CnfUtils"></td>
   </tr>
   <!-- IOUtils -->
   <tr>
@@ -106,7 +106,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_IOUtils/lastSuccessfulBuild/artifact/build/jar/IOUtils_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_IOUtils" alt="Build Status of IOUtils"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_IOUtils" alt="Build Status of IOUtils"></td>
   </tr>
   <!-- NonBooleanUtils -->
   <tr>
@@ -117,7 +117,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_NonBooleanUtils/lastSuccessfulBuild/artifact/build/jar/NonBooleanUtils_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_NonBooleanUtils" alt="Build Status of NonBooleanUtils"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_NonBooleanUtils" alt="Build Status of NonBooleanUtils"></td>
   </tr>
   <!-- UnDeadAnalyzer -->
   <tr>
@@ -128,7 +128,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/UnDeadAnalyzer.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_UnDeadAnalyzer/lastSuccessfulBuild/artifact/build/jar/UnDeadAnalyzer_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_UnDeadAnalyzer" alt="Build Status of UnDeadAnalyzer"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_UnDeadAnalyzer" alt="Build Status of UnDeadAnalyzer"></td>
   </tr>
   <!-- FeatureEffectAnalyzer -->
   <tr>
@@ -139,7 +139,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_FeatureEffectAnalysis" alt="Build Status of FeatureEffectAnalyzer"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_FeatureEffectAnalysis" alt="Build Status of FeatureEffectAnalyzer"></td>
   </tr>
   <!-- MetricHaven -->
   <tr>
@@ -150,7 +150,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_MetricHaven/lastSuccessfulBuild/artifact/build/jar/MetricHaven_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_MetricHaven" alt="Build Status of MetricHaven"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_MetricHaven" alt="Build Status of MetricHaven"></td>
   </tr>
   <!-- Configuration Mismatches -->
   <tr>
@@ -161,7 +161,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_Configuration_Mismatches" alt="Build Status of Configuration Mismatches"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_Configuration_Mismatches" alt="Build Status of Configuration Mismatches"></td>
   </tr>
   <!-- Problem-Solution-Space Mapper -->
   <tr>
@@ -172,7 +172,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis.jar">JAR</a></li>
       <li><a href="https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis_withsource.jar">JAR with sources</a></li>
     </ul></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KernelHaven_ProblemSolutionSpaceMapperAnalysis" alt="Build Status of Problem-Solution-Space Mapper"></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_ProblemSolutionSpaceMapperAnalysis" alt="Build Status of Problem-Solution-Space Mapper"></td>
   </tr>
 </table>
 
