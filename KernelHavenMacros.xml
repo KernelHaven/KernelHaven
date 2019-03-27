@@ -48,8 +48,8 @@
 	<property name="PSS_DivergenceCorrectorAnalysis.location_src" value="${jenkins.location}/KH_ProblemSolutionSpaceDivergenceCorrectorAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceDivergenceCorrectorAnalysis_withsource.jar" />
 	
 	<!-- Other Artifacts -->
-	<property name="KH.Manual" value="${jenkins.location}/KernelHaven_Documentation/lastSuccessfulBuild/artifact/Manual.pdf" />
-	<property name="KH.PropertyTemplate" value="${jenkins.location}/KernelHaven_PropertiesTemplate/lastSuccessfulBuild/artifact/build/generated/config_template.properties" />
+	<property name="KH.Manual" value="${jenkins.location}/KH_Documentation/lastSuccessfulBuild/artifact/Manual.pdf" />
+	<property name="KH.PropertyTemplate" value="${jenkins.location}/KH_SettingDocumentationGenerator/lastSuccessfulBuild/artifact/build/generated/config_template.properties" />
 
 	<!-- Modules that build -->
 	<property name="src.dir" value="${basedir}/src" />
