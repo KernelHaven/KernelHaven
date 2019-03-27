@@ -1,144 +1,144 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
-<svg width="43cm" height="23cm" viewBox="218 -461 846 457" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="40cm" height="23cm" viewBox="218 -461 783 457" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <g>
-    <rect style="fill: #ffffff" x="580" y="-160" width="160.25" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="580" y="-160" width="160.25" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="660.125" y="-137.1">
-      <tspan x="660.125" y="-137.1">CnfUtils</tspan>
-      <tspan x="660.125" y="-121.1">KernelHaven_CnfUtils</tspan>
+    <rect style="fill: #ffffff" x="560" y="-160" width="180" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="560" y="-160" width="180" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-137.1">
+      <tspan x="650" y="-137.1">CnfUtils</tspan>
+      <tspan x="650" y="-121.1">KH_CnfUtils</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="580" y="-220" width="152.6" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="580" y="-220" width="152.6" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="656.3" y="-197.1">
-      <tspan x="656.3" y="-197.1">IOUtils</tspan>
-      <tspan x="656.3" y="-181.1">KernelHaven_IOUtils</tspan>
+    <rect style="fill: #ffffff" x="560" y="-220" width="180" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="560" y="-220" width="180" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-197.1">
+      <tspan x="650" y="-197.1">IOUtils</tspan>
+      <tspan x="650" y="-181.1">KH_IOUtils</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="220" y="-260" width="216.15" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="220" y="-260" width="216.15" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="328.075" y="-237.1">
-      <tspan x="328.075" y="-237.1">NonBooleanUtils</tspan>
-      <tspan x="328.075" y="-221.1">KernelHaven_NonBooleanUtils</tspan>
+    <rect style="fill: #ffffff" x="220" y="-260" width="260" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="220" y="-260" width="260" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-237.1">
+      <tspan x="350" y="-237.1">NonBooleanUtils</tspan>
+      <tspan x="350" y="-221.1">KH_NonBooleanUtils</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="580" y="-280" width="157.35" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="580" y="-280" width="157.35" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="658.675" y="-257.1">
-      <tspan x="658.675" y="-257.1">DBUtils</tspan>
-      <tspan x="658.675" y="-241.1">KernelHaven_DBUtils</tspan>
+    <rect style="fill: #ffffff" x="560" y="-280" width="180" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="560" y="-280" width="180" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-257.1">
+      <tspan x="650" y="-257.1">DBUtils</tspan>
+      <tspan x="650" y="-241.1">KH_DBUtils</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="540" y="-60" width="249.7" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="540" y="-60" width="249.7" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="664.85" y="-37.1">
-      <tspan x="664.85" y="-37.1">FeatureEffectAnalysis</tspan>
-      <tspan x="664.85" y="-21.1">KernelHaven_FeatureEffectAnalysis</tspan>
+    <rect style="fill: #ffffff" x="540" y="-60" width="220" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="540" y="-60" width="220" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-37.1">
+      <tspan x="650" y="-37.1">FeatureEffectAnalysis</tspan>
+      <tspan x="650" y="-21.1">KH_FeatureEffectAnalysis</tspan>
     </text>
   </g>
   <g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="663.527" y1="-60.9907" x2="661.659" y2="-100.542"/>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="667.019,-93.0228 661.553,-102.776 657.031,-92.5509 "/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="650" y1="-60.9907" x2="650" y2="-100.537"/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="655,-92.7732 650,-102.773 645,-92.7732 "/>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="220" y="-180" width="191.5" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="220" y="-180" width="191.5" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="315.75" y="-157.1">
-      <tspan x="315.75" y="-157.1">MetricHaven</tspan>
-      <tspan x="315.75" y="-141.1">KernelHaven_MetricHaven</tspan>
+    <rect style="fill: #ffffff" x="220" y="-180" width="260" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="220" y="-180" width="260" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-157.1">
+      <tspan x="350" y="-157.1">MetricHaven</tspan>
+      <tspan x="350" y="-141.1">KH_MetricHaven</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="220" y="-120" width="217.5" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="220" y="-120" width="217.5" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="328.75" y="-97.1">
-      <tspan x="328.75" y="-97.1">UnDeadAnalyzer</tspan>
-      <tspan x="328.75" y="-81.1">KernelHaven_UnDeadAnalyzer</tspan>
+    <rect style="fill: #ffffff" x="220" y="-120" width="260" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="220" y="-120" width="260" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-97.1">
+      <tspan x="350" y="-97.1">UnDeadAnalyzer</tspan>
+      <tspan x="350" y="-81.1">KH_UnDeadAnalyzer</tspan>
     </text>
   </g>
   <g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="438.504" y1="-106.248" x2="574.581" y2="-122.674"/>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="567.472,-116.78 576.801,-122.942 566.274,-126.708 "/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="481.003" y1="-110.467" x2="554.582" y2="-120.278"/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="547.547,-114.295 556.798,-120.573 546.225,-124.208 "/>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="220" y="-60" width="280.05" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="220" y="-60" width="280.05" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="360.025" y="-37.1">
-      <tspan x="360.025" y="-37.1">ConfigurationMismatchAnalysis</tspan>
-      <tspan x="360.025" y="-21.1">KernelHaven_Configuration_Mismatches</tspan>
+    <rect style="fill: #ffffff" x="220" y="-60" width="260" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="220" y="-60" width="260" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-37.1">
+      <tspan x="350" y="-37.1">ConfigurationMismatchAnalysis</tspan>
+      <tspan x="350" y="-21.1">KH_ConfigurationMismatchAnalysis</tspan>
     </text>
   </g>
   <g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="501.014" y1="-33" x2="534.524" y2="-33"/>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="526.76,-28 536.76,-33 526.76,-38 "/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="481.003" y1="-33" x2="534.52" y2="-33"/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="526.756,-28 536.756,-33 526.756,-38 "/>
   </g>
   <g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="444.025" y1="-60.9907" x2="574.758" y2="-104.554"/>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="568.973,-97.3557 576.879,-105.261 565.811,-106.843 "/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="480" y1="-46.5" x2="591.021" y2="-102.99"/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="586.369,-95.0132 593.014,-104.004 581.834,-103.926 "/>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="800" y="-420" width="237.05" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-420" width="237.05" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="918.525" y="-397.1">
-      <tspan x="918.525" y="-397.1">CodeBlockExtractor</tspan>
-      <tspan x="918.525" y="-381.1">KernelHaven_CodeBlockExtractor</tspan>
+    <rect style="fill: #ffffff" x="800" y="-420" width="200" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-420" width="200" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-397.1">
+      <tspan x="900" y="-397.1">CodeBlockExtractor</tspan>
+      <tspan x="900" y="-381.1">KH_CodeBlockExtractor</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="800" y="-360" width="245.3" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-360" width="245.3" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="922.65" y="-337.1">
-      <tspan x="922.65" y="-337.1">KbuildMinerExtractor</tspan>
-      <tspan x="922.65" y="-321.1">KernelHaven_KbuildMinerExtractor</tspan>
+    <rect style="fill: #ffffff" x="800" y="-360" width="200" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-360" width="200" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-337.1">
+      <tspan x="900" y="-337.1">KbuildMinerExtractor</tspan>
+      <tspan x="900" y="-321.1">KH_KbuildMinerExtractor</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="800" y="-300" width="263.1" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-300" width="263.1" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="931.55" y="-277.1">
-      <tspan x="931.55" y="-277.1">KconfigReaderExtractor</tspan>
-      <tspan x="931.55" y="-261.1">KernelHaven_KconfigReaderExtractor</tspan>
+    <rect style="fill: #ffffff" x="800" y="-300" width="200" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-300" width="200" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-277.1">
+      <tspan x="900" y="-277.1">KconfigReaderExtractor</tspan>
+      <tspan x="900" y="-261.1">KH_KconfigReaderExtractor</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="800" y="-240" width="204.6" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-240" width="204.6" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="902.3" y="-217.1">
-      <tspan x="902.3" y="-217.1">srcMLExtractor</tspan>
-      <tspan x="902.3" y="-201.1">KernelHaven_SrcMlExtractor</tspan>
+    <rect style="fill: #ffffff" x="800" y="-240" width="200" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-240" width="200" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-217.1">
+      <tspan x="900" y="-217.1">srcMLExtractor</tspan>
+      <tspan x="900" y="-201.1">KH_SrcMlExtractor</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="800" y="-180" width="241.7" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-180" width="241.7" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="920.85" y="-157.1">
-      <tspan x="920.85" y="-157.1">UndertakerExtractor</tspan>
-      <tspan x="920.85" y="-141.1">KernelHaven_UndertakerExtractor</tspan>
+    <rect style="fill: #ffffff" x="800" y="-180" width="200" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-180" width="200" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-157.1">
+      <tspan x="900" y="-157.1">UndertakerExtractor</tspan>
+      <tspan x="900" y="-141.1">KH_UndertakerExtractor</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="800" y="-120" width="230.45" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-120" width="230.45" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="915.225" y="-97.1">
-      <tspan x="915.225" y="-97.1">TypeChefExtractor</tspan>
-      <tspan x="915.225" y="-81.1">KernelHaven_TypeChefExtractor</tspan>
+    <rect style="fill: #ffffff" x="800" y="-120" width="200" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-120" width="200" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-97.1">
+      <tspan x="900" y="-97.1">TypeChefExtractor</tspan>
+      <tspan x="900" y="-81.1">KH_TypeChefExtractor</tspan>
     </text>
   </g>
   <g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="799.002" y1="-111.224" x2="745.671" y2="-119.586"/>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="754.116,-123.323 743.462,-119.933 752.567,-113.444 "/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="799.017" y1="-109.157" x2="745.389" y2="-117.738"/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="753.845,-121.448 743.181,-118.091 752.265,-111.574 "/>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="220" y="-320" width="245.05" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="220" y="-320" width="245.05" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="342.525" y="-297.1">
-      <tspan x="342.525" y="-297.1">BusybootPreparation</tspan>
-      <tspan x="342.525" y="-281.1">KernelHaven_BusybootPreparation</tspan>
+    <rect style="fill: #ffffff" x="220" y="-320" width="260" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="220" y="-320" width="260" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-297.1">
+      <tspan x="350" y="-297.1">BusybootPreparation</tspan>
+      <tspan x="350" y="-281.1">KH_BusybootPreparation</tspan>
     </text>
   </g>
   <text font-size="12.8" style="fill: #0000ff;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="220" y="-400">
@@ -193,7 +193,7 @@
 				}
 				
 				tspans[0].innerHTML = "<a target=\"_blank\" href=\"https://github.com/KernelHaven/" + projectName + "/\">" + projectName + "</a>";
-				tspans[1].innerHTML = "<a target=\"_blank\" href=\"https://jenkins.sse.uni-hildesheim.de/view/KernelHaven/job/" + jenkinsName + "/\">" + jenkinsName + "</a>";
+				tspans[1].innerHTML = "<a target=\"_blank\" href=\"https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/" + jenkinsName + "/\">" + jenkinsName + "</a>";
 			}
 		}
 	//]]>
