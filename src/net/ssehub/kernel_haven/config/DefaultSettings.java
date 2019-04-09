@@ -82,7 +82,7 @@ public class DefaultSettings {
      */
     
     public static enum USAGE_OF_VM_VARS {
-        ALL_ELEMENTS, ANY_VM_USAGE, VM_USAGE_IN_CODE;
+        ALL_ELEMENTS, ANY_VM_USAGE;
     }
     
     public static final @NonNull Setting<@NonNull String> ANALYSIS_CLASS = new Setting<>("analysis.class", STRING, true, null, "The fully qualified class name of the analysis that should be run.");
@@ -92,8 +92,7 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull String> ANALYSIS_RESULT_NAME = new Setting<>("analysis.output.name", STRING, true, "Analysis", "A name for the analysis result that is used as a prefix for the output file(s).");
     public static final @NonNull Setting<@NonNull USAGE_OF_VM_VARS> ANALYSIS_USE_VARMODEL_VARIABLES_ONLY = new EnumSetting<@NonNull USAGE_OF_VM_VARS>("analysis.consider_vm_vars_only", USAGE_OF_VM_VARS.class, true, USAGE_OF_VM_VARS.ALL_ELEMENTS, "Defines whether the analysis should only consider variables that are present in the variability model:\n"
         + "- " + USAGE_OF_VM_VARS.ALL_ELEMENTS + ": Considers all elements in the analysis, independently if used elements are defined in the variability model.\n"
-        + "- " + USAGE_OF_VM_VARS.ANY_VM_USAGE + ": Considers only elements that contain at least one variable defined by the variability model, independently where it was used.\n"
-        + "- " + USAGE_OF_VM_VARS.VM_USAGE_IN_CODE + ": Considers only elements that contain at least one variable defined in the variability model, only if the element was used in code.");
+        + "- " + USAGE_OF_VM_VARS.ANY_VM_USAGE + ": Considers only elements that contain at least one variable defined by the variability model. \n");
     public static final @NonNull Setting<@NonNull Boolean> ANALYSIS_PIPELINE_START_EXTRACTORS = new Setting<>("analysis.pipeline.preemptively_start_extractors", BOOLEAN, true, "true", "Whether the analysis pipeline should preemptively start all three extractors. This has the advantage that the extractors will always run in parallel, even if the analysis compoenents only poll them in order. If this is set to false, then the extractors only start on demand when the analysis components poll them.");
     
     /*
