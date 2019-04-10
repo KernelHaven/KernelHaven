@@ -46,7 +46,7 @@
 	<property name="PSS_MapperAnalysis.location" value="${jenkins.location}/KH_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis.jar" />
 	<property name="PSS_DivergenceDetectorAnalysis.location_src" value="${jenkins.location}/KH_ProblemSolutionSpaceDivergenceDetectorAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceDivergenceDetectorAnalysis_withsource.jar" />
 	<property name="PSS_DivergenceCorrectorAnalysis.location_src" value="${jenkins.location}/KH_ProblemSolutionSpaceDivergenceCorrectorAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceDivergenceCorrectorAnalysis_withsource.jar" />
-	
+
 	<!-- Other Artifacts -->
 	<property name="KH.Manual" value="${jenkins.location}/KH_Documentation/lastSuccessfulBuild/artifact/Manual.pdf" />
 	<property name="KH.PropertyTemplate" value="${jenkins.location}/KH_SettingDocumentationGenerator/lastSuccessfulBuild/artifact/build/generated/config_template.properties" />
@@ -115,6 +115,8 @@
 			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
 			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
 
+			<fileset file="LICENSE" casesensitive="false" />
+
 			<!-- Automatically include all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
 		</jar>
@@ -124,6 +126,8 @@
 		<jar destfile="${jar.dir}/${jar.filename}" duplicate="preserve">
 			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
 			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
+
+			<fileset file="LICENSE" casesensitive="false" />
 
 			<!-- Automatically include all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
@@ -147,6 +151,8 @@
 			<fileset dir="${src.dir}" excludes="**/package-info.java" />
 			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
 
+			<fileset file="LICENSE" casesensitive="false" />
+			
 			<!-- Automatically include all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
 		</jar>
@@ -157,6 +163,8 @@
 			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
 			<fileset dir="${src.dir}" excludes="**/package-info.java" />
 			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
+
+			<fileset file="LICENSE" casesensitive="false" />
 
 			<!-- Automatically include all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
