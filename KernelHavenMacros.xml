@@ -115,10 +115,10 @@
 			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
 			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
 
-			<fileset file="LICENSE" casesensitive="false" />
-
 			<!-- Automatically include all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
+
+			<fileset file="${basedir}/LICENSE" casesensitive="false" />
 		</jar>
 	</target>
 
@@ -127,8 +127,6 @@
 			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
 			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
 
-			<fileset file="LICENSE" casesensitive="false" />
-
 			<!-- Automatically include all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
 
@@ -136,6 +134,8 @@
 				<attribute name="Main-Class" value="${main.class}" />
 				<attribute name="Class-Path" value="" />
 			</manifest>
+
+			<fileset file="${basedir}/LICENSE" casesensitive="false" />
 		</jar>
 	</target>
 
@@ -151,10 +151,10 @@
 			<fileset dir="${src.dir}" excludes="**/package-info.java" />
 			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
 
-			<fileset file="LICENSE" casesensitive="false" />
-			
 			<!-- Automatically include all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
+
+			<fileset file="${basedir}/LICENSE" casesensitive="false" />
 		</jar>
 	</target>
 
@@ -164,8 +164,6 @@
 			<fileset dir="${src.dir}" excludes="**/package-info.java" />
 			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
 
-			<fileset file="LICENSE" casesensitive="false" />
-
 			<!-- Automatically include all libraries from lib/include folder -->
 			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
 
@@ -173,6 +171,8 @@
 				<attribute name="Main-Class" value="${main.class}" />
 				<attribute name="Class-Path" value="" />
 			</manifest>
+
+			<fileset file="${basedir}/LICENSE" casesensitive="false" />
 		</jar>
 	</target>
 
