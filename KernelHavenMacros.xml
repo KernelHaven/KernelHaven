@@ -80,6 +80,7 @@
 		  This is done as a plug-in may uses the same qualified name for the test suite.
 		-->
 		<pathelement location="${test.classes.dir}" />
+		<pathelement location="${res.dir}" />
 		<fileset dir="${dependencies.dir}" />
 	</path>
 
@@ -225,9 +226,6 @@
 			<fileset dir="${src.dir}">
 				<exclude name="**/*.java" />
 			</fileset>
-			<fileset dir="${res.dir}" erroronmissingdir="false">
-				<exclude name="**/*.java" />
-			</fileset>
 			<fileset dir="${test.dir}">
 				<exclude name="**/*.java" />
 			</fileset>
@@ -264,27 +262,20 @@
 		</junitreport>
 	</target>
 
-	<!-- Clean-up after testing to reduce required diskspace for archiving results on Jenkins.
-	     Must be called after JAR creation, before creating Jacoco results (or at least before Jenkins will publish them. -->
-	<target name="cleanup">
+	<condition property="runs_in_jenkins">
+		<equals arg1="${user.name}" arg2="jenkins" />
+	</condition>
+
+	<!--
+	 Clean-up after testing to reduce required diskspace for archiving results on Jenkins.
+	 Must be called after JAR creation, before creating Jacoco results (or at least before Jenkins will publish them).
+	-->
+	<target name="cleanup" if="runs_in_jenkins">
 		<delete failonerror="false">
-			<fileset dir="${classes.dir}">
-				<include name="**/*.zip" />
-				<include name="**/*.jar" />
-				<include name="**/*.c" />
-				<include name="**/pilztaker" />
-			</fileset>
-			<fileset dir="${test.classes.dir}">
-				<include name="**/*.zip" />
-				<include name="**/*.jar" />
-				<include name="**/*.c" />
-				<include name="**/pilztaker" />
-			</fileset>
 			<!-- Attention: Please do not commit (Jenkins won't commit anything) -->
 			<fileset dir="${res.dir}">
 				<include name="**/*.zip" />
 				<include name="**/*.jar" />
-				<include name="**/*.c" />
 				<include name="**/pilztaker" />
 			</fileset>
 		</delete>
