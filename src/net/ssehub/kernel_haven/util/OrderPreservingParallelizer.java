@@ -35,6 +35,10 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * consumer will always receive output1 first, even if the function finishes with output2 before output1.
  * </p>
  * <p>
+ * If the function throws an exception while handling an element, that element it dropped and will not appear for
+ * the consumer.
+ * </p>
+ * <p>
  * Usage could look like this:
  * <code><pre>
  * OrderPreservingParallelizer parallelizer = new OrderPreservingParallelizer(someFunction, someConsumer, 4);
@@ -70,6 +74,8 @@ public class OrderPreservingParallelizer<Input, Output> {
         
         private Output output;
         
+        private boolean crashed;
+        
         /**
          * Creates a {@link WorkPackage}.
          * 
@@ -85,7 +91,22 @@ public class OrderPreservingParallelizer<Input, Output> {
          * Executes this work package.
          */
         public void execute() {
-            this.output = function.apply(this.input);
+            try {
+                this.crashed = true;
+                this.output = function.apply(this.input);
+                this.crashed = false;
+                
+                // CHECKSTYLE:OFF
+            } catch (Exception e) {
+                // CHECKSTYLE:ON
+                
+                // ignore all exceptions, so that the worker may continue
+                // note: this only catches Exceptions, not Errors
+                
+                // call uncaught exception handler so that the exception at least appears in logs
+                Thread current = Thread.currentThread();
+                current.getUncaughtExceptionHandler().uncaughtException(current, e);
+            }
         }
         
         /**
@@ -104,6 +125,16 @@ public class OrderPreservingParallelizer<Input, Output> {
          */
         public int getIndex() {
             return index;
+        }
+        
+        /**
+         * After calling {@link #execute()}, this method signals whether the underlying function "crashed" with an
+         * unhandled exception.
+         * 
+         * @return Whether the function threw an unhandled exception.
+         */
+        public boolean isCrashed() {
+            return crashed;
         }
         
     }
@@ -193,8 +224,25 @@ public class OrderPreservingParallelizer<Input, Output> {
                         if (possibleNext.getIndex() == nextWantedIndex) {
                             // we have found the next result that we can send 
                             found = true;
-                            conusmer.accept(possibleNext.getOutput());
                             nextWantedIndex++;
+                            
+                            // only pass to consumer if this isn't a "crashed" package
+                            if (!possibleNext.isCrashed()) {
+                                
+                                try {
+                                    conusmer.accept(possibleNext.getOutput());
+                                    // CHECKSTYLE:OFF
+                                } catch (Exception e) {
+                                    // CHECKSTYLE:ON
+                                    
+                                    // ignore all exceptions, so that the collector may continue
+                                    // note: this only catches Exceptions, not Errors
+                                    
+                                    // call uncaught exception handler so that the exception at least appears in logs
+                                    Thread current = Thread.currentThread();
+                                    current.getUncaughtExceptionHandler().uncaughtException(current, e);
+                                }
+                            }
                         }
                     }
                     

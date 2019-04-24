@@ -21,6 +21,8 @@ import static org.junit.Assert.assertThat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.junit.Test;
 
@@ -265,6 +267,74 @@ public class OrderPreservingParallelizerTest {
             (character) -> { },                     // consumer: to nothing
             -2
         );
+    }
+    
+    /**
+     * Tests that work packages where the function throws an exception are ignored and don't crash.
+     */
+    @Test(timeout = 5000)
+    public void testFunctionThrowsException() {
+        List<Character> result = new LinkedList<>();
+        
+        Function<Integer, Character> function = (input) -> {
+            // function: turn 1 into 'a', 2 into 'b', etc.
+            
+            if (input == 2) {
+                // throw an exception on input value 2
+                throw new RuntimeException("Testcrash");
+            }
+            
+            return (char) ('a' + input - 1); 
+        };
+        
+        OrderPreservingParallelizer<Integer, Character> parallelizer = new OrderPreservingParallelizer<>(
+            function,    
+            (character) -> result.add(character),   // consumer: add to result list
+            1 // only one thread, so we are sure that this thread didn't crash during the exception
+        );
+        
+        parallelizer.add(4);
+        parallelizer.add(7);
+        parallelizer.add(2);
+        parallelizer.add(4);
+        parallelizer.end();
+        parallelizer.join();
+        
+        assertThat(result, is(Arrays.asList('d', 'g', 'd'))); // only 3 values, since 2 ('b') threw an exception
+    }
+    
+    /**
+     * Tests that work packages where the collector throws an exception are ignored and don't crash.
+     */
+    @Test(timeout = 5000)
+    public void testCollectorThrowsException() {
+        List<Character> result = new LinkedList<>();
+        
+        Consumer<Character> consumer = (character) -> {
+            // consumer: add to result list
+            
+            if (character == 'g') {
+                // crash on result 'g' (7)
+                throw new RuntimeException("Testcrash");
+            }
+            
+            result.add(character);
+        };
+        
+        OrderPreservingParallelizer<Integer, Character> parallelizer = new OrderPreservingParallelizer<>(
+            (input) -> (char) ('a' + input - 1),    // function: turn 1 into 'a', 2 into 'b', etc. 
+            consumer,
+            1
+        );
+        
+        parallelizer.add(4);
+        parallelizer.add(7);
+        parallelizer.add(2);
+        parallelizer.add(4);
+        parallelizer.end();
+        parallelizer.join();
+        
+        assertThat(result, is(Arrays.asList('d', 'b', 'd'))); // only 3 values, since 7 ('g') threw an exception
     }
     
 }
