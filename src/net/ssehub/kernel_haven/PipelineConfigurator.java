@@ -271,7 +271,7 @@ public class PipelineConfigurator {
      *             If the setup fails.
      */
     public void instantiateExtractors() throws SetUpException {
-        LOGGER.logInfo("Instantiating extractor factories...");
+        LOGGER.logInfo("Instantiating extractors...");
         Configuration config = this.config;
         if (config == null) {
             throw new SetUpException("Configuration not set");
