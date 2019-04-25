@@ -552,7 +552,7 @@ public class PipelineAnalysisTest {
     public static class TestOutputWriter extends AbstractTableWriter implements ITableCollection {
 
         /**
-         * Global mapping of tablename -> lines. This is used for all instances of {@link TestOutputWriter}.
+         * Global mapping of tablename -&gt; lines. This is used for all instances of {@link TestOutputWriter}.
          */
         public static final Map<String, List<String>> TABLES = new HashMap<>();
         

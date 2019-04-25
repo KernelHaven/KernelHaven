@@ -38,7 +38,7 @@ import net.ssehub.kernel_haven.variability_model.VariabilityModelDescriptor.Vari
 
 /**
  * {@link VariabilityModel} extractor, which operators only on a single
- * <a href"http://www.satcompetition.org/2009/format-benchmarks2009.html">DIMACS</a> file.
+ * <a href="http://www.satcompetition.org/2009/format-benchmarks2009.html">DIMACS</a> file.
  * 
  * @author El-Sharkawy
  */

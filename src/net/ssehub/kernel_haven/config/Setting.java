@@ -86,7 +86,7 @@ public class Setting<T> {
          * A list of strings. Each value has its own key, based on the key of the setting and a suffix with a number:
          * <code>&lt;key&gt;.&lt;number&gt;</code> The number starts with 0 and increases by 1 for each successive
          * element in the list. Generic should be {@link List} with generic String.
-         * <br />
+         * <p>
          * The mandatory or default value attributes have no effect on this type of setting.
          */
         SETTING_LIST,

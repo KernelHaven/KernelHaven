@@ -83,7 +83,7 @@ public interface ISyntaxElementVisitor {
     
     /**
      * <b>C-Code:</b> Visits a function. These are usually at the top level of a file.
-     * <br/>
+     * <p>
      * Provides default Visitation: <b>true</b>
      * 
      * @param function The function to visit.
@@ -98,7 +98,7 @@ public interface ISyntaxElementVisitor {
     /**
      * <b>C-Code:</b> Visits a single statement. This represents assignments, declarations, etc. (basically everything
      * that ends with a semicolon and does something).
-     * <br/>
+     * <p>
      * Provides default Visitation: <b>true</b>
      * 
      * @param statement The statement to visit.
@@ -109,7 +109,7 @@ public interface ISyntaxElementVisitor {
     
     /**
      * <b>C-Code:</b> Visits a compound statement. This is a block of statements
-     * <br/>
+     * <p>
      * Provides default Visitation: <b>true</b>
      * 
      * @param block The block to visit.
@@ -122,7 +122,7 @@ public interface ISyntaxElementVisitor {
     
     /**
      * <b>C-Code:</b> Visits a list of unparsed code objects.
-     * <br/>
+     * <p>
      * Provides default Visitation: <b>true</b>
      * 
      * @param code The code to visit.
@@ -144,7 +144,7 @@ public interface ISyntaxElementVisitor {
     
     /**
      * <b>C-Code:</b> Visits a type definition.
-     * <br/>
+     * <p>
      * Provides default Visitation: <b>true</b>
      * 
      * @param typeDef The type definition to visit.
@@ -158,7 +158,7 @@ public interface ISyntaxElementVisitor {
 
     /**
      * <b>C-Code:</b> Visits a label.
-     * <br/>
+     * <p>
      * Provides default Visitation: <b>true</b>
      * 
      * @param label The label to visit.
@@ -169,7 +169,7 @@ public interface ISyntaxElementVisitor {
     
     /**
      * <b>C-Code:</b> Visits a comment.
-     * <br/>
+     * <p>
      * Provides default Visitation: <b>true</b>
      * 
      * @param comment The Comment to visit.
@@ -182,7 +182,7 @@ public interface ISyntaxElementVisitor {
     
     /**
      * <b>C control structure:</b> Visits a branching statement (if, else if or else).
-     * <br/>
+     * <p>
      * Provides default Visitation: <b>true</b>
      * 
      * @param branchStatement The branching statement to visit.
@@ -200,7 +200,7 @@ public interface ISyntaxElementVisitor {
     
     /**
      * <b>C control structure:</b> Visits a switch statement.
-     * <br/>
+     * <p>
      * Provides default Visitation: <b>true</b>
      * 
      * @param switchStatement The switch to visit.
@@ -215,7 +215,7 @@ public interface ISyntaxElementVisitor {
     
     /**
      * <b>C control structure:</b> Visits a case statement.
-     * <br/>
+     * <p>
      * Provides default Visitation: <b>true</b>
      * 
      * @param caseStatement The case statement to visit.
@@ -233,7 +233,7 @@ public interface ISyntaxElementVisitor {
     
     /**
      * <b>C control structure:</b> Visits a loop statement (while, do-while or for).
-     * <br/>
+     * <p>
      * Provides default Visitation: <b>true</b>
      * 
      * @param loop The loop to visit.

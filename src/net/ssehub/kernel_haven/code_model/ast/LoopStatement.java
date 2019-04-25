@@ -83,9 +83,9 @@ public class LoopStatement extends AbstractSyntaxElementWithNesting {
     }
     
     /**
-     * Returns which type of loop this is.
+     * Returns the condition of this loop.
      * 
-     * @return The {@link Type} of this loop.
+     * @return The condition of this loop of this loop.
      */
     public @NonNull ICode getLoopCondition() {
         return condition;

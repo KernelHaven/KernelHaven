@@ -29,12 +29,10 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 public interface ITableWriter extends Closeable {
     
     /**
-     * <p>
      * Writes a single row of data. The first call of this is used to determine the header of the table. This means,
      * that subsequent calls to this method must provide the same kind of data (i.e. they all must have the same class).
      * <b>This method should not be mixed with the {@link #writeRow(Object...)} method</b>, since this method creates
      * an internal state for the structure of data to extract from the objects.
-     * </p>
      * <p>
      * The object passed to this method is translated in column values in one of the following ways:
      * <ol>
@@ -42,9 +40,8 @@ public interface ITableWriter extends Closeable {
      *          {@link TableElement} annotation is a single column value.</li>
      *      <li>If the object implements {@link ITableRow}, the {@link ITableRow#getContent()} method is used to get
      *          the column values.</li>
-     *      <li>Otherwise, the {@link #toString()} method is used as a single column value.</li>
+     *      <li>Otherwise, the {@link Object#toString()} method is used as a single column value.</li>
      * </ol>
-     * </p>
      * 
      * @param row The object representing the row data.
      * 
@@ -58,7 +55,7 @@ public interface ITableWriter extends Closeable {
      * Writes a single row of data. The given fields are written directly. <b>This method should not be mixed with the
      * {@link #writeObject(Object)} method</b>, since the other method creates an internal state for the structure
      * of data to extract from the objects.
-     * <br />
+     * <p>
      * Elements in the columns array are converted to a string via their {@link Object#toString()} method.
      * <code>null</code> elements in the array are converted into an empty string ("").
      * 

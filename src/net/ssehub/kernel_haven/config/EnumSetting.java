@@ -36,7 +36,7 @@ public class EnumSetting<E extends Enum<E>> extends Setting<E> {
      * 
      * @param key The key in the properties file.
      * @param enumClass The enum that contains the values that this setting should represent.
-     * @param mandatory Whether this setting is mandatory. If this is <code>true</code>>, the properties file does not
+     * @param mandatory Whether this setting is mandatory. If this is <code>true</code>, the properties file does not
      *      contain this key and the default value is <code>null</code>, then an exception is thrown when the setting
      *      is registered.
      * @param defaultValue The default value to use if the key is not specified in the properties. May be

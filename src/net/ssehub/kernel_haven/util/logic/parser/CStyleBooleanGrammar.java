@@ -28,15 +28,13 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * A {@link Grammar} for C-style boolean expressions.
  * The identifiers 1 and 0 are interpreted as True and False, respectively.
  * This grammar is compatible with the output of Formual.toString().
- * 
  * <p>
  * Examples:
  * <ul>
- * <li><code>A && B</code></li>
- * <li><code>AaA_bcd || D && !E</code></li>
- * <li><code>((A && B) || !(C || B)) && !E</code></li>
+ * <li><code>A &amp;&amp; B</code></li>
+ * <li><code>AaA_bcd || D &amp;&amp; !E</code></li>
+ * <li><code>((A &amp;&amp; B) || !(C || B)) &amp;&amp; !E</code></li>
  * </ul>
- * </p>
  * 
  * @author Adam (from KernelMiner project)
  */

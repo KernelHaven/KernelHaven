@@ -51,7 +51,7 @@ public interface CodeElement<NestedType extends CodeElement<NestedType>> extends
      * 
      * @return The element at the position index.
      * 
-     * @throws IndexOutOfBoundsException If index >= getNestedElementCount().
+     * @throws IndexOutOfBoundsException If index &ge; getNestedElementCount().
      */
     public abstract @NonNull NestedType getNestedElement(int index) throws IndexOutOfBoundsException;
 

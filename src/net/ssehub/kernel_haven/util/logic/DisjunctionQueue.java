@@ -28,7 +28,8 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
- * Queue to create balanced (and simplified) {@link Disjunction} terms. <br/>
+ * Queue to create balanced (and simplified) {@link Disjunction} terms.
+ * <p>
  * Supported simplification optimizations:
  * <ul>
  * <li>Won't store any new formulas if it stores already an {@link True}</li>
@@ -86,7 +87,7 @@ public class DisjunctionQueue {
      * @param simplify Specification if the rules from the class comment shall be applied.
      * @param simplifier A function specifying how {@link Formula}s can be further simplified (will be ignored if
      *     <tt>simplifier = false</tt>). Probably use:
-     * <pre><code>f -> LogicUtils.simplify(f)</code></pre>
+     * <pre><code>f -&gt; LogicUtils.simplify(f)</code></pre>
      */
     public DisjunctionQueue(boolean simplify, Function<@NonNull Formula, @NonNull Formula> simplifier) {
         this.simplify = simplify;

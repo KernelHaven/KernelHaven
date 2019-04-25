@@ -239,8 +239,8 @@ public class CppLexerTest {
     }
     
     /**
-     * Tests that a double character operator (like &&) does not crash if there is only the first character at the
-     * end of the string.
+     * Tests that a double character operator (like &amp;&amp;) does not crash if there is only the first character
+     * at the end of the string.
      * 
      * @throws ExpressionFormatException unwanted.
      */
