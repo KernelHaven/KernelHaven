@@ -108,7 +108,7 @@ public abstract class Grammar<T> {
     
     /**
      * Constructs a formula from the given identifier.
-     * This usually returns a {@link Variable} object.
+     * This usually returns a variable.
      * 
      * @param identifier The identifier to turn into a formula.
      * @return A formula representing the identifier.

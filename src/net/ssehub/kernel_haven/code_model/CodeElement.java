@@ -51,7 +51,7 @@ public interface CodeElement<NestedType extends CodeElement<NestedType>> extends
      * 
      * @return The element at the position index.
      * 
-     * @throws IndexOutOfBoundsException If index &ge; getNestedElementCount().
+     * @throws IndexOutOfBoundsException If {@code index <= getNestedElementCount()}.
      */
     public abstract @NonNull NestedType getNestedElement(int index) throws IndexOutOfBoundsException;
 
@@ -97,7 +97,7 @@ public interface CodeElement<NestedType extends CodeElement<NestedType>> extends
     /**
      * Returns the source file that this element originates from.
      * 
-     * @return The source file location relative to the source tree. <code>new File("&lt;unknown&gt;")</code> if not
+     * @return The source file location relative to the source tree. {@code new File("<unknown>")} if not
      *      available.
      */
     public abstract @NonNull File getSourceFile();
@@ -139,7 +139,7 @@ public interface CodeElement<NestedType extends CodeElement<NestedType>> extends
     
     /**
      * Serializes this element as a CSV line. This does not consider nested elements.
-     * Extending classes also need a createFromCsv(String[], Parser<Formula>) method that deserializes
+     * Extending classes also need a {@code createFromCsv(String[], Parser<Formula>)} method that deserializes
      * this output.
      * 
      * @return The CSV parts representing this element.

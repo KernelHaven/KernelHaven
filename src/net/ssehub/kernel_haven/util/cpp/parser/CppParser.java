@@ -70,7 +70,6 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  *      <li>Resolve the flat {@link ExpressionList}s into operator hierarchies with the correct precedence;
  *      after this, there are no more {@link ExpressionList}s left (see {@link OperatorResolver})</li>
  * </ol>
- * </p>
  * 
  * @author Adam
  */

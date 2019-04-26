@@ -74,7 +74,7 @@ public class DisjunctionQueue {
      * Will turn all simplifications on and use the specified <tt>simplifier</tt> to simplify the results of this
      * queue.
      * @param simplifier A function specifying how {@link Formula}s can be further simplified. Probably use:
-     * <pre><code>f -> LogicUtils.simplify(f)</code></pre>
+     * {@code f -> LogicUtils.simplify(f)}
      * @see #DisjunctionQueue(boolean, Function)
      */
     public DisjunctionQueue(Function<@NonNull Formula, @NonNull Formula> simplifier) {

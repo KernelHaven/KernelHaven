@@ -71,7 +71,8 @@ public interface ISyntaxElementVisitor {
     
     /**
      * <b>C-Code:</b> Visits a C code file. This is usually the entry point for visitation as it is the top level
-     * element of all C code files.<br/>
+     * element of all C code files.
+     * <p>
      * Provides default Visitation: <b>true</b>
      * @param file The file to visit.
      */
@@ -134,7 +135,8 @@ public interface ISyntaxElementVisitor {
     }
     
     /**
-     * <b>C-Code/CPP:</b> Visits unparsed code. <br/>
+     * <b>C-Code/CPP:</b> Visits unparsed code.
+     * <p>
      * Provides default Visitation: <b>false</b>
      * @param code The unparsed code element to visit.
      */

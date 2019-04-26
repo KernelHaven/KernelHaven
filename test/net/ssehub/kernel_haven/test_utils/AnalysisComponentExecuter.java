@@ -43,10 +43,10 @@ public class AnalysisComponentExecuter {
      * Creates and executes the given {@link AnalysisComponent} class.
      * 
      * <p>
-     * Example usage:<br />
+     * <b>Example usage</b>
+     * <p>
      * Assuming that DummComponent is an AnalysisComponent, which returns Doubles and takes two input components,
      * one for Strings and one for Integers, and looks roughly like this:
-     * <code>
      * <pre>
      * public class DummyCoponent extends AnalysisComponent&lt;Double&gt; {
      *     public DummyCopmonent(Configuration config, AnalysisComponent&lt;String&gt; input1,
@@ -56,10 +56,8 @@ public class AnalysisComponentExecuter {
      *     ...
      * }
      * </pre>
-     * </code>
      * 
-     * A call to {@link #executeComponent(Class, Configuration, Object[]...)} for this class would look like this:
-     * <code>
+     * A call to {@link #executeComponent(Class, Configuration, Object[][])} for this class would look like this:
      * <pre>
      * List&lt;Double&gt; result = AnalysisComponentExecuter.executeComponent(
      *         DummyComponent.class, null,
@@ -68,14 +66,13 @@ public class AnalysisComponentExecuter {
      *         },
      *         new Object[] {
      *             1, 2, 3
-     *         });
+     *         }
+     * );
      * </pre>
-     * </code>
      * 
      * This would create two {@link TestAnalysisComponentProvider}, one for the three string values and one for the
      * three int values. It would then instantiate DummyComponent with an empty configuration and these two input
      * components. After this, it executes the DummyComponent and returns all the results as an array.
-     * </p>
      * 
      * @param componentClass The component class to create and execute.
      * @param config The {@link Configuration} for the component. <code>null</code> if no special settings are needed.

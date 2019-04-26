@@ -196,8 +196,6 @@ public class ParserTest {
     
     /**
      * Tests parsing of malformed brackets.
-     * 
-     * @throws ExpressionFormatException unwanted.
      */
     @Test
     public void testMalformedBrackets() {
@@ -219,8 +217,6 @@ public class ParserTest {
     
     /**
      * Tests parsing of malformed identifiers.
-     * 
-     * @throws ExpressionFormatException unwanted.
      */
     @Test
     public void testMalformedMissingIdentifier() {
@@ -254,8 +250,6 @@ public class ParserTest {
     
     /**
      * Tests parsing of malformed identifiers.
-     * 
-     * @throws ExpressionFormatException unwanted.
      */
     @Test
     public void testMalformedOperator() {
@@ -295,8 +289,6 @@ public class ParserTest {
     
     /**
      * Tests parsing of malformed characters.
-     * 
-     * @throws ExpressionFormatException unwanted.
      */
     @Test
     public void testMalformedCharacter() {

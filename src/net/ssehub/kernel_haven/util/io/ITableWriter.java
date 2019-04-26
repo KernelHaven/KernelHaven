@@ -40,7 +40,7 @@ public interface ITableWriter extends Closeable {
      *          {@link TableElement} annotation is a single column value.</li>
      *      <li>If the object implements {@link ITableRow}, the {@link ITableRow#getContent()} method is used to get
      *          the column values.</li>
-     *      <li>Otherwise, the {@link Object#toString()} method is used as a single column value.</li>
+     *      <li>Otherwise, the {@link Object#toString() toString()} method is used as a single column value.</li>
      * </ol>
      * 
      * @param row The object representing the row data.
@@ -69,7 +69,7 @@ public interface ITableWriter extends Closeable {
 
     /**
      * Optional possibility how to handle a row, which is intended to be an header. Some specific writers may have
-     * special formatting for header rows. The default implementation just calls {@link #writeRow(Object...))}.
+     * special formatting for header rows. The default implementation just calls {@link #writeRow(Object...)}.
      * 
      * @see #writeRow(Object...)
      * 

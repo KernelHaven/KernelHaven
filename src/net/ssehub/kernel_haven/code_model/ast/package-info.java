@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Refinement of {@link net.ssehub.kernel_haven.code_model.CodeElement<NestedType>},
+ * Refinement of {@link net.ssehub.kernel_haven.code_model.CodeElement},
  * contains a parsed abstract syntax tree for C-code.
  */
 package net.ssehub.kernel_haven.code_model.ast;

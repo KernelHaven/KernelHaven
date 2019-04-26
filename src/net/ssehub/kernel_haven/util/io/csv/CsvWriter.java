@@ -96,7 +96,7 @@ public class CsvWriter extends AbstractTableWriter {
     /**
      * Escapes the given field content. Adds " around, the while field, if a char that needs to be escaped is used
      * inside of it. In this case, also escapes any " characters with an additional ".
-     * <br />
+     * <p>
      * Chars that need to be escaped are:
      * <ul>
      *      <li>\n</li>

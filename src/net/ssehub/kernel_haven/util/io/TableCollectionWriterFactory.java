@@ -27,18 +27,15 @@ import net.ssehub.kernel_haven.util.io.csv.CsvFileCollection;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * <p>
  * Factory for creating {@link ITableCollection}s for writing tables with a common base name. For excel, the base name
  * is used as a workbook; for CSV, multiple files are created with the given base name.
- * </p>
  * <p>
- * Handlers can register themselves via the {@link #registerHandler(String, Class)} method. All handler classes must
+ * Handlers can register themselves via the
+ * {@link AbstractHandlerRegistry#registerHandler(Object, Class) registerHandler} method. All handler classes must
  * have a constructor that takes a single {@link File} argument. This argument is the base name that should be used for
  * all tables created by it.
- * </p>
  * <p>
  * By default, {@link CsvFileCollection} is registered as the handler for .csv files.
- * </p>
  *  
  * @author Adam
  */

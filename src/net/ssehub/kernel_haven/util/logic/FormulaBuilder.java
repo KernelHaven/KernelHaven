@@ -18,13 +18,11 @@ package net.ssehub.kernel_haven.util.logic;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * <p>
  * Static utility methods for creating {@link Conjunction}s, {@link Disjunction}s and {@link Negation}s with less code
  * to type. These are only shorthands. It is recommended to statically import these methods for extra brevity.
- * </p>
  * <p>
  * Usage example:
- * <code><pre>
+ * <pre>
  * import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.and;
  * import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.not;
  * import static net.ssehub.kernel_haven.util.logic.FormulaBuilder.or;
@@ -33,9 +31,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * Formula formula = or("A", and(not("B"), "C"));
  * // equal to: new Disjunction(new Variable("A"),new Conjunction(new Negation(new Variable("B")), new Variable("C"))
- * </pre></code>
- * </p>
- * 
+ * </pre>
  *
  * @author Adam
  */

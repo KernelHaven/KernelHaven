@@ -32,17 +32,16 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * available. The writing thread has to signal that is done (via {@link #end()}), in which case all subsequent read
  * accesses will return <code>null</code> (once the backed up data is depleted). For this reason, the writing thread
  * must never write null into the queue.
- * <br/>
+ * 
  * <h2>Usage</h2>
  * <b>Reading:</b>
  * This class is {@link Iterable}, so for-each loops can be used to read all data (until the writing thread said, that
  * it is done). Alternatively, the queue can be read until it returns <code>null</code>, e.g. like so:
  * <pre>
- * {@code
  * Element elem;
  * while ((elem = queue.get()) != null) {
  *     ...
- * }}</pre>
+ * }</pre>
  * <b>Writing:</b>
  * Push data in the queue via the {@link #add(Object)} method. Signal the end, by calling {@link #end()}. If
  * {@link #end()} is not called, then the other thread doesn't know when to stop waiting for data, and thus a deadlock
@@ -56,15 +55,14 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * <b>Adding further elements</b> after {@link #end()} was called is not possible. If "extending" an existing, ended
  * queue is necessary, create a new one and copy the data over:
  * <pre>
- * {@code
- * BlockingQueue<T> newQueue = new BlockingQueue<>();
+ * BlockingQueue&lt;T&gt; newQueue = new BlockingQueue&lt;&gt;();
  * T elem;
  * while ((elem = oldQueue.get()) != null) {
  *     newQueue.add(elem);
  * }
  * newQueue.add(new_element);
  * ...
- * newQueue.end();}</pre>
+ * newQueue.end();</pre>
  * 
  * @param <T> The type of data that is send between the threads.
  * 

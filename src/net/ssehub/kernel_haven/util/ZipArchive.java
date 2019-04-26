@@ -75,8 +75,6 @@ public class ZipArchive implements Closeable {
      * 
      * @param file The path of the file in the archive.
      * @return <code>true</code> if the file exists and is a file, <code>false</code> otherwise.
-     * 
-     * @throws IOException If reading the zip archive fails.
      */
     public boolean containsFile(@NonNull File file) {
         Path inZip = archive.getPath(file.getPath());

@@ -61,23 +61,23 @@ public class FormulaSimplifier {
     /**
      * The default simplifier. Simplifies boolean formulas a bit. The following simplification rules are done:
      * <ul>
-     *      <li>NOT(NOT(a)) -> a</li>
-     *      <li>NOT(true) -> false</li>
-     *      <li>NOT(false) -> true</li>
+     *      <li>{@code NOT(NOT(a)) -> a}</li>
+     *      <li>{@code NOT(true) -> false}</li>
+     *      <li>{@code NOT(false) -> true}</li>
      *      
-     *      <li>true OR a -> true</li>
-     *      <li>a OR true -> true</li>
-     *      <li>false OR false -> false</li>
-     *      <li>a OR false -> a</li>
-     *      <li>false OR a -> a</li>
-     *      <li>a OR a -> a</li>
+     *      <li>{@code true OR a -> true}</li>
+     *      <li>{@code a OR true -> true}</li>
+     *      <li>{@code false OR false -> false}</li>
+     *      <li>{@code a OR false -> a}</li>
+     *      <li>{@code false OR a -> a}</li>
+     *      <li>{@code a OR a -> a}</li>
      *      
-     *      <li>false AND a -> false</li>
-     *      <li>a AND false -> false</li>
-     *      <li>true AND true -> true</li>
-     *      <li>a AND true -> a</li>
-     *      <li>true AND a -> a</li>
-     *      <li>a AND a -> a</li>
+     *      <li>{@code false AND a -> false}</li>
+     *      <li>{@code a AND false -> false}</li>
+     *      <li>{@code true AND true -> true}</li>
+     *      <li>{@code a AND true -> a}</li>
+     *      <li>{@code true AND a -> a}</li>
+     *      <li>{@code a AND a -> a}</li>
      * </ul>
      * 
      * This ensures that no constants are left after the simplification (except if the whole Formula becomes True or

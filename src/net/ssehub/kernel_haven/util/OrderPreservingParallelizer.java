@@ -23,24 +23,20 @@ import java.util.function.Function;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * <p>
  * A utility class that executes a given function in multiple parallel threads. It also preserves the order of the
  * results; that means that outputs will appear in the same order as their inputs were given.
- * </p>
  * <p>
  * The constructor will get a function and a consumer. The function will turn inputs into outputs. The order in which
  * it will be called is not guaranteed. The function should be thread-safe. The consumer will be called on the outputs
  * of the function. The order of output elements passed to it will be the same as the order of the inputs that produced
  * the outputs. For example, if input1 is transformed into output1, and input2 is transformed into output2, then the
  * consumer will always receive output1 first, even if the function finishes with output2 before output1.
- * </p>
  * <p>
  * If the function throws an exception while handling an element, that element it dropped and will not appear for
  * the consumer.
- * </p>
  * <p>
  * Usage could look like this:
- * <code><pre>
+ * <pre>
  * OrderPreservingParallelizer parallelizer = new OrderPreservingParallelizer(someFunction, someConsumer, 4);
  * 
  * // add inputs
@@ -53,8 +49,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * 
  * // wait until all inputs are processed
  * parallelizer.join();
- * </pre></code>
- * </p>
+ * </pre>
  * 
  * @param <Input> The input data type.
  * @param <Output> The input data type.

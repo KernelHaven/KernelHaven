@@ -26,9 +26,10 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * An {@link AnalysisComponent} which does not produce any results, instead it will pass the received results to
  * observers. This component is intended to serve as an interface between KernelHaven and other tools, which want to
  * use KernelHaven as some kind of input source.
+ * 
+ * @param <I> The result type of the analysis.
+ * 
  * @author El-Sharkawy
- *
- * @param <I>
  */
 public class ObservableAnalysis<I> extends AnalysisComponent<I> {
 

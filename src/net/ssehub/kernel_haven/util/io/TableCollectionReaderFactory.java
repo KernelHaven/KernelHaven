@@ -28,17 +28,14 @@ import net.ssehub.kernel_haven.util.io.csv.CsvFileSet;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * <p>
  * Factory for creating {@link ITableCollection}s for single files based on filename suffix. The resulting
  * {@link ITableCollection} should only be used for reading. 
- * </p>
  * <p>
- * Handlers can register themselves via the {@link #registerHandler(String, Class)} method. All handler classes must
+ * Handlers can register themselves via the
+ * {@link AbstractHandlerRegistry#registerHandler(Object, Class) registerHandler} method. All handler classes must
  * have a constructor that takes a single {@link File} argument.
- * </p>
  * <p>
  * By default, {@link CsvFileSet} is registered as the handler for .csv files.
- * </p>
  *  
  * @author Adam
  */

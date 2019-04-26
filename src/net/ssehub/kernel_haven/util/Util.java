@@ -605,8 +605,7 @@ public final class Util {
      * 
      * @return OS and bit version of the OS, <tt>null</tt> if it could not be determined.
      * 
-     * @see <a href="https://stackoverflow.com/a/18417382">https://stackoverflow.com/a/18417382</a> for determining
-     * rules.
+     * @see <a href="https://stackoverflow.com/a/18417382">https://stackoverflow.com/a/18417382</a>
      */
     public static @Nullable OSType determineOS() {
         if (osType == null) {
