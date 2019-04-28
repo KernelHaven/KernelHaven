@@ -11,18 +11,17 @@
 	<property name="main.class" value="net.ssehub.kernel_haven.Run" />
 
 	<target name="jenkins">
-		<antcall target="KH_Common.prepare.folders" />
+		<antcall target="KH_Common.prepare" />
 		<antcall target="KH_Common.compile" />
 		<antcall target="KH_Common.test" />
-		<antcall target="KH_Common.jar" />
-		<antcall target="KH_Common.jarwithsources" />
-		<antcall target="jarfortesting" />
-		<antcall target="KH_Common.check" />
-		<antcall target="KH_Common.jacoco_report" />
-		<!-- antcall target="KH_Common.zip_workspace" / -->
+		<antcall target="KH_Common.checkstyle" />
+		<antcall target="KH_Common.package.jar" />
+		<antcall target="package.jar.fortesting" />
+		<antcall target="KH_Common.test.report" />
 	</target>
 
-	<target name="jarfortesting">
+	<!-- Package a special jar that gives other plugins access to our test classes -->
+	<target name="package.jar.fortesting">
 		<jar destfile="${jar.dir}/${ant.project.name}_fortesting.jar">
 			<fileset dir="${test.classes.dir}">
 				<exclude name="testdata/*" />

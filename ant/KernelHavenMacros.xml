@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:jacoco="antlib:org.jacoco.ant" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle.ant">
+<project name="KH_Common" xmlns:jacoco="antlib:org.jacoco.ant" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle.ant">
 	<property name="lib.dir" value="${basedir}/lib" />
 	<property name="build.dir" value="${basedir}/build" />
 	<property name="jar.dir" value="${build.dir}/jar" />
@@ -14,9 +14,9 @@
 	<property name="workspace.snapshot.dir" value="${build.dir}/workspacesnapshot/" />
 	<property name="user.home.lib" value="${user.home}/.ant/lib" />
 
-	<loadproperties srcfile="ant/plugins.properties" />
+	<dirname property="KH_Common.basedir" file="${ant.file.KH_Common}" />
+	<loadproperties srcfile="${KH_Common.basedir}/plugins.properties" />
 
-	<!-- Modules that build -->
 	<property name="src.dir" value="${basedir}/src" />
 	<property name="test.dir" value="${basedir}/test" />
 	<property name="res.dir" value="${basedir}/res" />
@@ -46,6 +46,7 @@
 			This is done as a plug-in may uses the same qualified name for the test suite.
 		-->
 		<pathelement location="${test.classes.dir}" />
+		<pathelement location="${test.dir}" />
 		<pathelement location="${res.dir}" />
 		<fileset dir="${dependencies.dir}" />
 	</path>
@@ -83,94 +84,7 @@
 		<delete file="ant-lib.zip" />
 	</target>
 
-	<!-- Target to create folder structure for releases, requires argument: base.kh.folder -->
-	<target name="kh.folder.structure">
-		<delete dir="${base.kh.folder}" />
-		<mkdir dir="${base.kh.folder}" />
-		<mkdir dir="${base.kh.folder}/plugins" />
-		<mkdir dir="${base.kh.folder}/output" />
-		<mkdir dir="${base.kh.folder}/res" />
-		<mkdir dir="${base.kh.folder}/log" />
-		<mkdir dir="${base.kh.folder}/cache" />
-
-		<echo file="${base.kh.folder}/version.txt" append="false">Release of ${TS_FOR_VERSION_FILE}
-</echo>
-		<!-- the empty newline is intentional -->
-	</target>
-
-	<target name="jar">
-		<!-- only one of these targets is executed, depending whether main.class is set or not -->
-		<antcall target="KH_Common.jar.nomainclass" />
-		<antcall target="KH_Common.jar.withmainclass" />
-	</target>
-
-	<target name="jar.nomainclass" unless="main.class">
-		<jar destfile="${jar.dir}/${jar.filename}" duplicate="preserve">
-			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
-			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
-
-			<!-- Automatically include all libraries from lib/include folder -->
-			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
-
-			<fileset file="${basedir}/LICENSE" casesensitive="false" />
-		</jar>
-	</target>
-
-	<target name="jar.withmainclass" if="main.class">
-		<jar destfile="${jar.dir}/${jar.filename}" duplicate="preserve">
-			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
-			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
-
-			<!-- Automatically include all libraries from lib/include folder -->
-			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
-
-			<manifest>
-				<attribute name="Main-Class" value="${main.class}" />
-				<attribute name="Class-Path" value="" />
-			</manifest>
-
-			<fileset file="${basedir}/LICENSE" casesensitive="false" />
-		</jar>
-	</target>
-
-	<target name="jarwithsources">
-		<!-- only one of these targets is executed, depending whether main.class is set or not -->
-		<antcall target="KH_Common.jarwithsources.nomainclass" />
-		<antcall target="KH_Common.jarwithsources.withmainclass" />
-	</target>
-
-	<target name="jarwithsources.nomainclass" unless="main.class">
-		<jar destfile="${jar.dir}/${jar.filename.withsource}" duplicate="preserve">
-			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
-			<fileset dir="${src.dir}" excludes="**/package-info.java" />
-			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
-
-			<!-- Automatically include all libraries from lib/include folder -->
-			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
-
-			<fileset file="${basedir}/LICENSE" casesensitive="false" />
-		</jar>
-	</target>
-
-	<target name="jarwithsources.withmainclass" if="main.class">
-		<jar destfile="${jar.dir}/${jar.filename.withsource}" duplicate="preserve">
-			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
-			<fileset dir="${src.dir}" excludes="**/package-info.java" />
-			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
-
-			<!-- Automatically include all libraries from lib/include folder -->
-			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
-
-			<manifest>
-				<attribute name="Main-Class" value="${main.class}" />
-				<attribute name="Class-Path" value="" />
-			</manifest>
-
-			<fileset file="${basedir}/LICENSE" casesensitive="false" />
-		</jar>
-	</target>
-
-	<target name="prepare.folders" depends="build.dependencies.download">
+	<target name="prepare" depends="build.dependencies.download">
 		<delete dir="${build.dir}" />
 
 		<mkdir dir="${lib.dir}" />
@@ -189,39 +103,24 @@
 			<classpath refid="classpath.project" />
 		</javac>
 
-		<!-- copy resources for java-classes -->
-		<copy todir="${classes.dir}">
-			<fileset dir="${src.dir}">
-				<exclude name="**/*.java" />
-			</fileset>
-		</copy>
-
 		<!-- generate version file -->
 		<echo file="${classes.dir}/version.txt" append="false">Built at ${TS_FOR_VERSION_FILE}
 </echo>
-		<!-- the empty newline is intentional -->
+		<!-- the empty newline here is intentional -->
 	</target>
 
-	<target name="test">
+	<target name="test.compile">
 		<javac destdir="${test.classes.dir}" debug="yes" includeantruntime="false">
 			<src path="${src.dir}" />
 			<src path="${test.dir}" />
 			<classpath refid="classpath.testing" />
 		</javac>
+	</target>
 
+	<target name="test" depends="test.compile">
 		<!-- Copy testdata, otherwise they won't be found during the test execution -->
 		<copy todir="${test.classes.dir}/testdata">
 			<fileset dir="testdata" />
-		</copy>
-
-		<!-- Copy resources -->
-		<copy todir="${test.classes.dir}">
-			<fileset dir="${src.dir}">
-				<exclude name="**/*.java" />
-			</fileset>
-			<fileset dir="${test.dir}">
-				<exclude name="**/*.java" />
-			</fileset>
 		</copy>
 
 		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" />
@@ -255,13 +154,60 @@
 		</junitreport>
 	</target>
 
+	<target name="package.jar">
+		<!-- only one of these targets is executed, depending whether main.class is set or not -->
+		<antcall target="KH_Common.package.jar.nomainclass" />
+		<antcall target="KH_Common.package.jar.withmainclass" />
+	</target>
+
+	<target name="package.jar.nomainclass" unless="main.class">
+		<jar destfile="${jar.dir}/${jar.filename}" duplicate="preserve">
+			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
+			<fileset dir="${src.dir}" excludes="**/package-info.java" />
+			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
+
+			<!-- Automatically include all libraries from lib/include folder -->
+			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
+
+			<fileset file="${basedir}/LICENSE" casesensitive="false" />
+		</jar>
+	</target>
+
+	<target name="package.jar.withmainclass" if="main.class">
+		<jar destfile="${jar.dir}/${jar.filename}" duplicate="preserve">
+			<fileset dir="${classes.dir}" excludes="**/package-info.class" />
+			<fileset dir="${src.dir}" excludes="**/package-info.java" />
+			<fileset dir="${res.dir}" excludes="**/package-info.java" erroronmissingdir="false" />
+
+			<!-- Automatically include all libraries from lib/include folder -->
+			<zipgroupfileset dir="${lib.dir}/include" includes="*.jar" erroronmissingdir="false" />
+
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+				<attribute name="Class-Path" value="" />
+			</manifest>
+
+			<fileset file="${basedir}/LICENSE" casesensitive="false" />
+		</jar>
+	</target>
+
+	<target name="checkstyle">
+		<taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties" />
+
+		<checkstyle config="${basedir}/checkstyle.xml" failOnViolation="false">
+			<fileset dir="${src.dir}" includes="**/*.java" />
+			<formatter type="plain" />
+			<formatter type="xml" toFile="build/reports/xml/checkstyle_errors.xml" />
+		</checkstyle>
+	</target>
+
 	<condition property="runs_in_jenkins">
 		<equals arg1="${user.name}" arg2="jenkins" />
 	</condition>
 
 	<!--
-	 Clean-up after testing to reduce required diskspace for archiving results on Jenkins.
-	 Must be called after JAR creation, before creating Jacoco results (or at least before Jenkins will publish them).
+		Clean-up after testing to reduce required diskspace for archiving results on Jenkins.
+		Must be called after JAR creation, before creating Jacoco results (or at least before Jenkins will publish them).
 	-->
 	<target name="cleanup" if="runs_in_jenkins">
 		<delete failonerror="false">
@@ -274,18 +220,7 @@
 		</delete>
 	</target>
 
-	<target name="check">
-
-		<taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties" />
-
-		<checkstyle config="${basedir}/checkstyle.xml" failOnViolation="false">
-			<fileset dir="${src.dir}" includes="**/*.java" />
-			<formatter type="plain" />
-			<formatter type="xml" toFile="build/reports/xml/checkstyle_errors.xml" />
-		</checkstyle>
-	</target>
-
-	<target name="jacoco_report">
+	<target name="test.report">
 		<antcall target="KH_Common.cleanup" />
 
 		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" />
@@ -296,19 +231,28 @@
 
 			<structure name="${ant.project.name}">
 				<classfiles>
-					<fileset dir="${build.dir}/classes" />
+					<fileset dir="${classes.dir}" />
 				</classfiles>
 				<sourcefiles encoding="UTF-8">
 					<fileset dir="${src.dir}" />
 				</sourcefiles>
 			</structure>
-
-			<!-- html destdir="${reports.dir}/html" /-->
 		</jacoco:report>
 	</target>
 
-	<target name="zip_workspace">
-		<zip destfile="${workspace.snapshot.dir}/${ant.project.name}.zip" basedir="${basedir}" excludes="jacoco.exec, build/**" />
+	<!-- Target to create folder structure for releases, requires argument: base.kh.folder -->
+	<target name="release.folder.structure">
+		<delete dir="${base.kh.folder}" />
+		<mkdir dir="${base.kh.folder}" />
+		<mkdir dir="${base.kh.folder}/plugins" />
+		<mkdir dir="${base.kh.folder}/output" />
+		<mkdir dir="${base.kh.folder}/res" />
+		<mkdir dir="${base.kh.folder}/log" />
+		<mkdir dir="${base.kh.folder}/cache" />
+
+		<echo file="${base.kh.folder}/version.txt" append="false">Release of ${TS_FOR_VERSION_FILE}
+</echo>
+		<!-- the empty newline here is intentional -->
 	</target>
 
 </project>
