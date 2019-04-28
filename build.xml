@@ -5,7 +5,7 @@
 	<description>Infrastructure for performing analyses on software product lines</description>
 
 	<!-- Load Marcros -->
-	<include file="KernelHavenMacros.xml" as="KH_Common" />
+	<include file="${basedir}/ant/KernelHavenMacros.xml" as="KH_Common" />
 
 	<!-- this will automatically be added to the jar manifest -->
 	<property name="main.class" value="net.ssehub.kernel_haven.Run" />
