@@ -24,16 +24,13 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
- * <p>
  * A single element of an abstract syntax tree (AST). Other {@link ISyntaxElement}s can be nested inside of this
  * element.
- * </p>
  * <p>
  * The ASTs created by this class are not fully parsed. Some leaf-nodes are instances of {@link Code}, which contain
  * unparsed code strings. If unparsed code elements contain variability (e.g. ifdef), then {@link CodeList} is used,
  * which contains {@link Code} and {@link CppBlock} children (the {@link CppBlock}s contain {@link Code} or more
  * {@link CppBlock}s).
- * </p>
  * 
  * @author Adam
  */

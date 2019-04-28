@@ -36,13 +36,10 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
- * <p>
  * Represents a switch statement. The nested children inside this element are the switch body. Statements after a
  * {@link CaseStatement} are nested inside that {@link CaseStatement}.
- * </p>
  * <p>
  * This class a list of all the {@link CaseStatement} that belong to this switch.
- * </p>
  *
  * @author Adam
  */

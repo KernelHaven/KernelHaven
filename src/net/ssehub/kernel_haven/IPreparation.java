@@ -21,8 +21,8 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 /**
  * A preparation that is executed before the analysis or extractors start. This preparation is created after the
  * providers and extractors are set up, but before the analysis is instantiated. This preparation may start extractors.
- * 
- * <p>TODO: this will change in the future.</p>
+ * <p>
+ * TODO: this will change in the future.
  *
  * @author Adam
  */

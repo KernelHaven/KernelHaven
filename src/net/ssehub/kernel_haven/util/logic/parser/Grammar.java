@@ -17,13 +17,11 @@ package net.ssehub.kernel_haven.util.logic.parser;
 
 /**
  * Describes a format for expressions to be parsed by a {@link Parser}.
- * 
  * <p>
  * The grammar consists of identifiers, operators and brackets. Operators can be
  * either unary or binary. Unary operators are always on the left side of the
  * expression they are applied to. Binary operators are always in between the
  * two expressions they are applied to.
- * </p>
  * 
  * @param <T> The type of formula that is constructed by this grammar.
  * 

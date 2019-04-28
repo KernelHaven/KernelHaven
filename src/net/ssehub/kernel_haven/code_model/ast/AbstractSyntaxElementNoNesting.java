@@ -31,13 +31,10 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
- * <p>
  * A single element of an AST.
- * </p>
  * <p>
  * This does not store a list of nested elements. Sub-classes that want children should subclass
  * {@link AbstractSyntaxElementWithNesting} instead.
- * </p>
  * 
  * @author Adam
  */

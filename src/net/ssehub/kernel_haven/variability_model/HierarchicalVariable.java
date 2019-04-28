@@ -97,14 +97,11 @@ public class HierarchicalVariable extends VariabilityVariable {
     }
     
     /**
-     * <p>
      * Sets the parent for this variable, add this variable as a child to the parent variable and set the nesting depth
      * of this to parent+1. If there was a previous parent set for this, then this variable is removed from the
      * previous parents children list. If the new parent is null, then the new nesting depth is 0.
-     * </p>
      * <p>
      * This method should only be called by the extractor that creates the variability model.
-     * </p>
      * 
      * @param parent The new parent for this variable.
      */

@@ -57,14 +57,11 @@ public abstract class AbstractTableWriter implements ITableWriter {
     private Type type;
     
     /**
-     * <p>
      * Writes the header for the given table row metadata. This method is called, when it is determined that objects
      * using the {@link TableRow} annotation are passed to {@link #writeObject(Object)}. 
-     * </p>
      * <p>
      * By default, this just calls {@link #writeHeader(Object...)} with {@link TableRowMetadata#getHeaders()}. Only
      * implementations that do something special (e.g. SQL tables with keys) will want to override this.
-     * </p>
      * 
      * @param metadata The metadata that the header should be written for.
      * 
@@ -76,14 +73,11 @@ public abstract class AbstractTableWriter implements ITableWriter {
     }
     
     /**
-     * <p>
      * Writes the content of the given object. This method is called for each object, when it is determined that
      * objects using the {@link TableRow} annotation are passed to {@link #writeObject(Object)}.
-     * </p>
      * <p>
      * By default, this just calls {@link #writeRow(Object...)} with {@link TableRowMetadata#getContent(Object)}. Only
      * implementations that do something special (e.g. SQL tables with keys) will want to override this. 
-     * </p>
      * 
      * @param metadata The metadata for the object that should be written.
      * @param object The object that should be written.

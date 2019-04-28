@@ -32,14 +32,11 @@ import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * <p>
  * A utility class for performance measurements. This is especially useful for measuring code that is called a lot,
  * since all measurements are aggregated to min/avg/med/max at the end.
- * </p>
  * <p>
  * Measurements are done for "contexts", which are simply string identifiers for the code to measure. All measurements
  * are aggregated per context at the end (when {@link #printResult()} is called).
- * </p>
  *  
  * @author Adam
  */

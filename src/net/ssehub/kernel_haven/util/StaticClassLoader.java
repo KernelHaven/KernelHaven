@@ -34,20 +34,17 @@ import net.ssehub.kernel_haven.config.Configuration;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
- * <p>Utility class for loading and executing a static initialization method of all classes specified in
+ * Utility class for loading and executing a static initialization method of all classes specified in
  * "loadClasses.txt" files. This mechanism allows plugins to dynamically set themselves up, without being hard-coded
  * in the infrastructure. This can be used to e.g. register handlers for certain factories.
- * </p>
  * <p>
  * The "loadClasses.txt" files can be located in any location accessible by the system class loader. They contain
  * one fully qualified class name per line. Empty lines (ignoring whitespace characters) and lines starting with a hash
  * (&#35;) are ignored. 
- * </p>
  * <p>
  * Classes that are specified in these files will be loaded (via {@link Class#forName(String)}) and the static
  * <code>public static void initialize(@NonNull {@link Configuration} config)</code> method of the class will be called.
  * If loaded classes do not define this method, a warning is printed out.
- * </p>
  *
  * @author Adam
  */

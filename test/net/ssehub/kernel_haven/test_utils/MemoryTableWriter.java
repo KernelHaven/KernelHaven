@@ -30,14 +30,12 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
- * <p>An {@link ITableWriter} that keeps all results in memory. The results can be accessed in a static way via the
+ * An {@link ITableWriter} that keeps all results in memory. The results can be accessed in a static way via the
  * name. passed to this writer in the constructor. Creating multiple writers with the same name will overwrite the
  * existing table.
- * </p>
  * <p>
  * All objects are stored as is, i.e. {@link ITableWriter#writeObject(Object)} is stored as a one-column row
  * ({@link TableRowMetadata} is not used).
- * </p>
  * 
  * @author Adam
  */

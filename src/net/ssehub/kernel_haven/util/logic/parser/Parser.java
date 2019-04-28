@@ -129,7 +129,6 @@ public final class Parser<T> {
      * For performance purposes, there is only instance of the <code>tokens</code>
      * array. Two indices, <code>min</code> and <code>max</code> are provided,
      * to indicate which part should be parsed by this method.
-     * </p>
      * 
      * @param tokens The flat array of tokens; the output of {@link #lex(String)}.
      * @param min The lower bound of the part of <code>tokens</code> that should be parsed, inclusive.

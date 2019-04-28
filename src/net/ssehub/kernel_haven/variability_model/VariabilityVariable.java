@@ -41,23 +41,19 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  * extractors for specific product lines to create the data types required for
  * the specific product line they are parsing. For example, in Kconfig the
  * possible types would be "bool", "tristate", etc.
- * </p>
  * <p>
  * If some data types require additional data (e.g. compound types), then the
  * extractor can create a new type that inherits from this class. The analysis
  * can then cast this generic class into the specific sub-type, if needed.
- * </p>
  * <p>
  * If this variable is linked to a specific DIMACS representation, then the
  * dimacsNumber attribute is set to a non 0 value. This attribute then is the
  * number that this variable is represented by.
- * </p>
  * <p>
  * <b>Serialization:</b> In order for the serialization mechanism to work, every sub-class needs a constructor
  * with two String parameters (name and type, like {@link #VariabilityVariable(String, String)}). Additionally,
  * sub-classes may override {@link #toJson()} and {@link #setJsonData(JsonObject, Map)} to store
  * additional data during serialization.
- * </p>
  * 
  * @author Adam
  * @author Johannes

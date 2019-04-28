@@ -37,16 +37,13 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
- * <p>
  * Represents an <tt>if</tt>, <tt>else</tt> or an <tt>else if</tt> block. The
  * children nested inside this element are the branch statement body.
- * </p>
  * <p>
  * It contains a list of siblings: each {@link BranchStatement} of an
  * if-elseif-else construct has references to all siblings in the same construct
  * (including itself). The ordering of these is always the same as in the
  * original source code.
- * </p>
  *
  * @author Adam
  * @author El-Sharkawy
