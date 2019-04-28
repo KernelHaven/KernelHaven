@@ -156,7 +156,7 @@ public class OrderPreservingParallelizer<Input, Output> {
      * @param numThreads The number of worker threads to spawn. Must be greater than 0. This class only makes sense if
      *      this is greater than 1.
      *      
-     * @throws IllegalArgumentException If numThreads is &lt;= 0.
+     * @throws IllegalArgumentException If {@code numThreads <= 0}.
      */
     public OrderPreservingParallelizer(@NonNull Function<Input, Output> function, @NonNull Consumer<Output> conusmer,
             int numThreads) throws IllegalArgumentException {

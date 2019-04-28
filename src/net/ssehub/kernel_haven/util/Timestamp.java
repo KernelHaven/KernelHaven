@@ -96,7 +96,7 @@ public class Timestamp {
     
     /**
      * Creates a filename containing this time-stamp. It will have the format
-     * <code>&lt;prefix&gt;_&lt;time-stamp&gt;.&lt;suffix&gt;</code>
+     * {@code <prefix>_<time-stamp>.<suffix>}
      * The time-stamp is safe for filenames (no spaces, no colons).
      * 
      * @param prefix The prefix for the filename.

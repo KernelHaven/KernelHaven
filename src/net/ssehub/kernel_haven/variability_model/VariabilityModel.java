@@ -106,7 +106,7 @@ public class VariabilityModel {
     }
 
     /**
-     * Returns the variables defined by this variability model, as a mapping name -&gt; variable.
+     * Returns the variables defined by this variability model, as a mapping {@code name -> variable}.
      * @return The variables defined by this variability model. Never null.
      */
     public @NonNull Map<@NonNull String, VariabilityVariable> getVariableMap() {

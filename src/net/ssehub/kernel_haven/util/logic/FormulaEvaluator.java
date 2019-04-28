@@ -21,7 +21,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
- * Evaluates a {@link Formula} based on a mapping <code>variable name -&gt; boolean value</code>.
+ * Evaluates a {@link Formula} based on a mapping {@code variable name -> boolean value}.
  * <code>null</code> values indicate an undefined value.
  * 
  * @author Adam
@@ -33,7 +33,7 @@ public class FormulaEvaluator implements IFormulaVisitor<@Nullable Boolean> {
     /**
      * Creates this {@link FormulaEvaluator} with the given variable value mapping.
      * 
-     * @param variableValues The mapping variable name -&gt; boolean value.
+     * @param variableValues The mapping {@code variable name -> boolean value}.
      */
     public FormulaEvaluator(@NonNull Map<String, Boolean> variableValues) {
         this.variableValues = variableValues;

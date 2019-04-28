@@ -26,7 +26,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
 /**
- * A JSON object. Basically a {@link Map}&lt;{@link String}, {@link JsonElement}&gt;. Keeps insertion order when
+ * A JSON object. Basically a {@code Map<String, JsonElement>}. Keeps insertion order when
  * iterating using {@link #iterator()}.
  * 
  * @author Adam

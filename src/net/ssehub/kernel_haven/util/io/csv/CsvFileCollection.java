@@ -30,7 +30,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
  * A collection of CSV files. The files share a common base name. The individual "table" names are suffixes added to
- * this base, followed by the file extension: <code>&lt;base&gt;_&lt;name&gt;.csv</code>
+ * this base, followed by the file extension: {@code <base>_<name>.csv}
  * <p>
  * Only table names that match [ A-Za-z0-9_'\\-\\+\\.\\(\\)]+ are allowed.
  *

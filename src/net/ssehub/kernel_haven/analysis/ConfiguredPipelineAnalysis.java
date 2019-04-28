@@ -52,7 +52,7 @@ public class ConfiguredPipelineAnalysis extends PipelineAnalysis {
     /**
      * Creates an {@link AnalysisComponent} from the given configuration string. If the configuration string has the
      * following format:
-     * <code>fully.qualified.Name(parameter.Component1(&lt;...&gt;), parameter.Component2(&lt;...&gt;))</code>
+     * {@code fully.qualified.Name(parameter.Component1(<...>), parameter.Component2(<...>))}
      * this method will will create the component "fully.qualified.Name" with the two given components as parameters.
      * 
      * @param configuration The configuration string.

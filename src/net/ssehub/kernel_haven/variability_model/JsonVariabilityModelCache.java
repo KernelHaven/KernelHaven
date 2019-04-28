@@ -148,7 +148,7 @@ public class JsonVariabilityModelCache extends AbstractCache<VariabilityModel> {
      * 
      * @param data The JSON to read from.
      * 
-     * @return The read and initialized variables; a mapping of variable name -&gt; variable.
+     * @return The read and initialized variables; a mapping of {@code variable name -> variable}.
      * 
      * @throws FormatException If reading the variables fails.
      */
