@@ -31,9 +31,9 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * <p>
  * Examples:
  * <ul>
- * <li><code>A &amp;&amp; B</code></li>
- * <li><code>AaA_bcd || D &amp;&amp; !E</code></li>
- * <li><code>((A &amp;&amp; B) || !(C || B)) &amp;&amp; !E</code></li>
+ * <li>{@code A && B}</li>
+ * <li>{@code AaA_bcd || D && !E}</li>
+ * <li>{@code ((A && B) || !(C || B)) && !E}</li>
  * </ul>
  * 
  * @author Adam (from KernelMiner project)

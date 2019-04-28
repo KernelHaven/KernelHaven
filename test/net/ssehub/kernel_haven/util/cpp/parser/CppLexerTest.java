@@ -239,7 +239,7 @@ public class CppLexerTest {
     }
     
     /**
-     * Tests that a double character operator (like &amp;&amp;) does not crash if there is only the first character
+     * Tests that a double character operator (like {@code &&}) does not crash if there is only the first character
      * at the end of the string.
      * 
      * @throws ExpressionFormatException unwanted.
