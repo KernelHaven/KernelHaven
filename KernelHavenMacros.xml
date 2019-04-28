@@ -13,6 +13,7 @@
 	<property name="reports.html.dir" value="${reports.dir}/html" />
 	<property name="workspace.snapshot.dir" value="${build.dir}/workspacesnapshot/" />
 	<property name="jenkins.location" value="https://jenkins-2.sse.uni-hildesheim.de/job" />
+	<property name="user.home.lib" value="${user.home}/.ant/lib" />
 
 	<!-- Public Plug-ins & Core -->
 	<property name="infrastructure.location" value="${jenkins.location}/KH_KernelHaven/lastSuccessfulBuild/artifact/build/jar/KernelHaven_fortesting.jar" />
@@ -64,31 +65,59 @@
 
 	<!--
 		Requires that the contents of https://projects.sse.uni-hildesheim.de/tools/ant-lib.zip
-		is copied and placed at <user_home>/.ant/lib
+		exist at <user_home>/.ant/lib
+		The "build.dependencies.download" target automatically does this. 
 		To execute this script from Eclipse, it is required that the jars in this folder are also added via:
 		Window -> Preferences -> Ant -> Runtime -> Global Entries -> Add External JARs...
 	-->
 	<path id="classpath.testing">
 		<fileset dir="${lib.dir}" />
 		<!-- Loads Junit from ANT installation folder -->
-		<fileset dir="${user.home}/.ant/lib">
+		<fileset dir="${user.home.lib}">
 			<include name="junit*.jar" />
 			<include name="hamcrest*.jar" />
 		</fileset>
 		<!--
-		  Classes of plug-in should be loaded before the infrastructure.
-		  This is done as a plug-in may uses the same qualified name for the test suite.
+			Classes of plug-in should be loaded before the infrastructure.
+			This is done as a plug-in may uses the same qualified name for the test suite.
 		-->
 		<pathelement location="${test.classes.dir}" />
 		<pathelement location="${res.dir}" />
 		<fileset dir="${dependencies.dir}" />
 	</path>
 
-	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" />
-
 	<tstamp>
 		<format property="TS_FOR_VERSION_FILE" pattern="yyyy-MM-dd HH:mm:ss" locale="en,US" />
 	</tstamp>
+
+	<!-- Check if required jar files are available in <user_home>/.ant/lib -->
+	<target name="build.dependencies.check">
+		<mkdir dir="${user.home.lib}" />
+		<condition property="build.dependencies.exist">
+			<and>
+				<resourcecount when="greater" count="0">
+					<fileset dir="${user.home.lib}" includes="junit*.jar" />
+				</resourcecount>
+				<resourcecount when="greater" count="0">
+					<fileset dir="${user.home.lib}" includes="hamcrest*.jar" />
+				</resourcecount>
+				<resourcecount when="greater" count="0">
+					<fileset dir="${user.home.lib}" includes="jacocoant*.jar" />
+				</resourcecount>
+				<resourcecount when="greater" count="0">
+					<fileset dir="${user.home.lib}" includes="checkstyle*.jar" />
+				</resourcecount>
+			</and>
+		</condition>
+	</target>
+
+	<!-- Download build dependencies and move them to <user_home>/.ant/lib (may require that ant is restarted) -->
+	<target name="build.dependencies.download" unless="${build.dependencies.exist}" depends="build.dependencies.check">
+		<get src="https://projects.sse.uni-hildesheim.de/tools/ant-lib.zip" dest="ant-lib.zip" />
+		<mkdir dir="${user.home.lib}" />
+		<unzip src="ant-lib.zip" dest="${user.home.lib}" />
+		<delete file="ant-lib.zip" />
+	</target>
 
 	<!-- Target to create folder structure for releases, requires argument: base.kh.folder -->
 	<target name="kh.folder.structure">
@@ -177,7 +206,7 @@
 		</jar>
 	</target>
 
-	<target name="prepare.folders">
+	<target name="prepare.folders" depends="build.dependencies.download">
 		<delete dir="${build.dir}" />
 
 		<mkdir dir="${lib.dir}" />
@@ -231,11 +260,11 @@
 			</fileset>
 		</copy>
 
+		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" />
 		<jacoco:coverage destfile="${reports.dir}/jacoco.exec">
 			<junit fork="yes" dir="${test.classes.dir}" failureProperty="test.failed">
-				<sysproperty key="KH.ANT.Test.Execution" value="true" />
 				<!-- Note the classpath order: instrumented classes are before the original 
-                  (uninstrumented) classes. This is important. -->
+					(uninstrumented) classes. This is important. -->
 				<classpath refid="classpath.testing" />
 
 				<formatter type="xml" />
@@ -294,6 +323,8 @@
 
 	<target name="jacoco_report">
 		<antcall target="KH_Common.cleanup" />
+
+		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" />
 		<jacoco:report>
 			<executiondata>
 				<file file="${reports.dir}/jacoco.exec" />
