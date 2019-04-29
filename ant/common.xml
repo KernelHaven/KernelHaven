@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+	
+<!-- Author: Adam, Sascha El-Sharkawy -->
 <project name="KH_Common" xmlns:jacoco="antlib:org.jacoco.ant" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle.ant">
 
 	<dirname property="KH_Common.basedir" file="${ant.file.KH_Common}" />

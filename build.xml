@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- author: Adam, moritz, kevin -->
+<!-- Author: Adam, Sascha El-Sharkawy -->
 <project name="KernelHaven" default="jenkins" basedir=".">
 	<description>Infrastructure for performing analyses on software product lines</description>
 
