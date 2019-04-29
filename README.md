@@ -16,8 +16,8 @@ This archive contains the core infrastructure only. Additional [plugins](#plugin
 
 These archives contain the infrastructure as well as all public [plugins](#plugins). These bundles contain more than needed to run most experiments.
 
-* [KernelHaven plus all plugins (GPLv3 and Apache License 2.0)](https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_GPLv3.zip)
-* [KernelHaven plus only plugins available under the Apache License 2.0](https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_Public_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_Apache-2.0.zip)
+* [KernelHaven plus all plugins (GPLv3 and Apache License 2.0)](https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_GPLv3.zip)
+* [KernelHaven plus only plugins available under the Apache License 2.0](https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_Apache-2.0.zip)
 
 ## Plugins
 
@@ -123,8 +123,8 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
     <td><a href="https://github.com/KernelHaven/ConfigurationMismatchAnalysis">Configuration Mismatches</a></td>
     <td><b>Analysis:</b> Detection of Configuration Mismatches</td>
     <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
-    <td><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_Configuration_Mismatches/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis.jar">JAR</a></td>
-    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_Configuration_Mismatches" alt="Build Status of Configuration Mismatches"></td>
+    <td><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_ConfigurationMismatchAnalysis/lastSuccessfulBuild/artifact/build/jar/ConfigurationMismatchAnalysis.jar">JAR</a></td>
+    <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_ConfigurationMismatchAnalysis" alt="Build Status of ConfigurationMismatchAnalysis"></td>
   </tr>
   <!-- Problem-Solution-Space Mapper -->
   <tr>
