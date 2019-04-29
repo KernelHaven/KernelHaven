@@ -7,15 +7,14 @@
 	<!-- Load Marcros -->
 	<include file="${basedir}/ant/common.xml" as="KH_Common" />
 
-	<!-- this will automatically be added to the jar manifest -->
-	<property name="main.class" value="net.ssehub.kernel_haven.Run" />
-
 	<target name="jenkins">
 		<antcall target="KH_Common.prepare" />
 		<antcall target="KH_Common.compile" />
 		<antcall target="KH_Common.test" />
 		<antcall target="KH_Common.checkstyle" />
-		<antcall target="KH_Common.package.jar" />
+		<antcall target="KH_Common.package.jar">
+			<param name="main.class" value="net.ssehub.kernel_haven.Run" />
+		</antcall>
 		<antcall target="package.jar.fortesting" />
 		<antcall target="KH_Common.test.report" />
 	</target>

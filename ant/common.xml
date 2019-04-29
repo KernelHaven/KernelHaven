@@ -1,30 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="KH_Common" xmlns:jacoco="antlib:org.jacoco.ant" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle.ant">
-	<property name="lib.dir" value="${basedir}/lib" />
-	<property name="build.dir" value="${basedir}/build" />
-	<property name="jar.dir" value="${build.dir}/jar" />
-	<property name="dependencies.dir" value="${build.dir}/builddependencies" />
-	<property name="jar.filename" value="${ant.project.name}.jar" />
-	<property name="jar.filename.withsource" value="${ant.project.name}_withsource.jar" />
-	<property name="test.classes.dir" value="${build.dir}/classes-tests" />
-	<property name="classes.dir" value="${build.dir}/classes" />
-	<property name="reports.dir" value="${build.dir}/reports" />
-	<property name="reports.xml.dir" value="${reports.dir}/xml" />
-	<property name="reports.html.dir" value="${reports.dir}/html" />
-	<property name="workspace.snapshot.dir" value="${build.dir}/workspacesnapshot/" />
-	<property name="user.home.lib" value="${user.home}/.ant/lib" />
 
 	<dirname property="KH_Common.basedir" file="${ant.file.KH_Common}" />
+
+	<loadproperties srcfile="${KH_Common.basedir}/common.properties" />
 	<loadproperties srcfile="${KH_Common.basedir}/plugins.properties" />
 
-	<property name="src.dir" value="${basedir}/src" />
-	<property name="test.dir" value="${basedir}/test" />
-	<property name="res.dir" value="${basedir}/res" />
-
 	<path id="classpath.project">
+		<pathelement location="${classes.dir}" />
+		<pathelement location="${res.dir}" />
 		<fileset dir="${lib.dir}" />
 		<fileset dir="${dependencies.dir}" />
-		<pathelement location="${classes.dir}" />
 	</path>
 
 	<!--
@@ -35,20 +21,19 @@
 		Window -> Preferences -> Ant -> Runtime -> Global Entries -> Add External JARs...
 	-->
 	<path id="classpath.testing">
+		<pathelement location="${test.classes.dir}" />
+		<pathelement location="${res.dir}" />
 		<fileset dir="${lib.dir}" />
+		<fileset dir="${dependencies.dir}" />
+		
+		<!-- Add test source directory, since there may be test-specifc resources -->
+		<pathelement location="${test.dir}" />
+		
 		<!-- Loads Junit from ANT installation folder -->
 		<fileset dir="${user.home.lib}">
 			<include name="junit*.jar" />
 			<include name="hamcrest*.jar" />
 		</fileset>
-		<!--
-			Classes of plug-in should be loaded before the infrastructure.
-			This is done as a plug-in may uses the same qualified name for the test suite.
-		-->
-		<pathelement location="${test.classes.dir}" />
-		<pathelement location="${test.dir}" />
-		<pathelement location="${res.dir}" />
-		<fileset dir="${dependencies.dir}" />
 	</path>
 
 	<tstamp>
@@ -126,8 +111,6 @@
 		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" />
 		<jacoco:coverage destfile="${reports.dir}/jacoco.exec">
 			<junit fork="yes" dir="${test.classes.dir}" failureProperty="test.failed">
-				<!-- Note the classpath order: instrumented classes are before the original 
-					(uninstrumented) classes. This is important. -->
 				<classpath refid="classpath.testing" />
 
 				<formatter type="xml" />
