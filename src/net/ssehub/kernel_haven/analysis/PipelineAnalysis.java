@@ -310,15 +310,31 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
         @Override
         public void run() {
             if (multiple) {
+                int numData = 0;
+                int numExceptions = 0;
+                
                 T data;
                 while ((data = provider.getNextResult()) != null) {
                     addToAllComponents(data);
+                    numData++;
                 }
                 
                 ExtractorException exc;
                 while ((exc = provider.getNextException()) != null) {
-                    LOGGER.logException("Got extractor exception", exc);
+                    LOGGER.logExceptionDebug("Got " + type + "-Extractor exception", exc);
+                    numExceptions++;
                 }
+                
+                if (numData == 0) {
+                    // log an error when no elements could be produced
+                    LOGGER.logError(type + "-Extractor: Got " + numData + " elements and " + numExceptions
+                            + " exceptions");
+                } else if (numExceptions > 0) {
+                    // log a warning when some elements got through, but others failed
+                    LOGGER.logWarning(type + "-Extractor: Got " + numData + " elements and " + numExceptions
+                            + " exceptions");
+                }
+                
             } else {
                 T data = provider.getResult();
                 if (data != null) {
@@ -327,7 +343,7 @@ public abstract class PipelineAnalysis extends AbstractAnalysis {
                 
                 ExtractorException exc = provider.getException();
                 if (exc != null) {
-                    LOGGER.logException("Got extractor exception", exc);
+                    LOGGER.logException("Got " + type + "-Extractor exception", exc);
                 }
             }
             
