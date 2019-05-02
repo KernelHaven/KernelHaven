@@ -15,7 +15,7 @@ Append this to the bottom of the generated plugin_dependencies.svg. This will cr
 				}
 				
 				tspans[0].innerHTML = "<a target=\"_blank\" href=\"https://github.com/KernelHaven/" + projectName + "/\">" + projectName + "</a>";
-				tspans[1].innerHTML = "<a target=\"_blank\" href=\"https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/" + jenkinsName + "/\">" + jenkinsName + "</a>";
+				tspans[1].innerHTML = "<a target=\"_blank\" href=\"https://jenkins-2.sse.uni-hildesheim.de/job/" + jenkinsName + "/\">" + jenkinsName + "</a>";
 			}
 		}
 	//]]>

@@ -16,8 +16,8 @@ This archive contains the core infrastructure only. Additional [plugins](#plugin
 
 These archives contain the infrastructure as well as all public [plugins](#plugins). These bundles contain more than needed to run most experiments.
 
-* [KernelHaven plus all plugins (GPLv3 and Apache License 2.0)](https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_GPLv3.zip)
-* [KernelHaven plus only plugins available under the Apache License 2.0](https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_Apache-2.0.zip)
+* [KernelHaven plus all plugins (GPLv3 and Apache License 2.0)](https://jenkins-2.sse.uni-hildesheim.de/job/KH_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_GPLv3.zip)
+* [KernelHaven plus only plugins available under the Apache License 2.0](https://jenkins-2.sse.uni-hildesheim.de/job/KH_Releases/lastSuccessfulBuild/artifact/build/KernelHaven_Apache-2.0.zip)
 
 ## Plugins
 
@@ -107,7 +107,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
     <td><a href="https://github.com/KernelHaven/FeatureEffectAnalysis">FeatureEffectAnalyzer</a></td>
     <td><b>Analysis:</b> Detection of presence conditions and feature effects</td>
     <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
-    <td><a href="https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis.jar">JAR</a></td>
+    <td><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_FeatureEffectAnalysis/lastSuccessfulBuild/artifact/build/jar/FeatureEffectAnalysis.jar">JAR</a></td>
     <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_FeatureEffectAnalysis" alt="Build Status of FeatureEffectAnalyzer"></td>
   </tr>
   <!-- MetricHaven -->
@@ -131,7 +131,7 @@ The following table lists commonly used plugins for KernelHaven. They mostly foc
     <td><a href="https://github.com/KernelHaven/ProblemSolutionSpaceMapperAnalysis">Problem-Solution-Space Mapper</a></td>
     <td><b>Analysis:</b> Identification of relations between problem and solution space artifacts</td>
     <td><a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a></td>
-    <td><a href="https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis.jar">JAR</a></td>
+    <td><a href="https://jenkins-2.sse.uni-hildesheim.de/job/KH_ProblemSolutionSpaceMapperAnalysis/lastSuccessfulBuild/artifact/build/jar/ProblemSolutionSpaceMapperAnalysis.jar">JAR</a></td>
     <td><img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_ProblemSolutionSpaceMapperAnalysis" alt="Build Status of Problem-Solution-Space Mapper"></td>
   </tr>
 </table>
@@ -207,7 +207,7 @@ See [`config_template.properties`](config_template.properties) for a full list o
 
 ## Further Documentation
 
-Further documentation can be found in the [wiki on GitHub](https://github.com/KernelHaven/KernelHaven/wiki). A pdf version can be downloaded from [here](https://jenkins-2.sse.uni-hildesheim.de/view/KernelHaven/job/KH_Documentation/lastSuccessfulBuild/artifact/Manual.pdf).
+Further documentation can be found in the [wiki on GitHub](https://github.com/KernelHaven/KernelHaven/wiki). A pdf version can be downloaded from [here](https://jenkins-2.sse.uni-hildesheim.de/job/KH_Documentation/lastSuccessfulBuild/artifact/Manual.pdf).
 
 ## Video Tutorials
 
