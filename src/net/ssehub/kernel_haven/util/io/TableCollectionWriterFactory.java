@@ -24,6 +24,7 @@ import java.util.List;
 import net.ssehub.kernel_haven.util.AbstractHandlerRegistry;
 import net.ssehub.kernel_haven.util.io.csv.CsvArchive;
 import net.ssehub.kernel_haven.util.io.csv.CsvFileCollection;
+import net.ssehub.kernel_haven.util.io.void_io.VoidTableCollection;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
 /**
@@ -52,6 +53,7 @@ public class TableCollectionWriterFactory extends AbstractHandlerRegistry<String
     private TableCollectionWriterFactory() {
         registerHandler("csv", CsvFileCollection.class);
         registerHandler("csv.zip", CsvArchive.class);
+        registerHandler("void", VoidTableCollection.class);
     }
     
     /**

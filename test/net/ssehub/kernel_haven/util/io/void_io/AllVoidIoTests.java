@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 University of Hildesheim, Software Systems Engineering
+ * Copyright 2019 University of Hildesheim, Software Systems Engineering
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.ssehub.kernel_haven.util.io;
+package net.ssehub.kernel_haven.util.io.void_io;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import net.ssehub.kernel_haven.util.io.csv.AllCsvTests;
-import net.ssehub.kernel_haven.util.io.json.AllJsonTests;
-import net.ssehub.kernel_haven.util.io.void_io.AllVoidIoTests;
-
 /**
- * Tests for util.io package.
+ * Tests for the util.io.void_io package.
+ *
+ * @author Adam
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    AllCsvTests.class,
-    AllJsonTests.class,
-    AllVoidIoTests.class,
-    
-    TableRowMetadataTest.class,
-    TableCollectionReaderFactoryTest.class,
-    TableCollectionReaderFactoryTest.class,
+    VoidTableCollectionTest.class,
+    VoidTableReaderTest.class,
+    VoidTableWriterTest.class,
     })
-public class AllIoTests {
+public class AllVoidIoTests {
 
 }
