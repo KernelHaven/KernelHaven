@@ -33,7 +33,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * A collection of CSV files in a {@link ZipArchive}. The table name plus a ".csv" suffix is used as the filename
  * inside the archive.
  * <p>
- * Only table names that match {@code [ A-Za-z0-9_'\\-\\+\\.\\(\\)]+} are allowed.
+ * Only table names that match {@code [ A-Za-z0-9_'\-\+\.\(\)]+} are allowed.
  * 
  * @author Adam
  */
