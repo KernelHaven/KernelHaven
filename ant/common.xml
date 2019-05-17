@@ -23,6 +23,7 @@
 		Window -> Preferences -> Ant -> Runtime -> Global Entries -> Add External JARs...
 	-->
 	<path id="classpath.testing">
+		<pathelement location="${classes.dir}" />
 		<pathelement location="${test.classes.dir}" />
 		<pathelement location="${res.dir}" />
 		<fileset dir="${lib.dir}" />
@@ -98,7 +99,6 @@
 
 	<target name="test.compile">
 		<javac destdir="${test.classes.dir}" debug="yes" includeantruntime="false">
-			<src path="${src.dir}" />
 			<src path="${test.dir}" />
 			<classpath refid="classpath.testing" />
 		</javac>
