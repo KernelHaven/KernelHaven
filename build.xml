@@ -22,9 +22,8 @@
 	<!-- Package a special jar that gives other plugins access to our test classes -->
 	<target name="package.jar.fortesting">
 		<jar destfile="${jar.dir}/${ant.project.name}_fortesting.jar">
-			<fileset dir="${test.classes.dir}">
-				<exclude name="testdata/*" />
-			</fileset>
+			<fileset dir="${classes.dir}" />
+			<fileset dir="${test.classes.dir}" excludes="testdata/**" />
 		</jar>
 	</target>
 
