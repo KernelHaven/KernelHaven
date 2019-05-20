@@ -15,8 +15,6 @@
  */
 package net.ssehub.kernel_haven.variability_model;
 
-import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -209,95 +207,6 @@ public class HierarchicalVariable extends VariabilityVariable {
         }
         
         this.nestingDepth = data.getInt("nestingDepth");
-    }
-    
-    @Override
-    @Deprecated
-    protected @NonNull List<@NonNull String> getSerializationData() {
-        List<@NonNull String> result = super.getSerializationData();
-        
-        // nesting depth
-        result.add(0, notNull(String.valueOf(nestingDepth)));
-        
-        // children
-        for (VariabilityVariable child : children) {
-            result.add(0, child.getName());
-        }
-        result.add(0, notNull(String.valueOf(children.size())));
-        
-        // parent
-        if (parent != null) {
-            result.add(0, parent.getName());
-        } else {
-            result.add(0, "null");
-        }
-        
-        return result;
-    }
-    
-    @Override
-    @Deprecated
-    protected void setSerializationData(@NonNull List<@NonNull String> data,
-            @NonNull Map<@NonNull String, VariabilityVariable> variables) throws FormatException {
-        
-        // parent
-        if (data.isEmpty()) {
-            throw new FormatException("Expecting at least one more element");
-        }
-        
-        String parent = notNull(data.remove(0));
-        if (!parent.equals("null")) {
-            VariabilityVariable var = variables.get(parent);
-            if (var == null) {
-                throw new FormatException("Unknown parent variable " + parent);
-            }
-            if (!(var instanceof HierarchicalVariable)) {
-                throw new FormatException("Parent (" + parent + ") is not a hierarchical variable");
-            }
-            this.parent = (HierarchicalVariable) var;
-        }
-        
-        // children
-        if (data.isEmpty()) {
-            throw new FormatException("Expecting at least one more element");
-        }
-        
-        int size;
-        try {
-            size = Integer.parseInt(data.remove(0));
-        } catch (NumberFormatException e) {
-            throw new FormatException(e);
-        }
-        if (data.size() < size) {
-            throw new FormatException("Expecting at least " + size + " more elements");
-        }
-        
-        for (int i = 0; i < size; i++) {
-            String varStr = notNull(data.remove(0));
-            VariabilityVariable var = variables.get(varStr);
-            
-            if (var == null) {
-                throw new FormatException("Unknown child variable " + varStr);
-            }
-            if (!(var instanceof HierarchicalVariable)) {
-                throw new FormatException("Child (" + varStr + ") is not a hierarchical variable");
-            }
-            
-            children.add((HierarchicalVariable) var);
-        }
-        
-        // nesting depth
-        if (data.isEmpty()) {
-            throw new FormatException("Expecting at least one more element");
-        }
-        
-        try {
-            this.nestingDepth = Integer.parseInt(data.remove(0));
-        } catch (NumberFormatException e) {
-            throw new FormatException(e);
-        }
-        
-        super.setSerializationData(data, variables);
     }
     
 }
