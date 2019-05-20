@@ -24,12 +24,9 @@ import java.util.function.Function;
 import net.ssehub.kernel_haven.code_model.AbstractCodeElement;
 import net.ssehub.kernel_haven.code_model.AbstractCodeElementWithNesting;
 import net.ssehub.kernel_haven.code_model.CodeElement;
-import net.ssehub.kernel_haven.util.FormatException;
-import net.ssehub.kernel_haven.util.FormulaCache;
 import net.ssehub.kernel_haven.util.io.json.JsonElement;
 import net.ssehub.kernel_haven.util.io.json.JsonObject;
 import net.ssehub.kernel_haven.util.logic.Formula;
-import net.ssehub.kernel_haven.util.logic.parser.Parser;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 import net.ssehub.kernel_haven.util.null_checks.Nullable;
 
@@ -126,46 +123,14 @@ public class SyntaxElement extends AbstractCodeElementWithNesting<SyntaxElement>
     
     /**
      * For deserialization: set the list of relations for the children. We first get this, and after this the
-     * cache calls addNestedElement() a bunch of times. Package visibility; should only be used by
-     * {@link SyntaxElementCsvUtil}.
+     * cache calls addNestedElement() a bunch of times. This should only be used by <code>SyntaxElementCsvUtil</code>.
      * 
      * @param relation The relations of the children elements.
      */
-    void setDeserializedRelations(@NonNull List<@NonNull String> relation) {
+    public void setDeserializedRelations(@NonNull List<@NonNull String> relation) {
         this.relations = relation;
     }
     
-    @Override
-    public @NonNull List<@NonNull String> serializeCsv() {
-        return SyntaxElementCsvUtil.elementToCsv(this);
-    }
-    
-    /**
-     * Serializes this element, like {@link #serializeCsv()}, but uses a {@link FormulaCache} to reduce the overhead
-     * while serializing formulas of this element.
-     * TODO SE: @Adam I think a visitor would be much more beautiful.
-     * @param cache The formula cache to cache the serialized formulas.
-     * @return The CSV parts representing this element.
-     */
-    public @NonNull List<@NonNull String> serializeCsv(@Nullable FormulaCache cache) {
-        return SyntaxElementCsvUtil.elementToCsv(this, cache);
-    }
-    
-    /**
-     * Deserializes the given CSV into a syntax element.
-     * 
-     * @param csv The csv.
-     * @param parser The parser to parse boolean formulas.
-     * @return The deserialized syntax element.
-     * 
-     * @throws FormatException If the CSV is malformed.
-     */
-    public static @NonNull SyntaxElement createFromCsv(@NonNull String @NonNull [] csv,
-            @NonNull Parser<@NonNull Formula> parser) throws FormatException {
-        
-        return SyntaxElementCsvUtil.csvToElement(csv, parser);
-    }
-
     @Override
     public @NonNull String toString() {
         // override this, since we need the relation handling

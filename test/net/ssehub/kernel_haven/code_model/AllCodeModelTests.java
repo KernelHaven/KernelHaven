@@ -30,10 +30,8 @@ import net.ssehub.kernel_haven.code_model.simple_ast.SyntaxElementTest;
     AllAstTests.class,
     
     CodeBlockTest.class,
-    OldCodeModelCacheTest.class,
     JsonCodeModelCacheTest.class,
     CodeModelProviderTest.class,
-    SyntaxElementCsvUtilTest.class,
     SyntaxElementTest.class,
     })
 public class AllCodeModelTests {

@@ -16,7 +16,6 @@
 package net.ssehub.kernel_haven.code_model;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -137,15 +136,6 @@ public interface CodeElement<NestedType extends CodeElement<NestedType>> extends
      */
     public @NonNull String toString(@NonNull String indentation);
     
-    /**
-     * Serializes this element as a CSV line. This does not consider nested elements.
-     * Extending classes also need a {@code createFromCsv(String[], Parser<Formula>)} method that deserializes
-     * this output.
-     * 
-     * @return The CSV parts representing this element.
-     */
-    public @NonNull List<@NonNull String> serializeCsv();
-
     /**
      * Serializes this element as a JSON. Does not recurse into the primary nesting structure, but may recurse
      * into secondary nested elements. Overriding methods should always call

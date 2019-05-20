@@ -16,7 +16,6 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
 import java.io.File;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
@@ -86,11 +85,6 @@ abstract class AbstractSyntaxElementWithNesting extends AbstractCodeElementWithN
     @Override
     public void setPresenceCondition(@NonNull Formula presenceCondition) {
         super.setPresenceCondition(presenceCondition);
-    }
-
-    @Override
-    public @NonNull List<@NonNull String> serializeCsv() {
-        throw new RuntimeException("CSV serialization of ast.SyntaxElement not implement yet");
     }
 
     @Override

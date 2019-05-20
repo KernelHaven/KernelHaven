@@ -16,7 +16,6 @@
 package net.ssehub.kernel_haven.code_model.ast;
 
 import java.io.File;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
@@ -85,11 +84,6 @@ abstract class AbstractSyntaxElementNoNesting extends AbstractCodeElement<ISynta
     public void replaceNestedElement(@NonNull ISyntaxElement oldElement, @NonNull ISyntaxElement newElement)
             throws NoSuchElementException {
         throw new NoSuchElementException();
-    }
-    
-    @Override
-    public @NonNull List<@NonNull String> serializeCsv() {
-        throw new RuntimeException("CSV serialization of ast.SyntaxElement not implement yet");
     }
     
     @Override
