@@ -30,6 +30,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -418,7 +420,88 @@ public class UtilTest {
         } finally {
             new File("testdata/notEmptyDirectory/a.txt").delete(); // this gets copied before the exception
         }
+    }
+    
+    /**
+     * Tests {@link Util#copyStream(java.io.InputStream, java.io.OutputStream)}.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testCopyStream() throws IOException {
+        ByteArrayInputStream in = new ByteArrayInputStream("Hello World!\nThis is a test.".getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         
+        Util.copyStream(in, out);
+        
+        assertThat(in.read(), is(-1));
+        assertThat(out.toString(), is("Hello World!\nThis is a test."));
+    }
+    
+    /**
+     * Tests {@link Util#copyStream(java.io.InputStream, java.io.OutputStream)} with a string that is larger
+     * than the internal buffer size.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testCopyStreamLargerThanbuffersize() throws IOException {
+        // create a 3000 character string
+        StringBuilder str = new StringBuilder();
+        int c = 0;
+        for (int i = 0; i < 3000; i++) {
+            str.append((char) ('a' + c));
+            c = (c + 1) % 26;
+        }
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(str.toString().getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        
+        Util.copyStream(in, out);
+        
+        assertThat(in.read(), is(-1));
+        assertThat(out.toString(), is(str.toString()));
+    }
+    
+    /**
+     * Tests {@link Util#copyStream(java.io.Reader, java.io.Writer)}.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testCopyStreamWriter() throws IOException {
+        StringReader in = new StringReader("Hello World!\nThis is a test.");
+        StringWriter out = new StringWriter();
+        
+        Util.copyStream(in, out);
+        
+        assertThat(in.read(), is(-1));
+        assertThat(out.toString(), is("Hello World!\nThis is a test."));
+    }
+    
+    /**
+     * Tests {@link Util#copyStream(java.io.Reader, java.io.Writer)} with a string that is larger
+     * than the internal buffer size.
+     * 
+     * @throws IOException unwanted.
+     */
+    @Test
+    public void testCopyStreamWriterLargerThanbuffersize() throws IOException {
+        // create a 3000 character string
+        StringBuilder str = new StringBuilder();
+        int c = 0;
+        for (int i = 0; i < 3000; i++) {
+            str.append((char) ('a' + c));
+            c = (c + 1) % 26;
+        }
+        
+        StringReader in = new StringReader(str.toString());
+        StringWriter out = new StringWriter();
+        
+        Util.copyStream(in, out);
+        
+        assertThat(in.read(), is(-1));
+        assertThat(out.toString(), is(str.toString()));
     }
     
     /**
