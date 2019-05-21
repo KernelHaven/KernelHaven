@@ -36,6 +36,7 @@ import net.ssehub.kernel_haven.util.logic.AllLogicTests;
     FormulaCacheTest.class,
     LoggerTest.class,
     OrderPreservingParallelizerTest.class,
+    PerformanceProbeTest.class,
     PipelineArchiverTest.class,
     StaticClassLoaderTest.class,
     UtilTest.class,

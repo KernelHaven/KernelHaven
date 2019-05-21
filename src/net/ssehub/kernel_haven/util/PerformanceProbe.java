@@ -217,6 +217,13 @@ public final class PerformanceProbe implements Closeable {
     }
     
     /**
+     * Clears all probes. Used mostly in test cases.
+     */
+    public static void clear() {
+        probes.clear();
+    }
+    
+    /**
      * Initializes this class with the given configuration. Determines whether performance measurements should be
      * enabled.
      * 
