@@ -24,6 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+    JsonElementTest.class,
     JsonParserTest.class,
     ParameterizedJsonParserTest.class,
     ParameterizedJsonParserNegativeTest.class,
