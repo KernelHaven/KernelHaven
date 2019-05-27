@@ -499,7 +499,7 @@ public class PipelineConfigurator {
             throw new RuntimeException("Configuration not set");
         }
         
-        // this setting is overriden by the command line option in Run.main()
+        // this setting is overridden by the command line option in Run.main()
         if (config.getValue(DefaultSettings.ARCHIVE)) {
             PipelineArchiver archiver = new PipelineArchiver(config);
             archiver.setAnalysisOutputFiles(analysis.getOutputFiles());
