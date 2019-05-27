@@ -17,6 +17,7 @@ package net.ssehub.kernel_haven;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
@@ -36,6 +37,7 @@ import net.ssehub.kernel_haven.build_model.BuildModel;
 import net.ssehub.kernel_haven.code_model.AbstractCodeModelExtractor;
 import net.ssehub.kernel_haven.code_model.SourceFile;
 import net.ssehub.kernel_haven.config.Configuration;
+import net.ssehub.kernel_haven.config.DefaultSettings;
 import net.ssehub.kernel_haven.test_utils.TestConfiguration;
 import net.ssehub.kernel_haven.util.ExtractorException;
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -377,6 +379,193 @@ public class PipelineConfiguratiorTest {
 
 
     }
+    
+    /**
+     * Tests that {@link PipelineConfigurator#runPreparation()} does nothing when no preparation class is set.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testRunPreparationNoPreparations() throws SetUpException {
+        Properties config = new Properties();
+        
+        PipelineConfigurator pipconf = new PipelineConfigurator();
+        pipconf.init(new TestConfiguration(config));
+        
+        String threadName = Thread.currentThread().getName();
+        
+        pipconf.runPreparation();
+        
+        // test that thread name didn't change
+        assertThat(Thread.currentThread().getName(), is(threadName));
+    }
+    
+    /**
+     * Tests that {@link PipelineConfigurator#runPreparation()} throws an exception if no config is set.
+     * 
+     * @throws SetUpException wanted.
+     */
+    @Test(expected = SetUpException.class)
+    public void testRunPreparationThrowsIfNoConfig() throws SetUpException {
+        PipelineConfigurator pipconf = new PipelineConfigurator();
+        pipconf.runPreparation();
+    }
+    
+    /**
+     * Tests that {@link PipelineConfigurator#runPreparation()} correctly executes a single preparation.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testRunPreparationOnePreparations() throws SetUpException {
+        DummyPreparation.executed = 0;
+        DummyPreparation.throwException = false;
+        
+        Properties config = new Properties();
+        config.setProperty(DefaultSettings.PREPARATION_CLASSES.getKey() + ".0", DummyPreparation.class.getName());
+        
+        PipelineConfigurator pipconf = new PipelineConfigurator();
+        pipconf.init(new TestConfiguration(config));
+        
+        String threadName = Thread.currentThread().getName();
+        
+        pipconf.runPreparation();
+        
+        assertThat(DummyPreparation.executed, is(1));
+        
+        // test that thread name didn't change
+        assertThat(Thread.currentThread().getName(), is(threadName));
+    }
+    
+    /**
+     * Tests that {@link PipelineConfigurator#runPreparation()} correctly executes multiple preparations.
+     * 
+     * @throws SetUpException unwanted.
+     */
+    @Test
+    public void testRunPreparationMultiplePreparations() throws SetUpException {
+        DummyPreparation.executed = 0;
+        DummyPreparation.throwException = false;
+        
+        Properties config = new Properties();
+        config.setProperty(DefaultSettings.PREPARATION_CLASSES.getKey() + ".0", DummyPreparation.class.getName());
+        config.setProperty(DefaultSettings.PREPARATION_CLASSES.getKey() + ".1", DummyPreparation.class.getName());
+        config.setProperty(DefaultSettings.PREPARATION_CLASSES.getKey() + ".2", DummyPreparation.class.getName());
+        config.setProperty(DefaultSettings.PREPARATION_CLASSES.getKey() + ".3", DummyPreparation.class.getName());
+        
+        PipelineConfigurator pipconf = new PipelineConfigurator();
+        pipconf.init(new TestConfiguration(config));
+        
+        String threadName = Thread.currentThread().getName();
+        
+        pipconf.runPreparation();
+        
+        assertThat(DummyPreparation.executed, is(4));
+        
+        // test that thread name didn't change
+        assertThat(Thread.currentThread().getName(), is(threadName));
+    }
+    
+    /**
+     * Tests that {@link PipelineConfigurator#runPreparation()} correctly handles exceptions thrown by the preparation.
+     * 
+     * @throws SetUpException wanted. 
+     */
+    @Test(expected = SetUpException.class)
+    public void testRunPreparationThrowsException() throws SetUpException {
+        DummyPreparation.executed = 0;
+        DummyPreparation.throwException = true;
+        
+        Properties config = new Properties();
+        config.setProperty(DefaultSettings.PREPARATION_CLASSES.getKey() + ".0", DummyPreparation.class.getName());
+        
+        PipelineConfigurator pipconf = new PipelineConfigurator();
+        pipconf.init(new TestConfiguration(config));
+        
+        String threadName = Thread.currentThread().getName();
+        
+        try {
+            pipconf.runPreparation();
+            
+        } finally {
+            // test that thread name didn't change
+            assertThat(Thread.currentThread().getName(), is(threadName));
+        }
+    }
+    
+    /**
+     * Tests that {@link PipelineConfigurator#runPreparation()} throws an exception if the class doesn't exist.
+     * 
+     * @throws SetUpException wanted. 
+     */
+    @Test(expected = SetUpException.class)
+    public void testRunPreparationInvalidClassName() throws SetUpException {
+        DummyPreparation.executed = 0;
+        DummyPreparation.throwException = true;
+        
+        Properties config = new Properties();
+        config.setProperty(DefaultSettings.PREPARATION_CLASSES.getKey() + ".0", "doesnt.Exist");
+        
+        PipelineConfigurator pipconf = new PipelineConfigurator();
+        pipconf.init(new TestConfiguration(config));
+        
+        String threadName = Thread.currentThread().getName();
+        
+        try {
+            pipconf.runPreparation();
+            
+        } finally {
+            // test that thread name didn't change
+            assertThat(Thread.currentThread().getName(), is(threadName));
+        }
+    }
+    
+    /**
+     * Tests that {@link PipelineConfigurator#runPreparation()} throws an exception if the class doesn't implement
+     * {@link IPreparation}.
+     * 
+     * @throws SetUpException wanted. 
+     */
+    @Test(expected = SetUpException.class)
+    public void testRunPreparationDoesntImplement() throws SetUpException {
+        DummyPreparation.executed = 0;
+        DummyPreparation.throwException = true;
+        
+        Properties config = new Properties();
+        config.setProperty(DefaultSettings.PREPARATION_CLASSES.getKey() + ".0", DummyCmExtractor.class.getName());
+        
+        PipelineConfigurator pipconf = new PipelineConfigurator();
+        pipconf.init(new TestConfiguration(config));
+        
+        String threadName = Thread.currentThread().getName();
+        
+        try {
+            pipconf.runPreparation();
+            
+        } finally {
+            // test that thread name didn't change
+            assertThat(Thread.currentThread().getName(), is(threadName));
+        }
+    }
 
+    /**
+     * A dummy implementation of {@link IPreparation}.
+     */
+    public static class DummyPreparation implements IPreparation {
+
+        private static int executed;
+        
+        private static boolean throwException;
+        
+        @Override
+        public void run(@NonNull Configuration config) throws SetUpException {
+            executed++;
+            
+            if (throwException) {
+                throw new SetUpException();
+            }
+        }
+        
+    }
 
 }
