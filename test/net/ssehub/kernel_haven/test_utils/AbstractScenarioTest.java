@@ -107,8 +107,9 @@ public abstract class AbstractScenarioTest {
     }
     
     /**
-     * Main test method. Executes KernelHaven and calls the check*() methods. Overriding classes should call/override
-     * this method with an {@code @Test} annotation.
+     * Main test method. Executes KernelHaven and calls the check*() methods. Overriding classes should call
+     * this method with an {@code @Test} annotation. This is required because Jenkins can't properly display
+     * test-methods that are inherited.
      * 
      * @throws Exception unwanted.
      */
