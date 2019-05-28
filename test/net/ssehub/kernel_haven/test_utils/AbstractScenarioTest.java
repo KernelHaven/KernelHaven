@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.ssehub.kernel_haven;
+package net.ssehub.kernel_haven.test_utils;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
+import net.ssehub.kernel_haven.Run;
 import net.ssehub.kernel_haven.util.Util;
 
 /**
@@ -107,11 +107,11 @@ public abstract class AbstractScenarioTest {
     }
     
     /**
-     * Main test method. Executes KernelHaven and calls the check*() methods.
+     * Main test method. Executes KernelHaven and calls the check*() methods. Overriding classes should call/override
+     * this method with an {@code @Test} annotation.
      * 
      * @throws Exception unwanted.
      */
-    @Test
     public void run()
         // CHECKSTYLE:OFF // we allow throws exception here
             throws Exception {
