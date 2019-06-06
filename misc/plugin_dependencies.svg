@@ -2,143 +2,143 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
 <svg width="40cm" height="23cm" viewBox="218 -461 783 457" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <g>
-    <rect style="fill: #ffffff" x="560" y="-160" width="180" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="560" y="-160" width="180" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-137.1">
-      <tspan x="650" y="-137.1">CnfUtils</tspan>
-      <tspan x="650" y="-121.1">KH_CnfUtils</tspan>
+    <rect style="fill: #ffffff" x="560" y="-200" width="180" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="560" y="-200" width="180" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-177.1">
+      <tspan x="650" y="-177.1">CnfUtils</tspan>
+      <tspan x="650" y="-161.1">KH_CnfUtils</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="560" y="-220" width="180" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="560" y="-220" width="180" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-197.1">
-      <tspan x="650" y="-197.1">IOUtils</tspan>
-      <tspan x="650" y="-181.1">KH_IOUtils</tspan>
+    <rect style="fill: #ffffff" x="560" y="-260" width="180" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="560" y="-260" width="180" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-237.1">
+      <tspan x="650" y="-237.1">IOUtils</tspan>
+      <tspan x="650" y="-221.1">KH_IOUtils</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="220" y="-260" width="260" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="220" y="-260" width="260" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-237.1">
-      <tspan x="350" y="-237.1">NonBooleanUtils</tspan>
-      <tspan x="350" y="-221.1">KH_NonBooleanUtils</tspan>
+    <rect style="fill: #ffffff" x="220" y="-240" width="260" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="220" y="-240" width="260" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-217.1">
+      <tspan x="350" y="-217.1">NonBooleanUtils</tspan>
+      <tspan x="350" y="-201.1">KH_NonBooleanUtils</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="560" y="-280" width="180" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="560" y="-280" width="180" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-257.1">
-      <tspan x="650" y="-257.1">DBUtils</tspan>
-      <tspan x="650" y="-241.1">KH_DBUtils</tspan>
+    <rect style="fill: #ffffff" x="560" y="-320" width="180" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" x="560" y="-320" width="180" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-297.1">
+      <tspan x="650" y="-297.1">DBUtils</tspan>
+      <tspan x="650" y="-281.1">KH_DBUtils</tspan>
     </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="540" y="-60" width="220" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="540" y="-60" width="220" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-37.1">
-      <tspan x="650" y="-37.1">FeatureEffectAnalysis</tspan>
-      <tspan x="650" y="-21.1">KH_FeatureEffectAnalysis</tspan>
+    <rect style="fill: #ffffff" x="540" y="-120" width="220" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="540" y="-120" width="220" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-97.1">
+      <tspan x="650" y="-97.1">FeatureEffectAnalysis</tspan>
+      <tspan x="650" y="-81.1">KH_FeatureEffectAnalysis</tspan>
     </text>
   </g>
   <g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="650" y1="-60.9907" x2="650" y2="-100.537"/>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="655,-92.7732 650,-102.773 645,-92.7732 "/>
-  </g>
-  <g>
-    <rect style="fill: #ffffff" x="220" y="-180" width="260" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="220" y="-180" width="260" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-157.1">
-      <tspan x="350" y="-157.1">MetricHaven</tspan>
-      <tspan x="350" y="-141.1">KH_MetricHaven</tspan>
-    </text>
-  </g>
-  <g>
-    <rect style="fill: #ffffff" x="220" y="-120" width="260" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="220" y="-120" width="260" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-97.1">
-      <tspan x="350" y="-97.1">UnDeadAnalyzer</tspan>
-      <tspan x="350" y="-81.1">KH_UnDeadAnalyzer</tspan>
-    </text>
-  </g>
-  <g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="481.003" y1="-110.467" x2="554.582" y2="-120.278"/>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="547.547,-114.295 556.798,-120.573 546.225,-124.208 "/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="650" y1="-120.988" x2="650" y2="-140.54"/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="655,-132.776 650,-142.776 645,-132.776 "/>
   </g>
   <g>
     <rect style="fill: #ffffff" x="220" y="-60" width="260" height="54"/>
     <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="220" y="-60" width="260" height="54"/>
     <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-37.1">
-      <tspan x="350" y="-37.1">ConfigurationMismatchAnalysis</tspan>
-      <tspan x="350" y="-21.1">KH_ConfigurationMismatchAnalysis</tspan>
+      <tspan x="350" y="-37.1">MetricHaven</tspan>
+      <tspan x="350" y="-21.1">KH_MetricHaven</tspan>
     </text>
   </g>
   <g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="481.003" y1="-33" x2="534.52" y2="-33"/>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="526.756,-28 536.756,-33 526.756,-38 "/>
-  </g>
-  <g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="480" y1="-46.5" x2="591.021" y2="-102.99"/>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="586.369,-95.0132 593.014,-104.004 581.834,-103.926 "/>
-  </g>
-  <g>
-    <rect style="fill: #ffffff" x="800" y="-420" width="200" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-420" width="200" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-397.1">
-      <tspan x="900" y="-397.1">CodeBlockExtractor</tspan>
-      <tspan x="900" y="-381.1">KH_CodeBlockExtractor</tspan>
+    <rect style="fill: #ffffff" x="220" y="-180" width="260" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="220" y="-180" width="260" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-157.1">
+      <tspan x="350" y="-157.1">UnDeadAnalyzer</tspan>
+      <tspan x="350" y="-141.1">KH_UnDeadAnalyzer</tspan>
     </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="481.003" y1="-161.734" x2="554.553" y2="-166.637"/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="547.139,-161.131 556.784,-166.786 546.473,-171.109 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="220" y="-120" width="260" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="220" y="-120" width="260" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-97.1">
+      <tspan x="350" y="-97.1">ConfigurationMismatchAnalysis</tspan>
+      <tspan x="350" y="-81.1">KH_ConfigurationMismatchAnalysis</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="481.003" y1="-93" x2="534.52" y2="-93"/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="526.756,-88 536.756,-93 526.756,-98 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="480" y1="-106.5" x2="574.262" y2="-143.373"/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="568.853,-135.888 576.344,-144.188 565.21,-145.201 "/>
   </g>
   <g>
     <rect style="fill: #ffffff" x="800" y="-360" width="200" height="54"/>
     <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-360" width="200" height="54"/>
     <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-337.1">
-      <tspan x="900" y="-337.1">KbuildMinerExtractor</tspan>
-      <tspan x="900" y="-321.1">KH_KbuildMinerExtractor</tspan>
+      <tspan x="900" y="-337.1">CodeBlockExtractor</tspan>
+      <tspan x="900" y="-321.1">KH_CodeBlockExtractor</tspan>
     </text>
   </g>
   <g>
     <rect style="fill: #ffffff" x="800" y="-300" width="200" height="54"/>
     <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-300" width="200" height="54"/>
     <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-277.1">
-      <tspan x="900" y="-277.1">KconfigReaderExtractor</tspan>
-      <tspan x="900" y="-261.1">KH_KconfigReaderExtractor</tspan>
+      <tspan x="900" y="-277.1">KbuildMinerExtractor</tspan>
+      <tspan x="900" y="-261.1">KH_KbuildMinerExtractor</tspan>
     </text>
   </g>
   <g>
     <rect style="fill: #ffffff" x="800" y="-240" width="200" height="54"/>
     <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-240" width="200" height="54"/>
     <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-217.1">
-      <tspan x="900" y="-217.1">srcMLExtractor</tspan>
-      <tspan x="900" y="-201.1">KH_SrcMlExtractor</tspan>
-    </text>
-  </g>
-  <g>
-    <rect style="fill: #ffffff" x="800" y="-180" width="200" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-180" width="200" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-157.1">
-      <tspan x="900" y="-157.1">UndertakerExtractor</tspan>
-      <tspan x="900" y="-141.1">KH_UndertakerExtractor</tspan>
+      <tspan x="900" y="-217.1">KconfigReaderExtractor</tspan>
+      <tspan x="900" y="-201.1">KH_KconfigReaderExtractor</tspan>
     </text>
   </g>
   <g>
     <rect style="fill: #ffffff" x="800" y="-120" width="200" height="54"/>
     <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-120" width="200" height="54"/>
     <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-97.1">
-      <tspan x="900" y="-97.1">TypeChefExtractor</tspan>
-      <tspan x="900" y="-81.1">KH_TypeChefExtractor</tspan>
+      <tspan x="900" y="-97.1">srcMLExtractor</tspan>
+      <tspan x="900" y="-81.1">KH_SrcMlExtractor</tspan>
     </text>
   </g>
   <g>
-    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="799.017" y1="-109.157" x2="745.389" y2="-117.738"/>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="753.845,-121.448 743.181,-118.091 752.265,-111.574 "/>
+    <rect style="fill: #ffffff" x="800" y="-60" width="200" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-60" width="200" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-37.1">
+      <tspan x="900" y="-37.1">UndertakerExtractor</tspan>
+      <tspan x="900" y="-21.1">KH_UndertakerExtractor</tspan>
+    </text>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="220" y="-320" width="260" height="54"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="220" y="-320" width="260" height="54"/>
-    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-297.1">
-      <tspan x="350" y="-297.1">BusybootPreparation</tspan>
-      <tspan x="350" y="-281.1">KH_BusybootPreparation</tspan>
+    <rect style="fill: #ffffff" x="800" y="-180" width="200" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x="800" y="-180" width="200" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="900" y="-157.1">
+      <tspan x="900" y="-157.1">TypeChefExtractor</tspan>
+      <tspan x="900" y="-141.1">KH_TypeChefExtractor</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="799.017" y1="-161.079" x2="745.431" y2="-165.366"/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="753.569,-169.73 743.202,-165.544 752.771,-159.762 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="220" y="-300" width="260" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="220" y="-300" width="260" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="350" y="-277.1">
+      <tspan x="350" y="-277.1">BusybootPreparation</tspan>
+      <tspan x="350" y="-261.1">KH_BusybootPreparation</tspan>
     </text>
   </g>
   <text font-size="12.8" style="fill: #0000ff;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="220" y="-400">
@@ -178,6 +178,14 @@
   <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="560" y="-348">
     <tspan x="560" y="-348">(clickable links)</tspan>
   </text>
+  <g>
+    <rect style="fill: #ffffff" x="540" y="-60" width="220" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #00ff00" x="540" y="-60" width="220" height="54"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="650" y="-37.1">
+      <tspan x="650" y="-37.1">EntityLocatorAnalysis</tspan>
+      <tspan x="650" y="-21.1">KH_EntityLocatorAnalysis</tspan>
+    </text>
+  </g>
   <!-- BEGIN MANUAL JAVASCRIPT -->
 	<script type="text/javascript">
 	//<![CDATA[
