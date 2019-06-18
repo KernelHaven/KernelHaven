@@ -170,8 +170,8 @@ public class Configuration {
         settings.put(key, setting);
         
         Object value;
-        if (setting.getType() == Type.SETTING_LIST) {
-            value = readSettingList(setting);
+        if (setting.getType() == Type.LIST) {
+            value = readListSetting(setting);
         } else if (setting.getType() == Type.ENUM) {
             value = readEnumSetting(setting);
         } else {
@@ -224,17 +224,33 @@ public class Configuration {
      * @throws SetUpException If any constraints of the setting are violated.
      */
     private @Nullable Object readValue(@NonNull Setting<?> setting) throws SetUpException {
+        return parseValue(setting.getKey(), properties.getProperty(setting.getKey(), setting.getDefaultValue()),
+                setting.getType(), setting.isMandatory());
+    }
+    
+    /**
+     * Parses a given value of a setting.
+     * 
+     * @param key The key of the setting that is parsed.
+     * @param value The value that was read for the given key.
+     * @param type The type of setting to parse.
+     * @param mandatory Whether the setting is mandatory or not.
+     * 
+     * @return The value for the given setting.
+     * 
+     * @throws SetUpException If any constraints of the setting are violated.
+     */
+    private @Nullable Object parseValue(@NonNull String key, @Nullable String value, @NonNull Type type,
+            boolean mandatory) throws SetUpException {
         Object result;
-        String key = setting.getKey();
-        String value = properties.getProperty(key, setting.getDefaultValue());
         if (value == null) {
-            if (setting.isMandatory() && doChecks) {
+            if (mandatory && doChecks) {
                 throw new SetUpException("No value for mandatory setting " + key);
             }
             result = null;
         } else {
             value = notNull(value.trim());
-            switch (setting.getType()) {
+            switch (type) {
             case STRING:
                 result = value;
                 break;
@@ -270,16 +286,8 @@ public class Configuration {
                     throw new SetUpException("Invalid regular expression for setting " + key, e);
                 }
                 break;
-            case STRING_LIST: {
-                List<String> list = new LinkedList<String>();
-                for (String v : value.split(",")) {
-                    list.add(v.trim());
-                }
-                result = list;
-                break;
-            }
             default:
-                throw new SetUpException("Unknown setting type " + setting.getType() + " for setting " + key);
+                throw new SetUpException("Unknown setting type " + type + " for setting " + key);
             }
         }
         return result;
@@ -321,20 +329,56 @@ public class Configuration {
     }
     
     /**
-     * Reads a setting that has the type {@link Setting.Type#SETTING_LIST}.
+     * Reads a {@link ListSetting}.
      * 
      * @param setting The setting to read.
      * @return The read list.
+     * 
+     * @throws SetUpException If reading the list value fails.
      */
-    private @NonNull List<String> readSettingList(@NonNull Setting<?> setting) {
-        List<String> result = new LinkedList<>();
-        int index = 0;
+    private @Nullable List<Object> readListSetting(@NonNull Setting<?> setting) throws SetUpException {
         String baseKey = setting.getKey();
         
-        String value;
-        while ((value = properties.getProperty(baseKey + "." + index)) != null) {
-            result.add(value);
-            index++;
+        if (!(setting instanceof ListSetting)) {
+            throw new SetUpException("Setting with key " + baseKey
+                    + " has type LIST but is not an instance of ListSetting");
+        }
+        
+        ListSetting<?> listSetting = (ListSetting<?>) setting;
+        
+        if (listSetting.getNestedType() == Type.LIST) {
+            throw new SetUpException("Setting with key " + baseKey + " has type LIST and is instance of ListSetting; "
+                    + "lists cannot be nested");
+        }
+        
+        
+        List<Object> result = new LinkedList<>();
+        
+        if (properties.containsKey(baseKey)) {
+            // we have a comma-separated list
+            String[] parts = properties.getProperty(baseKey).split(",");
+            for (String part : parts) {
+                result.add(parseValue(baseKey, part.trim(), listSetting.getNestedType(), true));
+            }
+            
+        } else if (properties.containsKey(baseKey + ".0")) {
+            // we have a setting list
+            int index = 0;
+            for (String key = baseKey + "." + index; properties.containsKey(key);
+                    index++, key = baseKey + "." + index) {
+                
+                result.add(parseValue(key, properties.getProperty(key), listSetting.getNestedType(), true));
+            }
+            
+        } else if (listSetting.getDefaultValue() != null) {
+            // we have a comma-separated list
+            String[] parts = notNull(listSetting.getDefaultValue()).split(",");
+            for (String part : parts) {
+                result.add(parseValue(baseKey, part.trim(), listSetting.getNestedType(), true));
+            }
+            
+        } else if (doChecks && setting.isMandatory()) {
+            throw new SetUpException("No value for mandatory setting " + baseKey);
         }
         
         return result;
@@ -435,7 +479,7 @@ public class Configuration {
         }
         
         for (Setting<?> setting : settings.values()) {
-            if (setting.getType() == Type.SETTING_LIST) {
+            if (setting.getType() == Type.LIST && !result.contains(setting.getKey())) {
                 // for setting lists, we need to consider .0, .1, etc.
                 for (int i = 0; /* break will be called */; i++) {
                     String key = setting.getKey() + "." + i;

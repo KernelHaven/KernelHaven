@@ -377,11 +377,12 @@ public class PipelineConfigurator {
         if (config == null) {
             throw new SetUpException("Configuration not set");
         }
+        
         for (String className : config.getValue(DefaultSettings.PREPARATION_CLASSES)) {
             try {
                 @SuppressWarnings("unchecked")
                 Class<? extends IPreparation> prepartionClass =
-                        (Class<? extends IPreparation>) ClassLoader.getSystemClassLoader().loadClass(className);
+                    (Class<? extends IPreparation>) ClassLoader.getSystemClassLoader().loadClass(className);
                 
                 LOGGER.logInfo("Running preparation " + prepartionClass.getCanonicalName());
                 
@@ -389,7 +390,7 @@ public class PipelineConfigurator {
                 
                 Thread.currentThread().setName("Preparation");
                 preparation.run(config);
-            
+                
             } catch (ReflectiveOperationException | ClassCastException e) {
                 throw new SetUpException(e);
                 

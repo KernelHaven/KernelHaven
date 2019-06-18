@@ -16,7 +16,6 @@
 package net.ssehub.kernel_haven.config;
 
 import java.io.File;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
@@ -78,24 +77,16 @@ public class Setting<T> {
         REGEX,
         
         /**
-         * A comma separated list of strings. Generic should be {@link List} with generic String.
-         */
-        STRING_LIST,
-        
-        /**
-         * A list of strings. Each value has its own key, based on the key of the setting and a suffix with a number:
-         * {@code <key>.<number>} The number starts with 0 and increases by 1 for each successive
-         * element in the list. Generic should be {@link List} with generic String.
-         * <p>
-         * The mandatory or default value attributes have no effect on this type of setting.
-         */
-        SETTING_LIST,
-        
-        /**
          * A value of a Java enum. <b>Do not create a {@link Setting} with this</b>, but rather use the
          * {@link EnumSetting} class.
          */
         ENUM,
+        
+        /**
+         * A list of values. <b>Do not create a {@link Setting} with this</b>, but rather use the
+         * {@link ListSetting} class. A list can never be null; only empty lists exist.
+         */
+        LIST,
         
     }
     

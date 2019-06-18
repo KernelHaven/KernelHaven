@@ -20,16 +20,14 @@ import static net.ssehub.kernel_haven.config.Setting.Type.DIRECTORY;
 import static net.ssehub.kernel_haven.config.Setting.Type.FILE;
 import static net.ssehub.kernel_haven.config.Setting.Type.INTEGER;
 import static net.ssehub.kernel_haven.config.Setting.Type.REGEX;
-import static net.ssehub.kernel_haven.config.Setting.Type.SETTING_LIST;
 import static net.ssehub.kernel_haven.config.Setting.Type.STRING;
-import static net.ssehub.kernel_haven.config.Setting.Type.STRING_LIST;
 import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -58,7 +56,7 @@ public class DefaultSettings {
     /**
      * This is not a real setting. It is only here to generate an entry in the config_template generation.
      */
-    static final @NonNull Setting<@Nullable File> INCLUDE_FILE = new Setting<>("include_file", SETTING_LIST, false, null, "Specifies other property files, that are loaded as base configurations before the file that this setting appears in. The files specified here are loaded first and in the order they are specified; if the same key appears in multiple files (e.g. in included and including), then the second value (in the including file) overwrites the first value (in the included file). The path in here is relative to the configuration file that this setting appears in.");
+    static final @NonNull ListSetting<@NonNull File> INCLUDE_FILE = new ListSetting<>("include_file", FILE, false, "Specifies other property files, that are loaded as base configurations before the file that this setting appears in. The files specified here are loaded first and in the order they are specified; if the same key appears in multiple files (e.g. in included and including), then the second value (in the including file) overwrites the first value (in the included file). The path in here is relative to the configuration file that this setting appears in.");
     
     /*
      * Infrastructure directories
@@ -97,7 +95,7 @@ public class DefaultSettings {
      */
     
     public static final @NonNull Setting<@NonNull String> ANALYSIS_CLASS = new Setting<>("analysis.class", STRING, true, null, "The fully qualified class name of the analysis that should be run.");
-    public static final @NonNull Setting<@NonNull List<String>> ANALYSIS_COMPONENTS_LOG = new Setting<>("analysis.output.intermediate_results", STRING_LIST, true, "", "Specifies which analysis components (simple class name) of a PipelineAnalysis should output their intermediate results. These will be written in addition to the result of the main component.");
+    public static final @NonNull ListSetting<@NonNull String> ANALYSIS_COMPONENTS_LOG = new ListSetting<>("analysis.output.intermediate_results", STRING, false, "Specifies which analysis components (simple class name) of a PipelineAnalysis should output their intermediate results. These will be written in addition to the result of the main component.");
     public static final @NonNull Setting<@NonNull String> ANALYSIS_PIPELINE = new Setting<>("analysis.pipeline", STRING, true, "", "A string specifying a pipeline of analyis components. This only has an effect if " + ANALYSIS_CLASS.getKey() + " is set to " + ConfiguredPipelineAnalysis.class.getName() + "."); // TODO specify format
     public static final @NonNull Setting<@NonNull String> ANALYSIS_RESULT = new Setting<>("analysis.output.type", STRING, true, "csv", "A file suffix that specifies which kind of output writer shall be used. By deafult, the main infrastructure supports \"csv\" and \"csv.zip\". If IOUtils is used, then \"xls\" or \"xlsx\" can be used here.");
     public static final @NonNull Setting<@NonNull String> ANALYSIS_RESULT_NAME = new Setting<>("analysis.output.name", STRING, true, "Analysis", "A name for the analysis result that is used as a prefix for the output file(s).");
@@ -120,7 +118,7 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull Boolean> CODE_PROVIDER_CACHE_WRITE = new Setting<>("code.provider.cache.write", BOOLEAN, true, "false", "Defines whether the code model provider will write its results to the cache directory.");
     public static final @NonNull Setting<@NonNull Boolean> CODE_PROVIDER_CACHE_READ = new Setting<>("code.provider.cache.read", BOOLEAN, true, "false", "Defines whether the code model provider is allowed to read the cache instead of starting the extractor.");
     public static final @NonNull Setting<@NonNull Boolean> CODE_PROVIDER_CACHE_COMPRESS = new Setting<>("code.provider.cache.compress", BOOLEAN, true, "true", "Whether the individual cache files for the code model should written as compressed Zip archives. Reading of compressed cache files is always supported.");
-    public static final @NonNull Setting<@NonNull List<String>> CODE_EXTRACTOR_FILES = new Setting<>("code.extractor.files", STRING_LIST, true, "", "Defines which files the code extractor should run on. Comma separated list of paths relative to the source tree. If directories are listed, then they are searched recursively for files that match the regular expression specified in code.extractor.file_regex. Set to an empty string to specify the complete source tree.");
+    public static final @NonNull ListSetting<@NonNull String> CODE_EXTRACTOR_FILES = new ListSetting<>("code.extractor.files", STRING, notNull(Arrays.asList("")), "Defines which files the code extractor should run on. Comma separated list of paths relative to the source tree. If directories are listed, then they are searched recursively for files that match the regular expression specified in code.extractor.file_regex. Set to an empty string to specify the complete source tree.");
     public static final @NonNull Setting<@NonNull Pattern> CODE_EXTRACTOR_FILE_REGEX = new Setting<>("code.extractor.file_regex", REGEX, true, ".*\\.c", "A Java regular expression defining which files are considered to be source files for parsing. See code.extractor.files for a description on which files this expression is tested on."); 
     public static final @NonNull Setting<@NonNull Integer> CODE_EXTRACTOR_THREADS = new Setting<>("code.extractor.threads", INTEGER, true, "1", "The number of threads the code extractor should use. This many files are parsed in parallel.");
     
@@ -151,7 +149,7 @@ public class DefaultSettings {
      * Other
      */
     
-    public static final @NonNull Setting<@NonNull List<String>> PREPARATION_CLASSES = new Setting<>("preparation.class", SETTING_LIST, false, null, "A list of fully qualified class names that defines which preparations to run. A preparation class has to implement IPreperation. The preparations defined here are executed in the defined order.");
+	public static final @NonNull ListSetting<@NonNull String> PREPARATION_CLASSES = new ListSetting<>("preparation.class", STRING, false, "A list of fully qualified class names that defines which preparations to run. A preparation class has to implement IPreperation. The preparations defined here are executed in the defined order.");
     
     // CHECKSTYLE:ON
     /**

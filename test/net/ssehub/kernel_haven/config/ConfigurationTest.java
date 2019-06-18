@@ -20,11 +20,10 @@ import static net.ssehub.kernel_haven.config.Setting.Type.DIRECTORY;
 import static net.ssehub.kernel_haven.config.Setting.Type.ENUM;
 import static net.ssehub.kernel_haven.config.Setting.Type.FILE;
 import static net.ssehub.kernel_haven.config.Setting.Type.INTEGER;
+import static net.ssehub.kernel_haven.config.Setting.Type.LIST;
 import static net.ssehub.kernel_haven.config.Setting.Type.PATH;
 import static net.ssehub.kernel_haven.config.Setting.Type.REGEX;
-import static net.ssehub.kernel_haven.config.Setting.Type.SETTING_LIST;
 import static net.ssehub.kernel_haven.config.Setting.Type.STRING;
-import static net.ssehub.kernel_haven.config.Setting.Type.STRING_LIST;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -33,7 +32,6 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -323,20 +321,69 @@ public class ConfigurationTest {
      */
     @Test
     public void testStringListValues() throws SetUpException {
-        Setting<List<String>> s1 = new Setting<>("s1", STRING_LIST, false, null, "");
-        Setting<List<String>> s2 = new Setting<>("s2", STRING_LIST, true, "a, b, c", "");
-        Setting<List<String>> s3 = new Setting<>("s3", STRING_LIST, true, "a, b, c", "");
+        ListSetting<String> s1 = new ListSetting<>("s1", STRING, false, "");
+        ListSetting<String> s2 = new ListSetting<>("s2", STRING, true, "");
+        ListSetting<String> s3 = new ListSetting<>("s3", STRING, true, "");
+        ListSetting<String> s4 = new ListSetting<>("s4", STRING, Arrays.asList("alpha", "beta", "gamma"), "");
         
         Properties props = new Properties();
         props.setProperty("s2", "one and, two\nand, three");
+        props.setProperty("s3.0", "a");
+        props.setProperty("s3.1", "b");
+        props.setProperty("s3.2", "c");
+        props.setProperty("s3.5", "d");
         Configuration config = new Configuration(props);
         config.registerSetting(s1);
         config.registerSetting(s2);
         config.registerSetting(s3);
+        config.registerSetting(s4);
         
-        assertThat(config.getValue(s1), nullValue());
+        assertThat(config.getValue(s1), is(Arrays.asList()));
         assertThat(config.getValue(s2), is(Arrays.asList("one and", "two\nand", "three")));
         assertThat(config.getValue(s3), is(Arrays.asList("a", "b", "c")));
+        assertThat(config.getValue(s4), is(Arrays.asList("alpha", "beta", "gamma")));
+    }
+    
+    /**
+     * Tests that a missing mandatory list throws an exception.
+     * 
+     * @throws SetUpException wanted.
+     */
+    @Test(expected = SetUpException.class)
+    public void testMandatoryStringListMissing() throws SetUpException {
+        ListSetting<String> s1 = new ListSetting<>("s1", STRING, true, "");
+        
+        Properties props = new Properties();
+        Configuration config = new Configuration(props);
+        config.registerSetting(s1);
+    }
+    
+    /**
+     * Tests that a setting of type LIST must be an instance of ListSetting.
+     * 
+     * @throws SetUpException wanted.
+     */
+    @Test(expected = SetUpException.class)
+    public void testStringListNotOfTypeListSetting() throws SetUpException {
+        Setting<String> s1 = new Setting<>("s1", LIST, true, null, "");
+        
+        Properties props = new Properties();
+        Configuration config = new Configuration(props);
+        config.registerSetting(s1);
+    }
+    
+    /**
+     * Tests that nested lists are disallowed.
+     * 
+     * @throws SetUpException wanted.
+     */
+    @Test(expected = SetUpException.class)
+    public void testNestedList() throws SetUpException {
+        ListSetting<String> s1 = new ListSetting<>("s1", LIST, true, "");
+        
+        Properties props = new Properties();
+        Configuration config = new Configuration(props);
+        config.registerSetting(s1);
     }
     
     /**
@@ -415,33 +462,6 @@ public class ConfigurationTest {
         Properties props = new Properties();
         Configuration config = new Configuration(props);
         config.registerSetting(s1);
-    }
-    
-    /**
-     * Tests that setting list values are handled correctly.
-     * 
-     * @throws SetUpException unwanted.
-     */
-    @Test
-    public void testSettingListValues() throws SetUpException {
-     // mandatory should have no effect
-        Setting<List<String>> s1 = new Setting<>("s1", SETTING_LIST, true, null, "");
-        Setting<List<String>> s2 = new Setting<>("s2", SETTING_LIST, true, null, "");
-        // default should have no effect
-        Setting<List<String>> s3 = new Setting<>("s3", SETTING_LIST, true, "default", "");
-        
-        Properties props = new Properties();
-        props.setProperty("s2.0", "first value");
-        props.setProperty("s2.1", "second value");
-        props.setProperty("s2.2", "third value");
-        Configuration config = new Configuration(props);
-        config.registerSetting(s1);
-        config.registerSetting(s2);
-        config.registerSetting(s3);
-        
-        assertThat(config.getValue(s1), is(Arrays.asList()));
-        assertThat(config.getValue(s2), is(Arrays.asList("first value", "second value", "third value")));
-        assertThat(config.getValue(s3), is(Arrays.asList()));
     }
     
     /**
@@ -788,17 +808,18 @@ public class ConfigurationTest {
         Properties props = new Properties();
         props.put("a.0", "b"); // will be used
         props.put("a.1", "c"); // will be used
+        props.put("c", "v1, v2"); // will be used
         props.put("a.3", "c"); // will NOT be used (because .2 is skipped)
-        props.put("a", "c"); // will NOT be used (because its a setting list)
         props.put("d.0", "e"); // will NOT be used
         props.put("d.1", "f"); // will NOT be used
         
         Configuration config = new Configuration(props);
         
-        config.registerSetting(new Setting<>("a", SETTING_LIST, true, null, "")); // appears in props
-        config.registerSetting(new Setting<>("b", SETTING_LIST, false, null, "")); // doesn't appear in props
+        config.registerSetting(new ListSetting<>("a", STRING, true, "")); // appears in props as setting list
+        config.registerSetting(new ListSetting<>("b", STRING, false, "")); // doesn't appear in props
+        config.registerSetting(new ListSetting<>("c", STRING, false, "")); // appears in props as normal list
         
-        assertThat(config.getUnusedKeys(), is(new HashSet<>(Arrays.asList("d.0", "d.1", "a.3", "a"))));
+        assertThat(config.getUnusedKeys(), is(new HashSet<>(Arrays.asList("d.0", "d.1", "a.3"))));
     }
     
 }
