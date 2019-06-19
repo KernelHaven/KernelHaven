@@ -294,7 +294,7 @@ public class Configuration {
     }
 
     /**
-     * Reads a {@link Setting.Type#FILE} value. The value can either be an abosulte, working directory relative or
+     * Reads a {@link Setting.Type#FILE} value. The value can either be an absolute, working directory relative or
      * source_tree relative path.
      * 
      * @param key The key of the setting (used for exception message).
