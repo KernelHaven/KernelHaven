@@ -65,51 +65,55 @@ public abstract class AnalysisComponent<O> {
          * Creates this logger. Private because there should be only one singleton instance.
          */
         private ResultSizeLogger() {
-            components = new LinkedList<>();
-            doneComponents = new LinkedList<>();
+            if (ENABLED) {
+                components = new LinkedList<>();
+                doneComponents = new LinkedList<>();
+            }
         }
         
         /**
          * Logs the size of all result queues. Periodically called by run().
          */
         private synchronized void logCurrentSizes() {
-            List<String> msg = new ArrayList<>(Math.max(components.size(), doneComponents.size()) + 1);
-            
-            msg.add("Currently running components:");
-            for (AnalysisComponent<?> component : components) {
-                int size = component.results.getCurrentSize();
-                if (size > LOG_THRESHHOLD) {
-                    String line = "\t- " + component.getResultName() + ": " + size;
-                    if (msg.get(msg.size() - 1).startsWith(line)) {
-                        msg.set(msg.size() - 1, line + " ++");
-                    } else {
-                        msg.add(line);
+            if (ENABLED) {
+                List<String> msg = new ArrayList<>(Math.max(components.size(), doneComponents.size()) + 1);
+                
+                msg.add("Currently running components:");
+                for (AnalysisComponent<?> component : components) {
+                    int size = component.results.getCurrentSize();
+                    if (size > LOG_THRESHHOLD) {
+                        String line = "\t- " + component.getResultName() + ": " + size;
+                        if (msg.get(msg.size() - 1).startsWith(line)) {
+                            msg.set(msg.size() - 1, line + " ++");
+                        } else {
+                            msg.add(line);
+                        }
                     }
                 }
-            }
-            if (msg.size() > 1) {
-                LOGGER.logInfo(msg.toArray(new String[0]));
-            } else {
-                LOGGER.logInfo("No running components with >10 results");
-            }
-            msg.clear();
-            
-            msg.add("Finished components:");
-            for (AnalysisComponent<?> component : components) {
-                int size = component.results.getCurrentSize();
-                if (size > LOG_THRESHHOLD) {
-                    String line = "\t- " + component.getResultName() + ": " + size;
-                    if (msg.get(msg.size() - 1).startsWith(line)) {
-                        msg.set(msg.size() - 1, msg.get(msg.size() - 1) + " ++");
-                    } else {
-                        msg.add(line);
+                if (msg.size() > 1) {
+                    LOGGER.logInfo(msg.toArray(new String[0]));
+                } else {
+                    LOGGER.logInfo("No running components with >10 results");
+                }
+                msg.clear();
+                
+                msg.add("Finished components:");
+                for (AnalysisComponent<?> component : components) {
+                    int size = component.results.getCurrentSize();
+                    if (size > LOG_THRESHHOLD) {
+                        String line = "\t- " + component.getResultName() + ": " + size;
+                        if (msg.get(msg.size() - 1).startsWith(line)) {
+                            msg.set(msg.size() - 1, msg.get(msg.size() - 1) + " ++");
+                        } else {
+                            msg.add(line);
+                        }
                     }
                 }
-            }
-            if (msg.size() > 1) {
-                LOGGER.logInfo(msg.toArray(new String[0]));
-            } else {
-                LOGGER.logInfo("No finished components with >10 results");
+                if (msg.size() > 1) {
+                    LOGGER.logInfo(msg.toArray(new String[0]));
+                } else {
+                    LOGGER.logInfo("No finished components with >10 results");
+                }
             }
         }
         
@@ -147,13 +151,15 @@ public abstract class AnalysisComponent<O> {
         
         @Override
         public void run() {
-            while (true) {
-                
-                logCurrentSizes();
-                
-                try {
-                    Thread.sleep(PERIOD);
-                } catch (InterruptedException e) {
+            if (ENABLED) {
+                while (true) {
+                    
+                    logCurrentSizes();
+                    
+                    try {
+                        Thread.sleep(PERIOD);
+                    } catch (InterruptedException e) {
+                    }
                 }
             }
         }
