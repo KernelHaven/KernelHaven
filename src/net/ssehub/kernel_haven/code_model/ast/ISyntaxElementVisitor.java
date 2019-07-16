@@ -247,5 +247,30 @@ public interface ISyntaxElementVisitor {
             loop.getNestedElement(i).accept(this);
         }
     }
+
+    // Special
+    
+    /**
+     * <b>Special:</b> Visits an unparseable element.
+     * <p>
+     * Provides default Visitation: <b>true</b>
+     * 
+     * @param error The {@link ErrorElement}.
+     */
+    public default void visitErrorElement(@NonNull ErrorElement error) {
+        for (int i = 0; i < error.getNestedElementCount(); i++) {
+            error.getNestedElement(i).accept(this);
+        }
+    }
+
+    /**
+     * <b>Special:</b> Visits a reference.
+     * Provides default Visitation: <b>true</b>
+     * 
+     * @param referenceElement The reference to another element.
+     */
+    public default void visitReference(ReferenceElement referenceElement) {
+        referenceElement.getReferenced().accept(this);
+    }
     
 }
