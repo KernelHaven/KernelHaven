@@ -269,7 +269,7 @@ public interface ISyntaxElementVisitor {
      * 
      * @param referenceElement The reference to another element.
      */
-    public default void visitReference(ReferenceElement referenceElement) {
+    public default void visitReference(@NonNull ReferenceElement referenceElement) {
         referenceElement.getReferenced().accept(this);
     }
     
