@@ -65,6 +65,15 @@ public class ErrorElement extends AbstractSyntaxElementWithNesting implements IC
         
         this.errorText = json.getString("errorText");
     }
+    
+    /**
+     * Returns the text describing the error that caused this element.
+     * 
+     * @return The text describing the error that caused normal parsing to fail.
+     */
+    public String getErrorText() {
+        return errorText;
+    }
 
     @Override
     public @NonNull String elementToString(@NonNull String indentation) {
