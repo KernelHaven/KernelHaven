@@ -78,6 +78,22 @@ public interface ISyntaxElement extends CodeElement<ISyntaxElement> {
     public void setPresenceCondition(@NonNull Formula presenceCondition);
     
     /**
+     * Returns whether any child element (fully recursive) or this element itself is an {@link ErrorElement}.
+     * If not explicitly set by the extractor, this is <code>false</code>.
+     * 
+     * @return Whether this sub-tree contains an {@link ErrorElement}.
+     */
+    public boolean containsErrorElement();
+    
+    /**
+     * Sets whether any child element (fully recursive) or this element itself is an {@link ErrorElement}.
+     * This method should only be called by the extractor that creates the AST.
+     *
+     * @param containsErrorElement The new value for containsErrorElement.
+     */
+    public void setContainsErrorElement(boolean containsErrorElement);
+    
+    /**
      * Accept this visitor.
      * 
      * @param visitor The visitor to accept.

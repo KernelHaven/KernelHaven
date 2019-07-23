@@ -39,6 +39,8 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
  */
 abstract class AbstractSyntaxElementNoNesting extends AbstractCodeElement<ISyntaxElement> implements ISyntaxElement {
 
+    private boolean containsErrorElement;
+    
     /**
      * Creates this {@link AbstractSyntaxElementNoNesting} with the given presence condition.
      * 
@@ -84,6 +86,16 @@ abstract class AbstractSyntaxElementNoNesting extends AbstractCodeElement<ISynta
     public void replaceNestedElement(@NonNull ISyntaxElement oldElement, @NonNull ISyntaxElement newElement)
             throws NoSuchElementException {
         throw new NoSuchElementException();
+    }
+    
+    @Override
+    public boolean containsErrorElement() {
+        return containsErrorElement;
+    }
+    
+    @Override
+    public void setContainsErrorElement(boolean containsErrorElement) {
+        this.containsErrorElement = containsErrorElement;
     }
     
     @Override

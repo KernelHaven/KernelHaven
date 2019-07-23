@@ -37,6 +37,8 @@ import net.ssehub.kernel_haven.util.null_checks.Nullable;
 abstract class AbstractSyntaxElementWithNesting extends AbstractCodeElementWithNesting<ISyntaxElement>
         implements ISyntaxElement {
 
+    private boolean containsErrorElement;
+    
     /**
      * Creates this {@link AbstractSyntaxElementNoNesting} with the given presence
      * condition.
@@ -85,6 +87,16 @@ abstract class AbstractSyntaxElementWithNesting extends AbstractCodeElementWithN
     @Override
     public void setPresenceCondition(@NonNull Formula presenceCondition) {
         super.setPresenceCondition(presenceCondition);
+    }
+    
+    @Override
+    public boolean containsErrorElement() {
+        return containsErrorElement;
+    }
+    
+    @Override
+    public void setContainsErrorElement(boolean containsErrorElement) {
+        this.containsErrorElement = containsErrorElement;
     }
 
     @Override
