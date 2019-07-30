@@ -90,6 +90,15 @@ public class LoopStatement extends AbstractSyntaxElementWithNesting {
     public @NonNull ICode getLoopCondition() {
         return condition;
     }
+    
+    /**
+     * Returns the type of this loop.
+     * 
+     * @return The loop type.
+     */
+    public @NonNull LoopType getLoopType() {
+        return type;
+    }
 
     @Override
     public @NonNull String elementToString(@NonNull String indentation) {

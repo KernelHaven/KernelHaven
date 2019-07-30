@@ -102,7 +102,7 @@ public class TypeDefinition extends AbstractSyntaxElementWithNesting {
      * 
      * @return The type of this typedef.
      */
-    public TypeDefType getType() {
+    public @NonNull TypeDefType getType() {
         return type;
     }
 

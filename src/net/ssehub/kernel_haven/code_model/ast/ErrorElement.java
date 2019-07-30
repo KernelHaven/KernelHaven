@@ -71,7 +71,7 @@ public class ErrorElement extends AbstractSyntaxElementWithNesting implements IC
      * 
      * @return The text describing the error that caused normal parsing to fail.
      */
-    public String getErrorText() {
+    public @NonNull String getErrorText() {
         return errorText;
     }
 
