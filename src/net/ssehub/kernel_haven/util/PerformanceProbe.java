@@ -232,5 +232,15 @@ public final class PerformanceProbe implements Closeable {
     public static void initialize(@NonNull Configuration config) {
         enabled = config.getValue(DefaultSettings.MEASURE_PERFORMANCE);
     }
+    
+    /**
+     * En- or disables the performance measurements. This overrides the setting read in
+     * {@link #initialize(Configuration)}.
+     *  
+     * @param enabled Whether the measurements should be enabled.
+     */
+    public static void setEnabled(boolean enabled) {
+        PerformanceProbe.enabled = enabled;
+    }
 
 }
