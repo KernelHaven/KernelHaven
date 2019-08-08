@@ -234,6 +234,26 @@ public final class Util {
     public static boolean executeProcess(@NonNull ProcessBuilder processBuilder, @NonNull String name)
             throws IOException {
         
+        return executeProcess(processBuilder, name, 0);
+    }
+    
+    /**
+     * Runs the process until it is finished. Logs the output from stderr and stdout to the logger.
+     * 
+     * @param processBuilder
+     *            The process to start and run. Must not be null.
+     * @param name
+     *            The name of this process; used for logging only. Must not be null.
+     * @param timeout An optional timeout (in ms) for the process to stop (0 = no timeout).
+     * 
+     * @return <code>true</code> if successful (i.e. exit code != 0); <code>false</code> otherwise.
+     * 
+     * @throws IOException
+     *             If executing the process or reading it's output fails.
+     */
+    public static boolean executeProcess(@NonNull ProcessBuilder processBuilder, @NonNull String name, long timeout)
+            throws IOException {
+        
         Process process = processBuilder.start();
 
         BufferThread th1 = new BufferThread(notNull(process.getInputStream()));
@@ -241,7 +261,7 @@ public final class Util {
         th1.start();
         th2.start();
 
-        int returnValue = waitForProcess(process);
+        Integer returnValue = waitForProcess(process, timeout);
 
         try {
             th1.join();
@@ -259,7 +279,7 @@ public final class Util {
             Logger.get().logDebug(notNull(("Stderr:\n" + stderr).split("\n")));
         }
 
-        return returnValue == 0;
+        return null != returnValue && returnValue == 0;
     }
 
     /**
