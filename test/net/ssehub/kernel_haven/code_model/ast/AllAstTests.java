@@ -166,13 +166,14 @@ public class AllAstTests {
         codeList.setCondition(True.INSTANCE);
         codeList.setSourceFile(sourceFile);
         
-        CppBlock ifdef = new CppBlock(new Variable("A"), new Variable("A"), CppBlock.Type.IFDEF);
+        Formula varA = new Variable("A");
+        CppBlock ifdef = new CppBlock(varA, varA, varA, CppBlock.Type.IFDEF);
         ifdef.setCondition(new Variable("A"));
         ifdef.setSourceFile(sourceFile);
         
         ifdef.addNestedElement(makeCode("1", sourceFile, new Variable("A"), new Variable("A")));
         
-        CppBlock elsedef = new CppBlock(not("A"), not("A"), CppBlock.Type.ELSE);
+        CppBlock elsedef = new CppBlock(not(varA), not(varA), null, CppBlock.Type.ELSE);
         elsedef.setCondition(not("A"));
         elsedef.setSourceFile(sourceFile);
         

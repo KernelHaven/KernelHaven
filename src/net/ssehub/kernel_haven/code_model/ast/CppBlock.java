@@ -53,7 +53,15 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
         IF, IFDEF, IFNDEF, ELSEIF, ELSE;
     }
 
+    /**
+     * Condition that considers previous siblings of same block structure, but no surrounding parents.
+     */
     private @Nullable Formula condition;
+    
+    /**
+     * The condition of the current block, won't consider any surrounding parents nor any siblings.
+     */
+    private @Nullable Formula ownCondition;
     
     private @NonNull Type type;
     
@@ -65,12 +73,16 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
      * Creates a {@link CppBlock}.
      * 
      * @param presenceCondition The presence condition of this element.
-     * @param condition The variability condition of this block.
+     * @param condition The variability condition of this block (considering previous siblings).
+     * @param ownCondition The variability condition of this block (won't considering previous siblings).
      * @param type The {@link Type} of preprocessor block that this is.
      */
-    public CppBlock(@NonNull Formula presenceCondition, @Nullable Formula condition, @NonNull Type type) {
+    public CppBlock(@NonNull Formula presenceCondition, @Nullable Formula condition, @Nullable Formula ownCondition,
+        @NonNull Type type) {
+        
         super(presenceCondition);
         this.condition = condition;
+        this.ownCondition = ownCondition;
         this.type = type;
         siblings = new ArrayList<>();
     }
@@ -95,6 +107,10 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
         
         if (json.getElement("cppCondition") != null) {
             this.condition = parseJsonFormula(json.getString("cppCondition"));
+        }
+        
+        if (json.getElement("cppOwnCondition") != null) {
+            this.ownCondition = parseJsonFormula(json.getString("cppOwnCondition"));
         }
         
         JsonList siblingIds = json.getList("cppSiblings");
@@ -184,6 +200,20 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
     }
     
     /**
+     * Returns the own condition of the element.
+     * Contrary to:
+     * <ul>
+     *  <li>{@link #getCondition()}: This method won't consider previous siblings of the block and returns the
+     *  condition, which is seen by the developer (but not effective to the compiler).</li>
+     *  <li>{@link #getPresenceCondition()}: Will also consider conditions of surrounding parent blocks.</li>
+     * </ul>
+     * @return  The condition as written to the code, will be <tt>null</tt> in case of an <tt>else</tt> block.
+     */
+    public @Nullable Formula getCurrentCondition() {
+        return ownCondition;
+    }
+    
+    /**
      * Returns the {@link Type} of preprocessor block that this is.
      * 
      * @return The {@link Type} of preprocessor block that this is.
@@ -252,6 +282,9 @@ public class CppBlock extends AbstractSyntaxElementWithNesting implements ICode 
         result.putElement("cppType", new JsonString(notNull(type.name())));
         if (condition != null) {
             result.putElement("cppCondition", new JsonString(condition.toString()));
+        }
+        if (ownCondition != null) {
+            result.putElement("cppOwnCondition", new JsonString(ownCondition.toString()));
         }
         
         JsonList siblingIds = new JsonList();
