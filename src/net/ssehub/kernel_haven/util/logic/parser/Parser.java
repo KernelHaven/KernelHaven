@@ -244,14 +244,15 @@ public final class Parser<T> {
                     result = grammar.makeBinaryFormula(ho.highestOp, leftTree, rightTree);
                 } catch (ExpressionFormatException e) {
                     ExpressionFormatException newExc = makeException(expression, notNull(e.getMessage()),
-                            ho.highestOpPos);
+                            getTokenPos(tokens, ho.highestOpPos));
                     newExc.setStackTrace(e.getStackTrace());
                     throw newExc;
                 }
                 
             } else {
                 if (ho.highestOpPos != min) {
-                    throw makeException(expression, "Unary operator is not on the left", ho.highestOpPos);
+                    throw makeException(expression, "Unary operator is not on the left",
+                            getTokenPos(tokens, ho.highestOpPos));
                 }
                 
                 T childFormula = parse(tokens, min + 1, max, expression);
@@ -259,7 +260,7 @@ public final class Parser<T> {
                     result = grammar.makeUnaryFormula(ho.highestOp, childFormula);
                 } catch (ExpressionFormatException e) {
                     ExpressionFormatException newExc = makeException(expression, notNull(e.getMessage()),
-                            ho.highestOpPos);
+                            getTokenPos(tokens, ho.highestOpPos));
                     newExc.setStackTrace(e.getStackTrace());
                     throw newExc;
                 }
