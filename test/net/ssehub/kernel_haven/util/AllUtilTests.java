@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import net.ssehub.kernel_haven.util.cpp.AllCppTests;
 import net.ssehub.kernel_haven.util.io.AllIoTests;
 import net.ssehub.kernel_haven.util.logic.AllLogicTests;
 
@@ -30,7 +29,6 @@ import net.ssehub.kernel_haven.util.logic.AllLogicTests;
 @SuiteClasses({
     AllIoTests.class,
     AllLogicTests.class,
-    AllCppTests.class,
     
     BlockingQueueTest.class,
     FormulaCacheTest.class,
