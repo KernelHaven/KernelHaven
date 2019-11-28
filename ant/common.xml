@@ -39,9 +39,25 @@
 		</fileset>
 	</path>
 
+	<!-- timestamp for version file -->
 	<tstamp>
 		<format property="TS_FOR_VERSION_FILE" pattern="yyyy-MM-dd HH:mm:ss" locale="en,US" />
 	</tstamp>
+	
+	<!-- git commit hash for version file -->
+	<target name="git.revision">
+		<exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+			<arg value="log" />
+			<arg value="-1" />
+			<arg value="--pretty=format:%H" />
+		</exec>
+		<condition property="GIT_COMMIT_FOR_VERSION_FILE" value="${git.revision}" else="unknown">
+			<and>
+				<isset property="git.revision" />
+				<length string="${git.revision}" trim="yes" length="0" when="greater" />
+			</and>
+		</condition>
+	</target>
 
 	<!-- Check if required jar files are available in <user_home>/.ant/lib -->
 	<target name="build.dependencies.check">
@@ -85,7 +101,7 @@
 		<mkdir dir="${reports.html.dir}" />
 	</target>
 
-	<target name="compile">
+	<target name="compile" depends="git.revision">
 		<!-- compile java-classes -->
 		<javac srcdir="${src.dir}" destdir="${classes.dir}" debug="yes" includeantruntime="false">
 			<classpath refid="classpath.project" />
@@ -93,6 +109,7 @@
 
 		<!-- generate version file -->
 		<echo file="${classes.dir}/version.txt" append="false">Built at ${TS_FOR_VERSION_FILE}
+Commit: ${GIT_COMMIT_FOR_VERSION_FILE}
 </echo>
 		<!-- the empty newline here is intentional -->
 	</target>
