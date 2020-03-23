@@ -20,6 +20,7 @@ import static net.ssehub.kernel_haven.util.null_checks.NullHelpers.notNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.ssehub.kernel_haven.util.AbstractHandlerRegistry;
@@ -66,11 +67,13 @@ public class TableCollectionReaderFactory extends AbstractHandlerRegistry<String
      */
     public @NonNull ITableCollection openFile(@NonNull File file) throws IOException {
         List<@NonNull String> suffixes = getSuffix(file);
-        Class<? extends ITableCollection> handlerClass = null;
         
-        for (String suffix : suffixes) {
-            handlerClass = getHandler(suffix);
-        }
+        // Tries to find the most specific (reverse order) handler and returns null if no one can be found
+        Class<? extends ITableCollection> handlerClass = suffixes.stream()
+            .sorted(Collections.reverseOrder())
+            .map(s -> getHandler(s))
+            .findFirst()
+            .orElse(null);
         
         if (handlerClass == null) {
             throw new IOException("No handler for suffix " + suffixes.get(0));
