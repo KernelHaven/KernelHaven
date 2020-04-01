@@ -153,11 +153,12 @@ public class CsvReader implements ITableReader {
      * @return The un-escaped field.
      */
     private @NonNull String unescape(@NonNull String field) {
-        StringBuilder escaped = new StringBuilder();
+        String result;
         
         if (field.isEmpty() || field.charAt(0) != '"') {
-            escaped.append(field);
+            result = field;
         } else {
+            StringBuilder escaped = new StringBuilder();
             for (int i = 1; i < field.length(); i++) {
                 char c = field.charAt(i);
                 
@@ -172,9 +173,10 @@ public class CsvReader implements ITableReader {
                 
                 escaped.append(c);
             }
+            result = notNull(escaped.toString());
         }
         
-        return notNull(escaped.toString());
+        return result;
     }
     
     /**
