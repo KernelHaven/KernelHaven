@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import net.ssehub.kernel_haven.util.AbstractHandlerRegistry;
 import net.ssehub.kernel_haven.util.io.csv.CsvArchive;
@@ -72,6 +73,7 @@ public class TableCollectionReaderFactory extends AbstractHandlerRegistry<String
         Class<? extends ITableCollection> handlerClass = suffixes.stream()
             .sorted(Collections.reverseOrder())
             .map(s -> getHandler(s))
+            .filter(Objects::nonNull)
             .findFirst()
             .orElse(null);
         
