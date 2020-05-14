@@ -74,7 +74,7 @@
 					<fileset dir="${user.home.lib}" includes="jacocoant*.jar" />
 				</resourcecount>
 				<resourcecount when="greater" count="0">
-					<fileset dir="${user.home.lib}" includes="checkstyle*.jar" />
+					<fileset dir="${user.home.lib}" includes="checkstyle-8*.jar" />
 				</resourcecount>
 			</and>
 		</condition>
@@ -196,7 +196,7 @@ Commit: ${GIT_COMMIT_FOR_VERSION_FILE}
 	<target name="checkstyle">
 		<taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties" />
 
-		<checkstyle config="${basedir}/checkstyle.xml" failOnViolation="false">
+		<checkstyle config="${KH_Common.basedir}/checkstyle.xml" failOnViolation="false">
 			<fileset dir="${src.dir}" includes="**/*.java" />
 			<formatter type="plain" />
 			<formatter type="xml" toFile="build/reports/xml/checkstyle_errors.xml" />
