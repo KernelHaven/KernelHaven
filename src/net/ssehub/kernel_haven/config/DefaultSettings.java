@@ -132,9 +132,9 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull Integer> BUILD_PROVIDER_TIMEOUT = new Setting<>("build.provider.timeout", INTEGER, true, "0", "The maximum time the provider waits for the results of the extractor until an exception is thrown. In milliseconds; 0 = no timeout used.");
     public static final @NonNull Setting<@NonNull Boolean> BUILD_PROVIDER_CACHE_WRITE = new Setting<>("build.provider.cache.write", BOOLEAN, true, "false", "Defines whether the build model provider will write its results to the cache directory.");
     public static final @NonNull Setting<@NonNull Boolean> BUILD_PROVIDER_CACHE_READ = new Setting<>("build.provider.cache.read", BOOLEAN, true, "false", "Defines whether the code model build is allowed to read the cache instead of starting the extractor.");
-	public static final @NonNull Setting<@NonNull Pattern> BUILD_EXTRACTOR_FILE_REGEX = new Setting<>("build.extractor.file_regex", REGEX, true, ".*(?i)(^|\\/|\\\\)(Makefile\\.?\\w*|Kbuild|Build)", "A Java regular expression defining which files are considered to be files relevant for parsing the build model.");
+    public static final @NonNull Setting<@NonNull Pattern> BUILD_EXTRACTOR_FILE_REGEX = new Setting<>("build.extractor.file_regex", REGEX, true, ".*(?i)(^|\\/|\\\\)(Makefile\\.?\\w*|Kbuild|Build)", "A Java regular expression defining which files are considered to be files relevant for parsing the build model.");
     
-	/*
+    /*
      * Variability model parameters
      */
     
@@ -143,13 +143,13 @@ public class DefaultSettings {
     public static final @NonNull Setting<@NonNull Boolean> VARIABILITY_PROVIDER_CACHE_WRITE = new Setting<>("variability.provider.cache.write", BOOLEAN, true, "false", "Defines whether the variability model provider will write its results to the cache directory.");
     public static final @NonNull Setting<@NonNull Boolean> VARIABILITY_PROVIDER_CACHE_READ = new Setting<>("variability.provider.cache.read", BOOLEAN, true, "false", "Defines whether the variability model provider is allowed to read the cache instead of starting the extractor.");
     public static final @NonNull Setting<@Nullable File> VARIABILITY_INPUT_FILE = new Setting<>("variability.input.file", FILE, false, null, "Path of a single file to be parsed by a variability model extractor.");
-	public static final @NonNull Setting<@NonNull Pattern> VARIABILITY_EXTRACTOR_FILE_REGEX = new Setting<>("variability.extractor.file_regex", REGEX, true, "..*(?i)(^|\\/|\\\\)(Kconfig)", "A Java regular expression defining which files are considered to be source files relevant for parsing the variability model.");
+    public static final @NonNull Setting<@NonNull Pattern> VARIABILITY_EXTRACTOR_FILE_REGEX = new Setting<>("variability.extractor.file_regex", REGEX, true, "..*(?i)(^|\\/|\\\\)(Kconfig)", "A Java regular expression defining which files are considered to be source files relevant for parsing the variability model.");
     
-	/*
+    /*
      * Other
      */
     
-	public static final @NonNull ListSetting<@NonNull String> PREPARATION_CLASSES = new ListSetting<>("preparation.class", STRING, false, "A list of fully qualified class names that defines which preparations to run. A preparation class has to implement IPreperation. The preparations defined here are executed in the defined order.");
+    public static final @NonNull ListSetting<@NonNull String> PREPARATION_CLASSES = new ListSetting<>("preparation.class", STRING, false, "A list of fully qualified class names that defines which preparations to run. A preparation class has to implement IPreperation. The preparations defined here are executed in the defined order.");
     
     // CHECKSTYLE:ON
     /**

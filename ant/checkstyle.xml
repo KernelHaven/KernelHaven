@@ -9,6 +9,7 @@
     Description: none
 -->
 <module name="Checker">
+  <module name="SuppressWithPlainTextCommentFilter"/>
   <property name="severity" value="error"/>
   <module name="TreeWalker">
     <module name="JavadocMethod"/>
@@ -164,7 +165,6 @@
       <property name="onCommentFormat" value="checkstyle: resume name check"/>
       <property name="checkFormat" value="(MemberName|MethodName|TypeName|StaticVariableName)"/>
     </module>
-    <module name="SuppressionCommentFilter"/>
     <module name="JavadocPackage">
 	    <property name="severity" value="ignore"/>
 	    <property name="allowLegacy" value="true"/>
