@@ -148,12 +148,12 @@ Commit: ${GIT_COMMIT_FOR_VERSION_FILE}
 			</junit>
 		</jacoco:coverage>
 		<!-- JUnit Report in HTML -->
-		<junitreport todir="${reports.xml.dir}">
+		<!-- <junitreport todir="${reports.xml.dir}">
 			<fileset dir="${reports.xml.dir}">
 				<include name="TEST-*.xml" />
 			</fileset>
-			<report format="frames" todir="${reports.html.dir}" />
-		</junitreport>
+			<report format="xml" todir="${reports.html.dir}" />
+		</junitreport> -->
 	</target>
 
 	<target name="package.jar">
