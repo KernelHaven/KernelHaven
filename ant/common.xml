@@ -131,7 +131,8 @@ Commit: ${GIT_COMMIT_FOR_VERSION_FILE}
 		<jacoco:coverage destfile="${reports.dir}/jacoco.exec">
 			<junit fork="yes" dir="${test.classes.dir}" failureProperty="test.failed">
 				<classpath refid="classpath.testing" />
-
+                <sysproperty key="java.system.class.loader" value="net.ssehub.kernel_haven.util.KernelHavenClassLoader"/>
+                
 				<formatter type="xml" />
 				<test name="${testcase}" todir="${reports.xml.dir}" if="testcase" />
 				<batchtest todir="${reports.xml.dir}" unless="testcase">
