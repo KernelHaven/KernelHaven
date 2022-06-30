@@ -16,8 +16,10 @@
 package net.ssehub.kernel_haven.util;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -104,5 +106,20 @@ public class KernelHavenClassLoader extends URLClassLoader {
         List<URL> urls = Collections.list(findResources(name));
         urls.addAll(Collections.list(getParent().getResources(name)));
         return Collections.enumeration(urls);
+    }
+    
+    /**
+     * This class loader supports dynamic additions to the class path
+     * at runtime.
+     * @param path Path to java agent JAR
+     * @throws MalformedURLException If a protocol handler for the URL could not be found,
+     *                               or if some other error occurred while constructing the URL
+     *
+     * @see java.lang.instrument.Instrumentation#appendToSystemClassPathSearch
+     */
+    public void appendToClassPathForInstrumentation(String path) throws MalformedURLException {
+        Thread.holdsLock(this);
+
+        super.addURL(Paths.get(path).toUri().toURL());
     }
 }
