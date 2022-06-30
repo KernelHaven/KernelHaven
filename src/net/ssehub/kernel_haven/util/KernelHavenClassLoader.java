@@ -53,10 +53,19 @@ public class KernelHavenClassLoader extends URLClassLoader {
      */
     private static URL[] urlsForInitialization(@NonNull ClassLoader parent) {
         URL[] urls;
+        System.out.println(parent.getClass());
         if (parent instanceof URLClassLoader) {
             urls = ((URLClassLoader) parent).getURLs();
         } else {
-            urls = new URL[0];
+            String[] pathElements = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
+            urls = new URL[pathElements.length];
+            for (int i = 0; i < pathElements.length; i++) {
+                try {
+                    urls[i] = Paths.get(pathElements[i]).toAbsolutePath().toUri().toURL();
+                } catch (MalformedURLException e) {
+                    urls = new URL[0];
+                }
+            }
         }
         
         return urls;
