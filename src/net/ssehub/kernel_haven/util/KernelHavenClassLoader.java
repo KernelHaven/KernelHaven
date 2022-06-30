@@ -15,8 +15,12 @@
  */
 package net.ssehub.kernel_haven.util;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 
 import net.ssehub.kernel_haven.util.null_checks.NonNull;
 
@@ -44,4 +48,61 @@ public class KernelHavenClassLoader extends URLClassLoader {
         super.addURL(url);
     }
     
+    /**
+     * Support for java-Agents (Coverage by Jacoco).
+     * Reverse delegation order to test first if class can be loaded by our custom class loader (default in Java 8)
+     * or loaded by the system loader (new default in Java 9+). <p>
+     * Based on: <a href="https://stackoverflow.com/a/62245101">https://stackoverflow.com/a/62245101</a> <p>
+     * {@inheritDoc} <p>
+     * @see <a href="https://stackoverflow.com/a/62245101">https://stackoverflow.com/a/62245101</a>
+     */
+    @Override
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        synchronized (getClassLoadingLock(name)) {
+            Class<?> c = findLoadedClass(name);
+            if (c == null) {
+                try {
+                    c = findClass(name);
+                } catch (ClassNotFoundException e) {
+                    c = super.loadClass(name, false);
+                }
+            }
+            if (resolve) {
+                resolveClass(c);
+            }
+            return c;
+        }
+    }
+
+    /**
+     * Support for java-Agents (Coverage by Jacoco).
+     * Reverse delegation order to test first if class can be loaded by our custom class loader (default in Java 8)
+     * or loaded by the system loader (new default in Java 9+). <p>
+     * Based on: <a href="https://stackoverflow.com/a/62245101">https://stackoverflow.com/a/62245101</a> <p>
+     * {@inheritDoc} <p>
+     * @see <a href="https://stackoverflow.com/a/62245101">https://stackoverflow.com/a/62245101</a>
+     */
+    @Override
+    public URL getResource(String name) {
+        URL url = findResource(name);
+        if (url == null) {
+            url = super.getResource(name);
+        }
+        return url;
+    }
+
+    /**
+     * Support for java-Agents (Coverage by Jacoco).
+     * Reverse delegation order to test first if class can be loaded by our custom class loader (default in Java 8)
+     * or loaded by the system loader (new default in Java 9+). <p>
+     * Based on: <a href="https://stackoverflow.com/a/62245101">https://stackoverflow.com/a/62245101</a> <p>
+     * {@inheritDoc} <p>
+     * @see <a href="https://stackoverflow.com/a/62245101">https://stackoverflow.com/a/62245101</a>
+     */
+    @Override
+    public Enumeration<URL> getResources(String name) throws IOException {
+        List<URL> urls = Collections.list(findResources(name));
+        urls.addAll(Collections.list(getParent().getResources(name)));
+        return Collections.enumeration(urls);
+    }
 }
