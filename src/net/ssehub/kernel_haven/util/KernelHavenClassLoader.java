@@ -33,7 +33,7 @@ import net.ssehub.kernel_haven.util.null_checks.NonNull;
  * @author Adam
  */
 public class KernelHavenClassLoader extends URLClassLoader {
-
+          
     /**
      * Creates this class loader. This will be called by the JVM if <code>java.system.class.loader</code> is set to
      * this class.
@@ -41,7 +41,30 @@ public class KernelHavenClassLoader extends URLClassLoader {
      * @param parent The parent class loader to delegate to.
      */
     public KernelHavenClassLoader(@NonNull ClassLoader parent) {
-        super(new URL[0], parent);
+        super(urlsForInitialization(parent) , parent);
+    }
+    
+    /**
+     * Reads the URL classpath from the parent constructor to be set in this constructor.
+     * An empty array will override the classpath settings and, thus, the URLClassLoader may loose important
+     * information, required to process our <tt>loadClasses.txt</tt> files.
+     * @param parent The parent class loader to delegate to.
+     * @return The URLs of the parent if possible or an empty array.
+     */
+    private static URL[] urlsForInitialization(@NonNull ClassLoader parent) {
+        URL[] urls;
+        if (parent instanceof URLClassLoader) {
+            urls = ((URLClassLoader) parent).getURLs();
+        } else {
+            urls = new URL[0];
+        }
+        
+        return urls;
+    }
+    
+    @Override
+    public URL[] getURLs() {
+        return super.getURLs();
     }
 
     // make this method public
